@@ -10,12 +10,15 @@
         header h1 { margin: 0; font-size: 24px; }
         main { max-width: 600px; margin: 24px auto; padding: 0 16px; }
         .box { background: #fff; border-radius: 10px; padding: 18px; margin-bottom: 16px; box-shadow: 0 1px 4px rgba(0,0,0,.12); }
-        input { width: 100%; padding: 10px; margin: 6px 0 12px; box-sizing: border-box; font-size: 16px; }
+        input, textarea { width: 100%; padding: 10px; margin: 6px 0 12px; box-sizing: border-box; font-size: 16px; font-family: inherit; }
+        textarea { resize: vertical; min-height: 70px; }
         button { padding: 10px 16px; font-size: 16px; cursor: pointer; }
         .row { display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 8px 0; border-bottom: 1px solid #eee; }
+        .row .thumbs { display: flex; gap: 4px; }
         .row img { width: 56px; height: 42px; object-fit: cover; border-radius: 4px; }
         .row .info { flex: 1; }
         #msg { margin-top: 10px; font-weight: bold; }
+        .hint { font-size: 13px; color: #888; margin-top: -8px; margin-bottom: 12px; }
     </style>
 </head>
 <body>
@@ -26,10 +29,13 @@
         <input id="password" type="password" placeholder="Admin paroli">
         <label>Mashina nomi</label>
         <input id="name" placeholder="Masalan: Chevrolet Nexia 2012">
-        <label>Narxi ($)</label>
-        <input id="price" type="number" placeholder="Masalan: 5500">
-        <label>Rasm (ixtiyoriy)</label>
-        <input id="photo" type="file" accept="image/*">
+        <label>Narxi (so'm)</label>
+        <input id="price" type="number" placeholder="Masalan: 65000000">
+        <label>Qo'shimcha ma'lumot</label>
+        <textarea id="description" placeholder="Masalan: Yurgan masofasi 120 000 km, 2012-yil, rangi kumush, muammosiz"></textarea>
+        <label>Rasmlar (bir nechtasini tanlash mumkin)</label>
+        <input id="photo" type="file" accept="image/*" multiple>
+        <div class="hint">Ko'pi bilan 8 ta rasm</div>
         <button onclick="addCar()">Qo'shish</button>
         <div id="msg"></div>
     </div>
@@ -68,39 +74,46 @@
         for (const car of cars) {
             const row = document.createElement('div');
             row.className = 'row';
-            if (car.image) {
+            const thumbs = document.createElement('div');
+            thumbs.className = 'thumbs';
+            for (const name of (car.images || []).slice(0, 3)) {
                 const img = document.createElement('img');
-                img.src = '/uploads/' + car.image;
-                row.appendChild(img);
+                img.src = '/uploads/' + name;
+                thumbs.appendChild(img);
             }
             const text = document.createElement('span');
             text.className = 'info';
-            text.textContent = car.name + ' - ' + car.price + ' $';
+            text.textContent = car.name + ' - ' + car.price.toLocaleString('ru-RU') + " so'm";
             const btn = document.createElement('button');
             btn.textContent = "O'chirish";
             btn.onclick = () => removeCar(car.id);
-            row.append(text, btn);
+            row.append(thumbs, text, btn);
             list.appendChild(row);
         }
     }
 
     async function addCar() {
         try {
-            const file = document.getElementById('photo').files[0];
-            const image = file ? await resizeImage(file) : null;
+            const files = Array.from(document.getElementById('photo').files).slice(0, 8);
+            const images = [];
+            for (const file of files) {
+                images.push(await resizeImage(file));
+            }
             const res = await fetch('/api/cars', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json', 'x-admin-password': document.getElementById('password').value },
                 body: JSON.stringify({
                     name: document.getElementById('name').value,
                     price: document.getElementById('price').value,
-                    image: image
+                    description: document.getElementById('description').value,
+                    images: images
                 })
             });
             if (res.ok) {
                 msg.textContent = "Qo'shildi!";
                 document.getElementById('name').value = '';
                 document.getElementById('price').value = '';
+                document.getElementById('description').value = '';
                 document.getElementById('photo').value = '';
                 load();
             } else {
