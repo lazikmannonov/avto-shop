@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>pul.zarill admin</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; background: #f4f5f7; color: #222; }
+        header { background: #111; color: #fff; padding: 18px; text-align: center; }
+        header h1 { margin: 0; font-size: 24px; }
+        main { max-width: 600px; margin: 24px auto; padding: 0 16px; }
+        .box { background: #fff; border-radius: 10px; padding: 18px; margin-bottom: 16px; box-shadow: 0 1px 4px rgba(0,0,0,.12); }
+        input { width: 100%; padding: 10px; margin: 6px 0 12px; box-sizing: border-box; font-size: 16px; }
+        button { padding: 10px 16px; font-size: 16px; cursor: pointer; }
+        .row { display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 8px 0; border-bottom: 1px solid #eee; }
+        .row img { width: 56px; height: 42px; object-fit: cover; border-radius: 4px; }
+        .row .info { flex: 1; }
+        #msg { margin-top: 10px; font-weight: bold; }
+    </style>
+</head>
+<body>
+<header><h1>pul.zarill: admin</h1></header>
+<main>
+    <div class="box">
+        <label>Parol</label>
+        <input id="password" type="password" placeholder="Admin paroli">
+        <label>Mashina nomi</label>
+        <input id="name" placeholder="Masalan: Chevrolet Nexia 2012">
+        <label>Narxi ($)</label>
+        <input id="price" type="number" placeholder="Masalan: 5500">
+        <label>Rasm (ixtiyoriy)</label>
+        <input id="photo" type="file" accept="image/*">
+        <button onclick="addCar()">Qo'shish</button>
+        <div id="msg"></div>
+    </div>
+    <div class="box">
+        <h3>Mashinalar</h3>
+        <div id="list"></div>
+    </div>
+</main>
+<script>
+    const msg = document.getElementById('msg');
+
+    function resizeImage(file) {
+        return new Promise((resolve, reject) => {
+            const img = new Image();
+            const objectUrl = URL.createObjectURL(file);
+            img.onload = () => {
+                const max = 900;
+                const scale = Math.min(1, max / Math.max(img.width, img.height));
+                const canvas = document.createElement('canvas');
+                canvas.width = Math.round(img.width * scale);
+                canvas.height = Math.round(img.height * scale);
+                canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
+                URL.revokeObjectURL(objectUrl);
+                resolve(canvas.toDataURL('image/jpeg', 0.8));
+            };
+            img.onerror = () => reject(new Error('Rasmni o\'qib bo\'lmadi'));
+            img.src = objectUrl;
+        });
+    }
+
+    async function load() {
+        const res = await fetch('/api/cars');
+        const cars = await res.json();
+        const list = document.getElementById('list');
+        list.innerHTML = '';
+        for (const car of cars) {
+            const row = document.createElement('div');
+            row.className = 'row';
+            if (car.image) {
+                const img = document.createElement('img');
+                img.src = '/uploads/' + car.image;
+                row.appendChild(img);
+            }
+            const text = document.createElement('span');
+            text.className = 'info';
+            text.textContent = car.name + ' - ' + car.price + ' $';
+            const btn = document.createElement('button');
+            btn.textContent = "O'chirish";
+            btn.onclick = () => removeCar(car.id);
+            row.append(text, btn);
+            list.appendChild(row);
+        }
+    }
+
+    async function addCar() {
+        try {
+            const file = document.getElementById('photo').files[0];
+            const image = file ? await resizeImage(file) : null;
+            const res = await fetch('/api/cars', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'x-admin-password': document.getElementById('password').value },
+                body: JSON.stringify({
+                    name: document.getElementById('name').value,
+                    price: document.getElementById('price').value,
+                    image: image
+                })
+            });
+            if (res.ok) {
+                msg.textContent = "Qo'shildi!";
+                document.getElementById('name').value = '';
+                document.getElementById('price').value = '';
+                document.getElementById('photo').value = '';
+                load();
+            } else {
+                const data = await res.json();
+                msg.textContent = data.error;
+            }
+        } catch (e) {
+            msg.textContent = e.message;
+        }
+    }
+
+    async function removeCar(id) {
+        const res = await fetch('/api/cars/' + id, {
+            method: 'DELETE',
+            headers: { 'x-admin-password': document.getElementById('password').value }
+        });
+        if (res.ok) { load(); } else { msg.textContent = "Parol noto'g'ri"; }
+    }
+
+    load();
+</script>
+</body>
+</html>
