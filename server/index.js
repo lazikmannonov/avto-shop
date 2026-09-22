@@ -20,6 +20,16 @@ try {
 } catch (e) {
     // ustun allaqachon bor
 }
+try {
+    db.exec('ALTER TABLE cars ADD COLUMN images TEXT');
+} catch (e) {
+    // ustun allaqachon bor
+}
+try {
+    db.exec('ALTER TABLE cars ADD COLUMN description TEXT');
+} catch (e) {
+    // ustun allaqachon bor
+}
 
 function sendJson(res, status, data) {
     res.writeHead(status, { 'Content-Type': 'application/json; charset=utf-8' });
@@ -39,7 +49,7 @@ function readBody(req) {
         req.on('data', (chunk) => {
             if (tooBig) return;
             data += chunk;
-            if (data.length > 5000000) {
+            if (data.length > 20000000) {
                 tooBig = true;
                 reject(new Error('Juda katta'));
             }
@@ -53,11 +63,39 @@ function isAdmin(req) {
     return req.headers['x-admin-password'] === ADMIN_PASSWORD;
 }
 
+function saveImage(dataUrl) {
+    const m = /^data:image\/jpeg;base64,(.+)$/.exec(dataUrl);
+    if (!m) throw new Error("Rasm formati noto'g'ri");
+    const buffer = Buffer.from(m[1], 'base64');
+    if (buffer.length > 3000000) throw new Error('Rasm juda katta');
+    const imageName = crypto.randomBytes(8).toString('hex') + '.jpg';
+    fs.writeFileSync(path.join(UPLOAD_DIR, imageName), buffer);
+    return imageName;
+}
+
+function parseImages(row) {
+    if (row.images) {
+        try { return JSON.parse(row.images); } catch (e) { /* fall through */ }
+    }
+    return row.image ? [row.image] : [];
+}
+
+function carOut(row) {
+    return {
+        id: row.id,
+        name: row.name,
+        price: row.price,
+        description: row.description || '',
+        images: parseImages(row)
+    };
+}
+
 const server = http.createServer(async (req, res) => {
     const url = req.url.split('?')[0];
 
     if (url === '/api/cars' && req.method === 'GET') {
-        return sendJson(res, 200, db.prepare('SELECT * FROM cars ORDER BY id DESC').all());
+        const rows = db.prepare('SELECT * FROM cars ORDER BY id DESC').all();
+        return sendJson(res, 200, rows.map(carOut));
     }
 
     if (url === '/api/cars' && req.method === 'POST') {
@@ -66,36 +104,33 @@ const server = http.createServer(async (req, res) => {
             const body = JSON.parse(await readBody(req));
             const name = String(body.name || '').trim();
             const price = Number(body.price);
+            const description = String(body.description || '').trim().slice(0, 2000);
             if (!name || !Number.isInteger(price) || price <= 0) {
                 return sendJson(res, 400, { error: "Nom va narxni to'g'ri kiriting" });
             }
 
-            let imageName = null;
-            if (body.image) {
-                const m = /^data:image\/jpeg;base64,(.+)$/.exec(body.image);
-                if (!m) return sendJson(res, 400, { error: "Rasm formati noto'g'ri" });
-                const buffer = Buffer.from(m[1], 'base64');
-                if (buffer.length > 3000000) return sendJson(res, 400, { error: 'Rasm juda katta' });
-                imageName = crypto.randomBytes(8).toString('hex') + '.jpg';
-                fs.writeFileSync(path.join(UPLOAD_DIR, imageName), buffer);
+            const incomingImages = Array.isArray(body.images) ? body.images : [];
+            if (incomingImages.length > 8) {
+                return sendJson(res, 400, { error: "Ko'pi bilan 8 ta rasm" });
             }
 
-            db.prepare('INSERT INTO cars (name, price, image) VALUES (?, ?, ?)').run(name, price, imageName);
+            const savedNames = incomingImages.map(saveImage);
+
+            db.prepare('INSERT INTO cars (name, price, description, images) VALUES (?, ?, ?, ?)')
+                .run(name, price, description, JSON.stringify(savedNames));
             return sendJson(res, 201, { ok: true });
         } catch (e) {
-            return sendJson(res, 400, { error: "Ma'lumot noto'g'ri yoki juda katta" });
+            return sendJson(res, 400, { error: e.message || "Ma'lumot noto'g'ri yoki juda katta" });
         }
     }
 
     if (url.startsWith('/api/cars/') && req.method === 'DELETE') {
         if (!isAdmin(req)) return sendJson(res, 401, { error: "Parol noto'g'ri" });
         const id = Number(url.split('/')[3]);
-        const row = db.prepare('SELECT image FROM cars WHERE id = ?').get(id);
-        if (row && row.image) {
-            try {
-                fs.unlinkSync(path.join(UPLOAD_DIR, row.image));
-            } catch (e) {
-                // fayl allaqachon yo'q
+        const row = db.prepare('SELECT image, images FROM cars WHERE id = ?').get(id);
+        if (row) {
+            for (const name of parseImages(row)) {
+                try { fs.unlinkSync(path.join(UPLOAD_DIR, name)); } catch (e) { /* fayl allaqachon yo'q */ }
             }
         }
         db.prepare('DELETE FROM cars WHERE id = ?').run(id);
