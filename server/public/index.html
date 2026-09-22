@@ -54,3 +54,73 @@
     let currentIndex = 0;
 
     async function load() {
+        const res = await fetch('/api/cars');
+        const cars = await res.json();
+        const list = document.getElementById('list');
+        list.innerHTML = '';
+        if (cars.length === 0) {
+            list.innerHTML = '<p class="empty">Hozircha mashinalar yo\'q</p>';
+            return;
+        }
+        for (const car of cars) {
+            const images = car.images || [];
+            const card = document.createElement('div');
+            card.className = 'card';
+            if (images.length) {
+                const img = document.createElement('img');
+                img.className = 'thumb';
+                img.src = '/uploads/' + images[0];
+                img.alt = car.name;
+                img.onclick = () => openLightbox(images, 0);
+                card.appendChild(img);
+            }
+            const title = document.createElement('h3');
+            title.textContent = car.name;
+            card.appendChild(title);
+            if (car.description) {
+                const desc = document.createElement('div');
+                desc.className = 'desc';
+                desc.textContent = car.description;
+                card.appendChild(desc);
+            }
+            const price = document.createElement('div');
+            price.className = 'price';
+            price.textContent = car.price.toLocaleString('ru-RU') + " so'm";
+            const call = document.createElement('a');
+            call.className = 'call';
+            call.href = 'tel:+998889500005';
+            call.textContent = "Qo'ng'iroq qilish";
+            card.append(price, call);
+            list.appendChild(card);
+        }
+    }
+
+    function openLightbox(images, index) {
+        currentImages = images;
+        currentIndex = index;
+        showCurrent();
+        document.getElementById('lightbox').classList.add('open');
+    }
+    function closeLightbox() {
+        document.getElementById('lightbox').classList.remove('open');
+    }
+    function showCurrent() {
+        document.getElementById('lightbox-img').src = '/uploads/' + currentImages[currentIndex];
+        document.getElementById('lightbox-counter').textContent = (currentIndex + 1) + ' / ' + currentImages.length;
+    }
+    function nextImage() {
+        currentIndex = (currentIndex + 1) % currentImages.length;
+        showCurrent();
+    }
+    function prevImage() {
+        currentIndex = (currentIndex - 1 + currentImages.length) % currentImages.length;
+        showCurrent();
+    }
+    document.getElementById('lightbox').addEventListener('click', (e) => {
+        if (e.target.id === 'lightbox') closeLightbox();
+    });
+
+    load();
+</script>
+</body>
+</html>
