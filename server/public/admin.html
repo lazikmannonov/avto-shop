@@ -905,8 +905,6 @@ body.dark .action-btn.sold-btn{
 
 <body>
 
-<!-- SIDEBAR -->
-
 <aside class="sidebar" id="sidebar">
 
     <div class="logo">
@@ -915,8 +913,7 @@ body.dark .action-btn.sold-btn{
 
     <div class="nav">
 
-        <button
-            class="active"
+        <button class="active"
             data-page="dashboard"
             onclick="showPage('dashboard')">
             📊 Dashboard
@@ -954,8 +951,6 @@ body.dark .action-btn.sold-btn{
 
 </aside>
 
-<!-- MAIN -->
-
 <main class="main">
 
 <header class="topbar">
@@ -969,6 +964,7 @@ body.dark .action-btn.sold-btn{
         </button>
 
         <div>
+
             <div
                 class="top-title"
                 id="pageTitle">
@@ -980,6 +976,7 @@ body.dark .action-btn.sold-btn{
                 id="pageSubtitle">
                 pul.zarill boshqaruv paneli
             </div>
+
         </div>
 
     </div>
@@ -1006,8 +1003,6 @@ body.dark .action-btn.sold-btn{
 
 <div class="content">
 
-<!-- DASHBOARD -->
-
 <section
     class="page active"
     id="page-dashboard">
@@ -1015,6 +1010,7 @@ body.dark .action-btn.sold-btn{
     <div class="stats-grid">
 
         <div class="stat-card">
+
             <div class="stat-top">
                 <div class="stat-icon">👁️</div>
             </div>
@@ -1032,9 +1028,11 @@ body.dark .action-btn.sold-btn{
             <div class="stat-change">
                 Jami ko‘rishlar
             </div>
+
         </div>
 
         <div class="stat-card">
+
             <div class="stat-top">
                 <div class="stat-icon">📞</div>
             </div>
@@ -1052,9 +1050,11 @@ body.dark .action-btn.sold-btn{
             <div class="stat-change">
                 Telefon tugmasi bosilishi
             </div>
+
         </div>
 
         <div class="stat-card">
+
             <div class="stat-top">
                 <div class="stat-icon">🚘</div>
             </div>
@@ -1072,9 +1072,11 @@ body.dark .action-btn.sold-btn{
             <div class="stat-change">
                 Saytdagi barcha avtomobillar
             </div>
+
         </div>
 
         <div class="stat-card">
+
             <div class="stat-top">
                 <div class="stat-icon">✅</div>
             </div>
@@ -1092,6 +1094,7 @@ body.dark .action-btn.sold-btn{
             <div class="stat-change">
                 Sotildi deb belgilanganlar
             </div>
+
         </div>
 
     </div>
@@ -1101,7 +1104,9 @@ body.dark .action-btn.sold-btn{
         <div class="panel">
 
             <div class="panel-head">
+
                 <div>
+
                     <div class="panel-title">
                         Statistika
                     </div>
@@ -1109,7 +1114,9 @@ body.dark .action-btn.sold-btn{
                     <div class="panel-sub">
                         Oxirgi 30 kun
                     </div>
+
                 </div>
+
             </div>
 
             <div class="panel-body">
@@ -1139,7 +1146,9 @@ body.dark .action-btn.sold-btn{
         <div class="panel">
 
             <div class="panel-head">
+
                 <div>
+
                     <div class="panel-title">
                         Bugungi faollik
                     </div>
@@ -1147,7 +1156,9 @@ body.dark .action-btn.sold-btn{
                     <div class="panel-sub">
                         Bugungi statistika
                     </div>
+
                 </div>
+
             </div>
 
             <div class="panel-body">
@@ -1163,6 +1174,7 @@ body.dark .action-btn.sold-btn{
                             </div>
 
                             <div>
+
                                 <div class="activity-name">
                                     Ko‘rishlar
                                 </div>
@@ -1170,6 +1182,7 @@ body.dark .action-btn.sold-btn{
                                 <div class="activity-desc">
                                     Bugungi sayt tashriflari
                                 </div>
+
                             </div>
 
                         </div>
@@ -1191,6 +1204,7 @@ body.dark .action-btn.sold-btn{
                             </div>
 
                             <div>
+
                                 <div class="activity-name">
                                     Qo‘ng‘iroqlar
                                 </div>
@@ -1198,6 +1212,7 @@ body.dark .action-btn.sold-btn{
                                 <div class="activity-desc">
                                     Bugungi qo‘ng‘iroqlar
                                 </div>
+
                             </div>
 
                         </div>
@@ -1219,6 +1234,7 @@ body.dark .action-btn.sold-btn{
                             </div>
 
                             <div>
+
                                 <div class="activity-name">
                                     Mashinalar
                                 </div>
@@ -1226,6 +1242,7 @@ body.dark .action-btn.sold-btn{
                                 <div class="activity-desc">
                                     Jami joylangan
                                 </div>
+
                             </div>
 
                         </div>
@@ -1247,6 +1264,7 @@ body.dark .action-btn.sold-btn{
                             </div>
 
                             <div>
+
                                 <div class="activity-name">
                                     Sotilgan
                                 </div>
@@ -1254,6 +1272,7 @@ body.dark .action-btn.sold-btn{
                                 <div class="activity-desc">
                                     Sotilgan avtomobillar
                                 </div>
+
                             </div>
 
                         </div>
@@ -1279,6 +1298,7 @@ body.dark .action-btn.sold-btn{
         <div class="panel-head">
 
             <div>
+
                 <div class="panel-title">
                     Tezkor amallar
                 </div>
@@ -1286,6 +1306,7 @@ body.dark .action-btn.sold-btn{
                 <div class="panel-sub">
                     Admin boshqaruvi
                 </div>
+
             </div>
 
         </div>
@@ -1308,7 +1329,7 @@ body.dark .action-btn.sold-btn{
 
                 <button
                     class="quick-btn"
-                    onclick="loadAll()">
+                    onclick="refreshStatistics()">
                     📊 Statistikani yangilash
                 </button>
 
@@ -1325,6 +1346,7 @@ body.dark .action-btn.sold-btn{
         <div class="panel-head">
 
             <div>
+
                 <div class="panel-title">
                     Oxirgi mashinalar
                 </div>
@@ -1332,6 +1354,7 @@ body.dark .action-btn.sold-btn{
                 <div class="panel-sub">
                     Yaqinda qo‘shilgan avtomobillar
                 </div>
+
             </div>
 
             <button
@@ -1347,9 +1370,11 @@ body.dark .action-btn.sold-btn{
             <div
                 class="car-list"
                 id="recentCars">
+
                 <div class="empty">
                     Yuklanmoqda...
                 </div>
+
             </div>
 
         </div>
@@ -1357,8 +1382,6 @@ body.dark .action-btn.sold-btn{
     </div>
 
 </section>
-
-<!-- ADD CAR -->
 
 <section
     class="page"
@@ -1369,6 +1392,7 @@ body.dark .action-btn.sold-btn{
         <div class="panel-head">
 
             <div>
+
                 <div class="panel-title">
                     Mashina qo‘shish
                 </div>
@@ -1376,6 +1400,7 @@ body.dark .action-btn.sold-btn{
                 <div class="panel-sub">
                     Yangi avtomobilni saytga joylang
                 </div>
+
             </div>
 
         </div>
@@ -1502,8 +1527,6 @@ body.dark .action-btn.sold-btn{
 
 </section>
 
-<!-- SETTINGS -->
-
 <section
     class="page"
     id="page-settings">
@@ -1513,6 +1536,7 @@ body.dark .action-btn.sold-btn{
         <div class="panel-head">
 
             <div>
+
                 <div class="panel-title">
                     Aloqa sozlamalari
                 </div>
@@ -1520,6 +1544,7 @@ body.dark .action-btn.sold-btn{
                 <div class="panel-sub">
                     Saytdagi telefon va ijtimoiy tarmoqlarni boshqarish
                 </div>
+
             </div>
 
             <div class="settings-icon">
@@ -1618,8 +1643,6 @@ body.dark .action-btn.sold-btn{
     </div>
 
 </section>
-
-<!-- CARS -->
 
 <section
     class="page"
@@ -1750,9 +1773,7 @@ function showPage(page){
 
             btn.classList.remove('active');
 
-            if(
-                btn.dataset.page === page
-            ){
+            if(btn.dataset.page === page){
                 btn.classList.add('active');
             }
 
@@ -1849,8 +1870,15 @@ function getPassword(){
 
 function animateNumber(element,target){
 
+    if(!element){
+        return;
+    }
+
     const start =
-        Number(element.textContent) || 0;
+        Number(
+            String(element.textContent)
+                .replace(/[^\d.-]/g,'')
+        ) || 0;
 
     const end =
         Number(target) || 0;
@@ -1863,7 +1891,7 @@ function animateNumber(element,target){
         return;
     }
 
-    const duration = 500;
+    const duration = 350;
 
     const startTime =
         performance.now();
@@ -1888,7 +1916,14 @@ function animateNumber(element,target){
             value.toLocaleString('uz-UZ');
 
         if(progress < 1){
+
             requestAnimationFrame(update);
+
+        }else{
+
+            element.textContent =
+                end.toLocaleString('uz-UZ');
+
         }
     }
 
@@ -2130,6 +2165,11 @@ async function addCar(){
         return;
     }
 
+    localStorage.setItem(
+        'adminPassword',
+        password
+    );
+
     const button =
         document.getElementById(
             'addButton'
@@ -2240,6 +2280,7 @@ async function loadSettings(){
             );
 
         if(!response.ok){
+
             throw new Error(
                 "Aloqa ma'lumotlarini yuklab bo‘lmadi"
             );
@@ -2312,6 +2353,11 @@ async function saveSettings(){
 
         return;
     }
+
+    localStorage.setItem(
+        'adminPassword',
+        password
+    );
 
     const settings = {
 
@@ -2953,11 +2999,17 @@ async function loadStats(){
 
         const response =
             await fetch(
-                '/api/stats',
+                '/api/stats?ts=' +
+                Date.now(),
                 {
+                    method:'GET',
+
                     headers:{
                         'x-admin-password':
-                            password
+                            password,
+
+                        'Cache-Control':
+                            'no-cache'
                     },
 
                     cache:'no-store'
@@ -2965,6 +3017,12 @@ async function loadStats(){
             );
 
         if(!response.ok){
+
+            console.error(
+                'Stats HTTP:',
+                response.status
+            );
+
             return;
         }
 
@@ -3015,7 +3073,10 @@ async function loadStats(){
 
     }catch(e){
 
-        console.error(e);
+        console.error(
+            'loadStats error:',
+            e
+        );
     }
 }
 
@@ -3036,11 +3097,17 @@ async function loadDailyStats(){
 
         const response =
             await fetch(
-                '/api/stats/daily',
+                '/api/stats/daily?ts=' +
+                Date.now(),
                 {
+                    method:'GET',
+
                     headers:{
                         'x-admin-password':
-                            password
+                            password,
+
+                        'Cache-Control':
+                            'no-cache'
                     },
 
                     cache:'no-store'
@@ -3061,8 +3128,26 @@ async function loadDailyStats(){
 
     }catch(e){
 
-        console.error(e);
+        console.error(
+            'loadDailyStats error:',
+            e
+        );
     }
+}
+
+/* =========================
+   REFRESH STATISTICS
+========================= */
+
+async function refreshStatistics(){
+
+    await loadStats();
+
+    await loadDailyStats();
+
+    toast(
+        "Statistika yangilandi"
+    );
 }
 
 /* =========================
@@ -3179,10 +3264,10 @@ function renderChart(){
         days.push({
             date:key,
             views:item
-                ? item.views
+                ? Number(item.views) || 0
                 : 0,
             calls:item
-                ? item.calls
+                ? Number(item.calls) || 0
                 : 0
         });
     }
@@ -3299,7 +3384,10 @@ function renderChart(){
             ) *
             chartHeight;
 
-        return {x,y};
+        return {
+            x,
+            y
+        };
     }
 
     function drawLine(key,lineColor){
@@ -3493,6 +3581,27 @@ if(savedPassword){
 document
     .getElementById('password')
     .addEventListener(
+        'input',
+        () => {
+
+            const password =
+                getPassword();
+
+            if(password){
+
+                localStorage.setItem(
+                    'adminPassword',
+                    password
+                );
+
+            }
+
+        }
+    );
+
+document
+    .getElementById('password')
+    .addEventListener(
         'change',
         () => {
 
@@ -3512,6 +3621,25 @@ window.addEventListener(
     }
 );
 
+/* =========================
+   WINDOW FOCUS
+========================= */
+
+window.addEventListener(
+    'focus',
+    () => {
+
+        loadStats();
+
+        loadDailyStats();
+
+    }
+);
+
+/* =========================
+   INITIAL LOAD
+========================= */
+
 loadCars();
 
 loadSettings();
@@ -3521,13 +3649,23 @@ if(savedPassword){
     loadStats();
 
     loadDailyStats();
+
 }
+
+/* =========================
+   AUTO STAT UPDATE
+   EVERY 3 SECONDS
+========================= */
 
 setInterval(
     () => {
-        loadAll();
+
+        loadStats();
+
+        loadDailyStats();
+
     },
-    30000
+    3000
 );
 
 </script>
