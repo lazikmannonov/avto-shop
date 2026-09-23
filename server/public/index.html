@@ -6,11 +6,7 @@
 <title>pul.zarill</title>
 
 <style>
-*{
- margin:0;
- padding:0;
- box-sizing:border-box
-}
+*{margin:0;padding:0;box-sizing:border-box}
 
 :root{
  --bg:#f4f5f7;
@@ -43,7 +39,7 @@ body.dark{
 }
 
 /* =========================
-   PREMIUM ICON SYSTEM
+   PREMIUM ICONS
 ========================= */
 
 .icon{
@@ -53,31 +49,25 @@ body.dark{
  vertical-align:middle;
  fill:none;
  stroke:currentColor;
- stroke-width:1.8;
+ stroke-width:1.9;
  stroke-linecap:round;
  stroke-linejoin:round;
- flex:none;
- transition:
-  transform .25s ease,
-  color .25s ease,
-  filter .25s ease,
-  stroke-width .25s ease
+ flex:none
 }
 
 .icon-fill{
  fill:currentColor;
- stroke:currentColor;
- stroke-width:1.4
+ stroke:currentColor
 }
 
 .icon-lg{
- width:24px;
- height:24px
+ width:23px;
+ height:23px
 }
 
 .icon-sm{
- width:16px;
- height:16px
+ width:17px;
+ height:17px
 }
 
 .icon-btn{
@@ -86,100 +76,10 @@ body.dark{
  justify-content:center
 }
 
-/* premium icon hover */
-button:hover .icon,
-a:hover .icon{
- transform:scale(1.08)
-}
-
-/* MENU ICON BADGE */
-.menu-item-title .icon{
- width:20px;
- height:20px;
- padding:4px;
- box-sizing:content-box;
- border-radius:8px;
- background:rgba(25,214,107,.10);
- color:#19d66b;
- transition:.25s
-}
-
-.menu-item:hover .menu-item-title .icon{
- background:#19d66b;
- color:#050505;
- transform:translateY(-1px) scale(1.05);
- box-shadow:0 5px 15px rgba(25,214,107,.22)
-}
-
-/* RIGHT MENU ICON */
-.menu-item > .icon{
- width:20px;
- height:20px;
- padding:7px;
- box-sizing:content-box;
- border-radius:11px;
- background:var(--bg);
- color:var(--muted);
- transition:.25s
-}
-
-.menu-item:hover > .icon{
- color:#19d66b;
- transform:translateX(-2px)
-}
-
-/* SOCIAL ICONS */
-.social-icon{
- width:20px;
- height:20px;
- transition:.25s
-}
-
-.menu-item a:hover .social-icon{
- transform:scale(1.1) rotate(-3deg)
-}
-
-/* FAVORITE */
-.favorite .icon{
- transition:
-  transform .25s ease,
-  fill .25s ease,
-  stroke .25s ease
-}
-
-.favorite:hover .icon{
- transform:scale(1.15)
-}
-
-.favorite.active .icon{
- fill:#ff3b30;
- stroke:#ff3b30;
- filter:drop-shadow(0 3px 7px rgba(255,59,48,.35))
-}
-
-.favorite.active{
- box-shadow:
-  0 5px 18px rgba(255,59,48,.18)
-}
-
-/* SEARCH ICON */
-.search-reset:hover .icon{
- transform:rotate(-8deg) scale(1.12)
-}
-
-/* BOTTOM ICON */
-.bottom-icon .icon{
- width:21px;
- height:21px;
- transition:.25s
-}
-
-.bottom-nav button:hover .icon{
- transform:translateY(-2px) scale(1.08)
-}
-
-.bottom-nav button.active .icon{
- filter:drop-shadow(0 3px 7px rgba(25,214,107,.3))
+.text-icon{
+ display:inline-flex;
+ align-items:center;
+ gap:7px
 }
 
 /* =========================
@@ -242,25 +142,20 @@ header{
   transform:translate(-50%,-50%) scale(1);
   opacity:.45
  }
-
  16%{
   transform:translate(-38%,-50%) scale(1.05)
  }
-
  33%{
   background:#ffd21c;
   transform:translate(-50%,-50%) scale(1.05)
  }
-
  50%{
   transform:translate(-62%,-48%) scale(1.04)
  }
-
  66%{
   background:#ff3b30;
   transform:translate(-50%,-50%) scale(1.05)
  }
-
  83%{
   transform:translate(-38%,-50%) scale(1.03)
  }
@@ -277,12 +172,7 @@ header{
  text-decoration:none;
  font-size:14px;
  font-weight:bold;
- margin-right:5px;
- transition:.2s
-}
-
-.phone-top:hover{
- color:#19d66b
+ margin-right:5px
 }
 
 .lang-btn,
@@ -293,33 +183,24 @@ header{
  border-radius:10px;
  padding:8px 10px;
  cursor:pointer;
- transition:.25s
+ transition:.2s
 }
 
 .lang-btn:hover,
 .theme-btn:hover{
- border-color:#19d66b;
- box-shadow:0 5px 18px rgba(25,214,107,.12)
+ border-color:#19d66b
 }
 
 .lang-btn.active{
  background:#19d66b;
  color:#000;
- border-color:#19d66b;
- box-shadow:0 5px 18px rgba(25,214,107,.2)
+ border-color:#19d66b
 }
 
 .theme-btn{
  display:inline-flex;
  align-items:center;
- justify-content:center;
- min-width:39px;
- min-height:36px
-}
-
-.theme-btn .icon{
- width:19px;
- height:19px
+ justify-content:center
 }
 
 /* =========================
@@ -377,13 +258,7 @@ header{
  cursor:pointer;
  display:flex;
  align-items:center;
- justify-content:center;
- transition:.25s
-}
-
-.search-reset:hover{
- background:#111;
- box-shadow:0 8px 20px rgba(0,0,0,.2)
+ justify-content:center
 }
 
 /* =========================
@@ -427,9 +302,7 @@ header{
  border-radius:20px;
  overflow:hidden;
  box-shadow:var(--shadow);
- transition:
-  transform .25s ease,
-  box-shadow .25s ease
+ transition:transform .25s ease,box-shadow .25s ease
 }
 
 .car-card:hover{
@@ -467,8 +340,7 @@ header{
  font-size:11px;
  font-weight:900;
  background:#19d66b;
- color:#000;
- box-shadow:0 5px 15px rgba(0,0,0,.12)
+ color:#000
 }
 
 .sold-badge{
@@ -484,20 +356,18 @@ header{
  width:40px;
  height:40px;
  border-radius:50%;
- border:1px solid rgba(255,255,255,.1);
+ border:none;
  background:rgba(0,0,0,.68);
  color:#fff;
  cursor:pointer;
- transition:.25s;
+ transition:.2s;
  display:flex;
  align-items:center;
- justify-content:center;
- backdrop-filter:blur(8px)
+ justify-content:center
 }
 
 .favorite:hover{
- transform:scale(1.08);
- background:rgba(0,0,0,.8)
+ transform:scale(1.08)
 }
 
 .favorite.active{
@@ -516,12 +386,7 @@ header{
  font-size:12px;
  display:flex;
  align-items:center;
- gap:5px;
- backdrop-filter:blur(7px)
-}
-
-.image-count .icon{
- color:#fff
+ gap:5px
 }
 
 .car-content{
@@ -570,8 +435,7 @@ header{
  display:flex;
  align-items:center;
  justify-content:center;
- gap:6px;
- transition:.25s
+ gap:6px
 }
 
 .detail-btn{
@@ -584,19 +448,9 @@ body.dark .detail-btn{
  color:#fff
 }
 
-.detail-btn:hover{
- transform:translateY(-1px);
- box-shadow:0 6px 15px rgba(0,0,0,.1)
-}
-
 .call-btn{
  background:#19d66b;
  color:#000
-}
-
-.call-btn:hover{
- transform:translateY(-1px);
- box-shadow:0 7px 18px rgba(25,214,107,.25)
 }
 
 /* =========================
@@ -615,13 +469,6 @@ body.dark .detail-btn{
 .empty-icon{
  margin-bottom:12px;
  color:var(--muted)
-}
-
-.empty-icon .icon{
- width:45px;
- height:45px;
- stroke-width:1.6;
- opacity:.75
 }
 
 .empty h3{
@@ -645,8 +492,7 @@ body.dark .detail-btn{
 
 .skeleton-img{
  height:235px;
- background:
- linear-gradient(
+ background:linear-gradient(
   90deg,
   #e8e8e8 25%,
   #f5f5f5 50%,
@@ -693,18 +539,7 @@ body.dark .detail-btn{
  margin-bottom:15px;
  display:inline-flex;
  align-items:center;
- gap:7px;
- transition:.25s
-}
-
-.back-btn:hover{
- border-color:#19d66b;
- transform:translateX(-2px)
-}
-
-.back-btn .icon{
- width:18px;
- height:18px
+ gap:7px
 }
 
 .details-card{
@@ -759,13 +594,7 @@ body.dark .detail-btn{
  background:#19d66b;
  color:#000;
  font-weight:900;
- text-decoration:none;
- transition:.25s
-}
-
-.details-call:hover{
- transform:translateY(-2px);
- box-shadow:0 8px 22px rgba(25,214,107,.25)
+ text-decoration:none
 }
 
 /* =========================
@@ -785,12 +614,7 @@ body.dark .detail-btn{
  object-fit:cover;
  border-radius:9px;
  cursor:pointer;
- border:2px solid transparent;
- transition:.2s
-}
-
-.thumb:hover{
- transform:translateY(-2px)
+ border:2px solid transparent
 }
 
 .thumb.active{
@@ -814,8 +638,7 @@ body.dark .detail-btn{
  justify-content:space-between;
  align-items:center;
  padding:16px 5px;
- border-bottom:1px solid var(--border);
- transition:.2s
+ border-bottom:1px solid var(--border)
 }
 
 .menu-item:last-child{
@@ -845,13 +668,7 @@ body.dark .detail-btn{
  text-decoration:none;
  display:flex;
  align-items:center;
- gap:6px;
- font-weight:600;
- transition:.2s
-}
-
-.menu-item a:hover{
- color:#12bd5b
+ gap:6px
 }
 
 /* =========================
@@ -889,16 +706,7 @@ body.dark .detail-btn{
  border-radius:50%;
  display:flex;
  align-items:center;
- justify-content:center;
- transition:.25s;
- backdrop-filter:blur(8px)
-}
-
-.lightbox-close:hover,
-.lightbox-prev:hover,
-.lightbox-next:hover{
- background:rgba(255,255,255,.22);
- transform:scale(1.08)
+ justify-content:center
 }
 
 .lightbox-close{
@@ -916,11 +724,6 @@ body.dark .detail-btn{
  top:50%;
  transform:translateY(-50%);
  font-size:30px
-}
-
-.lightbox-prev:hover,
-.lightbox-next:hover{
- transform:translateY(-50%) scale(1.08)
 }
 
 .lightbox-prev{
@@ -944,8 +747,7 @@ body.dark .detail-btn{
  display:flex;
  background:rgba(0,0,0,.97);
  border-top:1px solid #333;
- padding:8px 5px;
- backdrop-filter:blur(12px)
+ padding:8px 5px
 }
 
 .bottom-nav button{
@@ -959,19 +761,10 @@ body.dark .detail-btn{
  display:flex;
  flex-direction:column;
  align-items:center;
- gap:3px;
- transition:.2s
+ gap:3px
 }
 
 .bottom-nav button.active{
- color:#19d66b
-}
-
-.bottom-nav button:hover{
- color:#fff
-}
-
-.bottom-nav button.active:hover{
  color:#19d66b
 }
 
@@ -1076,11 +869,6 @@ body.dark .detail-btn{
   height:34px
  }
 
- .favorite .icon{
-  width:18px;
-  height:18px
- }
-
  .badge{
   top:8px;
   left:8px;
@@ -1110,11 +898,6 @@ body.dark .detail-btn{
  .details-price{
   font-size:22px
  }
-
- .menu-item-title .icon{
-  width:18px;
-  height:18px
- }
 }
 </style>
 </head>
@@ -1122,21 +905,21 @@ body.dark .detail-btn{
 <body>
 
 <!-- =========================
-     PREMIUM SVG ICON SPRITE
+     SVG ICON SPRITE
 ========================= -->
 
 <svg width="0" height="0" style="position:absolute">
 
 <symbol id="i-location" viewBox="0 0 24 24">
- <path d="M20 10.2c0 5.1-8 11.8-8 11.8S4 15.3 4 10.2a8 8 0 1 1 16 0Z"/>
- <circle cx="12" cy="10.2" r="2.6"/>
+ <path d="M20 10c0 5-8 12-8 12S4 15 4 10a8 8 0 1 1 16 0Z"/>
+ <circle cx="12" cy="10" r="2.5"/>
 </symbol>
 
 <symbol id="i-globe" viewBox="0 0 24 24">
  <circle cx="12" cy="12" r="9"/>
  <path d="M3 12h18"/>
- <path d="M12 3c2.7 2.5 4 5.5 4 9s-1.3 6.5-4 9"/>
- <path d="M12 3c-2.7 2.5-4 5.5-4 9s1.3 6.5 4 9"/>
+ <path d="M12 3c3 3 3 15 0 18"/>
+ <path d="M12 3c-3 3-3 15 0 18"/>
 </symbol>
 
 <symbol id="i-phone" viewBox="0 0 24 24">
@@ -1144,25 +927,25 @@ body.dark .detail-btn{
 </symbol>
 
 <symbol id="i-heart" viewBox="0 0 24 24">
- <path d="M20.8 4.8a5.6 5.6 0 0 0-7.9 0L12 5.7l-.9-.9a5.6 5.6 0 0 0-7.9 7.9l.9.9L12 21l7.9-7.4.9-.9a5.6 5.6 0 0 0 0-7.9Z"/>
+ <path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8l1.1 1.1L12 21l7.8-7.5 1.1-1.1a5.5 5.5 0 0 0-.1-7.8Z"/>
 </symbol>
 
 <symbol id="i-search" viewBox="0 0 24 24">
- <circle cx="10.8" cy="10.8" r="6.8"/>
- <path d="m16 16 4.5 4.5"/>
+ <circle cx="11" cy="11" r="7"/>
+ <path d="m20 20-4-4"/>
 </symbol>
 
 <symbol id="i-car" viewBox="0 0 24 24">
- <path d="M5 17.5 4 12l2-5h12l2 5-1 5.5"/>
+ <path d="m5 17-1-5 2-5h12l2 5-1 5"/>
  <path d="M4 12h16"/>
- <path d="m7 7 1-3h8l1 3"/>
- <circle cx="7" cy="17.5" r="1.5"/>
- <circle cx="17" cy="17.5" r="1.5"/>
+ <path d="M7 7l1-3h8l1 3"/>
+ <circle cx="7" cy="17" r="1.5"/>
+ <circle cx="17" cy="17" r="1.5"/>
 </symbol>
 
 <symbol id="i-settings" viewBox="0 0 24 24">
  <circle cx="12" cy="12" r="3"/>
- <path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1-1.4 1.4-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.5V20h-2v-.2a1.7 1.7 0 0 0-1-1.5 1.7 1.7 0 0 0-1.9.3l-.1.1L9 17.1l.1-.1a1.7 1.7 0 0 0 .3-1.9 1.7 1.7 0 0 0-1.5-1H7v-2h.2a1.7 1.7 0 0 0 1.5-1 1.7 1.7 0 0 0-.3-1.9L8.3 9.1 9.7 7.7l.1.1a1.7 1.7 0 0 0 1.9.3 1.7 1.7 0 0 0 1-1.5V6h2v.2a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.9-.3l.1-.1 1.4 1.4-.1.1a1.7 1.7 0 0 0-.3 1.9 1.7 1.7 0 0 0-.3 1.9 1.7 1.7 0 0 0 1.5 1h.2v2h-.2a1.7 1.7 0 0 0-1.5 1.1Z"/>
+ <path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1-1.4 1.4-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.5V20h-2v-.2a1.7 1.7 0 0 0-1-1.5 1.7 1.7 0 0 0-1.9.3l-.1.1L9 17.1l.1-.1a1.7 1.7 0 0 0 .3-1.9 1.7 1.7 0 0 0-1.5-1H7v-2h.2a1.7 1.7 0 0 0 1.5-1 1.7 1.7 0 0 0-.3-1.9L8.3 9.1 9.7 7.7l.1.1a1.7 1.7 0 0 0 1.9.3 1.7 1.7 0 0 0 1-1.5V6h2v.2a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.9-.3l.1-.1 1.4 1.4-.1.1a1.7 1.7 0 0 0-.3 1.9 1.7 1.7 0 0 0-.3 1.9 1.7 1.7 0 0 0 1.5 1h.2v2h-.2a1.7 1.7 0 0 0-1.5 1.3Z"/>
 </symbol>
 
 <symbol id="i-home" viewBox="0 0 24 24">
@@ -1189,35 +972,32 @@ body.dark .detail-btn{
  <circle cx="12" cy="12" r="4"/>
  <path d="M12 2v2"/>
  <path d="M12 20v2"/>
- <path d="m4.9 4.9 1.4 1.4"/>
- <path d="m17.7 17.7 1.4 1.4"/>
+ <path d="M4.9 4.9l1.4 1.4"/>
+ <path d="M17.7 17.7l1.4 1.4"/>
  <path d="M2 12h2"/>
  <path d="M20 12h2"/>
- <path d="m4.9 19.1 1.4-1.4"/>
- <path d="m17.7 6.3 1.4-1.4"/>
+ <path d="M4.9 19.1l1.4-1.4"/>
+ <path d="M17.7 6.3l1.4-1.4"/>
 </symbol>
 
 <symbol id="i-moon" viewBox="0 0 24 24">
  <path d="M21 12.8A8.5 8.5 0 1 1 11.2 3 6.7 6.7 0 0 0 21 12.8Z"/>
 </symbol>
 
-<!-- TELEGRAM -->
 <symbol id="i-telegram" viewBox="0 0 24 24">
- <path d="M21 3 3.7 10.2c-.7.3-.7 1.3 0 1.6l4.4 1.7 1.7 5.1c.2.7 1.1.9 1.6.3l2.5-2.7 3.9 2.9c.6.4 1.4.1 1.6-.6L21.9 4c.2-.8-.3-1.3-.9-1Z"/>
- <path d="m8.2 13.5 8.5-6.4"/>
+ <path d="m21 3-6.8 18-4.1-6.1L4 12.4 21 3Z"/>
+ <path d="m10.1 14.9 5.5-5.2"/>
 </symbol>
 
-<!-- INSTAGRAM -->
 <symbol id="i-instagram" viewBox="0 0 24 24">
  <rect x="3" y="3" width="18" height="18" rx="5"/>
  <circle cx="12" cy="12" r="4"/>
- <circle cx="17.4" cy="6.6" r="1"/>
+ <circle cx="17.5" cy="6.5" r="1"/>
 </symbol>
 
-<!-- WHATSAPP -->
 <symbol id="i-whatsapp" viewBox="0 0 24 24">
- <path d="M20.4 11.4a8.3 8.3 0 0 1-12.2 7.3L4 20l1.4-4.1a8.3 8.3 0 1 1 15-4.5Z"/>
- <path d="M9.1 8.2c.2-.4.5-.5.8-.2l1 1c.2.2.2.5.1.8l-.5.6c.6 1.1 1.5 1.9 2.6 2.4l.6-.5c.2-.2.5-.2.8 0l1 1c.3.3.2.7-.1.9-.6.3-1.2.3-1.8.1-2.5-.9-4.3-2.6-5.2-5.2-.2-.6-.2-1.2.1-1.9Z"/>
+ <path d="M20 11.5a8 8 0 0 1-11.7 7L4 20l1.5-4.1A8 8 0 1 1 20 11.5Z"/>
+ <path d="M9 8.5c.2-.4.5-.4.8-.1l1 1c.2.2.2.5 0 .8l-.5.6c.7 1.1 1.5 1.8 2.7 2.4l.5-.5c.2-.2.5-.2.8 0l1 1c.3.3.3.6-.1.8-.5.3-1.1.4-1.6.2-2.5-.8-.4.3-2.6-2.6-5.1-5.1-.2-.5-.1-1.1.2-1.6Z"/>
 </symbol>
 
 </svg>
@@ -1240,7 +1020,8 @@ body.dark .detail-btn{
    class="phone-top"
    id="headerPhone"
    href="tel:+998889500005"
-   onclick="trackCall(event)">
+   onclick="trackCall(event)"
+  >
    +998 88 950 00 05
   </a>
 
@@ -1259,8 +1040,9 @@ body.dark .detail-btn{
   <button
    class="theme-btn"
    onclick="toggleTheme()"
-   id="themeBtn">
-  </button>
+   id="themeBtn"
+   aria-label="Theme"
+  ></button>
 
  </div>
 
@@ -1274,6 +1056,8 @@ body.dark .detail-btn{
 
 <main class="container">
 
+<!-- HOME -->
+
 <section id="homePage" class="page active">
 
  <div class="search-box">
@@ -1282,17 +1066,17 @@ body.dark .detail-btn{
    id="searchInput"
    type="text"
    placeholder="Mashina qidirish..."
-   oninput="searchCars">
+   oninput="searchCars()"
+  >
 
   <button
    class="search-reset"
    onclick="resetSearch()"
-   aria-label="Tozalash">
-
+   aria-label="Tozalash"
+  >
    <svg class="icon">
     <use href="#i-search"/>
    </svg>
-
   </button>
 
  </div>
@@ -1305,7 +1089,8 @@ body.dark .detail-btn{
 
   <span
    class="results-count"
-   id="resultsCount">
+   id="resultsCount"
+  >
    0 ta
   </span>
 
@@ -1313,7 +1098,8 @@ body.dark .detail-btn{
 
  <div
   class="cars-grid"
-  id="carsGrid">
+  id="carsGrid"
+ >
 
   <div class="skeleton">
    <div class="skeleton-img"></div>
@@ -1352,20 +1138,23 @@ body.dark .detail-btn{
 
  <button
   class="back-btn"
-  onclick="goHome()">
+  onclick="goHome()"
+ >
 
   <svg class="icon">
    <use href="#i-arrow-left"/>
   </svg>
 
-  Orqaga
+  <span id="backText">
+   Orqaga
+  </span>
 
  </button>
 
  <div
   class="details-card"
-  id="detailsCard">
- </div>
+  id="detailsCard"
+ ></div>
 
 </section>
 
@@ -1374,6 +1163,8 @@ body.dark .detail-btn{
 <section id="menuPage" class="page">
 
 <div class="menu-card">
+
+ <!-- ABOUT -->
 
  <div class="menu-item">
 
@@ -1385,11 +1176,16 @@ body.dark .detail-btn{
      <use href="#i-car"/>
     </svg>
 
-    pul.zarill
+    <span id="menuBrand">
+     pul.zarill
+    </span>
 
    </span>
 
-   <span class="menu-item-sub">
+   <span
+    class="menu-item-sub"
+    id="menuPlatform"
+   >
     Avtomobillar platformasi
    </span>
 
@@ -1401,6 +1197,8 @@ body.dark .detail-btn{
 
  </div>
 
+ <!-- PHONE -->
+
  <div class="menu-item">
 
   <div class="menu-item-left">
@@ -1411,11 +1209,16 @@ body.dark .detail-btn{
      <use href="#i-phone"/>
     </svg>
 
-    Telefon
+    <span id="menuPhoneTitle">
+     Telefon
+    </span>
 
    </span>
 
-   <span class="menu-item-sub">
+   <span
+    class="menu-item-sub"
+    id="menuPhoneSub"
+   >
     Biz bilan bog‘lanish
    </span>
 
@@ -1424,11 +1227,14 @@ body.dark .detail-btn{
   <a
    id="menuPhone"
    href="tel:+998889500005"
-   onclick="trackCall(event)">
+   onclick="trackCall(event)"
+  >
    +998 88 950 00 05
   </a>
 
  </div>
+
+ <!-- TELEGRAM -->
 
  <div class="menu-item">
 
@@ -1436,15 +1242,20 @@ body.dark .detail-btn{
 
    <span class="menu-item-title">
 
-    <svg class="icon social-icon">
+    <svg class="icon">
      <use href="#i-telegram"/>
     </svg>
 
-    Telegram
+    <span id="menuTelegramTitle">
+     Telegram
+    </span>
 
    </span>
 
-   <span class="menu-item-sub">
+   <span
+    class="menu-item-sub"
+    id="menuTelegramSub"
+   >
     Telegram orqali bog‘lanish
    </span>
 
@@ -1454,13 +1265,16 @@ body.dark .detail-btn{
    id="menuTelegram"
    href="https://t.me/"
    target="_blank"
-   rel="noopener">
-
-   Ochish
-
+   rel="noopener"
+  >
+   <span id="menuOpenTelegram">
+    Ochish
+   </span>
   </a>
 
  </div>
+
+ <!-- WHATSAPP -->
 
  <div class="menu-item">
 
@@ -1468,15 +1282,20 @@ body.dark .detail-btn{
 
    <span class="menu-item-title">
 
-    <svg class="icon social-icon">
+    <svg class="icon">
      <use href="#i-whatsapp"/>
     </svg>
 
-    WhatsApp
+    <span id="menuWhatsappTitle">
+     WhatsApp
+    </span>
 
    </span>
 
-   <span class="menu-item-sub">
+   <span
+    class="menu-item-sub"
+    id="menuWhatsappSub"
+   >
     WhatsApp orqali bog‘lanish
    </span>
 
@@ -1486,13 +1305,16 @@ body.dark .detail-btn{
    id="menuWhatsapp"
    href="https://wa.me/"
    target="_blank"
-   rel="noopener">
-
-   Ochish
-
+   rel="noopener"
+  >
+   <span id="menuOpenWhatsapp">
+    Ochish
+   </span>
   </a>
 
  </div>
+
+ <!-- INSTAGRAM -->
 
  <div class="menu-item">
 
@@ -1500,15 +1322,20 @@ body.dark .detail-btn{
 
    <span class="menu-item-title">
 
-    <svg class="icon social-icon">
+    <svg class="icon">
      <use href="#i-instagram"/>
     </svg>
 
-    Instagram
+    <span id="menuInstagramTitle">
+     Instagram
+    </span>
 
    </span>
 
-   <span class="menu-item-sub">
+   <span
+    class="menu-item-sub"
+    id="menuInstagramSub"
+   >
     Instagram sahifamiz
    </span>
 
@@ -1518,13 +1345,16 @@ body.dark .detail-btn{
    id="menuInstagram"
    href="https://instagram.com/"
    target="_blank"
-   rel="noopener">
-
-   Ochish
-
+   rel="noopener"
+  >
+   <span id="menuOpenInstagram">
+    Ochish
+   </span>
   </a>
 
  </div>
+
+ <!-- LOCATION -->
 
  <div class="menu-item">
 
@@ -1536,13 +1366,16 @@ body.dark .detail-btn{
      <use href="#i-location"/>
     </svg>
 
-    Manzil
+    <span id="menuAddressTitle">
+     Manzil
+    </span>
 
    </span>
 
    <span
     class="menu-item-sub"
-    id="menuAddress">
+    id="menuAddress"
+   >
     Toshkent, O'zbekiston
    </span>
 
@@ -1554,6 +1387,8 @@ body.dark .detail-btn{
 
  </div>
 
+ <!-- LANGUAGE -->
+
  <div class="menu-item">
 
   <div class="menu-item-left">
@@ -1564,11 +1399,16 @@ body.dark .detail-btn{
      <use href="#i-globe"/>
     </svg>
 
-    Til
+    <span id="menuLanguageTitle">
+     Til
+    </span>
 
    </span>
 
-   <span class="menu-item-sub">
+   <span
+    class="menu-item-sub"
+    id="menuLanguageSub"
+   >
     UZ / RU / EN
    </span>
 
@@ -1580,6 +1420,8 @@ body.dark .detail-btn{
 
  </div>
 
+ <!-- THEME -->
+
  <div class="menu-item">
 
   <div class="menu-item-left">
@@ -1590,11 +1432,16 @@ body.dark .detail-btn{
      <use href="#i-settings"/>
     </svg>
 
-    Ko‘rinish
+    <span id="menuAppearanceTitle">
+     Ko‘rinish
+    </span>
 
    </span>
 
-   <span class="menu-item-sub">
+   <span
+    class="menu-item-sub"
+    id="menuAppearanceSub"
+   >
     Light / Dark
    </span>
 
@@ -1603,8 +1450,8 @@ body.dark .detail-btn{
   <button
    class="theme-btn"
    onclick="toggleTheme()"
-   id="themeBtnMenu">
-  </button>
+   id="themeBtnMenu"
+  ></button>
 
  </div>
 
@@ -1623,7 +1470,8 @@ body.dark .detail-btn{
 <button
  id="navHome"
  class="active"
- onclick="goHome()">
+ onclick="goHome()"
+>
 
  <span class="bottom-icon">
 
@@ -1633,7 +1481,9 @@ body.dark .detail-btn{
 
  </span>
 
- Bosh sahifa
+ <span id="navHomeText">
+  Bosh sahifa
+ </span>
 
 </button>
 
@@ -1647,7 +1497,9 @@ body.dark .detail-btn{
 
  </span>
 
- Qidiruv
+ <span id="navSearchText">
+  Qidiruv
+ </span>
 
 </button>
 
@@ -1661,7 +1513,9 @@ body.dark .detail-btn{
 
  </span>
 
- Sevimlilar
+ <span id="navFavoritesText">
+  Sevimlilar
+ </span>
 
 </button>
 
@@ -1675,7 +1529,9 @@ body.dark .detail-btn{
 
  </span>
 
- Menyu
+ <span id="navMenuText">
+  Menyu
+ </span>
 
 </button>
 
@@ -1687,30 +1543,35 @@ body.dark .detail-btn{
 
 <div
  class="lightbox"
- id="lightbox">
+ id="lightbox"
+>
 
- <button
-  class="lightbox-close"
-  onclick="closeLightbox()">
-  ×
- </button>
+<button
+ class="lightbox-close"
+ onclick="closeLightbox()"
+>
+ ×
+</button>
 
- <button
-  class="lightbox-prev"
-  onclick="changeLightbox(-1)">
-  ‹
- </button>
+<button
+ class="lightbox-prev"
+ onclick="changeLightbox(-1)"
+>
+ ‹
+</button>
 
- <img
-  id="lightboxImage"
-  src=""
-  alt="">
+<img
+ id="lightboxImage"
+ src=""
+ alt=""
+>
 
- <button
-  class="lightbox-next"
-  onclick="changeLightbox(1)">
-  ›
- </button>
+<button
+ class="lightbox-next"
+ onclick="changeLightbox(1)"
+>
+ ›
+</button>
 
 </div>
 
@@ -1738,6 +1599,168 @@ let siteSettings={
  address:"Toshkent, O'zbekiston"
 };
 
+/* =========================
+   TRANSLATIONS
+========================= */
+
+const translations={
+
+ uz:{
+  search:"Mashina qidirish...",
+  cars:"Avtomobillar",
+  back:"Orqaga",
+  call:"Qo‘ng‘iroq qilish",
+  callShort:"Qo‘ng‘iroq",
+  detail:"Batafsil",
+  new:"YANGI",
+  soldBadge:"SOTILDI",
+  photos:"rasm",
+
+  home:"Bosh sahifa",
+  searchNav:"Qidiruv",
+  favorites:"Sevimlilar",
+  menu:"Menyu",
+
+  platform:"Avtomobillar platformasi",
+
+  phone:"Telefon",
+  phoneSub:"Biz bilan bog‘lanish",
+
+  telegram:"Telegram",
+  telegramSub:"Telegram orqali bog‘lanish",
+
+  whatsapp:"WhatsApp",
+  whatsappSub:"WhatsApp orqali bog‘lanish",
+
+  instagram:"Instagram",
+  instagramSub:"Instagram sahifamiz",
+
+  address:"Manzil",
+
+  language:"Til",
+  languageSub:"UZ / RU / EN",
+
+  appearance:"Ko‘rinish",
+  appearanceSub:"Light / Dark",
+
+  open:"Ochish",
+
+  empty:"Hozircha mashina topilmadi",
+  emptyText:"Boshqa mashina nomini qidirib ko‘ring.",
+
+  noFavorites:"Sevimli mashinalar yo‘q",
+  noFavoritesText:"Mashina kartasidagi yurak tugmasini bosing.",
+
+  loadingError:"Ma'lumot yuklanmadi",
+  serverError:"Server bilan bog‘lanishda xatolik yuz berdi."
+ },
+
+ ru:{
+  search:"Поиск автомобиля...",
+  cars:"Автомобили",
+  back:"Назад",
+  call:"Позвонить",
+  callShort:"Позвонить",
+  detail:"Подробнее",
+  new:"НОВИНКА",
+  soldBadge:"ПРОДАНО",
+  photos:"фото",
+
+  home:"Главная",
+  searchNav:"Поиск",
+  favorites:"Избранное",
+  menu:"Меню",
+
+  platform:"Автомобильная платформа",
+
+  phone:"Телефон",
+  phoneSub:"Связаться с нами",
+
+  telegram:"Telegram",
+  telegramSub:"Связаться через Telegram",
+
+  whatsapp:"WhatsApp",
+  whatsappSub:"Связаться через WhatsApp",
+
+  instagram:"Instagram",
+  instagramSub:"Наша страница в Instagram",
+
+  address:"Адрес",
+
+  language:"Язык",
+  languageSub:"UZ / RU / EN",
+
+  appearance:"Внешний вид",
+  appearanceSub:"Светлая / Тёмная",
+
+  open:"Открыть",
+
+  empty:"Автомобили не найдены",
+  emptyText:"Попробуйте поискать другой автомобиль.",
+
+  noFavorites:"Нет избранных автомобилей",
+  noFavoritesText:"Нажмите на сердечко на карточке автомобиля.",
+
+  loadingError:"Не удалось загрузить данные",
+  serverError:"Ошибка соединения с сервером."
+ },
+
+ en:{
+  search:"Search car...",
+  cars:"Cars",
+  back:"Back",
+  call:"Call",
+  callShort:"Call",
+  detail:"Details",
+  new:"NEW",
+  soldBadge:"SOLD",
+  photos:"photos",
+
+  home:"Home",
+  searchNav:"Search",
+  favorites:"Favorites",
+  menu:"Menu",
+
+  platform:"Automobile platform",
+
+  phone:"Phone",
+  phoneSub:"Contact us",
+
+  telegram:"Telegram",
+  telegramSub:"Contact via Telegram",
+
+  whatsapp:"WhatsApp",
+  whatsappSub:"Contact via WhatsApp",
+
+  instagram:"Instagram",
+  instagramSub:"Our Instagram page",
+
+  address:"Address",
+
+  language:"Language",
+  languageSub:"UZ / RU / EN",
+
+  appearance:"Appearance",
+  appearanceSub:"Light / Dark",
+
+  open:"Open",
+
+  empty:"No cars found",
+  emptyText:"Try searching for another car.",
+
+  noFavorites:"No favorite cars",
+  noFavoritesText:"Press the heart button on a car card.",
+
+  loadingError:"Failed to load data",
+  serverError:"Could not connect to the server."
+ }
+
+};
+
+/* =========================
+   PHONE
+========================= */
+
 function phoneHref(phone){
 
  const value=
@@ -1750,6 +1773,10 @@ function phoneHref(phone){
   ?"tel:"+cleaned
   :"#";
 }
+
+/* =========================
+   SETTINGS
+========================= */
 
 async function loadSettings(){
 
@@ -1778,12 +1805,19 @@ async function loadSettings(){
 
  }catch(error){
 
-  console.error("Settings:",error);
+  console.error(
+   "Settings:",
+   error
+  );
 
  }
 
  applySettings();
 }
+
+/* =========================
+   APPLY SETTINGS
+========================= */
 
 function applySettings(){
 
@@ -1794,7 +1828,9 @@ function applySettings(){
   phoneHref(phone);
 
  const headerPhone=
-  document.getElementById("headerPhone");
+  document.getElementById(
+   "headerPhone"
+  );
 
  if(headerPhone){
 
@@ -1804,7 +1840,9 @@ function applySettings(){
  }
 
  const menuPhone=
-  document.getElementById("menuPhone");
+  document.getElementById(
+   "menuPhone"
+  );
 
  if(menuPhone){
 
@@ -1814,28 +1852,36 @@ function applySettings(){
  }
 
  const telegram=
-  document.getElementById("menuTelegram");
+  document.getElementById(
+   "menuTelegram"
+  );
 
  if(telegram)
   telegram.href=
    siteSettings.telegram||"#";
 
  const whatsapp=
-  document.getElementById("menuWhatsapp");
+  document.getElementById(
+   "menuWhatsapp"
+  );
 
  if(whatsapp)
   whatsapp.href=
    siteSettings.whatsapp||"#";
 
  const instagram=
-  document.getElementById("menuInstagram");
+  document.getElementById(
+   "menuInstagram"
+  );
 
  if(instagram)
   instagram.href=
    siteSettings.instagram||"#";
 
  const address=
-  document.getElementById("menuAddress");
+  document.getElementById(
+   "menuAddress"
+  );
 
  if(address)
   address.textContent=
@@ -1843,58 +1889,27 @@ function applySettings(){
 
  document
   .querySelectorAll(".call-btn")
-  .forEach(
-   b=>b.href=href
-  );
+  .forEach(button=>{
+   button.href=href;
+  });
 
  const detailsCall=
-  document.querySelector(".details-call");
+  document.querySelector(
+   ".details-call"
+  );
 
  if(detailsCall)
   detailsCall.href=href;
 }
 
-const translations={
-
- uz:{
-  search:"Mashina qidirish...",
-  cars:"Avtomobillar",
-  back:"Orqaga",
-  call:"Qo‘ng‘iroq qilish",
-  new:"YANGI",
-  soldBadge:"SOTILDI",
-  photos:"rasm",
-  empty:"Hozircha mashina topilmadi",
-  emptyText:"Boshqa mashina nomini qidirib ko‘ring."
- },
-
- ru:{
-  search:"Поиск автомобиля...",
-  cars:"Автомобили",
-  back:"Назад",
-  call:"Позвонить",
-  new:"НОВИНКА",
-  soldBadge:"ПРОДАНО",
-  photos:"фото",
-  empty:"Автомобили не найдены",
-  emptyText:"Попробуйте поискать другой автомобиль."
- },
-
- en:{
-  search:"Search car...",
-  cars:"Cars",
-  back:"Back",
-  call:"Call",
-  new:"NEW",
-  soldBadge:"SOLD",
-  photos:"photos",
-  empty:"No cars found",
-  emptyText:"Try searching for another car."
- }
-
-};
+/* =========================
+   LANGUAGE
+========================= */
 
 function setLang(lang){
+
+ if(!translations[lang])
+  lang="uz";
 
  currentLang=lang;
 
@@ -1903,42 +1918,251 @@ function setLang(lang){
   lang
  );
 
+ document.documentElement.lang=
+  lang;
+
  applyLang();
- render();
+
+ /*
+   Muhim:
+   Til o‘zgarganda mavjud sahifadagi
+   dinamik kartalar ham qayta chiziladi.
+ */
+ renderFiltered();
+
+ /*
+   Agar details ochiq bo‘lsa,
+   uning ichidagi barcha matn ham
+   qayta tarjima qilinadi.
+ */
+ if(
+  document
+   .getElementById("detailsPage")
+   .classList
+   .contains("active")
+  &&
+  currentDetailsCar
+ ){
+
+  openDetails(
+   currentDetailsCar
+  );
+
+ }
+
 }
+
+/* =========================
+   APPLY ALL LANGUAGE TEXT
+========================= */
 
 function applyLang(){
 
  const t=
   translations[currentLang];
 
- document
-  .getElementById("searchInput")
-  .placeholder=t.search;
+ /* Search */
 
- document
-  .getElementById("carsTitle")
-  .textContent=t.cars;
+ const searchInput=
+  document.getElementById(
+   "searchInput"
+  );
+
+ if(searchInput)
+  searchInput.placeholder=
+   t.search;
+
+ /* Main title */
+
+ const carsTitle=
+  document.getElementById(
+   "carsTitle"
+  );
+
+ if(carsTitle)
+  carsTitle.textContent=
+   t.cars;
+
+ /* Back */
+
+ const backText=
+  document.getElementById(
+   "backText"
+  );
+
+ if(backText)
+  backText.textContent=
+   t.back;
+
+ /* Bottom navigation */
+
+ const navHomeText=
+  document.getElementById(
+   "navHomeText"
+  );
+
+ if(navHomeText)
+  navHomeText.textContent=
+   t.home;
+
+ const navSearchText=
+  document.getElementById(
+   "navSearchText"
+  );
+
+ if(navSearchText)
+  navSearchText.textContent=
+   t.searchNav;
+
+ const navFavoritesText=
+  document.getElementById(
+   "navFavoritesText"
+  );
+
+ if(navFavoritesText)
+  navFavoritesText.textContent=
+   t.favorites;
+
+ const navMenuText=
+  document.getElementById(
+   "navMenuText"
+  );
+
+ if(navMenuText)
+  navMenuText.textContent=
+   t.menu;
+
+ /* Menu */
+
+ setText(
+  "menuPlatform",
+  t.platform
+ );
+
+ setText(
+  "menuPhoneTitle",
+  t.phone
+ );
+
+ setText(
+  "menuPhoneSub",
+  t.phoneSub
+ );
+
+ setText(
+  "menuTelegramTitle",
+  t.telegram
+ );
+
+ setText(
+  "menuTelegramSub",
+  t.telegramSub
+ );
+
+ setText(
+  "menuWhatsappTitle",
+  t.whatsapp
+ );
+
+ setText(
+  "menuWhatsappSub",
+  t.whatsappSub
+ );
+
+ setText(
+  "menuInstagramTitle",
+  t.instagram
+ );
+
+ setText(
+  "menuInstagramSub",
+  t.instagramSub
+ );
+
+ setText(
+  "menuAddressTitle",
+  t.address
+ );
+
+ setText(
+  "menuLanguageTitle",
+  t.language
+ );
+
+ setText(
+  "menuLanguageSub",
+  t.languageSub
+ );
+
+ setText(
+  "menuAppearanceTitle",
+  t.appearance
+ );
+
+ setText(
+  "menuAppearanceSub",
+  t.appearanceSub
+ );
+
+ setText(
+  "menuOpenTelegram",
+  t.open
+ );
+
+ setText(
+  "menuOpenWhatsapp",
+  t.open
+ );
+
+ setText(
+  "menuOpenInstagram",
+  t.open
+ );
+
+ /* Language buttons */
 
  document
   .querySelectorAll(".lang-btn")
-  .forEach(btn=>{
+  .forEach(button=>{
 
-   btn.classList.toggle(
+   button.classList.toggle(
     "active",
-    btn.textContent
-     .toLowerCase()===currentLang
+    button.textContent
+     .trim()
+     .toLowerCase()===
+     currentLang
    );
 
   });
+
 }
+
+/* =========================
+   TEXT HELPER
+========================= */
+
+function setText(id,value){
+
+ const element=
+  document.getElementById(id);
+
+ if(element)
+  element.textContent=value;
+}
+
+/* =========================
+   THEME
+========================= */
 
 function toggleTheme(){
 
- document.body.classList.toggle("dark");
+ document.body.classList.toggle(
+  "dark"
+ );
 
  const isDark=
-  document.body.classList.contains("dark");
+  document.body.classList
+   .contains("dark");
 
  localStorage.setItem(
   "darkMode",
@@ -1951,7 +2175,8 @@ function toggleTheme(){
 function updateThemeIcon(){
 
  const isDark=
-  document.body.classList.contains("dark");
+  document.body.classList
+   .contains("dark");
 
  const icon=
   isDark
@@ -1963,24 +2188,33 @@ function updateThemeIcon(){
   "themeBtnMenu"
  ].forEach(id=>{
 
-  const el=
+  const element=
    document.getElementById(id);
 
-  if(el){
+  if(element){
 
-   el.innerHTML=
-    `<svg class="icon">
-      <use href="#${icon}"/>
-     </svg>`;
+   element.innerHTML=`
+    <svg class="icon">
+     <use href="#${icon}"></use>
+    </svg>
+   `;
 
   }
 
  });
+
 }
+
+/* =========================
+   PRICE
+========================= */
 
 function parsePrice(value){
 
- if(value===undefined||value===null)
+ if(
+  value===undefined||
+  value===null
+ )
   return 0;
 
  if(typeof value==="number")
@@ -1993,9 +2227,12 @@ function parsePrice(value){
    .replace(/,/g,"")
    .replace(/\./g,"");
 
- const num=Number(str);
+ const num=
+  Number(str);
 
- return isNaN(num)?0:num;
+ return isNaN(num)
+  ?0
+  :num;
 }
 
 function formatPrice(value){
@@ -2011,19 +2248,26 @@ function formatPrice(value){
   .replace(/,/g," ");
 }
 
+/* =========================
+   SEARCH
+========================= */
+
 function searchCars(){
 
  const input=
   document
-   .getElementById("searchInput")
+   .getElementById(
+    "searchInput"
+   )
    .value
    .toLowerCase()
    .trim();
 
  if(!input){
 
-  filteredCars=
-   [...allCars];
+  filteredCars=[
+   ...allCars
+  ];
 
  }else{
 
@@ -2031,16 +2275,19 @@ function searchCars(){
    allCars.filter(car=>{
 
     const name=
-     String(car.name||"")
-      .toLowerCase();
+     String(
+      car.name||""
+     ).toLowerCase();
 
     const description=
-     String(car.description||"")
-      .toLowerCase();
+     String(
+      car.description||""
+     ).toLowerCase();
 
     const price=
-     String(car.price||"")
-      .toLowerCase();
+     String(
+      car.price||""
+     ).toLowerCase();
 
     return(
      name.includes(input)||
@@ -2058,14 +2305,21 @@ function searchCars(){
 function resetSearch(){
 
  document
-  .getElementById("searchInput")
+  .getElementById(
+   "searchInput"
+  )
   .value="";
 
- filteredCars=
-  [...allCars];
+ filteredCars=[
+  ...allCars
+ ];
 
  renderFiltered();
 }
+
+/* =========================
+   LOAD CARS
+========================= */
 
 async function load(){
 
@@ -2074,10 +2328,14 @@ async function load(){
  try{
 
   const response=
-   await fetch("/api/cars");
+   await fetch(
+    "/api/cars"
+   );
 
   if(!response.ok)
-   throw new Error("API error");
+   throw new Error(
+    "API error"
+   );
 
   const data=
    await response.json();
@@ -2085,14 +2343,17 @@ async function load(){
   if(Array.isArray(data))
    allCars=data;
 
-  else if(Array.isArray(data.cars))
+  else if(
+   Array.isArray(data.cars)
+  )
    allCars=data.cars;
 
   else
    allCars=[];
 
-  filteredCars=
-   [...allCars];
+  filteredCars=[
+   ...allCars
+  ];
 
   renderFiltered();
 
@@ -2102,18 +2363,28 @@ async function load(){
 
   allCars=[];
 
+  const t=
+   translations[currentLang];
+
   renderEmpty(
-   "Ma'lumot yuklanmadi",
-   "Server bilan bog‘lanishda xatolik yuz berdi."
+   t.loadingError,
+   t.serverError
   );
 
  }
+
 }
+
+/* =========================
+   SKELETON
+========================= */
 
 function showSkeleton(){
 
  const grid=
-  document.getElementById("carsGrid");
+  document.getElementById(
+   "carsGrid"
+  );
 
  grid.innerHTML="";
 
@@ -2140,17 +2411,28 @@ function showSkeleton(){
   `;
 
  }
+
 }
+
+/* =========================
+   IMAGES
+========================= */
 
 function imageUrl(filename){
 
  if(!filename)
   return "";
 
- if(String(filename).startsWith("http"))
+ if(
+  String(filename)
+   .startsWith("http")
+ )
   return filename;
 
- if(String(filename).startsWith("/"))
+ if(
+  String(filename)
+   .startsWith("/")
+ )
   return filename;
 
  return "/uploads/"+filename;
@@ -2161,7 +2443,9 @@ function getImages(car){
  if(Array.isArray(car.images))
   return car.images;
 
- if(typeof car.images==="string"){
+ if(
+  typeof car.images==="string"
+ ){
 
   try{
 
@@ -2177,15 +2461,21 @@ function getImages(car){
    .split(",")
    .map(x=>x.trim())
    .filter(Boolean);
+
  }
 
  return [];
 }
 
+/* =========================
+   RENDER
+========================= */
+
 function render(){
 
- filteredCars=
-  [...allCars];
+ filteredCars=[
+  ...allCars
+ ];
 
  renderFiltered();
 }
@@ -2193,15 +2483,22 @@ function render(){
 function renderFiltered(){
 
  const grid=
-  document.getElementById("carsGrid");
+  document.getElementById(
+   "carsGrid"
+  );
 
  const count=
-  document.getElementById("resultsCount");
+  document.getElementById(
+   "resultsCount"
+  );
 
  count.textContent=
-  filteredCars.length+" ta";
+  filteredCars.length+
+  " ta";
 
- if(filteredCars.length===0){
+ if(
+  filteredCars.length===0
+ ){
 
   renderEmpty();
 
@@ -2212,22 +2509,36 @@ function renderFiltered(){
 
  filteredCars.forEach(
   (car,index)=>{
+
    grid.appendChild(
-    createCarCard(car,index)
+    createCarCard(
+     car,
+     index
+    )
    );
+
   }
  );
 
  applySettings();
 }
 
-function renderEmpty(title,text){
+/* =========================
+   EMPTY
+========================= */
+
+function renderEmpty(
+ title,
+ text
+){
 
  const t=
   translations[currentLang];
 
  const grid=
-  document.getElementById("carsGrid");
+  document.getElementById(
+   "carsGrid"
+  );
 
  grid.innerHTML=`
 
@@ -2237,20 +2548,23 @@ function renderEmpty(title,text){
 
     <svg
      class="icon"
-     style="width:45px;height:45px">
-
-     <use href="#i-car"/>
-
+     style="width:45px;height:45px"
+    >
+     <use href="#i-car"></use>
     </svg>
 
    </div>
 
    <h3>
-    ${title||t.empty}
+    ${escapeHtml(
+     title||t.empty
+    )}
    </h3>
 
    <p>
-    ${text||t.emptyText}
+    ${escapeHtml(
+     text||t.emptyText
+    )}
    </p>
 
   </div>
@@ -2258,16 +2572,28 @@ function renderEmpty(title,text){
  `;
 
  document
-  .getElementById("resultsCount")
+  .getElementById(
+   "resultsCount"
+  )
   .textContent="0 ta";
 }
 
-function createCarCard(car,index){
+/* =========================
+   CREATE CAR CARD
+========================= */
+
+function createCarCard(
+ car,
+ index
+){
 
  const article=
-  document.createElement("article");
+  document.createElement(
+   "article"
+  );
 
- article.className="car-card";
+ article.className=
+  "car-card";
 
  const images=
   getImages(car);
@@ -2287,31 +2613,28 @@ function createCarCard(car,index){
 
  const image=
   firstImage||
-
   "data:image/svg+xml;charset=UTF-8,"+
   encodeURIComponent(`
-
    <svg
     xmlns="http://www.w3.org/2000/svg"
     width="800"
-    height="500">
-
+    height="500"
+   >
     <rect
      width="100%"
      height="100%"
-     fill="#222"/>
-
+     fill="#222"
+    />
     <text
      x="50%"
      y="50%"
      fill="white"
      text-anchor="middle"
-     font-size="30">
+     font-size="30"
+    >
      pul.zarill
     </text>
-
    </svg>
-
   `);
 
  article.innerHTML=`
@@ -2321,36 +2644,43 @@ function createCarCard(car,index){
    <img
     class="car-image"
     src="${image}"
-    alt="${escapeHtml(car.name||"Car")}"
+    alt="${escapeHtml(
+     car.name||"Car"
+    )}"
     loading="lazy"
-    onerror="this.style.display='none'">
+    onerror="this.style.display='none'"
+   >
 
    ${
     car.sold
-    ?`
-
-     <span class="badge sold-badge">
+    ?
+    `<span class="badge sold-badge">
       ${t.soldBadge}
-     </span>
-
-    `
-    :`
-
-     <span class="badge">
+     </span>`
+    :
+    `<span class="badge">
       ${t.new}
-     </span>
-
-    `
+     </span>`
    }
 
    <button
-    class="favorite ${isFavorite?"active":""}"
-    aria-label="Sevimli">
+    class="favorite ${
+     isFavorite
+      ?"active"
+      :""
+    }"
+    aria-label="Favorite"
+   >
 
     <svg
-     class="icon ${isFavorite?"icon-fill":""}">
+     class="icon ${
+      isFavorite
+       ?"icon-fill"
+       :""
+     }"
+    >
 
-     <use href="#i-heart"/>
+     <use href="#i-heart"></use>
 
     </svg>
 
@@ -2358,19 +2688,17 @@ function createCarCard(car,index){
 
    ${
     images.length
-    ?`
-
-     <span class="image-count">
+    ?
+    `<span class="image-count">
 
       <svg class="icon icon-sm">
-       <use href="#i-camera"/>
+       <use href="#i-camera"></use>
       </svg>
 
-      ${images.length} ${t.photos}
+      ${images.length}
+      ${t.photos}
 
-     </span>
-
-    `
+     </span>`
     :""
    }
 
@@ -2379,7 +2707,9 @@ function createCarCard(car,index){
   <div class="car-content">
 
    <div class="car-name">
-    ${escapeHtml(car.name||"Avtomobil")}
+    ${escapeHtml(
+     car.name||"Avtomobil"
+    )}
    </div>
 
    <div class="car-price">
@@ -2387,25 +2717,32 @@ function createCarCard(car,index){
    </div>
 
    <div class="car-description">
-    ${escapeHtml(car.description||"")}
+    ${escapeHtml(
+     car.description||""
+    )}
    </div>
 
    <div class="card-bottom">
 
     <button class="detail-btn">
-     Batafsil
+
+     ${t.detail}
+
     </button>
 
     <a
      class="call-btn"
-     href="${phoneHref(siteSettings.phone)}">
+     href="${phoneHref(
+      siteSettings.phone
+     )}"
+    >
 
      <svg class="icon">
-      <use href="#i-phone"/>
+      <use href="#i-phone"></use>
      </svg>
 
      <span>
-      Qo‘ng‘iroq
+      ${t.callShort}
      </span>
 
     </a>
@@ -2417,19 +2754,26 @@ function createCarCard(car,index){
  `;
 
  article
-  .querySelector(".favorite")
+  .querySelector(
+   ".favorite"
+  )
   .addEventListener(
    "click",
    function(event){
 
     event.stopPropagation();
 
-    toggleFavorite(car.id);
+    toggleFavorite(
+     car.id
+    );
+
    }
   );
 
  article
-  .querySelector(".detail-btn")
+  .querySelector(
+   ".detail-btn"
+  )
   .addEventListener(
    "click",
    function(event){
@@ -2437,11 +2781,14 @@ function createCarCard(car,index){
     event.stopPropagation();
 
     openDetails(car);
+
    }
   );
 
  article
-  .querySelector(".call-btn")
+  .querySelector(
+   ".call-btn"
+  )
   .addEventListener(
    "click",
    function(event){
@@ -2449,44 +2796,79 @@ function createCarCard(car,index){
     event.stopPropagation();
 
     trackCall(event);
+
    }
   );
 
  article
-  .querySelector(".car-image-box")
+  .querySelector(
+   ".car-image-box"
+  )
   .addEventListener(
    "click",
    function(event){
 
     if(
-     event.target.closest(".favorite")
+     event.target.closest(
+      ".favorite"
+     )
     )
      return;
 
     openDetails(car);
+
    }
   );
 
  return article;
 }
 
+/* =========================
+   ESCAPE HTML
+========================= */
+
 function escapeHtml(value){
 
  return String(value)
 
-  .replace(/&/g,"&amp;")
-  .replace(/</g,"&lt;")
-  .replace(/>/g,"&gt;")
-  .replace(/"/g,"&quot;")
-  .replace(/'/g,"&#039;");
+  .replace(
+   /&/g,
+   "&amp;"
+  )
+
+  .replace(
+   /</g,
+   "&lt;"
+  )
+
+  .replace(
+   />/g,
+   "&gt;"
+  )
+
+  .replace(
+   /"/g,
+   "&quot;"
+  )
+
+  .replace(
+   /'/g,
+   "&#039;"
+  );
 }
+
+/* =========================
+   FAVORITES
+========================= */
 
 function toggleFavorite(id){
 
  const key=
   String(id);
 
- if(favorites.includes(key)){
+ if(
+  favorites.includes(key)
+ ){
 
   favorites=
    favorites.filter(
@@ -2501,7 +2883,9 @@ function toggleFavorite(id){
 
  localStorage.setItem(
   "favorites",
-  JSON.stringify(favorites)
+  JSON.stringify(
+   favorites
+  )
  );
 
  renderFiltered();
@@ -2512,31 +2896,41 @@ function showFavorites(){
  showPage("home");
 
  const favoriteCars=
-  allCars.filter(car=>
-   favorites.includes(
-    String(car.id)
-   )
+  allCars.filter(
+   car=>
+    favorites.includes(
+     String(car.id)
+    )
   );
 
  filteredCars=
   favoriteCars;
 
  document
-  .getElementById("searchInput")
+  .getElementById(
+   "searchInput"
+  )
   .value="";
 
- if(favoriteCars.length===0){
+ if(
+  favoriteCars.length===0
+ ){
+
+  const t=
+   translations[currentLang];
 
   renderEmpty(
-   "Sevimli mashinalar yo‘q",
-   "Mashina kartasidagi yurak tugmasini bosing."
+   t.noFavorites,
+   t.noFavoritesText
   );
 
   return;
  }
 
  const grid=
-  document.getElementById("carsGrid");
+  document.getElementById(
+   "carsGrid"
+  );
 
  grid.innerHTML="";
 
@@ -2544,26 +2938,38 @@ function showFavorites(){
   (car,index)=>{
 
    grid.appendChild(
-    createCarCard(car,index)
+    createCarCard(
+     car,
+     index
+    )
    );
 
   }
  );
 
  document
-  .getElementById("resultsCount")
+  .getElementById(
+   "resultsCount"
+  )
   .textContent=
-   favoriteCars.length+" ta";
+   favoriteCars.length+
+   " ta";
 
  applySettings();
 }
+
+/* =========================
+   DETAILS
+========================= */
 
 function openDetails(car){
 
  currentDetailsCar=
   car;
 
- showPage("details");
+ showPage(
+  "details"
+ );
 
  const images=
   getImages(car);
@@ -2577,7 +2983,9 @@ function openDetails(car){
    :"";
 
  const details=
-  document.getElementById("detailsCard");
+  document.getElementById(
+   "detailsCard"
+  );
 
  details.innerHTML=`
 
@@ -2587,41 +2995,36 @@ function openDetails(car){
 
     ${
      firstImage
-     ?`
-
-      <img
+     ?
+     `<img
        id="detailsMainImage"
        class="details-image"
        src="${firstImage}"
-       alt="${escapeHtml(car.name||"")}"
-       onclick="openLightbox(0)">
-
-     `
-     :`
-
-      <div
+       alt="${escapeHtml(
+        car.name||""
+       )}"
+       onclick="openLightbox(0)"
+      >`
+     :
+     `<div
        class="details-image"
        style="
         background:#222;
         display:flex;
         align-items:center;
         justify-content:center;
-        color:#fff">
+        color:#fff
+       "
+      >
 
        <svg
         class="icon"
-        style="
-         width:70px;
-         height:70px;
-         stroke-width:1.4">
-
-        <use href="#i-car"/>
-
+        style="width:70px;height:70px"
+       >
+        <use href="#i-car"></use>
        </svg>
 
-      </div>
-
-     `
+      </div>`
     }
 
     <div class="thumbnails">
@@ -2631,10 +3034,15 @@ function openDetails(car){
        (img,i)=>`
 
         <img
-         class="thumb ${i===0?"active":""}"
+         class="thumb ${
+          i===0
+           ?"active"
+           :""
+         }"
          src="${imageUrl(img)}"
          onclick="selectDetailImage(${i})"
-         alt="">
+         alt=""
+        >
 
        `
       ).join("")
@@ -2648,42 +3056,48 @@ function openDetails(car){
 
     ${
      car.sold
-     ?`
-
-      <span
+     ?
+     `<span
        class="badge sold-badge"
        style="
         position:static;
         display:inline-block;
-        margin-bottom:15px">
-
+        margin-bottom:15px
+       "
+      >
        ${t.soldBadge}
-
-      </span>
-
-     `
+      </span>`
      :""
     }
 
     <h1>
-     ${escapeHtml(car.name||"Avtomobil")}
+     ${escapeHtml(
+      car.name||"Avtomobil"
+     )}
     </h1>
 
     <div class="details-price">
-     ${formatPrice(car.price)}
+     ${formatPrice(
+      car.price
+     )}
     </div>
 
     <div class="details-description">
-     ${escapeHtml(car.description||"")}
+     ${escapeHtml(
+      car.description||""
+     )}
     </div>
 
     <a
      class="details-call"
-     href="${phoneHref(siteSettings.phone)}"
-     onclick="trackCall(event)">
+     href="${phoneHref(
+      siteSettings.phone
+     )}"
+     onclick="trackCall(event)"
+    >
 
      <svg class="icon">
-      <use href="#i-phone"/>
+      <use href="#i-phone"></use>
      </svg>
 
      ${t.call}
@@ -2699,10 +3113,16 @@ function openDetails(car){
  applySettings();
 }
 
+/* =========================
+   DETAIL IMAGE
+========================= */
+
 function selectDetailImage(index){
 
  const images=
-  getImages(currentDetailsCar);
+  getImages(
+   currentDetailsCar
+  );
 
  if(!images[index])
   return;
@@ -2714,10 +3134,14 @@ function selectDetailImage(index){
 
  if(main)
   main.src=
-   imageUrl(images[index]);
+   imageUrl(
+    images[index]
+   );
 
  document
-  .querySelectorAll(".thumb")
+  .querySelectorAll(
+   ".thumb"
+  )
   .forEach(
    (thumb,i)=>{
 
@@ -2730,13 +3154,19 @@ function selectDetailImage(index){
   );
 }
 
+/* =========================
+   LIGHTBOX
+========================= */
+
 function openLightbox(index){
 
  if(!currentDetailsCar)
   return;
 
  const images=
-  getImages(currentDetailsCar);
+  getImages(
+   currentDetailsCar
+  );
 
  if(!images.length)
   return;
@@ -2745,31 +3175,45 @@ function openLightbox(index){
   index;
 
  document
-  .getElementById("lightboxImage")
+  .getElementById(
+   "lightboxImage"
+  )
   .src=
    imageUrl(
-    images[currentLightboxIndex]
+    images[
+     currentLightboxIndex
+    ]
    );
 
  document
-  .getElementById("lightbox")
-  .classList.add("active");
+  .getElementById(
+   "lightbox"
+  )
+  .classList
+  .add("active");
 }
 
 function closeLightbox(){
 
  document
-  .getElementById("lightbox")
-  .classList.remove("active");
+  .getElementById(
+   "lightbox"
+  )
+  .classList
+  .remove("active");
 }
 
-function changeLightbox(direction){
+function changeLightbox(
+ direction
+){
 
  if(!currentDetailsCar)
   return;
 
  const images=
-  getImages(currentDetailsCar);
+  getImages(
+   currentDetailsCar
+  );
 
  if(!images.length)
   return;
@@ -2777,45 +3221,70 @@ function changeLightbox(direction){
  currentLightboxIndex+=
   direction;
 
- if(currentLightboxIndex<0)
+ if(
+  currentLightboxIndex<0
+ )
   currentLightboxIndex=
    images.length-1;
 
  if(
-  currentLightboxIndex>=images.length
+  currentLightboxIndex>=
+  images.length
  )
   currentLightboxIndex=0;
 
  document
-  .getElementById("lightboxImage")
+  .getElementById(
+   "lightboxImage"
+  )
   .src=
    imageUrl(
-    images[currentLightboxIndex]
+    images[
+     currentLightboxIndex
+    ]
    );
 }
+
+/* =========================
+   PAGE NAVIGATION
+========================= */
 
 function showPage(page){
 
  document
-  .querySelectorAll(".page")
+  .querySelectorAll(
+   ".page"
+  )
   .forEach(
-   p=>p.classList.remove("active")
+   p=>
+    p.classList.remove(
+     "active"
+    )
   );
 
  if(page==="home")
   document
-   .getElementById("homePage")
-   .classList.add("active");
+   .getElementById(
+    "homePage"
+   )
+   .classList
+   .add("active");
 
  if(page==="details")
   document
-   .getElementById("detailsPage")
-   .classList.add("active");
+   .getElementById(
+    "detailsPage"
+   )
+   .classList
+   .add("active");
 
  if(page==="menu")
   document
-   .getElementById("menuPage")
-   .classList.add("active");
+   .getElementById(
+    "menuPage"
+   )
+   .classList
+   .add("active");
 
  window.scrollTo({
   top:0,
@@ -2827,24 +3296,35 @@ function goHome(){
 
  showPage("home");
 
- filteredCars=
-  [...allCars];
+ filteredCars=[
+  ...allCars
+ ];
 
  document
-  .getElementById("searchInput")
+  .getElementById(
+   "searchInput"
+  )
   .value="";
 
  renderFiltered();
 
  document
-  .querySelectorAll(".bottom-nav button")
+  .querySelectorAll(
+   ".bottom-nav button"
+  )
   .forEach(
-   btn=>btn.classList.remove("active")
+   btn=>
+    btn.classList.remove(
+     "active"
+    )
   );
 
  document
-  .getElementById("navHome")
-  .classList.add("active");
+  .getElementById(
+   "navHome"
+  )
+  .classList
+  .add("active");
 }
 
 function showMenu(){
@@ -2852,22 +3332,32 @@ function showMenu(){
  showPage("menu");
 
  document
-  .getElementById("navHome")
-  .classList.remove("active");
+  .getElementById(
+   "navHome"
+  )
+  .classList
+  .remove("active");
 }
 
 function focusSearch(){
 
  showPage("home");
 
- setTimeout(()=>{
-
-  document
-   .getElementById("searchInput")
-   .focus();
-
- },200);
+ setTimeout(
+  ()=>{
+   document
+    .getElementById(
+     "searchInput"
+    )
+    .focus();
+  },
+  200
+ );
 }
+
+/* =========================
+   CALL TRACKING
+========================= */
 
 function trackCall(event){
 
@@ -2876,14 +3366,19 @@ function trackCall(event){
 
  try{
 
-  if(navigator.sendBeacon){
+  if(
+   navigator.sendBeacon
+  ){
 
    const sent=
     navigator.sendBeacon(
      "/api/stats/call",
      new Blob(
       [],
-      {type:"text/plain"}
+      {
+       type:
+        "text/plain"
+      }
      )
     );
 
@@ -2899,8 +3394,14 @@ function trackCall(event){
    method:"POST",
    keepalive:true
   }
- ).catch(()=>{});
+ ).catch(
+  ()=>{}
+ );
 }
+
+/* =========================
+   VIEW TRACKING
+========================= */
 
 function trackView(){
 
@@ -2910,17 +3411,27 @@ function trackView(){
    method:"POST",
    keepalive:true
   }
- ).catch(()=>{});
+ ).catch(
+  ()=>{}
+ );
 }
+
+/* =========================
+   KEYBOARD
+========================= */
 
 document.addEventListener(
  "keydown",
  function(event){
 
-  if(event.key==="Escape")
+  if(
+   event.key==="Escape"
+  )
    closeLightbox();
 
-  if(event.key==="ArrowLeft"){
+  if(
+   event.key==="ArrowLeft"
+  ){
 
    const box=
     document.getElementById(
@@ -2928,12 +3439,17 @@ document.addEventListener(
     );
 
    if(
-    box.classList.contains("active")
+    box.classList.contains(
+     "active"
+    )
    )
     changeLightbox(-1);
+
   }
 
-  if(event.key==="ArrowRight"){
+  if(
+   event.key==="ArrowRight"
+  ){
 
    const box=
     document.getElementById(
@@ -2941,39 +3457,64 @@ document.addEventListener(
     );
 
    if(
-    box.classList.contains("active")
+    box.classList.contains(
+     "active"
+    )
    )
     changeLightbox(1);
+
   }
 
  }
 );
 
+/* =========================
+   LIGHTBOX CLICK
+========================= */
+
 document
- .getElementById("lightbox")
+ .getElementById(
+  "lightbox"
+ )
  .addEventListener(
   "click",
   function(event){
 
-   if(event.target===this)
+   if(
+    event.target===this
+   )
     closeLightbox();
 
   }
- );
+);
+
+/* =========================
+   START
+========================= */
 
 if(
- localStorage.getItem("darkMode")==="true"
+ localStorage.getItem(
+  "darkMode"
+ )==="true"
 ){
 
- document.body.classList.add("dark");
+ document.body
+  .classList
+  .add("dark");
 
 }
 
+document.documentElement.lang=
+ currentLang;
+
 applyLang();
+
 updateThemeIcon();
+
 trackView();
 
 loadSettings();
+
 load();
 
 </script>
