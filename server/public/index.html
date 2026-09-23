@@ -14,8 +14,8 @@
 
 :root{
     --bg:#f4f5f7;
-    --card:#ffffff;
-    --text:#111111;
+    --card:#fff;
+    --text:#111;
     --muted:#777;
     --border:#e7e7e7;
     --black:#050505;
@@ -40,14 +40,14 @@ body.dark{
     --shadow:0 10px 30px rgba(0,0,0,.35);
 }
 
-/* HEADER */
+/* ================= HEADER ================= */
 
 header{
     position:sticky;
     top:0;
     z-index:1000;
     background:#050505;
-    color:white;
+    color:#fff;
     box-shadow:0 5px 20px rgba(0,0,0,.25);
 }
 
@@ -62,7 +62,7 @@ header{
     gap:15px;
 }
 
-/* LOGO + COLOR GLOW */
+/* ================= LOGO ================= */
 
 .logo{
     position:relative;
@@ -73,52 +73,92 @@ header{
     white-space:nowrap;
 }
 
-/* Faqat logo orqasidagi yorug'lik.
-   Qora fon va yozuvning o'zi o'zgarmaydi. */
+/* KATTA RANGLI GLOW */
 
 .logo::before{
     content:"";
     position:absolute;
     left:50%;
     top:50%;
-    width:155px;
-    height:58px;
+    width:240px;
+    height:100px;
     transform:translate(-50%,-50%);
     border-radius:50%;
     background:#19d66b;
-    filter:blur(30px);
-    opacity:.28;
+    filter:blur(42px);
+    opacity:.45;
     z-index:-1;
-    animation:logoGlow 15s infinite ease-in-out;
+    animation:logoGlow 15s ease-in-out infinite;
 }
 
 @keyframes logoGlow{
 
-    0%,
+    0%{
+        background:#19d66b;
+        transform:translate(-50%,-50%) scale(1);
+        opacity:.42;
+    }
+
+    10%{
+        transform:translate(-58%,-50%) scale(1.15);
+        opacity:.50;
+    }
+
+    20%{
+        transform:translate(-42%,-50%) scale(1);
+        opacity:.42;
+    }
+
     30%{
         background:#19d66b;
-        opacity:.28;
-        transform:translate(-50%,-50%) scale(1);
+        transform:translate(-50%,-50%) scale(1.12);
+        opacity:.48;
     }
 
-    33%,
+    33%{
+        background:#ffd21c;
+    }
+
+    43%{
+        transform:translate(-43%,-52%) scale(1.18);
+        opacity:.52;
+    }
+
+    53%{
+        transform:translate(-57%,-48%) scale(1);
+        opacity:.43;
+    }
+
     63%{
         background:#ffd21c;
-        opacity:.30;
-        transform:translate(-50%,-50%) scale(1.08);
+        transform:translate(-50%,-50%) scale(1.12);
+        opacity:.48;
     }
 
-    66%,
+    66%{
+        background:#ff3b30;
+    }
+
+    76%{
+        transform:translate(-57%,-50%) scale(1.2);
+        opacity:.53;
+    }
+
+    86%{
+        transform:translate(-43%,-50%) scale(1);
+        opacity:.43;
+    }
+
     96%{
         background:#ff3b30;
-        opacity:.28;
-        transform:translate(-50%,-50%) scale(1);
+        transform:translate(-50%,-50%) scale(1.12);
+        opacity:.48;
     }
 
     100%{
         background:#19d66b;
-        opacity:.28;
         transform:translate(-50%,-50%) scale(1);
+        opacity:.42;
     }
 }
 
@@ -133,7 +173,7 @@ header{
 }
 
 .phone-top{
-    color:white;
+    color:#fff;
     text-decoration:none;
     font-weight:bold;
     font-size:14px;
@@ -144,7 +184,7 @@ header{
 .theme-btn{
     border:1px solid #333;
     background:#151515;
-    color:white;
+    color:#fff;
     border-radius:10px;
     padding:8px 10px;
     cursor:pointer;
@@ -156,7 +196,7 @@ header{
     border-color:var(--green);
 }
 
-/* MAIN */
+/* ================= MAIN ================= */
 
 .container{
     max-width:1250px;
@@ -164,7 +204,7 @@ header{
     padding:22px 18px 100px;
 }
 
-/* SEARCH */
+/* ================= SEARCH ================= */
 
 .search-box{
     display:flex;
@@ -193,11 +233,11 @@ header{
     border:none;
     border-radius:14px;
     background:var(--black);
-    color:white;
+    color:#fff;
     cursor:pointer;
 }
 
-/* RESULTS */
+/* ================= RESULTS ================= */
 
 .results-info{
     display:flex;
@@ -215,7 +255,7 @@ header{
     font-size:13px;
 }
 
-/* GRID */
+/* ================= GRID ================= */
 
 .cars-grid{
     display:grid;
@@ -223,7 +263,7 @@ header{
     gap:18px;
 }
 
-/* CARD */
+/* ================= CARD ================= */
 
 .car-card{
     position:relative;
@@ -284,7 +324,7 @@ header{
     bottom:12px;
     z-index:3;
     background:rgba(0,0,0,.7);
-    color:white;
+    color:#fff;
     padding:6px 9px;
     border-radius:9px;
     font-size:12px;
@@ -300,7 +340,7 @@ header{
     border-radius:50%;
     border:none;
     background:rgba(0,0,0,.65);
-    color:white;
+    color:#fff;
     font-size:20px;
     cursor:pointer;
 }
@@ -369,7 +409,7 @@ body.dark .detail-btn{
     color:#000;
 }
 
-/* EMPTY */
+/* ================= EMPTY ================= */
 
 .empty{
     grid-column:1/-1;
@@ -393,7 +433,7 @@ body.dark .detail-btn{
     color:var(--muted);
 }
 
-/* SKELETON */
+/* ================= SKELETON ================= */
 
 .skeleton{
     background:var(--card);
@@ -432,11 +472,16 @@ body.dark .detail-btn{
 }
 
 @keyframes skeleton{
-    0%{background-position:200% 0}
-    100%{background-position:-200% 0}
+    0%{
+        background-position:200% 0;
+    }
+
+    100%{
+        background-position:-200% 0;
+    }
 }
 
-/* DETAILS */
+/* ================= DETAILS ================= */
 
 .page{
     display:none;
@@ -510,7 +555,7 @@ body.dark .detail-btn{
     text-decoration:none;
 }
 
-/* THUMBNAILS */
+/* ================= THUMBNAILS ================= */
 
 .thumbnails{
     display:flex;
@@ -532,7 +577,7 @@ body.dark .detail-btn{
     border-color:var(--green);
 }
 
-/* MENU */
+/* ================= MENU ================= */
 
 .menu-card{
     background:var(--card);
@@ -574,7 +619,7 @@ body.dark .detail-btn{
     text-decoration:none;
 }
 
-/* LIGHTBOX */
+/* ================= LIGHTBOX ================= */
 
 .lightbox{
     position:fixed;
@@ -602,7 +647,7 @@ body.dark .detail-btn{
     position:absolute;
     border:none;
     background:rgba(255,255,255,.12);
-    color:white;
+    color:#fff;
     cursor:pointer;
     border-radius:50%;
 }
@@ -632,7 +677,7 @@ body.dark .detail-btn{
     right:20px;
 }
 
-/* BOTTOM NAV */
+/* ================= BOTTOM NAV ================= */
 
 .bottom-nav{
     position:fixed;
@@ -640,7 +685,7 @@ body.dark .detail-btn{
     right:0;
     bottom:0;
     z-index:1500;
-    display:none;
+    display:flex;
     background:rgba(0,0,0,.96);
     border-top:1px solid #333;
     padding:8px 5px;
@@ -666,7 +711,7 @@ body.dark .detail-btn{
     margin-bottom:2px;
 }
 
-/* RESPONSIVE */
+/* ================= RESPONSIVE ================= */
 
 @media(max-width:1000px){
 
@@ -681,7 +726,6 @@ body.dark .detail-btn{
     .details-image{
         height:420px;
     }
-
 }
 
 @media(max-width:650px){
@@ -696,9 +740,10 @@ body.dark .detail-btn{
     }
 
     .logo::before{
-        width:120px;
-        height:45px;
-        filter:blur(24px);
+        width:180px;
+        height:75px;
+        filter:blur(35px);
+        opacity:.45;
     }
 
     .phone-top{
@@ -773,10 +818,6 @@ body.dark .detail-btn{
         padding:5px 7px;
     }
 
-    .bottom-nav{
-        display:flex;
-    }
-
     .details-image{
         height:300px;
     }
@@ -792,7 +833,6 @@ body.dark .detail-btn{
     .details-price{
         font-size:22px;
     }
-
 }
 </style>
 </head>
@@ -855,7 +895,7 @@ body.dark .detail-btn{
 
 <main class="container">
 
-    <!-- HOME -->
+    <!-- BOSH SAHIFA -->
 
     <section
         id="homePage"
@@ -903,53 +943,35 @@ body.dark .detail-btn{
         >
 
             <div class="skeleton">
-
                 <div class="skeleton-img"></div>
 
                 <div class="skeleton-content">
-
                     <div class="skeleton-line big"></div>
-
                     <div class="skeleton-line"></div>
-
                     <div class="skeleton-line"></div>
-
                 </div>
-
             </div>
 
 
             <div class="skeleton">
-
                 <div class="skeleton-img"></div>
 
                 <div class="skeleton-content">
-
                     <div class="skeleton-line big"></div>
-
                     <div class="skeleton-line"></div>
-
                     <div class="skeleton-line"></div>
-
                 </div>
-
             </div>
 
 
             <div class="skeleton">
-
                 <div class="skeleton-img"></div>
 
                 <div class="skeleton-content">
-
                     <div class="skeleton-line big"></div>
-
                     <div class="skeleton-line"></div>
-
                     <div class="skeleton-line"></div>
-
                 </div>
-
             </div>
 
         </div>
@@ -991,7 +1013,6 @@ body.dark .detail-btn{
             <div class="menu-item">
 
                 <div class="menu-item-left">
-
                     <span class="menu-item-title">
                         pul.zarill
                     </span>
@@ -999,7 +1020,6 @@ body.dark .detail-btn{
                     <span class="menu-item-sub">
                         Avtomobillar platformasi
                     </span>
-
                 </div>
 
                 <span>🚗</span>
@@ -1010,7 +1030,6 @@ body.dark .detail-btn{
             <div class="menu-item">
 
                 <div class="menu-item-left">
-
                     <span class="menu-item-title">
                         Telefon
                     </span>
@@ -1018,7 +1037,6 @@ body.dark .detail-btn{
                     <span class="menu-item-sub">
                         Biz bilan bog‘lanish
                     </span>
-
                 </div>
 
                 <a
@@ -1034,7 +1052,6 @@ body.dark .detail-btn{
             <div class="menu-item">
 
                 <div class="menu-item-left">
-
                     <span class="menu-item-title">
                         Telegram
                     </span>
@@ -1042,7 +1059,6 @@ body.dark .detail-btn{
                     <span class="menu-item-sub">
                         Telegram orqali bog‘lanish
                     </span>
-
                 </div>
 
                 <a
@@ -1058,7 +1074,6 @@ body.dark .detail-btn{
             <div class="menu-item">
 
                 <div class="menu-item-left">
-
                     <span class="menu-item-title">
                         WhatsApp
                     </span>
@@ -1066,7 +1081,6 @@ body.dark .detail-btn{
                     <span class="menu-item-sub">
                         WhatsApp orqali bog‘lanish
                     </span>
-
                 </div>
 
                 <a
@@ -1082,7 +1096,6 @@ body.dark .detail-btn{
             <div class="menu-item">
 
                 <div class="menu-item-left">
-
                     <span class="menu-item-title">
                         Instagram
                     </span>
@@ -1090,7 +1103,6 @@ body.dark .detail-btn{
                     <span class="menu-item-sub">
                         Instagram sahifamiz
                     </span>
-
                 </div>
 
                 <a
@@ -1106,7 +1118,6 @@ body.dark .detail-btn{
             <div class="menu-item">
 
                 <div class="menu-item-left">
-
                     <span class="menu-item-title">
                         Manzil
                     </span>
@@ -1114,7 +1125,6 @@ body.dark .detail-btn{
                     <span class="menu-item-sub">
                         Toshkent, O'zbekiston
                     </span>
-
                 </div>
 
                 <span>📍</span>
@@ -1125,7 +1135,6 @@ body.dark .detail-btn{
             <div class="menu-item">
 
                 <div class="menu-item-left">
-
                     <span class="menu-item-title">
                         Til
                     </span>
@@ -1133,7 +1142,6 @@ body.dark .detail-btn{
                     <span class="menu-item-sub">
                         UZ / RU / EN
                     </span>
-
                 </div>
 
                 <span>🌐</span>
@@ -1144,7 +1152,6 @@ body.dark .detail-btn{
             <div class="menu-item">
 
                 <div class="menu-item-left">
-
                     <span class="menu-item-title">
                         Ko‘rinish
                     </span>
@@ -1152,7 +1159,6 @@ body.dark .detail-btn{
                     <span class="menu-item-sub">
                         Light / Dark
                     </span>
-
                 </div>
 
                 <button
@@ -1168,7 +1174,6 @@ body.dark .detail-btn{
             <div class="menu-item">
 
                 <div class="menu-item-left">
-
                     <span class="menu-item-title">
                         Shartlar
                     </span>
@@ -1176,7 +1181,6 @@ body.dark .detail-btn{
                     <span class="menu-item-sub">
                         Foydalanish shartlari
                     </span>
-
                 </div>
 
                 <span>ℹ️</span>
@@ -1187,7 +1191,6 @@ body.dark .detail-btn{
             <div class="menu-item">
 
                 <div class="menu-item-left">
-
                     <span class="menu-item-title">
                         Maxfiylik
                     </span>
@@ -1195,7 +1198,6 @@ body.dark .detail-btn{
                     <span class="menu-item-sub">
                         Maxfiylik siyosati
                     </span>
-
                 </div>
 
                 <span>🔒</span>
@@ -1209,7 +1211,7 @@ body.dark .detail-btn{
 </main>
 
 
-<!-- BOTTOM NAV -->
+<!-- PASTKI MENYU -->
 
 <nav class="bottom-nav">
 
@@ -1222,19 +1224,22 @@ body.dark .detail-btn{
         Bosh sahifa
     </button>
 
+
     <button onclick="focusSearch()">
         <span class="bottom-icon">🔎</span>
         Qidiruv
     </button>
+
 
     <button onclick="showFavorites()">
         <span class="bottom-icon">❤️</span>
         Sevimlilar
     </button>
 
+
     <button onclick="showMenu()">
         <span class="bottom-icon">☰</span>
-        Menu
+        Menyu
     </button>
 
 </nav>
@@ -1254,6 +1259,7 @@ body.dark .detail-btn{
         ×
     </button>
 
+
     <button
         class="lightbox-prev"
         onclick="changeLightbox(-1)"
@@ -1261,11 +1267,13 @@ body.dark .detail-btn{
         ‹
     </button>
 
+
     <img
         id="lightboxImage"
         src=""
         alt=""
     >
+
 
     <button
         class="lightbox-next"
@@ -1361,7 +1369,6 @@ function setLang(lang){
     applyLang();
 
     render();
-
 }
 
 
@@ -1386,20 +1393,12 @@ function applyLang(){
             btn.classList.remove("active");
 
             if(
-                btn.textContent
-                    .toLowerCase() === langCode(currentLang)
+                btn.textContent.toLowerCase() === currentLang
             ){
                 btn.classList.add("active");
             }
 
         });
-
-}
-
-
-function langCode(lang){
-
-    return lang;
 
 }
 
@@ -1421,7 +1420,6 @@ function toggleTheme(){
     );
 
     updateThemeIcon();
-
 }
 
 
@@ -1434,7 +1432,6 @@ function updateThemeIcon(){
         .getElementById("themeBtn")
         .textContent =
         isDark ? "☀️" : "🌙";
-
 }
 
 
@@ -1470,7 +1467,6 @@ function parsePrice(value){
     return isNaN(num)
         ? 0
         : num;
-
 }
 
 
@@ -1484,13 +1480,11 @@ function formatPrice(value){
         return String(
             value || ""
         );
-
     }
 
     return number
         .toLocaleString("en-US")
         .replace(/,/g," ");
-
 }
 
 
@@ -1512,8 +1506,7 @@ function searchCars(){
         filteredCars =
             [...allCars];
 
-    }
-    else{
+    }else{
 
         filteredCars =
             allCars.filter(car => {
@@ -1544,7 +1537,6 @@ function searchCars(){
     }
 
     renderFiltered();
-
 }
 
 
@@ -1562,7 +1554,6 @@ function resetSearch(){
         [...allCars];
 
     renderFiltered();
-
 }
 
 
@@ -1584,7 +1575,6 @@ async function load(){
             throw new Error(
                 "API error"
             );
-
         }
 
         const data =
@@ -1596,16 +1586,14 @@ async function load(){
 
             allCars = data;
 
-        }
-        else if(
+        }else if(
             Array.isArray(data.cars)
         ){
 
             allCars =
                 data.cars;
 
-        }
-        else{
+        }else{
 
             allCars = [];
 
@@ -1616,8 +1604,7 @@ async function load(){
 
         renderFiltered();
 
-    }
-    catch(error){
+    }catch(error){
 
         console.error(error);
 
@@ -1627,9 +1614,7 @@ async function load(){
             "Ma'lumot yuklanmadi",
             "Server bilan bog‘lanishda xatolik yuz berdi."
         );
-
     }
-
 }
 
 
@@ -1671,9 +1656,7 @@ function showSkeleton(){
             </div>
 
         `;
-
     }
-
 }
 
 
@@ -1688,25 +1671,20 @@ function imageUrl(filename){
     }
 
     if(
-        String(filename)
-            .startsWith("http")
+        String(filename).startsWith("http")
     ){
 
         return filename;
-
     }
 
     if(
-        String(filename)
-            .startsWith("/")
+        String(filename).startsWith("/")
     ){
 
         return filename;
-
     }
 
     return "/uploads/" + filename;
-
 }
 
 
@@ -1721,7 +1699,6 @@ function getImages(car){
     ){
 
         return car.images;
-
     }
 
     if(
@@ -1740,11 +1717,9 @@ function getImages(car){
             ){
 
                 return parsed;
-
             }
 
-        }
-        catch(e){}
+        }catch(e){}
 
         return car.images
             .split(",")
@@ -1752,11 +1727,9 @@ function getImages(car){
                 x => x.trim()
             )
             .filter(Boolean);
-
     }
 
     return [];
-
 }
 
 
@@ -1770,7 +1743,6 @@ function render(){
         [...allCars];
 
     renderFiltered();
-
 }
 
 
@@ -1787,8 +1759,7 @@ function renderFiltered(){
         );
 
     count.textContent =
-        filteredCars.length +
-        " ta";
+        filteredCars.length + " ta";
 
 
     if(
@@ -1798,7 +1769,6 @@ function renderFiltered(){
         renderEmpty();
 
         return;
-
     }
 
 
@@ -1817,7 +1787,6 @@ function renderFiltered(){
 
         }
     );
-
 }
 
 
@@ -1863,7 +1832,6 @@ function renderEmpty(
             "resultsCount"
         )
         .textContent = "0 ta";
-
 }
 
 
@@ -1951,7 +1919,6 @@ function createCarCard(
                 onerror="this.style.display='none'"
             >
 
-
             ${
                 car.sold
                 ?
@@ -1968,14 +1935,12 @@ function createCarCard(
                 `
             }
 
-
             <button
                 class="favorite ${
                     isFavorite
                     ? "active"
                     : ""
                 }"
-                title="Favorite"
             >
                 ${
                     isFavorite
@@ -1984,14 +1949,12 @@ function createCarCard(
                 }
             </button>
 
-
             ${
                 images.length
                 ?
                 `
                 <span class="image-count">
-                    📷 ${images.length}
-                    ${t.photos}
+                    📷 ${images.length} ${t.photos}
                 </span>
                 `
                 :
@@ -2102,9 +2065,7 @@ function createCarCard(
                         ".favorite"
                     )
                 ){
-
                     return;
-
                 }
 
                 openDetails(car);
@@ -2113,31 +2074,7 @@ function createCarCard(
         );
 
 
-    article.addEventListener(
-        "click",
-        function(event){
-
-            if(
-                event.target.closest(
-                    "button"
-                ) ||
-                event.target.closest(
-                    "a"
-                )
-            ){
-
-                return;
-
-            }
-
-            openDetails(car);
-
-        }
-    );
-
-
     return article;
-
 }
 
 
@@ -2148,27 +2085,11 @@ function createCarCard(
 function escapeHtml(value){
 
     return String(value)
-        .replace(
-            /&/g,
-            "&amp;"
-        )
-        .replace(
-            /</g,
-            "&lt;"
-        )
-        .replace(
-            />/g,
-            "&gt;"
-        )
-        .replace(
-            /"/g,
-            "&quot;"
-        )
-        .replace(
-            /'/g,
-            "&#039;"
-        );
-
+        .replace(/&/g,"&amp;")
+        .replace(/</g,"&lt;")
+        .replace(/>/g,"&gt;")
+        .replace(/"/g,"&quot;")
+        .replace(/'/g,"&#039;");
 }
 
 
@@ -2191,8 +2112,7 @@ function toggleFavorite(id){
                 x => x !== key
             );
 
-    }
-    else{
+    }else{
 
         favorites.push(key);
 
@@ -2208,12 +2128,11 @@ function toggleFavorite(id){
 
 
     renderFiltered();
-
 }
 
 
 /* =========================
-   SHOW FAVORITES
+   FAVORITES PAGE
 ========================= */
 
 function showFavorites(){
@@ -2251,7 +2170,6 @@ function showFavorites(){
         );
 
         return;
-
     }
 
 
@@ -2283,9 +2201,7 @@ function showFavorites(){
             "resultsCount"
         )
         .textContent =
-        favoriteCars.length +
-        " ta";
-
+        favoriteCars.length + " ta";
 }
 
 
@@ -2462,7 +2378,6 @@ function selectDetailImage(index){
 
             }
         );
-
 }
 
 
@@ -2511,7 +2426,6 @@ function openLightbox(index){
         .classList.add(
             "active"
         );
-
 }
 
 
@@ -2524,7 +2438,6 @@ function closeLightbox(){
         .classList.remove(
             "active"
         );
-
 }
 
 
@@ -2558,7 +2471,6 @@ function changeLightbox(
 
         currentLightboxIndex =
             images.length - 1;
-
     }
 
 
@@ -2568,7 +2480,6 @@ function changeLightbox(
     ){
 
         currentLightboxIndex = 0;
-
     }
 
 
@@ -2582,7 +2493,6 @@ function changeLightbox(
                 currentLightboxIndex
             ]
         );
-
 }
 
 
@@ -2611,7 +2521,6 @@ function showPage(page){
             .classList.add(
                 "active"
             );
-
     }
 
 
@@ -2624,7 +2533,6 @@ function showPage(page){
             .classList.add(
                 "active"
             );
-
     }
 
 
@@ -2637,7 +2545,6 @@ function showPage(page){
             .classList.add(
                 "active"
             );
-
     }
 
 
@@ -2645,7 +2552,6 @@ function showPage(page){
         top:0,
         behavior:"smooth"
     });
-
 }
 
 
@@ -2661,7 +2567,6 @@ function goHome(){
         .classList.add(
             "active"
         );
-
 }
 
 
@@ -2677,7 +2582,6 @@ function showMenu(){
         .classList.remove(
             "active"
         );
-
 }
 
 
@@ -2698,7 +2602,6 @@ function focusSearch(){
         },
         200
     );
-
 }
 
 
@@ -2711,7 +2614,6 @@ function trackCall(event){
     if(event){
 
         event.stopPropagation();
-
     }
 
 
@@ -2727,8 +2629,7 @@ function trackCall(event){
                     new Blob(
                         [],
                         {
-                            type:
-                                "text/plain"
+                            type:"text/plain"
                         }
                     )
                 );
@@ -2737,13 +2638,10 @@ function trackCall(event){
             if(sent){
 
                 return;
-
             }
-
         }
 
-    }
-    catch(error){}
+    }catch(error){}
 
 
     fetch(
@@ -2756,7 +2654,6 @@ function trackCall(event){
     .catch(
         () => {}
     );
-
 }
 
 
@@ -2776,7 +2673,6 @@ function trackView(){
     .catch(
         () => {}
     );
-
 }
 
 
@@ -2793,7 +2689,6 @@ document.addEventListener(
         ){
 
             closeLightbox();
-
         }
 
 
@@ -2814,9 +2709,7 @@ document.addEventListener(
             ){
 
                 changeLightbox(-1);
-
             }
-
         }
 
 
@@ -2837,9 +2730,7 @@ document.addEventListener(
             ){
 
                 changeLightbox(1);
-
             }
-
         }
 
     }
@@ -2863,7 +2754,6 @@ document
             ){
 
                 closeLightbox();
-
             }
 
         }
@@ -2883,7 +2773,6 @@ if(
     document.body.classList.add(
         "dark"
     );
-
 }
 
 
