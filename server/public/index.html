@@ -12,7 +12,6 @@
 
 <title>pul.zarill</title>
 
-
 <style>
 
 /* =====================================================
@@ -77,7 +76,9 @@ header{
 }
 
 
-/* ================= HEADER ANIMATION ================= */
+/* =====================================================
+   HEADER ANIMATION
+===================================================== */
 
 header::before{
 
@@ -149,7 +150,6 @@ header::after{
 @keyframes headerGlow{
 
     0%{
-
         transform:
             translate(-8%,-5%)
             scale(1);
@@ -158,7 +158,6 @@ header::after{
     }
 
     50%{
-
         transform:
             translate(5%,4%)
             scale(1.08);
@@ -167,7 +166,6 @@ header::after{
     }
 
     100%{
-
         transform:
             translate(10%,-3%)
             scale(1.15);
@@ -180,21 +178,15 @@ header::after{
 @keyframes headerLight{
 
     0%{
-
-        background-position:
-            0% 50%;
+        background-position:0% 50%;
     }
 
     50%{
-
-        background-position:
-            100% 50%;
+        background-position:100% 50%;
     }
 
     100%{
-
-        background-position:
-            0% 50%;
+        background-position:0% 50%;
     }
 }
 
@@ -246,7 +238,6 @@ header::after{
 @keyframes logoAppear{
 
     from{
-
         opacity:0;
 
         transform:
@@ -255,7 +246,6 @@ header::after{
     }
 
     to{
-
         opacity:1;
 
         transform:
@@ -358,8 +348,7 @@ header::after{
 
     cursor:pointer;
 
-    transition:
-        .2s ease;
+    transition:.2s ease;
 }
 
 
@@ -384,7 +373,7 @@ header::after{
 
     box-shadow:
         0 0 14px
-        rgba(57,239,114,.25);
+        rgba(57,239,112,.25);
 }
 
 
@@ -713,10 +702,6 @@ main{
 
     background:#18b957;
 
-    box-shadow:
-        0 0 0
-        rgba(24,185,87,0);
-
     animation:
         badgeIn .55s cubic-bezier(.2,.8,.2,1),
         newPulse 2.2s ease-in-out infinite;
@@ -727,10 +712,6 @@ main{
 
     background:#ef3838;
 
-    box-shadow:
-        0 0 0
-        rgba(239,56,56,0);
-
     animation:
         badgeIn .55s cubic-bezier(.2,.8,.2,1),
         soldPulse 2.2s ease-in-out infinite;
@@ -740,7 +721,6 @@ main{
 @keyframes badgeIn{
 
     0%{
-
         opacity:0;
 
         transform:
@@ -750,7 +730,6 @@ main{
     }
 
     70%{
-
         transform:
             translateY(2px)
             scale(1.08)
@@ -758,7 +737,6 @@ main{
     }
 
     100%{
-
         opacity:1;
 
         transform:
@@ -772,14 +750,12 @@ main{
 @keyframes newPulse{
 
     0%,100%{
-
         box-shadow:
             0 0 0 0
             rgba(24,185,87,.55);
     }
 
     50%{
-
         box-shadow:
             0 0 0 7px
             rgba(24,185,87,0);
@@ -790,14 +766,12 @@ main{
 @keyframes soldPulse{
 
     0%,100%{
-
         box-shadow:
             0 0 0 0
             rgba(239,56,56,.5);
     }
 
     50%{
-
         box-shadow:
             0 0 0 7px
             rgba(239,56,56,0);
@@ -1816,7 +1790,10 @@ body.dark .fav-btn{
             Bog'lanish
         </span>:
 
-        <a href="tel:+998889500005">
+        <a
+            href="tel:+998889500005"
+            onclick="trackCall(event)"
+        >
             +998 88 950 00 05
         </a>
 
@@ -1927,7 +1904,7 @@ body.dark .fav-btn{
                     id="detailCall"
                     class="detail-call"
                     href="tel:+998889500005"
-                    onclick="trackCall()"
+                    onclick="trackCall(event)"
                 >
                     Qo'ng'iroq qilish
                 </a>
@@ -2021,7 +1998,10 @@ body.dark .fav-btn{
                     📞
                 </div>
 
-                <a href="tel:+998889500005">
+                <a
+                    href="tel:+998889500005"
+                    onclick="trackCall(event)"
+                >
                     +998 88 950 00 05
                 </a>
 
@@ -2616,9 +2596,7 @@ let currentLang =
 function setLang(lang){
 
     if(!translations[lang]){
-
         lang = "uz";
-
     }
 
     currentLang = lang;
@@ -2778,12 +2756,9 @@ function applyLang(){
         .forEach(button => {
 
             button.classList.toggle(
-
                 "active",
-
                 button.dataset.lang ===
                 currentLang
-
             );
 
         });
@@ -2805,7 +2780,6 @@ function getFavorites(){
                     "favorites"
                 ) || "[]"
             );
-
 
         return Array.isArray(data)
             ? data
@@ -2970,7 +2944,6 @@ function render(){
     const cars =
         allCars.filter(car => {
 
-
             const text =
 
                 String(
@@ -3001,11 +2974,8 @@ function render(){
 
 
             return (
-
                 matchesSearch &&
-
                 matchesFavorites
-
             );
 
         });
@@ -3031,13 +3001,9 @@ function render(){
                 :
 
                 (
-
                     allCars.length
-
                         ? t.noMatch
-
                         : t.noCars
-
                 );
 
 
@@ -3056,7 +3022,6 @@ function render(){
 
 
     cars.forEach(car => {
-
 
         const card =
             document.createElement(
@@ -3132,22 +3097,16 @@ function render(){
             "fav-btn" +
 
             (
-
                 isFavorite(car.id)
-
                     ? " active"
-
                     : ""
-
             );
 
 
         fav.textContent =
 
             isFavorite(car.id)
-
                 ? "♥"
-
                 : "♡";
 
 
@@ -3197,21 +3156,6 @@ function render(){
             car.name ||
             t.car;
 
-
-        /*
-            YANGI / SOTILGAN
-
-            Backendda quyidagilardan biri
-            ishlashi mumkin:
-
-            status: "new"
-            status: "sold"
-
-            yoki:
-
-            isNew: true
-            sold: true
-        */
 
         const isSold =
 
@@ -3382,7 +3326,11 @@ function render(){
 
 
         call.onclick =
-            trackCall;
+            event => {
+
+                trackCall(event);
+
+            };
 
 
         content.appendChild(
@@ -3830,11 +3778,7 @@ function showCurrent(){
         )
         .textContent =
 
-            (
-
-                currentIndex + 1
-
-            )
+            (currentIndex + 1)
 
             +
 
@@ -3859,9 +3803,7 @@ function nextImage(){
     currentIndex =
 
         (
-
             currentIndex + 1
-
         )
 
         %
@@ -3888,11 +3830,8 @@ function prevImage(){
     currentIndex =
 
         (
-
             currentIndex - 1 +
-
             currentImages.length
-
         )
 
         %
@@ -3964,12 +3903,17 @@ function updateThemeIcon(){
    STATS
 ===================================================== */
 
+/*
+   Sayt ko'rilganda statistika.
+*/
+
 function trackView(){
 
     fetch(
         "/api/stats/view",
         {
-            method:"POST"
+            method:"POST",
+            keepalive:true
         }
     )
     .catch(
@@ -3979,12 +3923,77 @@ function trackView(){
 }
 
 
-function trackCall(){
+/*
+   QO'NG'IROQ STATISTIKASI
+
+   keepalive:true juda muhim.
+
+   Sababi:
+   foydalanuvchi tel: havolasini bosganda
+   brauzer telefon qo'ng'irog'iga o'tishi mumkin.
+
+   keepalive requestni sahifa yopilishidan
+   oldin serverga yetkazishga yordam beradi.
+*/
+
+function trackCall(event){
+
+    if(event){
+
+        /*
+           Oddiy click event bo'lsa,
+           tel: ishlashiga xalaqit bermaymiz.
+        */
+
+        event.stopPropagation();
+
+    }
+
+
+    try{
+
+        if(
+            navigator.sendBeacon
+        ){
+
+            const sent =
+                navigator.sendBeacon(
+                    "/api/stats/call",
+                    new Blob(
+                        [],
+                        {
+                            type:
+                                "text/plain"
+                        }
+                    )
+                );
+
+
+            if(sent){
+
+                return;
+
+            }
+
+        }
+
+    }catch(error){
+
+        /* fallback pastda ishlaydi */
+
+    }
+
+
+    /*
+       sendBeacon ishlamasa,
+       keepalive fetch ishlaydi.
+    */
 
     fetch(
         "/api/stats/call",
         {
-            method:"POST"
+            method:"POST",
+            keepalive:true
         }
     )
     .catch(
