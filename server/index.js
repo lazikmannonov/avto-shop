@@ -50,6 +50,20 @@ async function initDatabase() {
         )
     `);
 
+    await pool.query(`
+        CREATE TABLE IF NOT EXISTS stats (
+            id INTEGER PRIMARY KEY DEFAULT 1,
+            views INTEGER DEFAULT 0,
+            calls INTEGER DEFAULT 0
+        )
+    `);
+
+    await pool.query(`
+        INSERT INTO stats (id, views, calls)
+        VALUES (1, 0, 0)
+        ON CONFLICT (id) DO NOTHING
+    `);
+
     console.log('PostgreSQL database tayyor');
 }
 
@@ -464,6 +478,51 @@ const server = http.createServer(async (req, res) => {
             });
 
             return res.end(result.rows[0].data);
+        }
+
+        // =========================
+        // STATS: record a page view
+        // =========================
+
+        if (url === '/api/stats/view' && req.method === 'POST') {
+            await pool.query(
+                `UPDATE stats SET views = views + 1 WHERE id = 1`
+            );
+            return sendJson(res, 200, { ok: true });
+        }
+
+        // =========================
+        // STATS: record a call-button click
+        // =========================
+
+        if (url === '/api/stats/call' && req.method === 'POST') {
+            await pool.query(
+                `UPDATE stats SET calls = calls + 1 WHERE id = 1`
+            );
+            return sendJson(res, 200, { ok: true });
+        }
+
+        // =========================
+        // STATS: read totals (admin only)
+        // =========================
+
+        if (url === '/api/stats' && req.method === 'GET') {
+            if (!isAdmin(req)) {
+                return sendJson(res, 401, {
+                    error: "Parol noto'g'ri"
+                });
+            }
+
+            const result = await pool.query(
+                `SELECT views, calls FROM stats WHERE id = 1`
+            );
+
+            const row = result.rows[0] || { views: 0, calls: 0 };
+
+            return sendJson(res, 200, {
+                views: row.views,
+                calls: row.calls
+            });
         }
 
         // =========================
