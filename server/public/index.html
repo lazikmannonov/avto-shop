@@ -62,11 +62,64 @@ header{
     gap:15px;
 }
 
+/* LOGO + COLOR GLOW */
+
 .logo{
+    position:relative;
+    z-index:1;
     font-size:27px;
     font-weight:900;
     letter-spacing:-1px;
     white-space:nowrap;
+}
+
+/* Faqat logo orqasidagi yorug'lik.
+   Qora fon va yozuvning o'zi o'zgarmaydi. */
+
+.logo::before{
+    content:"";
+    position:absolute;
+    left:50%;
+    top:50%;
+    width:155px;
+    height:58px;
+    transform:translate(-50%,-50%);
+    border-radius:50%;
+    background:#19d66b;
+    filter:blur(30px);
+    opacity:.28;
+    z-index:-1;
+    animation:logoGlow 15s infinite ease-in-out;
+}
+
+@keyframes logoGlow{
+
+    0%,
+    30%{
+        background:#19d66b;
+        opacity:.28;
+        transform:translate(-50%,-50%) scale(1);
+    }
+
+    33%,
+    63%{
+        background:#ffd21c;
+        opacity:.30;
+        transform:translate(-50%,-50%) scale(1.08);
+    }
+
+    66%,
+    96%{
+        background:#ff3b30;
+        opacity:.28;
+        transform:translate(-50%,-50%) scale(1);
+    }
+
+    100%{
+        background:#19d66b;
+        opacity:.28;
+        transform:translate(-50%,-50%) scale(1);
+    }
 }
 
 .green{
@@ -640,6 +693,12 @@ body.dark .detail-btn{
 
     .logo{
         font-size:22px;
+    }
+
+    .logo::before{
+        width:120px;
+        height:45px;
+        filter:blur(24px);
     }
 
     .phone-top{
@@ -1488,6 +1547,10 @@ function searchCars(){
 
 }
 
+
+/* =========================
+   RESET SEARCH
+========================= */
 
 function resetSearch(){
 
