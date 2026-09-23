@@ -43,9 +43,7 @@ body{
     min-height:100vh;
 }
 
-/* =========================
-   SIDEBAR
-========================= */
+/* SIDEBAR */
 
 .sidebar{
     position:fixed;
@@ -117,9 +115,7 @@ body{
     cursor:pointer;
 }
 
-/* =========================
-   MAIN
-========================= */
+/* MAIN */
 
 .main{
     margin-left:245px;
@@ -176,9 +172,7 @@ body{
     margin:auto;
 }
 
-/* =========================
-   PAGE
-========================= */
+/* PAGE */
 
 .page{
     display:none;
@@ -200,9 +194,7 @@ body{
     }
 }
 
-/* =========================
-   STATS
-========================= */
+/* STATS */
 
 .stats-grid{
     display:grid;
@@ -268,9 +260,7 @@ body{
     margin-top:7px;
 }
 
-/* =========================
-   GRID
-========================= */
+/* GRID */
 
 .two-grid{
     display:grid;
@@ -310,9 +300,7 @@ body{
     padding:22px;
 }
 
-/* =========================
-   CHART
-========================= */
+/* CHART */
 
 .chart-wrap{
     height:300px;
@@ -350,9 +338,7 @@ canvas{
     background:#999;
 }
 
-/* =========================
-   ACTIVITY
-========================= */
+/* ACTIVITY */
 
 .activity-list{
     display:flex;
@@ -401,9 +387,7 @@ canvas{
     font-weight:900;
 }
 
-/* =========================
-   QUICK
-========================= */
+/* QUICK */
 
 .quick-grid{
     display:grid;
@@ -426,9 +410,7 @@ canvas{
     transform:translateY(-2px);
 }
 
-/* =========================
-   CARS
-========================= */
+/* CARS */
 
 .car-list{
     display:flex;
@@ -491,9 +473,7 @@ canvas{
     color:#b91c1c;
 }
 
-/* =========================
-   FORM
-========================= */
+/* FORM */
 
 .form-panel{
     max-width:850px;
@@ -595,10 +575,6 @@ canvas{
     margin-top:12px;
 }
 
-.preview{
-    position:relative;
-}
-
 .preview img{
     width:100%;
     aspect-ratio:1/1;
@@ -616,6 +592,11 @@ canvas{
     font-size:15px;
     font-weight:800;
     cursor:pointer;
+}
+
+.main-btn:disabled{
+    opacity:.6;
+    cursor:not-allowed;
 }
 
 body.dark .main-btn{
@@ -645,9 +626,36 @@ body.dark .main-btn{
     color:#991b1b;
 }
 
-/* =========================
-   MANAGE CARS
-========================= */
+/* SETTINGS */
+
+.settings-panel{
+    max-width:850px;
+}
+
+.settings-icon{
+    width:50px;
+    height:50px;
+    border-radius:14px;
+    background:var(--soft);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:24px;
+    margin-bottom:18px;
+}
+
+.settings-note{
+    background:var(--soft);
+    border:1px solid var(--border);
+    border-radius:12px;
+    padding:14px;
+    color:var(--muted);
+    font-size:12px;
+    line-height:1.6;
+    margin-bottom:20px;
+}
+
+/* MANAGE */
 
 .toolbar{
     display:flex;
@@ -765,9 +773,7 @@ body.dark .action-btn.sold-btn{
     color:#dc2626;
 }
 
-/* =========================
-   EMPTY
-========================= */
+/* EMPTY */
 
 .empty{
     padding:45px 20px;
@@ -775,9 +781,7 @@ body.dark .action-btn.sold-btn{
     color:var(--muted);
 }
 
-/* =========================
-   TOAST
-========================= */
+/* TOAST */
 
 .toast{
     position:fixed;
@@ -799,18 +803,7 @@ body.dark .action-btn.sold-btn{
     opacity:1;
 }
 
-/* =========================
-   LOADING
-========================= */
-
-.loading{
-    opacity:.5;
-    pointer-events:none;
-}
-
-/* =========================
-   MOBILE
-========================= */
+/* MOBILE */
 
 @media(max-width:1000px){
 
@@ -912,9 +905,7 @@ body.dark .action-btn.sold-btn{
 
 <body>
 
-<!-- =========================
-     SIDEBAR
-========================= -->
+<!-- SIDEBAR -->
 
 <aside class="sidebar" id="sidebar">
 
@@ -943,7 +934,13 @@ body.dark .action-btn.sold-btn{
             🚘 Mashinalar
         </button>
 
-        <button onclick="loadAll(); toast('Yangilandi')">
+        <button
+            data-page="settings"
+            onclick="showPage('settings')">
+            ⚙️ Aloqa sozlamalari
+        </button>
+
+        <button onclick="loadAll();toast('Yangilandi')">
             🔄 Yangilash
         </button>
 
@@ -957,629 +954,720 @@ body.dark .action-btn.sold-btn{
 
 </aside>
 
-<!-- =========================
-     MAIN
-========================= -->
+<!-- MAIN -->
 
 <main class="main">
 
-    <header class="topbar">
-
-        <div class="top-left">
-
-            <button
-                class="top-btn menu-btn"
-                onclick="toggleSidebar()">
-                ☰
-            </button>
-
-            <div>
-                <div
-                    class="top-title"
-                    id="pageTitle">
-                    Dashboard
-                </div>
-
-                <div
-                    class="top-sub"
-                    id="pageSubtitle">
-                    pul.zarill boshqaruv paneli
-                </div>
-            </div>
-
-        </div>
-
-        <div class="top-actions">
-
-            <button
-                class="top-btn"
-                onclick="loadAll()"
-                title="Yangilash">
-                ↻
-            </button>
-
-            <button
-                class="top-btn"
-                onclick="toggleDark()"
-                title="Dark mode">
-                ◐
-            </button>
-
-        </div>
-
-    </header>
-
-    <div class="content">
-
-        <!-- =========================
-             DASHBOARD
-        ========================= -->
-
-        <section
-            class="page active"
-            id="page-dashboard">
-
-            <div class="stats-grid">
-
-                <div class="stat-card">
-
-                    <div class="stat-top">
-                        <div class="stat-icon">👁️</div>
-                    </div>
-
-                    <div class="stat-label">
-                        Sayt ko‘rishlari
-                    </div>
-
-                    <div
-                        class="stat-value"
-                        id="viewsStat">
-                        0
-                    </div>
-
-                    <div class="stat-change">
-                        Jami ko‘rishlar
-                    </div>
-
-                </div>
-
-                <div class="stat-card">
-
-                    <div class="stat-top">
-                        <div class="stat-icon">📞</div>
-                    </div>
-
-                    <div class="stat-label">
-                        Qo‘ng‘iroqlar
-                    </div>
-
-                    <div
-                        class="stat-value"
-                        id="callsStat">
-                        0
-                    </div>
-
-                    <div class="stat-change">
-                        Telefon tugmasi bosilishi
-                    </div>
-
-                </div>
-
-                <div class="stat-card">
-
-                    <div class="stat-top">
-                        <div class="stat-icon">🚘</div>
-                    </div>
-
-                    <div class="stat-label">
-                        Jami mashinalar
-                    </div>
-
-                    <div
-                        class="stat-value"
-                        id="carsStat">
-                        0
-                    </div>
-
-                    <div class="stat-change">
-                        Saytdagi barcha avtomobillar
-                    </div>
-
-                </div>
-
-                <div class="stat-card">
-
-                    <div class="stat-top">
-                        <div class="stat-icon">✅</div>
-                    </div>
-
-                    <div class="stat-label">
-                        Sotilganlar
-                    </div>
-
-                    <div
-                        class="stat-value"
-                        id="soldStat">
-                        0
-                    </div>
-
-                    <div class="stat-change">
-                        Sotildi deb belgilanganlar
-                    </div>
-
-                </div>
-
-            </div>
-
-            <!-- CHART + ACTIVITY -->
-
-            <div class="two-grid">
-
-                <div class="panel">
-
-                    <div class="panel-head">
-
-                        <div>
-                            <div class="panel-title">
-                                Statistika
-                            </div>
-
-                            <div class="panel-sub">
-                                Oxirgi 30 kun
-                            </div>
-                        </div>
-
-                    </div>
-
-                    <div class="panel-body">
-
-                        <div class="chart-wrap">
-                            <canvas id="statsChart"></canvas>
-                        </div>
-
-                        <div class="chart-legend">
-
-                            <div class="legend-item">
-                                <span class="legend-dot"></span>
-                                Ko‘rishlar
-                            </div>
-
-                            <div class="legend-item">
-                                <span class="legend-dot calls"></span>
-                                Qo‘ng‘iroqlar
-                            </div>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-                <div class="panel">
-
-                    <div class="panel-head">
-
-                        <div>
-                            <div class="panel-title">
-                                Bugungi faollik
-                            </div>
-
-                            <div class="panel-sub">
-                                Bugungi statistika
-                            </div>
-                        </div>
-
-                    </div>
-
-                    <div class="panel-body">
-
-                        <div class="activity-list">
-
-                            <div class="activity">
-
-                                <div class="activity-left">
-
-                                    <div class="activity-icon">
-                                        👁️
-                                    </div>
-
-                                    <div>
-                                        <div class="activity-name">
-                                            Ko‘rishlar
-                                        </div>
-
-                                        <div class="activity-desc">
-                                            Bugungi sayt tashriflari
-                                        </div>
-                                    </div>
-
-                                </div>
-
-                                <div
-                                    class="activity-value"
-                                    id="todayViews">
-                                    0
-                                </div>
-
-                            </div>
-
-                            <div class="activity">
-
-                                <div class="activity-left">
-
-                                    <div class="activity-icon">
-                                        📞
-                                    </div>
-
-                                    <div>
-                                        <div class="activity-name">
-                                            Qo‘ng‘iroqlar
-                                        </div>
-
-                                        <div class="activity-desc">
-                                            Bugungi qo‘ng‘iroqlar
-                                        </div>
-                                    </div>
-
-                                </div>
-
-                                <div
-                                    class="activity-value"
-                                    id="todayCalls">
-                                    0
-                                </div>
-
-                            </div>
-
-                            <div class="activity">
-
-                                <div class="activity-left">
-
-                                    <div class="activity-icon">
-                                        🚘
-                                    </div>
-
-                                    <div>
-                                        <div class="activity-name">
-                                            Mashinalar
-                                        </div>
-
-                                        <div class="activity-desc">
-                                            Jami joylangan
-                                        </div>
-                                    </div>
-
-                                </div>
-
-                                <div
-                                    class="activity-value"
-                                    id="activityCars">
-                                    0
-                                </div>
-
-                            </div>
-
-                            <div class="activity">
-
-                                <div class="activity-left">
-
-                                    <div class="activity-icon">
-                                        ✅
-                                    </div>
-
-                                    <div>
-                                        <div class="activity-name">
-                                            Sotilgan
-                                        </div>
-
-                                        <div class="activity-desc">
-                                            Sotilgan avtomobillar
-                                        </div>
-                                    </div>
-
-                                </div>
-
-                                <div
-                                    class="activity-value"
-                                    id="activitySold">
-                                    0
-                                </div>
-
-                            </div>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-            <!-- QUICK ACTIONS -->
-
-            <div class="panel">
-
-                <div class="panel-head">
-
-                    <div>
-                        <div class="panel-title">
-                            Tezkor amallar
-                        </div>
-
-                        <div class="panel-sub">
-                            Admin boshqaruvi
-                        </div>
-                    </div>
-
-                </div>
-
-                <div class="panel-body">
-
-                    <div class="quick-grid">
-
-                        <button
-                            class="quick-btn"
-                            onclick="showPage('add')">
-                            ➕ Mashina qo‘shish
-                        </button>
-
-                        <button
-                            class="quick-btn"
-                            onclick="showPage('cars')">
-                            🚘 Barcha mashinalar
-                        </button>
-
-                        <button
-                            class="quick-btn"
-                            onclick="loadAll()">
-                            📊 Statistikani yangilash
-                        </button>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-            <br>
-
-            <!-- RECENT CARS -->
-
-            <div class="panel">
-
-                <div class="panel-head">
-
-                    <div>
-                        <div class="panel-title">
-                            Oxirgi mashinalar
-                        </div>
-
-                        <div class="panel-sub">
-                            Yaqinda qo‘shilgan avtomobillar
-                        </div>
-                    </div>
-
-                    <button
-                        class="filter"
-                        onclick="showPage('cars')">
-                        Barchasi
-                    </button>
-
-                </div>
-
-                <div class="panel-body">
-
-                    <div
-                        class="car-list"
-                        id="recentCars">
-                        <div class="empty">
-                            Yuklanmoqda...
-                        </div>
-                    </div>
-
-                </div>
-
-            </div>
-
-        </section>
-
-        <!-- =========================
-             ADD CAR
-        ========================= -->
-
-        <section
-            class="page"
-            id="page-add">
-
-            <div class="panel form-panel">
-
-                <div class="panel-head">
-
-                    <div>
-                        <div class="panel-title">
-                            Mashina qo‘shish
-                        </div>
-
-                        <div class="panel-sub">
-                            Yangi avtomobilni saytga joylang
-                        </div>
-                    </div>
-
-                </div>
-
-                <div class="form">
-
-                    <div class="form-group">
-
-                        <label class="form-label">
-                            Admin parol
-                        </label>
-
-                        <div class="password-wrap">
-
-                            <input
-                                class="input"
-                                id="password"
-                                type="password"
-                                placeholder="Admin parolni kiriting">
-
-                            <button
-                                class="eye"
-                                onclick="togglePassword()">
-                                👁
-                            </button>
-
-                        </div>
-
-                    </div>
-
-                    <div class="form-group">
-
-                        <label class="form-label">
-                            Mashina nomi
-                        </label>
-
-                        <input
-                            class="input"
-                            id="carName"
-                            placeholder="Masalan: Chevrolet Gentra">
-
-                    </div>
-
-                    <div class="form-group">
-
-                        <label class="form-label">
-                            Narxi
-                        </label>
-
-                        <input
-                            class="input"
-                            id="carPrice"
-                            type="number"
-                            placeholder="Masalan: 150000000">
-
-                    </div>
-
-                    <div class="form-group">
-
-                        <label class="form-label">
-                            Tavsif
-                        </label>
-
-                        <textarea
-                            class="textarea"
-                            id="carDescription"
-                            placeholder="Mashina haqida ma'lumot..."></textarea>
-
-                    </div>
-
-                    <div class="form-group">
-
-                        <label class="form-label">
-                            Rasmlar
-                        </label>
-
-                        <label
-                            class="upload-box"
-                            for="images">
-
-                            <div class="upload-icon">
-                                📷
-                            </div>
-
-                            <div class="upload-title">
-                                Rasmlarni tanlang
-                            </div>
-
-                            <div class="upload-sub">
-                                Ko‘pi bilan 8 ta JPG rasm
-                            </div>
-
-                        </label>
-
-                        <input
-                            id="images"
-                            type="file"
-                            accept="image/jpeg,image/jpg"
-                            multiple
-                            onchange="previewImages(event)">
-
-                        <div
-                            class="preview-grid"
-                            id="previewGrid">
-                        </div>
-
-                    </div>
-
-                    <button
-                        class="main-btn"
-                        id="addButton"
-                        onclick="addCar()">
-                        + Mashinani qo‘shish
-                    </button>
-
-                    <div
-                        class="message"
-                        id="formMessage">
-                    </div>
-
-                </div>
-
-            </div>
-
-        </section>
-
-        <!-- =========================
-             CARS
-        ========================= -->
-
-        <section
-            class="page"
-            id="page-cars">
-
-            <div class="toolbar">
-
-                <input
-                    class="input search"
-                    id="search"
-                    placeholder="Mashina qidirish..."
-                    oninput="renderCars()">
-
-                <div class="filters">
-
-                    <button
-                        class="filter active"
-                        id="filterAll"
-                        onclick="setFilter('all')">
-                        Barchasi
-                    </button>
-
-                    <button
-                        class="filter"
-                        id="filterActive"
-                        onclick="setFilter('active')">
-                        Aktiv
-                    </button>
-
-                    <button
-                        class="filter"
-                        id="filterSold"
-                        onclick="setFilter('sold')">
-                        Sotilgan
-                    </button>
-
-                </div>
-
+<header class="topbar">
+
+    <div class="top-left">
+
+        <button
+            class="top-btn menu-btn"
+            onclick="toggleSidebar()">
+            ☰
+        </button>
+
+        <div>
+            <div
+                class="top-title"
+                id="pageTitle">
+                Dashboard
             </div>
 
             <div
-                class="manage-grid"
-                id="manageCars">
+                class="top-sub"
+                id="pageSubtitle">
+                pul.zarill boshqaruv paneli
             </div>
-
-        </section>
+        </div>
 
     </div>
+
+    <div class="top-actions">
+
+        <button
+            class="top-btn"
+            onclick="loadAll()"
+            title="Yangilash">
+            ↻
+        </button>
+
+        <button
+            class="top-btn"
+            onclick="toggleDark()"
+            title="Dark mode">
+            ◐
+        </button>
+
+    </div>
+
+</header>
+
+<div class="content">
+
+<!-- DASHBOARD -->
+
+<section
+    class="page active"
+    id="page-dashboard">
+
+    <div class="stats-grid">
+
+        <div class="stat-card">
+            <div class="stat-top">
+                <div class="stat-icon">👁️</div>
+            </div>
+
+            <div class="stat-label">
+                Sayt ko‘rishlari
+            </div>
+
+            <div
+                class="stat-value"
+                id="viewsStat">
+                0
+            </div>
+
+            <div class="stat-change">
+                Jami ko‘rishlar
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-top">
+                <div class="stat-icon">📞</div>
+            </div>
+
+            <div class="stat-label">
+                Qo‘ng‘iroqlar
+            </div>
+
+            <div
+                class="stat-value"
+                id="callsStat">
+                0
+            </div>
+
+            <div class="stat-change">
+                Telefon tugmasi bosilishi
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-top">
+                <div class="stat-icon">🚘</div>
+            </div>
+
+            <div class="stat-label">
+                Jami mashinalar
+            </div>
+
+            <div
+                class="stat-value"
+                id="carsStat">
+                0
+            </div>
+
+            <div class="stat-change">
+                Saytdagi barcha avtomobillar
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-top">
+                <div class="stat-icon">✅</div>
+            </div>
+
+            <div class="stat-label">
+                Sotilganlar
+            </div>
+
+            <div
+                class="stat-value"
+                id="soldStat">
+                0
+            </div>
+
+            <div class="stat-change">
+                Sotildi deb belgilanganlar
+            </div>
+        </div>
+
+    </div>
+
+    <div class="two-grid">
+
+        <div class="panel">
+
+            <div class="panel-head">
+                <div>
+                    <div class="panel-title">
+                        Statistika
+                    </div>
+
+                    <div class="panel-sub">
+                        Oxirgi 30 kun
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel-body">
+
+                <div class="chart-wrap">
+                    <canvas id="statsChart"></canvas>
+                </div>
+
+                <div class="chart-legend">
+
+                    <div class="legend-item">
+                        <span class="legend-dot"></span>
+                        Ko‘rishlar
+                    </div>
+
+                    <div class="legend-item">
+                        <span class="legend-dot calls"></span>
+                        Qo‘ng‘iroqlar
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="panel">
+
+            <div class="panel-head">
+                <div>
+                    <div class="panel-title">
+                        Bugungi faollik
+                    </div>
+
+                    <div class="panel-sub">
+                        Bugungi statistika
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel-body">
+
+                <div class="activity-list">
+
+                    <div class="activity">
+
+                        <div class="activity-left">
+
+                            <div class="activity-icon">
+                                👁️
+                            </div>
+
+                            <div>
+                                <div class="activity-name">
+                                    Ko‘rishlar
+                                </div>
+
+                                <div class="activity-desc">
+                                    Bugungi sayt tashriflari
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div
+                            class="activity-value"
+                            id="todayViews">
+                            0
+                        </div>
+
+                    </div>
+
+                    <div class="activity">
+
+                        <div class="activity-left">
+
+                            <div class="activity-icon">
+                                📞
+                            </div>
+
+                            <div>
+                                <div class="activity-name">
+                                    Qo‘ng‘iroqlar
+                                </div>
+
+                                <div class="activity-desc">
+                                    Bugungi qo‘ng‘iroqlar
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div
+                            class="activity-value"
+                            id="todayCalls">
+                            0
+                        </div>
+
+                    </div>
+
+                    <div class="activity">
+
+                        <div class="activity-left">
+
+                            <div class="activity-icon">
+                                🚘
+                            </div>
+
+                            <div>
+                                <div class="activity-name">
+                                    Mashinalar
+                                </div>
+
+                                <div class="activity-desc">
+                                    Jami joylangan
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div
+                            class="activity-value"
+                            id="activityCars">
+                            0
+                        </div>
+
+                    </div>
+
+                    <div class="activity">
+
+                        <div class="activity-left">
+
+                            <div class="activity-icon">
+                                ✅
+                            </div>
+
+                            <div>
+                                <div class="activity-name">
+                                    Sotilgan
+                                </div>
+
+                                <div class="activity-desc">
+                                    Sotilgan avtomobillar
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div
+                            class="activity-value"
+                            id="activitySold">
+                            0
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="panel">
+
+        <div class="panel-head">
+
+            <div>
+                <div class="panel-title">
+                    Tezkor amallar
+                </div>
+
+                <div class="panel-sub">
+                    Admin boshqaruvi
+                </div>
+            </div>
+
+        </div>
+
+        <div class="panel-body">
+
+            <div class="quick-grid">
+
+                <button
+                    class="quick-btn"
+                    onclick="showPage('add')">
+                    ➕ Mashina qo‘shish
+                </button>
+
+                <button
+                    class="quick-btn"
+                    onclick="showPage('cars')">
+                    🚘 Barcha mashinalar
+                </button>
+
+                <button
+                    class="quick-btn"
+                    onclick="loadAll()">
+                    📊 Statistikani yangilash
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <br>
+
+    <div class="panel">
+
+        <div class="panel-head">
+
+            <div>
+                <div class="panel-title">
+                    Oxirgi mashinalar
+                </div>
+
+                <div class="panel-sub">
+                    Yaqinda qo‘shilgan avtomobillar
+                </div>
+            </div>
+
+            <button
+                class="filter"
+                onclick="showPage('cars')">
+                Barchasi
+            </button>
+
+        </div>
+
+        <div class="panel-body">
+
+            <div
+                class="car-list"
+                id="recentCars">
+                <div class="empty">
+                    Yuklanmoqda...
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+<!-- ADD CAR -->
+
+<section
+    class="page"
+    id="page-add">
+
+    <div class="panel form-panel">
+
+        <div class="panel-head">
+
+            <div>
+                <div class="panel-title">
+                    Mashina qo‘shish
+                </div>
+
+                <div class="panel-sub">
+                    Yangi avtomobilni saytga joylang
+                </div>
+            </div>
+
+        </div>
+
+        <div class="form">
+
+            <div class="form-group">
+
+                <label class="form-label">
+                    Admin parol
+                </label>
+
+                <div class="password-wrap">
+
+                    <input
+                        class="input"
+                        id="password"
+                        type="password"
+                        placeholder="Admin parolni kiriting">
+
+                    <button
+                        class="eye"
+                        onclick="togglePassword()">
+                        👁
+                    </button>
+
+                </div>
+
+            </div>
+
+            <div class="form-group">
+
+                <label class="form-label">
+                    Mashina nomi
+                </label>
+
+                <input
+                    class="input"
+                    id="carName"
+                    placeholder="Masalan: Chevrolet Gentra">
+
+            </div>
+
+            <div class="form-group">
+
+                <label class="form-label">
+                    Narxi
+                </label>
+
+                <input
+                    class="input"
+                    id="carPrice"
+                    type="number"
+                    placeholder="Masalan: 150000000">
+
+            </div>
+
+            <div class="form-group">
+
+                <label class="form-label">
+                    Tavsif
+                </label>
+
+                <textarea
+                    class="textarea"
+                    id="carDescription"
+                    placeholder="Mashina haqida ma'lumot..."></textarea>
+
+            </div>
+
+            <div class="form-group">
+
+                <label class="form-label">
+                    Rasmlar
+                </label>
+
+                <label
+                    class="upload-box"
+                    for="images">
+
+                    <div class="upload-icon">
+                        📷
+                    </div>
+
+                    <div class="upload-title">
+                        Rasmlarni tanlang
+                    </div>
+
+                    <div class="upload-sub">
+                        Ko‘pi bilan 8 ta JPG rasm
+                    </div>
+
+                </label>
+
+                <input
+                    id="images"
+                    type="file"
+                    accept="image/jpeg,image/jpg"
+                    multiple
+                    onchange="previewImages(event)">
+
+                <div
+                    class="preview-grid"
+                    id="previewGrid">
+                </div>
+
+            </div>
+
+            <button
+                class="main-btn"
+                id="addButton"
+                onclick="addCar()">
+                + Mashinani qo‘shish
+            </button>
+
+            <div
+                class="message"
+                id="formMessage">
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+<!-- SETTINGS -->
+
+<section
+    class="page"
+    id="page-settings">
+
+    <div class="panel settings-panel">
+
+        <div class="panel-head">
+
+            <div>
+                <div class="panel-title">
+                    Aloqa sozlamalari
+                </div>
+
+                <div class="panel-sub">
+                    Saytdagi telefon va ijtimoiy tarmoqlarni boshqarish
+                </div>
+            </div>
+
+            <div class="settings-icon">
+                ⚙️
+            </div>
+
+        </div>
+
+        <div class="form">
+
+            <div class="settings-note">
+                Bu yerda ma'lumotlarni o‘zgartirsangiz,
+                ular saytning aloqa bo‘limida va telefon
+                tugmalarida ishlatiladi.
+            </div>
+
+            <div class="form-group">
+
+                <label class="form-label">
+                    📞 Telefon raqami
+                </label>
+
+                <input
+                    class="input"
+                    id="settingsPhone"
+                    type="text"
+                    placeholder="+998 88 950 00 05">
+
+            </div>
+
+            <div class="form-group">
+
+                <label class="form-label">
+                    Telegram
+                </label>
+
+                <input
+                    class="input"
+                    id="settingsTelegram"
+                    type="text"
+                    placeholder="https://t.me/...">
+
+            </div>
+
+            <div class="form-group">
+
+                <label class="form-label">
+                    WhatsApp
+                </label>
+
+                <input
+                    class="input"
+                    id="settingsWhatsapp"
+                    type="text"
+                    placeholder="https://wa.me/...">
+
+            </div>
+
+            <div class="form-group">
+
+                <label class="form-label">
+                    Instagram
+                </label>
+
+                <input
+                    class="input"
+                    id="settingsInstagram"
+                    type="text"
+                    placeholder="https://instagram.com/...">
+
+            </div>
+
+            <div class="form-group">
+
+                <label class="form-label">
+                    📍 Manzil
+                </label>
+
+                <input
+                    class="input"
+                    id="settingsAddress"
+                    type="text"
+                    placeholder="Toshkent, O‘zbekiston">
+
+            </div>
+
+            <button
+                class="main-btn"
+                id="saveSettingsButton"
+                onclick="saveSettings()">
+                💾 Saqlash
+            </button>
+
+        </div>
+
+    </div>
+
+</section>
+
+<!-- CARS -->
+
+<section
+    class="page"
+    id="page-cars">
+
+    <div class="toolbar">
+
+        <input
+            class="input search"
+            id="search"
+            placeholder="Mashina qidirish..."
+            oninput="renderCars()">
+
+        <div class="filters">
+
+            <button
+                class="filter active"
+                id="filterAll"
+                onclick="setFilter('all')">
+                Barchasi
+            </button>
+
+            <button
+                class="filter"
+                id="filterActive"
+                onclick="setFilter('active')">
+                Aktiv
+            </button>
+
+            <button
+                class="filter"
+                id="filterSold"
+                onclick="setFilter('sold')">
+                Sotilgan
+            </button>
+
+        </div>
+
+    </div>
+
+    <div
+        class="manage-grid"
+        id="manageCars">
+    </div>
+
+</section>
+
+</div>
 
 </main>
 
@@ -1599,8 +1687,16 @@ let currentFilter = 'all';
 let selectedImages = [];
 let dailyStats = [];
 
+let siteSettings = {
+    phone:'+998 88 950 00 05',
+    telegram:'https://t.me/',
+    whatsapp:'https://wa.me/',
+    instagram:'https://instagram.com/',
+    address:"Toshkent, O'zbekiston"
+};
+
 /* =========================
-   PAGE
+   PAGE INFO
 ========================= */
 
 const pageInfo = {
@@ -1618,9 +1714,18 @@ const pageInfo = {
     cars:{
         title:'Mashinalar',
         subtitle:'Barcha avtomobillarni boshqarish'
+    },
+
+    settings:{
+        title:'Aloqa sozlamalari',
+        subtitle:'Saytdagi aloqa ma’lumotlarini boshqarish'
     }
 
 };
+
+/* =========================
+   PAGE
+========================= */
 
 function showPage(page){
 
@@ -1629,12 +1734,20 @@ function showPage(page){
             el.classList.remove('active');
         });
 
-    document
-        .getElementById('page-' + page)
-        .classList.add('active');
+    const target =
+        document.getElementById(
+            'page-' + page
+        );
+
+    if(!target){
+        return;
+    }
+
+    target.classList.add('active');
 
     document.querySelectorAll('.nav button')
         .forEach(btn => {
+
             btn.classList.remove('active');
 
             if(
@@ -1642,6 +1755,7 @@ function showPage(page){
             ){
                 btn.classList.add('active');
             }
+
         });
 
     document.getElementById('pageTitle')
@@ -1656,10 +1770,17 @@ function showPage(page){
         renderCars();
     }
 
+    if(page === 'settings'){
+        loadSettings();
+    }
+
     if(window.innerWidth <= 700){
+
         document
             .getElementById('sidebar')
-            .classList.remove('open');
+            .classList
+            .remove('open');
+
     }
 }
 
@@ -1671,7 +1792,9 @@ function toggleSidebar(){
 
     document
         .getElementById('sidebar')
-        .classList.toggle('open');
+        .classList
+        .toggle('open');
+
 }
 
 /* =========================
@@ -1691,9 +1814,10 @@ function toast(message){
 
     clearTimeout(toastTimer);
 
-    toastTimer = setTimeout(() => {
-        el.classList.remove('show');
-    },2500);
+    toastTimer =
+        setTimeout(() => {
+            el.classList.remove('show');
+        },2500);
 }
 
 /* =========================
@@ -1720,13 +1844,10 @@ function getPassword(){
 }
 
 /* =========================
-   NUMBER ANIMATION
+   NUMBER
 ========================= */
 
-function animateNumber(
-    element,
-    target
-){
+function animateNumber(element,target){
 
     const start =
         Number(element.textContent) || 0;
@@ -1735,7 +1856,10 @@ function animateNumber(
         Number(target) || 0;
 
     if(start === end){
-        element.textContent = end;
+
+        element.textContent =
+            end.toLocaleString('uz-UZ');
+
         return;
     }
 
@@ -1748,7 +1872,8 @@ function animateNumber(
 
         const progress =
             Math.min(
-                (time - startTime) / duration,
+                (time - startTime) /
+                duration,
                 1
             );
 
@@ -1828,9 +1953,7 @@ function resizeImage(file){
                         Math.round(height);
 
                     const ctx =
-                        canvas.getContext(
-                            '2d'
-                        );
+                        canvas.getContext('2d');
 
                     ctx.drawImage(
                         img,
@@ -1846,6 +1969,7 @@ function resizeImage(file){
                             .82
                         )
                     );
+
                 };
 
                 img.onerror = reject;
@@ -1916,7 +2040,7 @@ async function previewImages(event){
             box.className = 'preview';
 
             box.innerHTML =
-                `<img src="${data}">`;
+                `<img src="${data}" alt="">`;
 
             grid.appendChild(box);
 
@@ -1932,10 +2056,7 @@ async function previewImages(event){
    FORM MESSAGE
 ========================= */
 
-function showMessage(
-    message,
-    type
-){
+function showMessage(message,type){
 
     const el =
         document.getElementById(
@@ -1996,7 +2117,10 @@ async function addCar(){
         return;
     }
 
-    if(!Number.isInteger(price) || price <= 0){
+    if(
+        !Number.isInteger(price) ||
+        price <= 0
+    ){
 
         showMessage(
             "Narxni to‘g‘ri kiriting",
@@ -2081,9 +2205,7 @@ async function addCar(){
 
         await loadAll();
 
-        toast(
-            "Mashina qo‘shildi"
-        );
+        toast("Mashina qo‘shildi");
 
     }catch(e){
 
@@ -2098,6 +2220,204 @@ async function addCar(){
 
         button.textContent =
             "+ Mashinani qo‘shish";
+    }
+}
+
+/* =========================
+   LOAD SETTINGS
+========================= */
+
+async function loadSettings(){
+
+    try{
+
+        const response =
+            await fetch(
+                '/api/settings',
+                {
+                    cache:'no-store'
+                }
+            );
+
+        if(!response.ok){
+            throw new Error(
+                "Aloqa ma'lumotlarini yuklab bo‘lmadi"
+            );
+        }
+
+        const data =
+            await response.json();
+
+        if(data.settings){
+
+            siteSettings = {
+                ...siteSettings,
+                ...data.settings
+            };
+
+        }
+
+        document
+            .getElementById('settingsPhone')
+            .value =
+            siteSettings.phone || '';
+
+        document
+            .getElementById('settingsTelegram')
+            .value =
+            siteSettings.telegram || '';
+
+        document
+            .getElementById('settingsWhatsapp')
+            .value =
+            siteSettings.whatsapp || '';
+
+        document
+            .getElementById('settingsInstagram')
+            .value =
+            siteSettings.instagram || '';
+
+        document
+            .getElementById('settingsAddress')
+            .value =
+            siteSettings.address || '';
+
+    }catch(e){
+
+        console.error(e);
+
+        toast(
+            "Aloqa ma'lumotlarini yuklashda xatolik"
+        );
+    }
+}
+
+/* =========================
+   SAVE SETTINGS
+========================= */
+
+async function saveSettings(){
+
+    const password =
+        getPassword();
+
+    if(!password){
+
+        showPage('add');
+
+        showMessage(
+            "Avval admin parolni kiriting",
+            "error"
+        );
+
+        return;
+    }
+
+    const settings = {
+
+        phone:
+            document
+            .getElementById('settingsPhone')
+            .value
+            .trim(),
+
+        telegram:
+            document
+            .getElementById('settingsTelegram')
+            .value
+            .trim(),
+
+        whatsapp:
+            document
+            .getElementById('settingsWhatsapp')
+            .value
+            .trim(),
+
+        instagram:
+            document
+            .getElementById('settingsInstagram')
+            .value
+            .trim(),
+
+        address:
+            document
+            .getElementById('settingsAddress')
+            .value
+            .trim()
+
+    };
+
+    if(!settings.phone){
+
+        toast(
+            "Telefon raqamini kiriting"
+        );
+
+        return;
+    }
+
+    const button =
+        document.getElementById(
+            'saveSettingsButton'
+        );
+
+    button.disabled = true;
+
+    button.textContent =
+        "Saqlanmoqda...";
+
+    try{
+
+        const response =
+            await fetch(
+                '/api/settings',
+                {
+                    method:'POST',
+
+                    headers:{
+                        'Content-Type':
+                            'application/json',
+
+                        'x-admin-password':
+                            password
+                    },
+
+                    body:
+                        JSON.stringify(
+                            settings
+                        )
+                }
+            );
+
+        const data =
+            await response.json();
+
+        if(!response.ok){
+
+            throw new Error(
+                data.error ||
+                "Xatolik yuz berdi"
+            );
+        }
+
+        siteSettings =
+            data.settings ||
+            settings;
+
+        toast(
+            "Aloqa ma’lumotlari saqlandi"
+        );
+
+    }catch(e){
+
+        toast(e.message);
+
+    }finally{
+
+        button.disabled = false;
+
+        button.textContent =
+            "💾 Saqlash";
     }
 }
 
@@ -2226,8 +2546,11 @@ function renderRecentCars(){
                             class="car-img"
                             src="${image}"
                             alt="">`
-                        : `<div
-                            class="car-img">
+                        : `<div class="car-img"
+                            style="
+                            display:flex;
+                            align-items:center;
+                            justify-content:center;">
                             🚘
                           </div>`
                     }
@@ -2260,6 +2583,7 @@ function renderRecentCars(){
 
                 </div>
             `;
+
         }).join('');
 }
 
@@ -2277,24 +2601,21 @@ function setFilter(filter){
         .forEach(btn => {
 
             if(
-                btn.id ===
-                'filterAll' &&
+                btn.id === 'filterAll' &&
                 filter === 'all'
             ){
                 btn.classList.add('active');
             }
 
             else if(
-                btn.id ===
-                'filterActive' &&
+                btn.id === 'filterActive' &&
                 filter === 'active'
             ){
                 btn.classList.add('active');
             }
 
             else if(
-                btn.id ===
-                'filterSold' &&
+                btn.id === 'filterSold' &&
                 filter === 'sold'
             ){
                 btn.classList.add('active');
@@ -2306,6 +2627,7 @@ function setFilter(filter){
             ){
                 btn.classList.remove('active');
             }
+
         });
 
     renderCars();
@@ -2442,11 +2764,13 @@ function renderCars(){
                                 style="
                                 color:var(--muted);
                                 font-size:11px;">
+
                                 ${
                                     car.images
                                     ? car.images.length
                                     : 0
                                 } ta rasm
+
                             </span>
 
                         </div>
@@ -2635,6 +2959,7 @@ async function loadStats(){
                         'x-admin-password':
                             password
                     },
+
                     cache:'no-store'
                 }
             );
@@ -2717,6 +3042,7 @@ async function loadDailyStats(){
                         'x-admin-password':
                             password
                     },
+
                     cache:'no-store'
                 }
             );
@@ -2791,6 +3117,10 @@ function renderChart(){
         canvas.parentElement
         .getBoundingClientRect();
 
+    if(rect.width <= 0){
+        return;
+    }
+
     const dpr =
         window.devicePixelRatio || 1;
 
@@ -2803,7 +3133,14 @@ function renderChart(){
     const ctx =
         canvas.getContext('2d');
 
-    ctx.scale(dpr,dpr);
+    ctx.setTransform(
+        dpr,
+        0,
+        0,
+        dpr,
+        0,
+        0
+    );
 
     const width =
         rect.width;
@@ -2818,7 +3155,6 @@ function renderChart(){
         height
     );
 
-    // Oxirgi 30 kun uchun
     const days = [];
 
     for(let i = 29; i >= 0; i--){
@@ -2880,7 +3216,6 @@ function renderChart(){
         padding.top -
         padding.bottom;
 
-    // GRID
     ctx.strokeStyle =
         getComputedStyle(
             document.body
@@ -2912,7 +3247,6 @@ function renderChart(){
         ctx.stroke();
     }
 
-    // Y labels
     ctx.fillStyle =
         getComputedStyle(
             document.body
@@ -2948,18 +3282,13 @@ function renderChart(){
         );
     }
 
-    function getPoint(
-        index,
-        value
-    ){
+    function getPoint(index,value){
 
         const x =
             padding.left +
-            (
-                chartWidth *
-                index /
-                (days.length - 1)
-            );
+            chartWidth *
+            index /
+            (days.length - 1);
 
         const y =
             padding.top +
@@ -2973,10 +3302,7 @@ function renderChart(){
         return {x,y};
     }
 
-    function drawLine(
-        key,
-        lineColor
-    ){
+    function drawLine(key,lineColor){
 
         ctx.strokeStyle =
             lineColor;
@@ -3013,7 +3339,9 @@ function renderChart(){
                         point.x,
                         point.y
                     );
+
                 }
+
             }
         );
 
@@ -3030,7 +3358,6 @@ function renderChart(){
         '#999999'
     );
 
-    // X labels
     ctx.fillStyle =
         getComputedStyle(
             document.body
@@ -3071,6 +3398,7 @@ function renderChart(){
                 point.x,
                 height - 7
             );
+
         }
     );
 }
@@ -3143,6 +3471,7 @@ if(
         'adminDark'
     ) === '1'
 ){
+
     document.body
         .classList
         .add('dark');
@@ -3185,12 +3514,15 @@ window.addEventListener(
 
 loadCars();
 
+loadSettings();
+
 if(savedPassword){
+
     loadStats();
+
     loadDailyStats();
 }
 
-// Har 30 soniyada yangilash
 setInterval(
     () => {
         loadAll();
