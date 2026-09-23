@@ -12,9 +12,10 @@
         header a { color: #7CFC9A; text-decoration: none; font-weight: bold; }
         main { max-width: 900px; margin: 24px auto; padding: 0 16px; }
         .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 16px; }
-        .card { background: #fff; border-radius: 10px; padding: 18px; box-shadow: 0 1px 4px rgba(0,0,0,.12); }
+        .card { background: #fff; border-radius: 10px; padding: 18px; box-shadow: 0 1px 4px rgba(0,0,0,.12); position: relative; }
         .card img.thumb { width: 100%; height: 170px; object-fit: cover; border-radius: 8px; margin-bottom: 12px; background: #eee; cursor: pointer; }
-        .card h3 { margin: 0 0 8px; }
+        .card h3 { margin: 0 0 8px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+        .badge-sold { background: #d33; color: #fff; font-size: 12px; padding: 3px 8px; border-radius: 5px; font-weight: bold; }
         .desc { font-size: 14px; color: #555; margin-bottom: 12px; white-space: pre-wrap; }
         .price { font-size: 20px; font-weight: bold; color: #0a7d3b; margin-bottom: 14px; }
         .call { display: block; text-align: center; background: #0a7d3b; color: #fff; padding: 10px; border-radius: 8px; text-decoration: none; font-weight: bold; }
@@ -76,6 +77,12 @@
             }
             const title = document.createElement('h3');
             title.textContent = car.name;
+            if (car.sold) {
+                const badge = document.createElement('span');
+                badge.className = 'badge-sold';
+                badge.textContent = 'SOTILDI';
+                title.appendChild(badge);
+            }
             card.appendChild(title);
             if (car.description) {
                 const desc = document.createElement('div');
