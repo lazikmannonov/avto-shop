@@ -14,97 +14,139 @@
 body{
     margin:0;
     font-family:Arial,sans-serif;
-    background:#f4f5f7;
+    background:#f3f5f7;
     color:#222;
-    padding-bottom:75px;
-    transition:.2s;
+    padding-bottom:76px;
+    transition:.25s;
 }
 
-/* HEADER */
+button,input{
+    font:inherit;
+}
+
+/* ================= HEADER ================= */
+
 header{
-    background:#111;
+    position:relative;
+    min-height:235px;
+    padding:28px 22px;
+    overflow:hidden;
+
+    background:
+        linear-gradient(
+            90deg,
+            rgba(0,0,0,.72),
+            rgba(0,0,0,.25)
+        ),
+        url("data:image/png;base64,PASTE_YOUR_IMAGE_BASE64_HERE")
+        center top/100% auto no-repeat;
+
+    background-color:#111;
     color:#fff;
-    text-align:center;
-    padding:18px 12px;
 }
 
-header h1{
+header:after{
+    content:"";
+    position:absolute;
+    inset:0;
+    background:
+        linear-gradient(
+            180deg,
+            rgba(0,0,0,.05),
+            rgba(0,0,0,.35)
+        );
+    pointer-events:none;
+}
+
+.logo{
+    position:relative;
+    z-index:3;
+    margin-top:58px;
+    font-size:clamp(42px,10vw,76px);
+    font-weight:900;
+    letter-spacing:-4px;
+    font-style:italic;
+    line-height:.9;
+}
+
+.logo .green{
+    color:#36ef70;
+}
+
+.tagline{
+    position:relative;
+    z-index:3;
+    margin:18px 0 8px;
+    font-size:clamp(15px,3.5vw,21px);
+    color:#eee;
+}
+
+.contact{
+    position:relative;
+    z-index:3;
     margin:0;
-    font-size:28px;
+    color:#fff;
+    font-size:16px;
 }
 
-header p{
-    margin:6px 0;
-    color:#aaa;
-    font-size:14px;
-}
-
-header a{
-    color:#7CFC9A;
+.contact a{
+    color:#39ef72;
     text-decoration:none;
-    font-weight:bold;
+    font-weight:800;
 }
 
 .lang-bar{
+    position:absolute;
+    right:22px;
+    top:22px;
+    z-index:5;
     display:flex;
-    justify-content:center;
+    gap:5px;
     align-items:center;
-    gap:6px;
-    margin-top:12px;
 }
 
 .lang-bar button{
-    background:#222;
-    color:#bbb;
-    border:1px solid #444;
-    border-radius:7px;
-    padding:6px 11px;
-    font-size:12px;
+    border:1px solid #4b4b4b;
+    background:rgba(12,15,18,.88);
+    color:#ddd;
+    border-radius:9px;
+    padding:8px 12px;
     cursor:pointer;
 }
 
 .lang-bar button.active{
-    background:#7CFC9A;
-    color:#111;
-    border-color:#7CFC9A;
-    font-weight:bold;
+    background:#39ef72;
+    color:#07120a;
+    border-color:#39ef72;
+    font-weight:800;
 }
 
 .theme-btn{
-    width:32px;
-    height:28px;
-    border:none;
-    border-radius:7px;
-    background:#222;
-    color:#fff;
-    font-size:16px;
-    cursor:pointer;
+    width:40px;
+    height:37px;
+    padding:0!important;
+    font-size:18px;
 }
 
-/* MAIN */
+/* ================= MAIN ================= */
+
 main{
-    max-width:1000px;
+    max-width:1100px;
     margin:20px auto;
-    padding:0 12px;
+    padding:0 14px;
 }
 
 .filters{
     background:#fff;
-    border-radius:12px;
+    border-radius:16px;
     padding:14px;
-    box-shadow:0 1px 5px rgba(0,0,0,.1);
-    margin-bottom:16px;
-}
-
-.search-title{
-    font-size:12px;
-    color:#777;
-    margin-bottom:6px;
+    box-shadow:0 2px 9px rgba(0,0,0,.1);
+    margin-bottom:18px;
 }
 
 .search-row{
     display:flex;
-    gap:8px;
+    gap:9px;
 }
 
 .search-wrap{
@@ -114,48 +156,48 @@ main{
 
 .search-icon{
     position:absolute;
-    left:12px;
-    top:12px;
-    font-size:18px;
-    color:#888;
+    left:13px;
+    top:9px;
+    font-size:24px;
+    color:#777;
 }
 
 #search{
     width:100%;
-    height:44px;
+    height:48px;
     border:1px solid #ddd;
-    border-radius:8px;
-    padding:0 10px 0 38px;
-    font-size:15px;
+    border-radius:10px;
+    padding:0 12px 0 42px;
     outline:none;
 }
 
 .reset{
-    height:44px;
-    border:none;
-    border-radius:8px;
-    padding:0 13px;
+    height:48px;
+    padding:0 18px;
+    border:0;
+    border-radius:10px;
     background:#eee;
     cursor:pointer;
 }
 
-/* CARS */
+/* ================= CARS ================= */
+
 .grid{
     display:grid;
     grid-template-columns:repeat(3,1fr);
-    gap:14px;
+    gap:15px;
 }
 
 .card{
     background:#fff;
-    border-radius:12px;
+    border-radius:15px;
     overflow:hidden;
-    box-shadow:0 1px 5px rgba(0,0,0,.1);
+    box-shadow:0 2px 9px rgba(0,0,0,.1);
     cursor:pointer;
 }
 
 .image-box{
-    height:200px;
+    height:205px;
     position:relative;
     background:#eee;
 }
@@ -164,23 +206,24 @@ main{
     width:100%;
     height:100%;
     object-fit:cover;
+    display:block;
 }
 
 .fav-btn{
     position:absolute;
-    top:10px;
-    right:10px;
-    width:38px;
-    height:38px;
-    border:none;
+    right:11px;
+    top:11px;
+    width:40px;
+    height:40px;
+    border:0;
     border-radius:50%;
-    background:rgba(255,255,255,.95);
-    font-size:20px;
+    background:rgba(255,255,255,.94);
+    font-size:22px;
     cursor:pointer;
 }
 
 .fav-btn.active{
-    color:#d33;
+    color:#e22;
 }
 
 .content{
@@ -189,11 +232,11 @@ main{
 
 .content h3{
     margin:0 0 7px;
-    font-size:17px;
+    font-size:18px;
 }
 
 .badge{
-    background:#d33;
+    background:#d83a3a;
     color:#fff;
     padding:3px 7px;
     border-radius:5px;
@@ -202,48 +245,47 @@ main{
 }
 
 .desc{
-    color:#666;
     font-size:13px;
-    line-height:1.4;
-    max-height:38px;
+    color:#666;
+    line-height:1.45;
+    max-height:40px;
     overflow:hidden;
-    margin-bottom:7px;
 }
 
 .more{
-    color:#0a7d3b;
     font-size:12px;
-    font-weight:bold;
-    margin-bottom:9px;
+    color:#07803e;
+    font-weight:700;
+    margin:7px 0;
 }
 
 .price{
-    color:#087a3b;
     font-size:19px;
-    font-weight:bold;
-    margin-bottom:10px;
+    font-weight:800;
+    color:#087d3d;
+    margin:8px 0 11px;
 }
 
 .call{
     display:block;
     text-align:center;
-    background:#0a7d3b;
+    background:#0a803f;
     color:#fff;
     padding:11px;
-    border-radius:8px;
+    border-radius:9px;
     text-decoration:none;
-    font-weight:bold;
-    font-size:14px;
+    font-weight:700;
 }
 
 .empty{
     grid-column:1/-1;
     text-align:center;
     color:#777;
-    padding:50px 10px;
+    padding:50px;
 }
 
-/* DETAIL PAGE */
+/* ================= PAGES ================= */
+
 .page{
     display:none;
 }
@@ -252,54 +294,57 @@ main{
     display:block;
 }
 
-.detail-page{
+.detail-page,
+.menu-page{
     min-height:100vh;
-    background:#f4f5f7;
+    background:#f3f5f7;
     padding-bottom:30px;
 }
 
-.detail-header{
+.page-head{
     background:#111;
-    color:white;
-    padding:15px;
+    color:#fff;
+    padding:14px;
     display:flex;
     align-items:center;
-    gap:15px;
+    gap:14px;
 }
 
 .back-btn{
-    border:none;
-    background:#222;
-    color:white;
-    border-radius:8px;
-    padding:9px 13px;
-    font-size:18px;
+    border:0;
+    background:#242424;
+    color:#fff;
+    border-radius:9px;
+    padding:8px 13px;
+    font-size:20px;
     cursor:pointer;
 }
 
-.detail-header h2{
+.page-head h2{
     margin:0;
     font-size:20px;
 }
 
-.detail-container{
+.detail-container,
+.menu-container{
     max-width:700px;
     margin:20px auto;
-    padding:0 12px;
+    padding:0 14px;
 }
 
 .detail-box{
     background:#fff;
-    border-radius:14px;
+    border-radius:15px;
     overflow:hidden;
-    box-shadow:0 1px 6px rgba(0,0,0,.1);
+    box-shadow:0 2px 8px rgba(0,0,0,.1);
 }
 
 .detail-image{
     width:100%;
-    height:380px;
+    height:390px;
     object-fit:cover;
     display:block;
+    cursor:pointer;
 }
 
 .detail-content{
@@ -308,14 +353,14 @@ main{
 
 .detail-content h1{
     margin:0 0 10px;
-    font-size:25px;
+    font-size:26px;
 }
 
 .detail-price{
-    color:#087a3b;
     font-size:24px;
-    font-weight:bold;
-    margin-bottom:15px;
+    color:#087d3d;
+    font-weight:800;
+    margin-bottom:16px;
 }
 
 .detail-description{
@@ -332,72 +377,46 @@ main{
     text-align:center;
     margin-top:15px;
     padding:14px;
-    background:#0a7d3b;
-    color:white;
-    border-radius:9px;
-    text-decoration:none;
-    font-weight:bold;
-}
-
-/* MENU PAGE */
-.menu-page{
-    min-height:100vh;
-    background:#f4f5f7;
-    padding-bottom:30px;
-}
-
-.menu-header{
-    background:#111;
+    background:#0a803f;
     color:#fff;
-    padding:15px;
-    display:flex;
-    align-items:center;
-    gap:15px;
+    text-decoration:none;
+    border-radius:9px;
+    font-weight:800;
 }
 
-.menu-header h2{
-    margin:0;
-}
-
-.menu-container{
-    max-width:650px;
-    margin:20px auto;
-    padding:0 12px;
-}
+/* ================= MENU ================= */
 
 .menu-section{
     background:#fff;
-    border-radius:14px;
+    border-radius:15px;
     overflow:hidden;
     margin-bottom:15px;
-    box-shadow:0 1px 5px rgba(0,0,0,.08);
+    box-shadow:0 2px 8px rgba(0,0,0,.08);
 }
 
 .menu-title{
     padding:15px;
-    font-weight:bold;
-    font-size:14px;
     color:#777;
+    font-weight:800;
     border-bottom:1px solid #eee;
 }
 
 .menu-row{
+    width:100%;
     display:flex;
     align-items:center;
     gap:13px;
-    width:100%;
     padding:16px;
-    background:none;
-    border:none;
+    border:0;
     border-bottom:1px solid #eee;
-    text-align:left;
-    font-size:15px;
-    cursor:pointer;
+    background:none;
     color:inherit;
+    text-align:left;
+    cursor:pointer;
 }
 
 .menu-row:last-child{
-    border-bottom:none;
+    border-bottom:0;
 }
 
 .menu-icon{
@@ -406,24 +425,43 @@ main{
     font-size:20px;
 }
 
-.menu-arrow{
-    margin-left:auto;
-    color:#999;
-    font-size:20px;
-}
-
 .menu-row a{
     color:inherit;
     text-decoration:none;
-    width:100%;
+    flex:1;
 }
 
-/* LIGHTBOX */
+.menu-text{
+    flex:1;
+}
+
+.arrow{
+    margin-left:auto;
+    color:#999;
+    font-size:22px;
+}
+
+.menu-langs{
+    margin-left:auto;
+    display:flex;
+    gap:4px;
+}
+
+.menu-langs button{
+    border:0;
+    background:none;
+    cursor:pointer;
+    font-weight:700;
+    padding:5px;
+}
+
+/* ================= LIGHTBOX ================= */
+
 #lightbox{
     display:none;
     position:fixed;
     inset:0;
-    background:rgba(0,0,0,.94);
+    background:rgba(0,0,0,.95);
     z-index:500;
     align-items:center;
     justify-content:center;
@@ -436,18 +474,18 @@ main{
 
 #lightbox-img{
     max-width:94vw;
-    max-height:75vh;
+    max-height:76vh;
     object-fit:contain;
 }
 
 .light-close{
     position:absolute;
-    top:15px;
-    right:15px;
-    border:none;
+    right:16px;
+    top:10px;
     background:none;
-    color:white;
-    font-size:35px;
+    border:0;
+    color:#fff;
+    font-size:38px;
 }
 
 .light-nav{
@@ -458,25 +496,25 @@ main{
 }
 
 .light-nav button{
-    border:none;
-    background:#fff;
-    border-radius:7px;
-    padding:9px 16px;
+    border:0;
+    border-radius:8px;
+    padding:8px 15px;
     font-size:20px;
 }
 
 .counter{
-    color:white;
+    color:#fff;
 }
 
-/* BOTTOM */
+/* ================= BOTTOM NAV ================= */
+
 .bottom-nav{
     position:fixed;
     left:0;
     right:0;
     bottom:0;
-    height:68px;
-    background:rgba(255,255,255,.97);
+    height:70px;
+    background:rgba(255,255,255,.98);
     border-top:1px solid #ddd;
     display:flex;
     justify-content:space-around;
@@ -485,43 +523,44 @@ main{
 }
 
 .nav-item{
-    border:none;
+    border:0;
     background:none;
     color:#777;
     font-size:11px;
     display:flex;
     flex-direction:column;
     align-items:center;
-    gap:4px;
+    gap:3px;
     cursor:pointer;
 }
 
 .nav-item span{
-    font-size:21px;
+    font-size:23px;
 }
 
 .nav-item.active{
-    color:#087a3b;
-    font-weight:bold;
+    color:#08a34b;
+    font-weight:800;
 }
 
-/* DARK */
+/* ================= DARK MODE ================= */
+
 body.dark{
-    background:#101114;
+    background:#0d1013;
     color:#eee;
 }
 
 body.dark .filters,
 body.dark .card,
-body.dark .menu-section,
-body.dark .detail-box{
-    background:#1b1d21;
+body.dark .detail-box,
+body.dark .menu-section{
+    background:#1a1d21;
     color:#eee;
 }
 
 body.dark .detail-page,
 body.dark .menu-page{
-    background:#101114;
+    background:#0d1013;
 }
 
 body.dark #search{
@@ -541,19 +580,15 @@ body.dark .desc{
 
 body.dark .detail-description{
     background:#25282d;
-    color:#eee;
 }
 
-body.dark .menu-title{
-    border-color:#333;
-}
-
+body.dark .menu-title,
 body.dark .menu-row{
     border-color:#333;
 }
 
 body.dark .bottom-nav{
-    background:#191b1e;
+    background:#17191c;
     border-color:#333;
 }
 
@@ -562,25 +597,58 @@ body.dark .nav-item{
 }
 
 body.dark .nav-item.active{
-    color:#7CFC9A;
+    color:#39ef72;
 }
 
-/* MOBILE */
-@media(max-width:800px){
+/* ================= MOBILE ================= */
+
+@media(max-width:850px){
 
     .grid{
         grid-template-columns:repeat(2,1fr);
     }
 
-    .image-box{
-        height:180px;
-    }
 }
 
-@media(max-width:520px){
+@media(max-width:600px){
+
+    header{
+        min-height:235px;
+        padding:22px 15px;
+        background-size:100% auto;
+        background-position:center top;
+    }
+
+    .logo{
+        margin-top:65px;
+        font-size:46px;
+        letter-spacing:-2px;
+    }
+
+    .tagline{
+        font-size:17px;
+    }
+
+    .contact{
+        font-size:15px;
+    }
+
+    .lang-bar{
+        right:12px;
+        top:13px;
+    }
+
+    .lang-bar button{
+        padding:7px 9px;
+        font-size:11px;
+    }
+
+    main{
+        margin:13px auto;
+        padding:0 10px;
+    }
 
     .grid{
-        grid-template-columns:repeat(2,1fr);
         gap:9px;
     }
 
@@ -606,1245 +674,1537 @@ body.dark .nav-item.active{
     }
 
     .call{
-        padding:9px 3px;
         font-size:12px;
+        padding:9px 3px;
     }
 
     .detail-image{
         height:270px;
     }
 
-    .detail-content h1{
-        font-size:21px;
+}
+
+@media(max-width:390px){
+
+    .logo{
+        font-size:40px;
     }
+
+    .lang-bar button{
+        padding:6px 7px;
+    }
+
+    .theme-btn{
+        width:34px;
+    }
+
 }
 </style>
 </head>
 
 <body>
 
-<!-- HOME PAGE -->
+<!-- ================= HOME ================= -->
+
 <div id="homePage" class="page active">
 
 <header>
 
-<h1>pul.zarill</h1>
+    <div class="lang-bar">
 
-<p id="tagline">
-Arzon avtomobillar do'koni
-</p>
+        <button
+            data-lang="uz"
+            onclick="setLang('uz')">
+            UZ
+        </button>
 
-<p>
-<span id="contactLabel">Bog'lanish</span>:
-<a href="tel:+998889500005">
-+998 88 950 00 05
-</a>
-</p>
+        <button
+            data-lang="ru"
+            onclick="setLang('ru')">
+            RU
+        </button>
 
-<div class="lang-bar">
+        <button
+            data-lang="en"
+            onclick="setLang('en')">
+            EN
+        </button>
 
-<button data-lang="uz" onclick="setLang('uz')">
-UZ
-</button>
+        <button
+            class="theme-btn"
+            id="themeBtn"
+            onclick="toggleDarkMode()">
+            ☀️
+        </button>
 
-<button data-lang="ru" onclick="setLang('ru')">
-RU
-</button>
+    </div>
 
-<button data-lang="en" onclick="setLang('en')">
-EN
-</button>
+    <div class="logo">
+        pul<span class="green">.zarill</span>
+    </div>
 
-<button
-class="theme-btn"
-id="themeBtn"
-onclick="toggleDarkMode()">
-☀️
-</button>
+    <p
+        class="tagline"
+        id="tagline">
+        Arzon avtomobillar do'koni
+    </p>
 
-</div>
+    <p class="contact">
+
+        <span id="contactLabel">
+            Bog'lanish
+        </span>:
+
+        <a href="tel:+998889500005">
+            +998 88 950 00 05
+        </a>
+
+    </p>
 
 </header>
 
 <main>
 
-<div class="filters">
+    <div class="filters">
 
-<div class="search-title" id="searchLabel">
-Qidirish
-</div>
+        <div class="search-row">
 
-<div class="search-row">
+            <div class="search-wrap">
 
-<div class="search-wrap">
+                <span class="search-icon">
+                    ⌕
+                </span>
 
-<span class="search-icon">⌕</span>
+                <input
+                    id="search"
+                    type="text"
+                    placeholder="Masalan: Nexia">
 
-<input
-id="search"
-type="text"
-placeholder="Masalan: Nexia"
->
+            </div>
 
-</div>
+            <button
+                class="reset"
+                id="resetBtn"
+                onclick="resetFilters()">
 
-<button
-class="reset"
-onclick="resetFilters()"
-id="resetBtn">
-Tozalash
-</button>
+                Tozalash
 
-</div>
+            </button>
 
-</div>
+        </div>
 
-<div id="list" class="grid"></div>
+    </div>
+
+    <div
+        id="list"
+        class="grid">
+    </div>
 
 </main>
 
 </div>
 
 
-<!-- DETAIL PAGE -->
-<div id="detailPage" class="page detail-page">
-
-<div class="detail-header">
-
-<button
-class="back-btn"
-onclick="showPage('homePage')">
-←
-</button>
-
-<h2>Avtomobil</h2>
-
-</div>
-
-<div class="detail-container">
-
-<div class="detail-box">
-
-<img
-id="detailImage"
-class="detail-image"
-src=""
-alt=""
->
-
-<div class="detail-content">
-
-<h1 id="detailTitle"></h1>
+<!-- ================= DETAIL PAGE ================= -->
 
 <div
-id="detailPrice"
-class="detail-price">
+    id="detailPage"
+    class="page detail-page">
+
+    <div class="page-head">
+
+        <button
+            class="back-btn"
+            onclick="showPage('homePage')">
+            ←
+        </button>
+
+        <h2>
+            Avtomobil
+        </h2>
+
+    </div>
+
+    <div class="detail-container">
+
+        <div class="detail-box">
+
+            <img
+                id="detailImage"
+                class="detail-image"
+                src=""
+                alt="">
+
+            <div class="detail-content">
+
+                <h1 id="detailTitle"></h1>
+
+                <div
+                    id="detailPrice"
+                    class="detail-price">
+                </div>
+
+                <div
+                    id="detailDescription"
+                    class="detail-description">
+                </div>
+
+                <a
+                    id="detailCall"
+                    class="detail-call"
+                    href="tel:+998889500005"
+                    onclick="trackCall()">
+
+                    Qo'ng'iroq qilish
+
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
 </div>
+
+
+<!-- ================= MENU PAGE ================= -->
 
 <div
-id="detailDescription"
-class="detail-description">
+    id="menuPage"
+    class="page menu-page">
+
+    <div class="page-head">
+
+        <button
+            class="back-btn"
+            onclick="showPage('homePage')">
+            ←
+        </button>
+
+        <h2>
+            Menyu
+        </h2>
+
+    </div>
+
+    <div class="menu-container">
+
+        <!-- ABOUT -->
+
+        <div class="menu-section">
+
+            <div class="menu-title">
+                Biz haqimizda
+            </div>
+
+            <div class="menu-row">
+
+                <div class="menu-icon">
+                    🚗
+                </div>
+
+                <div class="menu-text">
+
+                    <strong>
+                        pul.zarill
+                    </strong>
+
+                    <br>
+
+                    <small>
+                        Avtomobillar savdosi uchun qulay platforma.
+                    </small>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- CONTACT -->
+
+        <div class="menu-section">
+
+            <div class="menu-title">
+                Biz bilan bog'lanish
+            </div>
+
+            <div class="menu-row">
+
+                <div class="menu-icon">
+                    📞
+                </div>
+
+                <a href="tel:+998889500005">
+                    +998 88 950 00 05
+                </a>
+
+                <div class="arrow">
+                    ›
+                </div>
+
+            </div>
+
+
+            <div class="menu-row">
+
+                <div class="menu-icon">
+                    ✈️
+                </div>
+
+                <a
+                    href="https://t.me/"
+                    target="_blank">
+
+                    Telegram
+
+                </a>
+
+                <div class="arrow">
+                    ›
+                </div>
+
+            </div>
+
+
+            <div class="menu-row">
+
+                <div class="menu-icon">
+                    💬
+                </div>
+
+                <a
+                    href="https://wa.me/"
+                    target="_blank">
+
+                    WhatsApp
+
+                </a>
+
+                <div class="arrow">
+                    ›
+                </div>
+
+            </div>
+
+
+            <div class="menu-row">
+
+                <div class="menu-icon">
+                    📸
+                </div>
+
+                <a
+                    href="https://instagram.com/"
+                    target="_blank">
+
+                    Instagram
+
+                </a>
+
+                <div class="arrow">
+                    ›
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- LOCATION -->
+
+        <div class="menu-section">
+
+            <div class="menu-title">
+                Manzil
+            </div>
+
+            <div class="menu-row">
+
+                <div class="menu-icon">
+                    📍
+                </div>
+
+                <div class="menu-text">
+                    Toshkent, O'zbekiston
+                </div>
+
+                <div class="arrow">
+                    ›
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- SETTINGS -->
+
+        <div class="menu-section">
+
+            <div class="menu-title">
+                Sozlamalar
+            </div>
+
+
+            <div class="menu-row">
+
+                <div class="menu-icon">
+                    🌐
+                </div>
+
+                <div class="menu-text">
+                    Til
+                </div>
+
+                <div class="menu-langs">
+
+                    <button
+                        onclick="setLang('uz')">
+                        UZ
+                    </button>
+
+                    <button
+                        onclick="setLang('ru')">
+                        RU
+                    </button>
+
+                    <button
+                        onclick="setLang('en')">
+                        EN
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <div
+                class="menu-row"
+                onclick="toggleDarkMode()">
+
+                <div
+                    class="menu-icon"
+                    id="menuThemeIcon">
+
+                    ☀️
+
+                </div>
+
+                <div class="menu-text">
+                    Ko'rinish
+                </div>
+
+                <div class="arrow">
+                    ›
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- INFORMATION -->
+
+        <div class="menu-section">
+
+            <div class="menu-title">
+                Ma'lumot
+            </div>
+
+
+            <div class="menu-row">
+
+                <div class="menu-icon">
+                    📄
+                </div>
+
+                <div class="menu-text">
+                    Foydalanish shartlari
+                </div>
+
+                <div class="arrow">
+                    ›
+                </div>
+
+            </div>
+
+
+            <div class="menu-row">
+
+                <div class="menu-icon">
+                    🔒
+                </div>
+
+                <div class="menu-text">
+                    Maxfiylik
+                </div>
+
+                <div class="arrow">
+                    ›
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
 </div>
 
-<a
-class="detail-call"
-href="tel:+998889500005"
-onclick="trackCall()"
-id="detailCall">
-Qo'ng'iroq qilish
-</a>
 
-</div>
+<!-- ================= LIGHTBOX ================= -->
 
-</div>
-
-</div>
-
-</div>
-
-
-<!-- MENU PAGE -->
-<div id="menuPage" class="page menu-page">
-
-<div class="menu-header">
-
-<button
-class="back-btn"
-onclick="showPage('homePage')">
-←
-</button>
-
-<h2>Menyu</h2>
-
-</div>
-
-<div class="menu-container">
-
-<!-- ABOUT -->
-<div class="menu-section">
-
-<div class="menu-title">
-Biz haqimizda
-</div>
-
-<div class="menu-row">
-
-<div class="menu-icon">🚗</div>
-
-<div>
-<strong>pul.zarill</strong><br>
-<small>
-Avtomobillar savdosi va xarid qilish uchun qulay platforma.
-</small>
-</div>
-
-</div>
-
-</div>
-
-
-<!-- CONTACT -->
-<div class="menu-section">
-
-<div class="menu-title">
-Biz bilan bog'lanish
-</div>
-
-<div class="menu-row">
-
-<div class="menu-icon">📞</div>
-
-<a href="tel:+998889500005">
-+998 88 950 00 05
-</a>
-
-<div class="menu-arrow">›</div>
-
-</div>
-
-
-<div class="menu-row">
-
-<div class="menu-icon">✈️</div>
-
-<a
-href="https://t.me/"
-target="_blank">
-Telegram
-</a>
-
-<div class="menu-arrow">›</div>
-
-</div>
-
-
-<div class="menu-row">
-
-<div class="menu-icon">💬</div>
-
-<a
-href="https://wa.me/"
-target="_blank">
-WhatsApp
-</a>
-
-<div class="menu-arrow">›</div>
-
-</div>
-
-
-<div class="menu-row">
-
-<div class="menu-icon">📸</div>
-
-<a
-href="https://instagram.com/"
-target="_blank">
-Instagram
-</a>
-
-<div class="menu-arrow">›</div>
-
-</div>
-
-</div>
-
-
-<!-- LOCATION -->
-<div class="menu-section">
-
-<div class="menu-title">
-Manzil
-</div>
-
-<div class="menu-row">
-
-<div class="menu-icon">📍</div>
-
-<div>
-Toshkent, O'zbekiston
-</div>
-
-<div class="menu-arrow">›</div>
-
-</div>
-
-</div>
-
-
-<!-- SETTINGS -->
-<div class="menu-section">
-
-<div class="menu-title">
-Sozlamalar
-</div>
-
-
-<div class="menu-row">
-
-<div class="menu-icon">🌐</div>
-
-<div>
-Til
-</div>
-
-<div
-style="margin-left:auto;display:flex;gap:5px;">
-
-<button
-onclick="setLang('uz')"
-style="border:0;background:none;cursor:pointer;">
-UZ
-</button>
-
-<button
-onclick="setLang('ru')"
-style="border:0;background:none;cursor:pointer;">
-RU
-</button>
-
-<button
-onclick="setLang('en')"
-style="border:0;background:none;cursor:pointer;">
-EN
-</button>
-
-</div>
-
-</div>
-
-
-<div
-class="menu-row"
-onclick="toggleDarkMode()">
-
-<div class="menu-icon" id="menuThemeIcon">
-☀️
-</div>
-
-<div>
-Ko'rinish
-</div>
-
-<div
-class="menu-arrow"
-id="menuThemeArrow">
-›
-</div>
-
-</div>
-
-</div>
-
-
-<!-- INFO -->
-<div class="menu-section">
-
-<div class="menu-title">
-Ma'lumot
-</div>
-
-<div class="menu-row">
-
-<div class="menu-icon">📄</div>
-
-<div>
-Foydalanish shartlari
-</div>
-
-<div class="menu-arrow">›</div>
-
-</div>
-
-
-<div class="menu-row">
-
-<div class="menu-icon">🔒</div>
-
-<div>
-Maxfiylik
-</div>
-
-<div class="menu-arrow">›</div>
-
-</div>
-
-</div>
-
-</div>
-
-</div>
-
-
-<!-- LIGHTBOX -->
 <div id="lightbox">
 
-<button
-class="light-close"
-onclick="closeLightbox()">
-×
-</button>
+    <button
+        class="light-close"
+        onclick="closeLightbox()">
 
-<img
-id="lightbox-img"
-src=""
-alt=""
->
+        ×
 
-<div class="light-nav">
+    </button>
 
-<button onclick="prevImage()">
-←
-</button>
+    <img
+        id="lightbox-img"
+        src=""
+        alt="">
 
-<span
-id="lightbox-counter"
-class="counter">
-</span>
+    <div class="light-nav">
 
-<button onclick="nextImage()">
-→
-</button>
+        <button
+            onclick="prevImage()">
+
+            ←
+
+        </button>
+
+        <span
+            id="lightbox-counter"
+            class="counter">
+        </span>
+
+        <button
+            onclick="nextImage()">
+
+            →
+
+        </button>
+
+    </div>
 
 </div>
 
-</div>
 
+<!-- ================= BOTTOM NAV ================= -->
 
-<!-- BOTTOM NAV -->
 <nav class="bottom-nav">
 
-<button
-class="nav-item active"
-id="navHomeBtn"
-onclick="showPage('homePage')">
+    <button
+        class="nav-item active"
+        onclick="showPage('homePage')">
 
-<span>⌂</span>
-<div id="navHome">
-Bosh sahifa
-</div>
+        <span>
+            ⌂
+        </span>
 
-</button>
+        <div>
+            Bosh sahifa
+        </div>
 
-
-<button
-class="nav-item"
-onclick="focusSearch()">
-
-<span>⌕</span>
-<div id="navSearch">
-Qidirish
-</div>
-
-</button>
+    </button>
 
 
-<button
-class="nav-item"
-onclick="showFavorites()">
+    <button
+        class="nav-item"
+        onclick="focusSearch()">
 
-<span>♡</span>
-<div id="navFav">
-Sevimlilar
-</div>
+        <span>
+            ⌕
+        </span>
 
-</button>
+        <div>
+            Qidirish
+        </div>
+
+    </button>
 
 
-<button
-class="nav-item"
-onclick="showPage('menuPage')">
+    <button
+        class="nav-item"
+        onclick="showFavorites()">
 
-<span>☰</span>
-<div id="navMenu">
-Menyu
-</div>
+        <span>
+            ♡
+        </span>
 
-</button>
+        <div>
+            Sevimlilar
+        </div>
+
+    </button>
+
+
+    <button
+        class="nav-item"
+        onclick="showPage('menuPage')">
+
+        <span>
+            ☰
+        </span>
+
+        <div>
+            Menyu
+        </div>
+
+    </button>
 
 </nav>
 
 
 <script>
 
-/* DATA */
+/* ================= VARIABLES ================= */
 
-let allCars=[];
-let favoritesOnly=false;
+let allCars = [];
 
-let currentImages=[];
-let currentIndex=0;
+let favoritesOnly = false;
+
+let currentImages = [];
+
+let currentIndex = 0;
 
 
-/* TRANSLATIONS */
+/* ================= TRANSLATIONS ================= */
 
-const translations={
+const translations = {
 
-uz:{
-tagline:"Arzon avtomobillar do'koni",
-contact:"Bog'lanish",
-search:"Qidirish",
-placeholder:"Masalan: Nexia",
-reset:"Tozalash",
-call:"Qo'ng'iroq qilish",
-sold:"SOTILDI",
-more:"Batafsil ko'rish →",
-empty:"Hozircha mashinalar yo'q",
-nomatch:"Mos mashina topilmadi",
-home:"Bosh sahifa",
-searchNav:"Qidirish",
-fav:"Sevimlilar",
-menu:"Menyu"
-},
+    uz:{
+        tagline:"Arzon avtomobillar do'koni",
+        contact:"Bog'lanish",
+        placeholder:"Masalan: Nexia",
+        reset:"Tozalash",
+        call:"Qo'ng'iroq qilish",
+        sold:"SOTILDI",
+        more:"Batafsil ko'rish →"
+    },
 
-ru:{
-tagline:"Магазин недорогих автомобилей",
-contact:"Связаться",
-search:"Поиск",
-placeholder:"Например: Nexia",
-reset:"Очистить",
-call:"Позвонить",
-sold:"ПРОДАНО",
-more:"Подробнее →",
-empty:"Пока нет автомобилей",
-nomatch:"Ничего не найдено",
-home:"Главная",
-searchNav:"Поиск",
-fav:"Избранное",
-menu:"Меню"
-},
+    ru:{
+        tagline:"Магазин недорогих автомобилей",
+        contact:"Связаться",
+        placeholder:"Например: Nexia",
+        reset:"Очистить",
+        call:"Позвонить",
+        sold:"ПРОДАНО",
+        more:"Подробнее →"
+    },
 
-en:{
-tagline:"Affordable car store",
-contact:"Contact",
-search:"Search",
-placeholder:"e.g. Nexia",
-reset:"Clear",
-call:"Call",
-sold:"SOLD",
-more:"View details →",
-empty:"No cars yet",
-nomatch:"No matching cars",
-home:"Home",
-searchNav:"Search",
-fav:"Favorites",
-menu:"Menu"
-}
+    en:{
+        tagline:"Affordable car store",
+        contact:"Contact",
+        placeholder:"e.g. Nexia",
+        reset:"Clear",
+        call:"Call",
+        sold:"SOLD",
+        more:"View details →"
+    }
 
 };
 
-let currentLang=
-localStorage.getItem("lang")||"uz";
+
+let currentLang =
+    localStorage.getItem("lang") || "uz";
 
 
-/* LANGUAGE */
+/* ================= LANGUAGE ================= */
 
 function setLang(lang){
 
-currentLang=lang;
+    currentLang = lang;
 
-localStorage.setItem(
-"lang",
-lang
-);
+    localStorage.setItem(
+        "lang",
+        lang
+    );
 
-applyLang();
+    applyLang();
 
-render();
-
+    render();
 }
 
 
 function applyLang(){
 
-const t=
-translations[currentLang];
+    const t =
+        translations[currentLang];
 
-document.getElementById(
-"tagline"
-).textContent=t.tagline;
 
-document.getElementById(
-"contactLabel"
-).textContent=t.contact;
+    document.getElementById(
+        "tagline"
+    ).textContent =
+        t.tagline;
 
-document.getElementById(
-"searchLabel"
-).textContent=t.search;
 
-document.getElementById(
-"search"
-).placeholder=t.placeholder;
+    document.getElementById(
+        "contactLabel"
+    ).textContent =
+        t.contact;
 
-document.getElementById(
-"resetBtn"
-).textContent=t.reset;
 
-document.getElementById(
-"detailCall"
-).textContent=t.call;
+    document.getElementById(
+        "search"
+    ).placeholder =
+        t.placeholder;
 
-document.getElementById(
-"navHome"
-).textContent=t.home;
 
-document.getElementById(
-"navSearch"
-).textContent=t.searchNav;
+    document.getElementById(
+        "resetBtn"
+    ).textContent =
+        t.reset;
 
-document.getElementById(
-"navFav"
-).textContent=t.fav;
 
-document.getElementById(
-"navMenu"
-).textContent=t.menu;
+    document.getElementById(
+        "detailCall"
+    ).textContent =
+        t.call;
 
-document
-.querySelectorAll(".lang-bar button")
-.forEach(btn=>{
 
-if(btn.dataset.lang){
+    document
+        .querySelectorAll("[data-lang]")
+        .forEach(button => {
 
-btn.classList.toggle(
-"active",
-btn.dataset.lang===currentLang
-);
+            button.classList.toggle(
+                "active",
+                button.dataset.lang === currentLang
+            );
 
-}
-
-});
+        });
 
 }
 
 
-/* FAVORITES */
+/* ================= FAVORITES ================= */
 
 function getFavorites(){
 
-try{
+    try{
 
-return JSON.parse(
-localStorage.getItem("favorites")||"[]"
-);
+        return JSON.parse(
+            localStorage.getItem(
+                "favorites"
+            ) || "[]"
+        );
 
-}catch{
+    }catch{
 
-return[];
+        return [];
 
-}
+    }
 
 }
 
 
 function isFavorite(id){
 
-return getFavorites().includes(id);
+    return getFavorites().includes(id);
 
 }
 
 
 function toggleFavorite(id){
 
-let favs=getFavorites();
+    let favorites =
+        getFavorites();
 
-if(favs.includes(id)){
 
-favs=favs.filter(
-x=>x!==id
-);
+    if(
+        favorites.includes(id)
+    ){
 
-}else{
+        favorites =
+            favorites.filter(
+                x => x !== id
+            );
 
-favs.push(id);
+    }else{
+
+        favorites.push(id);
+
+    }
+
+
+    localStorage.setItem(
+        "favorites",
+        JSON.stringify(favorites)
+    );
+
+
+    render();
 
 }
 
-localStorage.setItem(
-"favorites",
-JSON.stringify(favs)
-);
 
-render();
-
-}
-
-
-/* LOAD */
+/* ================= LOAD CARS ================= */
 
 async function load(){
 
-try{
+    try{
 
-const response=
-await fetch("/api/cars");
+        const response =
+            await fetch("/api/cars");
 
-allCars=
-await response.json();
+        allCars =
+            await response.json();
 
-render();
+        render();
 
-}catch(error){
+    }catch(error){
 
-console.log(error);
+        document.getElementById(
+            "list"
+        ).innerHTML =
+
+        '<p class="empty">' +
+        "Ma'lumotlarni yuklashda xatolik" +
+        "</p>";
+
+    }
 
 }
 
-}
 
-
-/* RENDER */
+/* ================= RENDER ================= */
 
 function render(){
 
-const t=
-translations[currentLang];
-
-const query=
-document
-.getElementById("search")
-.value
-.trim()
-.toLowerCase();
+    const t =
+        translations[currentLang];
 
 
-const cars=
-allCars.filter(car=>{
-
-const name=
-String(car.name||"")
-.toLowerCase();
-
-const description=
-String(car.description||"")
-.toLowerCase();
-
-const searchMatch=
-!query||
-name.includes(query)||
-description.includes(query);
-
-const favoriteMatch=
-!favoritesOnly||
-isFavorite(car.id);
-
-return searchMatch&&favoriteMatch;
-
-});
+    const query =
+        document
+            .getElementById("search")
+            .value
+            .trim()
+            .toLowerCase();
 
 
-const list=
-document.getElementById("list");
+    const cars =
+        allCars.filter(car => {
 
-list.innerHTML="";
+            const text =
+
+                String(
+                    car.name || ""
+                ) +
+
+                " " +
+
+                String(
+                    car.description || ""
+                );
 
 
-if(cars.length===0){
+            return (
 
-list.innerHTML=
-"<p class='empty'>"+
-(
-allCars.length===0
-?t.empty
-:t.nomatch
-)+
-"</p>";
+                (
+                    !query ||
+                    text
+                        .toLowerCase()
+                        .includes(query)
+                )
 
-return;
+                &&
+
+                (
+                    !favoritesOnly ||
+                    isFavorite(car.id)
+                )
+
+            );
+
+        });
+
+
+    const list =
+        document.getElementById("list");
+
+
+    list.innerHTML = "";
+
+
+    if(!cars.length){
+
+        list.innerHTML =
+
+            '<p class="empty">' +
+
+            (
+                allCars.length
+                ? "Mos mashina topilmadi"
+                : "Hozircha mashinalar yo'q"
+            )
+
+            +
+
+            "</p>";
+
+        return;
+
+    }
+
+
+    cars.forEach(car => {
+
+        const card =
+            document.createElement("div");
+
+        card.className =
+            "card";
+
+
+        /* IMAGE */
+
+        const box =
+            document.createElement("div");
+
+        box.className =
+            "image-box";
+
+
+        const images =
+            car.images || [];
+
+
+        if(images.length){
+
+            const image =
+                document.createElement("img");
+
+            image.className =
+                "thumb";
+
+            image.src =
+                "/uploads/" +
+                images[0];
+
+            image.alt =
+                car.name ||
+                "Avtomobil";
+
+            image.loading =
+                "lazy";
+
+            box.appendChild(
+                image
+            );
+
+        }
+
+
+        /* FAVORITE */
+
+        const fav =
+            document.createElement("button");
+
+        fav.className =
+            "fav-btn" +
+
+            (
+                isFavorite(car.id)
+                ? " active"
+                : ""
+            );
+
+
+        fav.textContent =
+            isFavorite(car.id)
+            ? "♥"
+            : "♡";
+
+
+        fav.onclick =
+            event => {
+
+                event.stopPropagation();
+
+                toggleFavorite(
+                    car.id
+                );
+
+            };
+
+
+        box.appendChild(
+            fav
+        );
+
+
+        card.appendChild(
+            box
+        );
+
+
+        /* CONTENT */
+
+        const content =
+            document.createElement("div");
+
+        content.className =
+            "content";
+
+
+        /* TITLE */
+
+        const title =
+            document.createElement("h3");
+
+        title.textContent =
+            car.name ||
+            "Avtomobil";
+
+
+        if(car.sold){
+
+            const badge =
+                document.createElement(
+                    "span"
+                );
+
+            badge.className =
+                "badge";
+
+            badge.textContent =
+                t.sold;
+
+            title.appendChild(
+                badge
+            );
+
+        }
+
+
+        content.appendChild(
+            title
+        );
+
+
+        /* DESCRIPTION */
+
+        if(car.description){
+
+            const description =
+                document.createElement(
+                    "div"
+                );
+
+            description.className =
+                "desc";
+
+            description.textContent =
+                car.description;
+
+            content.appendChild(
+                description
+            );
+
+        }
+
+
+        /* MORE */
+
+        const more =
+            document.createElement(
+                "div"
+            );
+
+        more.className =
+            "more";
+
+        more.textContent =
+            t.more;
+
+        content.appendChild(
+            more
+        );
+
+
+        /* PRICE */
+
+        const price =
+            document.createElement(
+                "div"
+            );
+
+        price.className =
+            "price";
+
+        price.textContent =
+
+            Number(
+                car.price || 0
+            ).toLocaleString(
+                "ru-RU"
+            )
+
+            +
+
+            " so'm";
+
+
+        content.appendChild(
+            price
+        );
+
+
+        /* CALL */
+
+        const call =
+            document.createElement(
+                "a"
+            );
+
+        call.className =
+            "call";
+
+        call.href =
+            "tel:+998889500005";
+
+        call.textContent =
+            t.call;
+
+        call.onclick =
+            trackCall;
+
+
+        content.appendChild(
+            call
+        );
+
+
+        card.appendChild(
+            content
+        );
+
+
+        /* OPEN DETAILS */
+
+        card.onclick =
+            event => {
+
+                if(
+                    event.target.closest(
+                        ".fav-btn"
+                    )
+                ) return;
+
+
+                if(
+                    event.target.closest(
+                        ".call"
+                    )
+                ) return;
+
+
+                openDetails(
+                    car
+                );
+
+            };
+
+
+        list.appendChild(
+            card
+        );
+
+    });
 
 }
 
 
-cars.forEach(car=>{
-
-const card=
-document.createElement("div");
-
-card.className="card";
-
-
-const imageBox=
-document.createElement("div");
-
-imageBox.className="image-box";
-
-
-const images=
-car.images||[];
-
-
-if(images.length){
-
-const img=
-document.createElement("img");
-
-img.className="thumb";
-
-img.src=
-"/uploads/"+images[0];
-
-img.alt=
-car.name||"Avtomobil";
-
-img.loading="lazy";
-
-imageBox.appendChild(img);
-
-}
-
-
-const fav=
-document.createElement("button");
-
-fav.className=
-"fav-btn"+
-(
-isFavorite(car.id)
-?" active":""
-);
-
-fav.textContent=
-isFavorite(car.id)
-?"♥":"♡";
-
-fav.onclick=function(e){
-
-e.stopPropagation();
-
-toggleFavorite(car.id);
-
-};
-
-imageBox.appendChild(fav);
-
-card.appendChild(imageBox);
-
-
-const content=
-document.createElement("div");
-
-content.className="content";
-
-
-const title=
-document.createElement("h3");
-
-title.textContent=
-car.name||"Avtomobil";
-
-
-if(car.sold){
-
-const badge=
-document.createElement("span");
-
-badge.className="badge";
-
-badge.textContent=t.sold;
-
-title.appendChild(badge);
-
-}
-
-content.appendChild(title);
-
-
-if(car.description){
-
-const desc=
-document.createElement("div");
-
-desc.className="desc";
-
-desc.textContent=
-car.description;
-
-content.appendChild(desc);
-
-}
-
-
-const more=
-document.createElement("div");
-
-more.className="more";
-
-more.textContent=t.more;
-
-content.appendChild(more);
-
-
-const price=
-document.createElement("div");
-
-price.className="price";
-
-price.textContent=
-Number(car.price||0)
-.toLocaleString("ru-RU")
-+" so'm";
-
-content.appendChild(price);
-
-
-const call=
-document.createElement("a");
-
-call.className="call";
-
-call.href=
-"tel:+998889500005";
-
-call.textContent=t.call;
-
-call.onclick=function(){
-
-trackCall();
-
-};
-
-content.appendChild(call);
-
-card.appendChild(content);
-
-
-/* OPEN DETAIL */
-
-card.onclick=function(e){
-
-if(
-e.target.closest(".fav-btn")||
-e.target.closest(".call")
-){
-
-return;
-
-}
-
-openDetails(car);
-
-};
-
-
-list.appendChild(card);
-
-});
-
-}
-
-
-/* DETAILS */
+/* ================= DETAIL ================= */
 
 function openDetails(car){
 
-document.getElementById(
-"detailTitle"
-).textContent=
-car.name||"Avtomobil";
+    document.getElementById(
+        "detailTitle"
+    ).textContent =
+        car.name ||
+        "Avtomobil";
 
 
-document.getElementById(
-"detailPrice"
-).textContent=
-Number(car.price||0)
-.toLocaleString("ru-RU")
-+" so'm";
+    document.getElementById(
+        "detailPrice"
+    ).textContent =
+
+        Number(
+            car.price || 0
+        ).toLocaleString(
+            "ru-RU"
+        )
+
+        +
+
+        " so'm";
 
 
-document.getElementById(
-"detailDescription"
-).textContent=
-car.description||
-"Ma'lumot mavjud emas";
+    document.getElementById(
+        "detailDescription"
+    ).textContent =
+
+        car.description ||
+        "Ma'lumot mavjud emas";
 
 
-const image=
-document.getElementById(
-"detailImage"
-);
-
-const images=
-car.images||[];
+    const image =
+        document.getElementById(
+            "detailImage"
+        );
 
 
-if(images.length){
-
-image.src=
-"/uploads/"+images[0];
-
-image.style.display="block";
-
-image.onclick=function(){
-
-openLightbox(images,0);
-
-};
-
-}else{
-
-image.style.display="none";
-
-}
-
-showPage("detailPage");
-
-}
+    const images =
+        car.images || [];
 
 
-/* PAGE SWITCH */
+    if(images.length){
 
-function showPage(pageId){
+        image.src =
+            "/uploads/" +
+            images[0];
 
-document
-.querySelectorAll(".page")
-.forEach(page=>{
-page.classList.remove("active");
-});
-
-document
-.getElementById(pageId)
-.classList.add("active");
+        image.style.display =
+            "block";
 
 
-window.scrollTo({
-top:0,
-behavior:"smooth"
-});
+        image.onclick =
+            () =>
+                openLightbox(
+                    images,
+                    0
+                );
+
+    }else{
+
+        image.style.display =
+            "none";
+
+    }
+
+
+    showPage(
+        "detailPage"
+    );
 
 }
 
 
-/* SEARCH */
+/* ================= PAGE ================= */
 
-document.getElementById(
-"search"
-).addEventListener(
-"input",
-function(){
+function showPage(id){
 
-favoritesOnly=false;
+    document
+        .querySelectorAll(".page")
+        .forEach(page => {
 
-render();
+            page.classList.remove(
+                "active"
+            );
 
-});
+        });
 
+
+    document
+        .getElementById(id)
+        .classList.add(
+            "active"
+        );
+
+
+    window.scrollTo({
+        top:0,
+        behavior:"smooth"
+    });
+
+}
+
+
+/* ================= SEARCH ================= */
 
 function resetFilters(){
 
-document.getElementById(
-"search"
-).value="";
+    document.getElementById(
+        "search"
+    ).value = "";
 
-favoritesOnly=false;
+    favoritesOnly =
+        false;
 
-render();
+    render();
 
 }
+
+
+document
+    .getElementById("search")
+    .addEventListener(
+        "input",
+        () => {
+
+            favoritesOnly =
+                false;
+
+            render();
+
+        }
+    );
 
 
 function focusSearch(){
 
-showPage("homePage");
+    showPage(
+        "homePage"
+    );
 
-setTimeout(()=>{
 
-document.getElementById(
-"search"
-).focus();
+    setTimeout(
+        () => {
 
-},100);
+            document
+                .getElementById(
+                    "search"
+                )
+                .focus();
+
+        },
+        100
+    );
 
 }
 
 
 function showFavorites(){
 
-showPage("homePage");
+    showPage(
+        "homePage"
+    );
 
-favoritesOnly=true;
+    favoritesOnly =
+        true;
 
-render();
+    render();
 
 }
 
 
-/* LIGHTBOX */
+/* ================= LIGHTBOX ================= */
 
-function openLightbox(images,index){
+function openLightbox(
+    images,
+    index
+){
 
-currentImages=images;
+    currentImages =
+        images;
 
-currentIndex=index;
+    currentIndex =
+        index;
 
-showCurrent();
 
-document
-.getElementById("lightbox")
-.classList.add("open");
+    showCurrent();
+
+
+    document
+        .getElementById(
+            "lightbox"
+        )
+        .classList.add(
+            "open"
+        );
 
 }
 
 
 function closeLightbox(){
 
-document
-.getElementById("lightbox")
-.classList.remove("open");
+    document
+        .getElementById(
+            "lightbox"
+        )
+        .classList.remove(
+            "open"
+        );
 
 }
 
 
 function showCurrent(){
 
-if(!currentImages.length)
-return;
+    if(
+        !currentImages.length
+    ) return;
 
-document.getElementById(
-"lightbox-img"
-).src=
-"/uploads/"+
-currentImages[currentIndex];
 
-document.getElementById(
-"lightbox-counter"
-).textContent=
-(currentIndex+1)+
-" / "+
-currentImages.length;
+    document
+        .getElementById(
+            "lightbox-img"
+        )
+        .src =
+
+        "/uploads/" +
+        currentImages[
+            currentIndex
+        ];
+
+
+    document
+        .getElementById(
+            "lightbox-counter"
+        )
+        .textContent =
+
+        (
+            currentIndex + 1
+        )
+
+        +
+
+        " / " +
+
+        currentImages.length;
 
 }
 
 
 function nextImage(){
 
-currentIndex=
-(currentIndex+1)%
-currentImages.length;
+    currentIndex =
 
-showCurrent();
+        (
+            currentIndex + 1
+        )
+
+        %
+
+        currentImages.length;
+
+
+    showCurrent();
 
 }
 
 
 function prevImage(){
 
-currentIndex=
-(currentIndex-1+
-currentImages.length)%
-currentImages.length;
+    currentIndex =
 
-showCurrent();
+        (
+            currentIndex - 1 +
+            currentImages.length
+        )
+
+        %
+
+        currentImages.length;
+
+
+    showCurrent();
 
 }
 
 
-/* DARK MODE */
+/* ================= DARK MODE ================= */
 
 function toggleDarkMode(){
 
-const dark=
-document.body.classList.toggle("dark");
+    const dark =
+        document.body
+            .classList
+            .toggle("dark");
 
-localStorage.setItem(
-"darkMode",
-dark
-);
 
-updateThemeIcon();
+    localStorage.setItem(
+        "darkMode",
+        dark
+    );
+
+
+    updateThemeIcon();
 
 }
 
 
 function updateThemeIcon(){
 
-const dark=
-document.body.classList.contains("dark");
-
-document.getElementById(
-"themeBtn"
-).textContent=
-dark?"🌙":"☀️";
-
-document.getElementById(
-"menuThemeIcon"
-).textContent=
-dark?"🌙":"☀️";
-
-}
+    const dark =
+        document.body
+            .classList
+            .contains("dark");
 
 
-if(
-localStorage.getItem("darkMode")
-==="true"
-){
+    document.getElementById(
+        "themeBtn"
+    ).textContent =
+        dark
+        ? "🌙"
+        : "☀️";
 
-document.body.classList.add("dark");
+
+    document.getElementById(
+        "menuThemeIcon"
+    ).textContent =
+        dark
+        ? "🌙"
+        : "☀️";
 
 }
 
 
-/* STATS */
+/* ================= STATS ================= */
 
 function trackView(){
 
-fetch(
-"/api/stats/view",
-{
-method:"POST"
-}
-).catch(()=>{});
+    fetch(
+        "/api/stats/view",
+        {
+            method:"POST"
+        }
+    ).catch(
+        () => {}
+    );
 
 }
 
 
 function trackCall(){
 
-fetch(
-"/api/stats/call",
-{
-method:"POST"
-}
-).catch(()=>{});
+    fetch(
+        "/api/stats/call",
+        {
+            method:"POST"
+        }
+    ).catch(
+        () => {}
+    );
 
 }
 
 
-/* ESC */
+/* ================= START ================= */
 
-document.addEventListener(
-"keydown",
-function(e){
+if(
+    localStorage.getItem(
+        "darkMode"
+    ) === "true"
+){
 
-if(e.key==="Escape"){
-
-closeLightbox();
+    document.body
+        .classList
+        .add("dark");
 
 }
 
-});
-
-
-/* START */
 
 applyLang();
 
