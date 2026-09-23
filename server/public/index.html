@@ -88,8 +88,6 @@ header{
     color:#19d66b;
 }
 
-/* KATTA GLOW */
-
 .logo::before{
     content:"";
 
@@ -1147,6 +1145,7 @@ body.dark .detail-btn{
 
             <a
                 class="phone-top"
+                id="headerPhone"
                 href="tel:+998889500005"
                 onclick="trackCall(event)"
             >
@@ -1339,6 +1338,8 @@ body.dark .detail-btn{
             </div>
 
 
+            <!-- PHONE -->
+
             <div class="menu-item">
 
                 <div class="menu-item-left">
@@ -1354,6 +1355,7 @@ body.dark .detail-btn{
                 </div>
 
                 <a
+                    id="menuPhone"
                     href="tel:+998889500005"
                     onclick="trackCall(event)"
                 >
@@ -1362,6 +1364,8 @@ body.dark .detail-btn{
 
             </div>
 
+
+            <!-- TELEGRAM -->
 
             <div class="menu-item">
 
@@ -1378,14 +1382,18 @@ body.dark .detail-btn{
                 </div>
 
                 <a
+                    id="menuTelegram"
                     href="https://t.me/"
                     target="_blank"
+                    rel="noopener"
                 >
                     Ochish
                 </a>
 
             </div>
 
+
+            <!-- WHATSAPP -->
 
             <div class="menu-item">
 
@@ -1402,14 +1410,18 @@ body.dark .detail-btn{
                 </div>
 
                 <a
+                    id="menuWhatsapp"
                     href="https://wa.me/"
                     target="_blank"
+                    rel="noopener"
                 >
                     Ochish
                 </a>
 
             </div>
 
+
+            <!-- INSTAGRAM -->
 
             <div class="menu-item">
 
@@ -1426,14 +1438,18 @@ body.dark .detail-btn{
                 </div>
 
                 <a
+                    id="menuInstagram"
                     href="https://instagram.com/"
                     target="_blank"
+                    rel="noopener"
                 >
                     Ochish
                 </a>
 
             </div>
 
+
+            <!-- ADDRESS -->
 
             <div class="menu-item">
 
@@ -1443,7 +1459,10 @@ body.dark .detail-btn{
                         Manzil
                     </span>
 
-                    <span class="menu-item-sub">
+                    <span
+                        class="menu-item-sub"
+                        id="menuAddress"
+                    >
                         Toshkent, O'zbekiston
                     </span>
 
@@ -1453,6 +1472,8 @@ body.dark .detail-btn{
 
             </div>
 
+
+            <!-- LANGUAGE -->
 
             <div class="menu-item">
 
@@ -1472,6 +1493,8 @@ body.dark .detail-btn{
 
             </div>
 
+
+            <!-- THEME -->
 
             <div class="menu-item">
 
@@ -1632,6 +1655,244 @@ let currentLang =
 let currentDetailsCar = null;
 
 let currentLightboxIndex = 0;
+
+
+/* =========================================
+   SITE SETTINGS
+   ADMIN PANELDAN KELADI
+========================================= */
+
+let siteSettings = {
+
+    phone:"+998 88 950 00 05",
+
+    telegram:"https://t.me/",
+
+    whatsapp:"https://wa.me/",
+
+    instagram:"https://instagram.com/",
+
+    address:"Toshkent, O'zbekiston"
+
+};
+
+
+/* =========================================
+   TELEFON HREF
+========================================= */
+
+function phoneHref(phone){
+
+    const value =
+        String(phone || "")
+            .trim();
+
+    const cleaned =
+        value.replace(
+            /[^\d+]/g,
+            ""
+        );
+
+    if(!cleaned){
+
+        return "#";
+    }
+
+    return "tel:" + cleaned;
+}
+
+
+/* =========================================
+   LOAD SITE SETTINGS
+========================================= */
+
+async function loadSettings(){
+
+    try{
+
+        const response =
+            await fetch(
+                "/api/settings",
+                {
+                    cache:"no-store"
+                }
+            );
+
+        if(!response.ok){
+
+            throw new Error(
+                "Settings API error"
+            );
+        }
+
+        const data =
+            await response.json();
+
+        if(
+            data &&
+            data.settings
+        ){
+
+            siteSettings = {
+
+                ...siteSettings,
+
+                ...data.settings
+
+            };
+
+        }
+
+    }catch(error){
+
+        console.error(
+            "Settings:",
+            error
+        );
+
+    }
+
+    applySettings();
+}
+
+
+/* =========================================
+   APPLY SETTINGS
+========================================= */
+
+function applySettings(){
+
+    const phone =
+        siteSettings.phone || "";
+
+    const href =
+        phoneHref(phone);
+
+
+    /* HEADER PHONE */
+
+    const headerPhone =
+        document.getElementById(
+            "headerPhone"
+        );
+
+    if(headerPhone){
+
+        headerPhone.textContent =
+            phone;
+
+        headerPhone.href =
+            href;
+    }
+
+
+    /* MENU PHONE */
+
+    const menuPhone =
+        document.getElementById(
+            "menuPhone"
+        );
+
+    if(menuPhone){
+
+        menuPhone.textContent =
+            phone;
+
+        menuPhone.href =
+            href;
+    }
+
+
+    /* TELEGRAM */
+
+    const telegram =
+        document.getElementById(
+            "menuTelegram"
+        );
+
+    if(telegram){
+
+        telegram.href =
+            siteSettings.telegram ||
+            "#";
+    }
+
+
+    /* WHATSAPP */
+
+    const whatsapp =
+        document.getElementById(
+            "menuWhatsapp"
+        );
+
+    if(whatsapp){
+
+        whatsapp.href =
+            siteSettings.whatsapp ||
+            "#";
+    }
+
+
+    /* INSTAGRAM */
+
+    const instagram =
+        document.getElementById(
+            "menuInstagram"
+        );
+
+    if(instagram){
+
+        instagram.href =
+            siteSettings.instagram ||
+            "#";
+    }
+
+
+    /* ADDRESS */
+
+    const address =
+        document.getElementById(
+            "menuAddress"
+        );
+
+    if(address){
+
+        address.textContent =
+            siteSettings.address ||
+            "";
+    }
+
+
+    /* ALL CALL BUTTONS */
+
+    document
+        .querySelectorAll(
+            ".call-btn"
+        )
+        .forEach(
+            button => {
+
+                button.href =
+                    href;
+
+            }
+        );
+
+
+    /* DETAILS CALL */
+
+    const detailsCall =
+        document.querySelector(
+            ".details-call"
+        );
+
+    if(detailsCall){
+
+        detailsCall.href =
+            href;
+    }
+
+}
 
 
 /* =========================================
@@ -1911,7 +2172,7 @@ function resetSearch(){
 
 
 /* =========================================
-   LOAD
+   LOAD CARS
 ========================================= */
 
 async function load(){
@@ -2149,6 +2410,11 @@ function renderFiltered(){
 
         }
     );
+
+
+    /* YANGI TELEFONNI QO‘LLASH */
+
+    applySettings();
 }
 
 
@@ -2365,7 +2631,9 @@ function createCarCard(
 
                 <a
                     class="call-btn"
-                    href="tel:+998889500005"
+                    href="${phoneHref(
+                        siteSettings.phone
+                    )}"
                 >
                     📞
                 </a>
@@ -2589,6 +2857,9 @@ function showFavorites(){
         .textContent =
         favoriteCars.length +
         " ta";
+
+
+    applySettings();
 }
 
 
@@ -2716,7 +2987,9 @@ function openDetails(car){
 
                 <a
                     class="details-call"
-                    href="tel:+998889500005"
+                    href="${phoneHref(
+                        siteSettings.phone
+                    )}"
                     onclick="trackCall(event)"
                 >
                     ${t.call}
@@ -2727,6 +3000,11 @@ function openDetails(car){
         </div>
 
     `;
+
+
+    /* YANGI TELEFONNI QO‘LLASH */
+
+    applySettings();
 }
 
 
@@ -2969,7 +3247,6 @@ function showPage(page){
 
 /* =========================================
    GO HOME
-   FAQAT SHU FUNKSIYA TUZATILDI
 ========================================= */
 
 function goHome(){
@@ -3222,6 +3499,13 @@ applyLang();
 updateThemeIcon();
 
 trackView();
+
+/*
+   Avval sozlamalarni yuklaymiz.
+   Keyin mashinalarni yuklaymiz.
+*/
+
+loadSettings();
 
 load();
 
