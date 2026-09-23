@@ -14,9 +14,15 @@
         textarea { resize: vertical; min-height: 70px; }
         button { padding: 10px 16px; font-size: 16px; cursor: pointer; }
         .row { display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 8px 0; border-bottom: 1px solid #eee; }
+        .row.sold { opacity: 0.55; }
         .row .thumbs { display: flex; gap: 4px; }
         .row img { width: 56px; height: 42px; object-fit: cover; border-radius: 4px; }
-        .row .info { flex: 1; }
+        .row .info { flex: 1; display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+        .row .actions { display: flex; gap: 6px; }
+        .badge-sold { background: #d33; color: #fff; font-size: 11px; padding: 2px 6px; border-radius: 4px; font-weight: bold; }
+        .btn-sold { background: #f4f5f7; }
+        .btn-sold.active { background: #2a7; color: #fff; }
+        .btn-del { background: #fdd; }
         #msg { margin-top: 10px; font-weight: bold; }
         .hint { font-size: 13px; color: #888; margin-top: -8px; margin-bottom: 12px; }
     </style>
@@ -73,7 +79,8 @@
         list.innerHTML = '';
         for (const car of cars) {
             const row = document.createElement('div');
-            row.className = 'row';
+            row.className = 'row' + (car.sold ? ' sold' : '');
+
             const thumbs = document.createElement('div');
             thumbs.className = 'thumbs';
             for (const name of (car.images || []).slice(0, 3)) {
@@ -81,13 +88,32 @@
                 img.src = '/uploads/' + name;
                 thumbs.appendChild(img);
             }
+
             const text = document.createElement('span');
             text.className = 'info';
             text.textContent = car.name + ' - ' + car.price.toLocaleString('ru-RU') + " so'm";
-            const btn = document.createElement('button');
-            btn.textContent = "O'chirish";
-            btn.onclick = () => removeCar(car.id);
-            row.append(thumbs, text, btn);
+            if (car.sold) {
+                const badge = document.createElement('span');
+                badge.className = 'badge-sold';
+                badge.textContent = 'SOTILDI';
+                text.appendChild(badge);
+            }
+
+            const actions = document.createElement('div');
+            actions.className = 'actions';
+
+            const soldBtn = document.createElement('button');
+            soldBtn.className = 'btn-sold' + (car.sold ? ' active' : '');
+            soldBtn.textContent = car.sold ? "Qaytarish" : "Sotildi deb belgilash";
+            soldBtn.onclick = () => toggleSold(car.id);
+
+            const delBtn = document.createElement('button');
+            delBtn.className = 'btn-del';
+            delBtn.textContent = "O'chirish";
+            delBtn.onclick = () => removeCar(car.id);
+
+            actions.append(soldBtn, delBtn);
+            row.append(thumbs, text, actions);
             list.appendChild(row);
         }
     }
@@ -123,6 +149,14 @@
         } catch (e) {
             msg.textContent = e.message;
         }
+    }
+
+    async function toggleSold(id) {
+        const res = await fetch('/api/cars/' + id + '/sold', {
+            method: 'POST',
+            headers: { 'x-admin-password': document.getElementById('password').value }
+        });
+        if (res.ok) { load(); } else { msg.textContent = "Parol noto'g'ri"; }
     }
 
     async function removeCar(id) {
