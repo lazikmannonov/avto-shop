@@ -3,7 +3,6 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>pul.zarill — Admin</title>
 
 <style>
@@ -15,16 +14,26 @@
 
 :root{
     --bg:#f4f5f7;
-    --card:#fff;
-    --text:#111;
+    --card:#ffffff;
+    --text:#111111;
     --muted:#777;
-    --border:#e7e7e7;
-    --black:#111;
-    --green:#16a05d;
-    --red:#e53935;
+    --border:#e8e8e8;
+    --black:#080808;
+    --soft:#f7f7f7;
+    --green:#16a34a;
+    --red:#dc2626;
     --blue:#2563eb;
-    --orange:#f59e0b;
-    --shadow:0 10px 35px rgba(0,0,0,.06);
+    --shadow:0 10px 30px rgba(0,0,0,.06);
+}
+
+body.dark{
+    --bg:#101010;
+    --card:#181818;
+    --text:#f5f5f5;
+    --muted:#999;
+    --border:#292929;
+    --soft:#202020;
+    --shadow:0 10px 30px rgba(0,0,0,.2);
 }
 
 body{
@@ -44,8 +53,8 @@ body{
     top:0;
     width:245px;
     height:100vh;
-    background:#0b0b0b;
-    color:#fff;
+    background:#070707;
+    color:white;
     padding:22px 15px;
     z-index:1000;
     transition:.3s;
@@ -54,55 +63,41 @@ body{
 .logo{
     font-size:25px;
     font-weight:900;
-    padding:5px 11px 28px;
+    padding:8px 12px 30px;
     letter-spacing:-1px;
 }
 
 .logo span{
-    color:#777;
+    color:#aaa;
 }
 
-.sidebar-title{
-    font-size:10px;
-    color:#666;
-    font-weight:bold;
-    letter-spacing:1.5px;
-    text-transform:uppercase;
-    padding:0 12px;
-    margin:10px 0;
+.nav{
+    display:flex;
+    flex-direction:column;
+    gap:7px;
 }
 
-.nav-btn{
-    width:100%;
+.nav button{
     border:0;
     background:transparent;
     color:#aaa;
-    padding:13px 12px;
-    border-radius:11px;
-    display:flex;
-    align-items:center;
-    gap:12px;
-    cursor:pointer;
+    padding:14px 15px;
+    border-radius:12px;
     text-align:left;
-    font-size:14px;
-    margin-bottom:5px;
+    font-size:15px;
+    cursor:pointer;
     transition:.2s;
 }
 
-.nav-btn:hover{
-    background:#1b1b1b;
-    color:#fff;
+.nav button:hover{
+    background:#181818;
+    color:white;
 }
 
-.nav-btn.active{
-    background:#fff;
-    color:#111;
-}
-
-.nav-icon{
-    width:25px;
-    text-align:center;
-    font-size:17px;
+.nav button.active{
+    background:white;
+    color:#050505;
+    font-weight:700;
 }
 
 .sidebar-bottom{
@@ -112,22 +107,14 @@ body{
     bottom:20px;
 }
 
-.server-status{
-    background:#151515;
+.sidebar-bottom button{
+    width:100%;
+    border:0;
+    background:#181818;
+    color:#aaa;
+    padding:13px;
     border-radius:12px;
-    padding:12px;
-    color:#999;
-    font-size:11px;
-}
-
-.status-dot{
-    display:inline-block;
-    width:8px;
-    height:8px;
-    border-radius:50%;
-    background:#20c76a;
-    margin-right:6px;
-    box-shadow:0 0 9px #20c76a;
+    cursor:pointer;
 }
 
 /* =========================
@@ -139,13 +126,9 @@ body{
     min-height:100vh;
 }
 
-/* =========================
-   TOPBAR
-========================= */
-
 .topbar{
-    height:75px;
-    background:#fff;
+    height:78px;
+    background:var(--card);
     border-bottom:1px solid var(--border);
     display:flex;
     align-items:center;
@@ -156,97 +139,97 @@ body{
     z-index:500;
 }
 
-.page-title{
-    font-size:21px;
-    font-weight:900;
+.top-title{
+    font-size:22px;
+    font-weight:800;
 }
 
-.page-subtitle{
-    font-size:12px;
+.top-sub{
+    font-size:13px;
     color:var(--muted);
     margin-top:4px;
 }
 
 .top-actions{
     display:flex;
-    gap:8px;
+    gap:9px;
 }
 
-.icon-btn{
+.top-btn{
+    border:1px solid var(--border);
+    background:var(--card);
+    color:var(--text);
     width:42px;
     height:42px;
-    border:1px solid var(--border);
-    background:#fff;
     border-radius:11px;
     cursor:pointer;
     font-size:17px;
-    transition:.2s;
 }
 
-.icon-btn:hover{
-    background:#f3f3f3;
-    transform:translateY(-1px);
-}
-
-.mobile-menu{
+.menu-btn{
     display:none;
-    width:40px;
-    height:40px;
-    border:1px solid #ddd;
-    background:#fff;
-    border-radius:10px;
-    cursor:pointer;
-    font-size:19px;
+}
+
+.content{
+    padding:30px;
+    max-width:1500px;
+    margin:auto;
 }
 
 /* =========================
-   CONTENT
+   PAGE
 ========================= */
 
-.content{
-    max-width:1500px;
-    margin:auto;
-    padding:28px;
-}
-
-.page-section{
+.page{
     display:none;
+    animation:pageIn .25s ease;
 }
 
-.page-section.active{
+.page.active{
     display:block;
+}
+
+@keyframes pageIn{
+    from{
+        opacity:0;
+        transform:translateY(8px);
+    }
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
 }
 
 /* =========================
    STATS
 ========================= */
 
-.stats{
+.stats-grid{
     display:grid;
     grid-template-columns:repeat(4,1fr);
-    gap:16px;
+    gap:18px;
     margin-bottom:22px;
 }
 
-.stat{
+.stat-card{
     background:var(--card);
     border:1px solid var(--border);
     border-radius:18px;
-    padding:20px;
+    padding:22px;
     box-shadow:var(--shadow);
-    overflow:hidden;
     position:relative;
+    overflow:hidden;
 }
 
-.stat::after{
+.stat-card::after{
     content:"";
-    width:90px;
-    height:90px;
-    border-radius:50%;
-    background:#f5f5f5;
     position:absolute;
+    width:80px;
+    height:80px;
     right:-30px;
-    bottom:-35px;
+    bottom:-30px;
+    border-radius:50%;
+    background:rgba(0,0,0,.035);
 }
 
 .stat-top{
@@ -256,59 +239,47 @@ body{
 }
 
 .stat-icon{
-    width:43px;
-    height:43px;
-    border-radius:12px;
+    width:42px;
+    height:42px;
     display:flex;
     align-items:center;
     justify-content:center;
-    font-size:19px;
-    background:#f2f2f2;
-}
-
-.stat-number{
-    font-size:28px;
-    font-weight:900;
-    margin-top:14px;
+    background:var(--soft);
+    border-radius:12px;
+    font-size:20px;
 }
 
 .stat-label{
     color:var(--muted);
+    font-size:13px;
+    margin-top:16px;
+}
+
+.stat-value{
+    font-size:31px;
+    font-weight:900;
+    margin-top:5px;
+    letter-spacing:-1px;
+}
+
+.stat-change{
+    color:var(--muted);
     font-size:12px;
-}
-
-.stat.blue .stat-icon{
-    background:#eaf0ff;
-}
-
-.stat.green .stat-icon{
-    background:#e7f8ef;
-}
-
-.stat.red .stat-icon{
-    background:#ffe9e9;
-}
-
-.stat.orange .stat-icon{
-    background:#fff4dd;
+    margin-top:7px;
 }
 
 /* =========================
-   DASHBOARD GRID
+   GRID
 ========================= */
 
-.dashboard-grid{
+.two-grid{
     display:grid;
-    grid-template-columns:1fr 330px;
+    grid-template-columns:1.6fr 1fr;
     gap:20px;
     margin-bottom:20px;
 }
 
-/* =========================
-   CARD
-========================= */
-
-.card{
+.panel{
     background:var(--card);
     border:1px solid var(--border);
     border-radius:18px;
@@ -316,252 +287,248 @@ body{
     overflow:hidden;
 }
 
-.card-header{
-    padding:19px 20px;
+.panel-head{
+    padding:20px 22px;
     border-bottom:1px solid var(--border);
     display:flex;
-    align-items:center;
     justify-content:space-between;
+    align-items:center;
 }
 
-.card-title{
-    font-size:16px;
-    font-weight:900;
+.panel-title{
+    font-size:17px;
+    font-weight:800;
 }
 
-.card-subtitle{
-    font-size:11px;
+.panel-sub{
+    font-size:12px;
     color:var(--muted);
     margin-top:4px;
 }
 
-.card-body{
-    padding:20px;
+.panel-body{
+    padding:22px;
+}
+
+/* =========================
+   CHART
+========================= */
+
+.chart-wrap{
+    height:300px;
+    position:relative;
+}
+
+canvas{
+    width:100%;
+    height:100%;
+    display:block;
+}
+
+.chart-legend{
+    display:flex;
+    gap:20px;
+    margin-top:10px;
+    font-size:13px;
+    color:var(--muted);
+}
+
+.legend-item{
+    display:flex;
+    align-items:center;
+    gap:7px;
+}
+
+.legend-dot{
+    width:9px;
+    height:9px;
+    border-radius:50%;
+    background:#111;
+}
+
+.legend-dot.calls{
+    background:#999;
 }
 
 /* =========================
    ACTIVITY
 ========================= */
 
+.activity-list{
+    display:flex;
+    flex-direction:column;
+    gap:14px;
+}
+
 .activity{
-    display:grid;
-    grid-template-columns:1fr 1fr;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:14px;
+    background:var(--soft);
+    border-radius:13px;
+}
+
+.activity-left{
+    display:flex;
+    align-items:center;
     gap:12px;
 }
 
-.activity-item{
-    border:1px solid var(--border);
-    border-radius:13px;
-    padding:15px;
-    background:#fafafa;
-}
-
 .activity-icon{
-    font-size:20px;
-    margin-bottom:8px;
+    width:40px;
+    height:40px;
+    border-radius:11px;
+    background:var(--card);
+    display:flex;
+    align-items:center;
+    justify-content:center;
 }
 
-.activity-number{
-    font-size:21px;
-    font-weight:900;
+.activity-name{
+    font-size:14px;
+    font-weight:700;
 }
 
-.activity-label{
-    color:var(--muted);
+.activity-desc{
     font-size:11px;
+    color:var(--muted);
     margin-top:3px;
 }
 
+.activity-value{
+    font-size:17px;
+    font-weight:900;
+}
+
 /* =========================
-   QUICK ACTIONS
+   QUICK
 ========================= */
 
-.quick-actions{
+.quick-grid{
     display:grid;
-    gap:9px;
+    grid-template-columns:repeat(3,1fr);
+    gap:12px;
 }
 
 .quick-btn{
-    width:100%;
     border:1px solid var(--border);
-    background:#fff;
-    border-radius:11px;
-    padding:13px;
-    text-align:left;
+    background:var(--soft);
+    color:var(--text);
+    padding:17px;
+    border-radius:13px;
     cursor:pointer;
-    font-weight:bold;
-    font-size:13px;
+    font-weight:700;
     transition:.2s;
 }
 
 .quick-btn:hover{
-    background:#f5f5f5;
-    transform:translateX(2px);
-}
-
-.quick-btn.main{
-    background:#111;
-    color:#fff;
-    border-color:#111;
-}
-
-.quick-btn.main:hover{
-    background:#252525;
+    transform:translateY(-2px);
 }
 
 /* =========================
-   RECENT CARS
+   CARS
 ========================= */
 
-.recent-list{
-    padding:10px;
-}
-
-.recent-car{
-    display:grid;
-    grid-template-columns:75px 1fr auto;
-    gap:12px;
-    align-items:center;
-    padding:10px;
-    border-radius:12px;
-    transition:.2s;
-}
-
-.recent-car:hover{
-    background:#f7f7f7;
-}
-
-.recent-image{
-    width:75px;
-    height:58px;
-    border-radius:9px;
-    overflow:hidden;
-    background:#eee;
-}
-
-.recent-image img{
-    width:100%;
-    height:100%;
-    object-fit:cover;
-}
-
-.recent-name{
-    font-weight:800;
-    font-size:13px;
-}
-
-.recent-price{
-    font-size:12px;
-    font-weight:bold;
-    margin-top:5px;
-}
-
-.badges{
+.car-list{
     display:flex;
-    gap:5px;
-    margin-bottom:5px;
+    flex-direction:column;
+    gap:10px;
+}
+
+.car-row{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    padding:12px;
+    background:var(--soft);
+    border-radius:13px;
+}
+
+.car-img{
+    width:65px;
+    height:50px;
+    border-radius:9px;
+    object-fit:cover;
+    background:#ddd;
+    flex-shrink:0;
+}
+
+.car-info{
+    min-width:0;
+    flex:1;
+}
+
+.car-name{
+    font-weight:800;
+    font-size:14px;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+}
+
+.car-price{
+    font-size:13px;
+    color:var(--muted);
+    margin-top:4px;
 }
 
 .badge{
-    display:inline-flex;
-    padding:3px 6px;
-    border-radius:5px;
-    font-size:8px;
-    font-weight:900;
-}
-
-.badge-new{
-    color:#14834a;
-    background:#e6f8ee;
-}
-
-.badge-sold{
-    color:#d32f2f;
-    background:#ffe7e7;
-    animation:pulseSold 2s infinite;
-}
-
-@keyframes pulseSold{
-    0%,100%{
-        box-shadow:0 0 0 0 rgba(229,57,53,0);
-    }
-    50%{
-        box-shadow:0 0 0 5px rgba(229,57,53,.08);
-    }
-}
-
-.small-btn{
-    border:1px solid #ddd;
-    background:#fff;
-    border-radius:8px;
-    padding:7px 9px;
-    cursor:pointer;
+    padding:6px 9px;
+    border-radius:20px;
     font-size:10px;
-    font-weight:bold;
+    font-weight:800;
+    white-space:nowrap;
 }
 
-.small-btn:hover{
-    background:#f3f3f3;
+.badge.active{
+    background:#dcfce7;
+    color:#15803d;
 }
 
-.view-all{
-    border-top:1px solid var(--border);
-    padding:14px 20px;
-    text-align:center;
-}
-
-.view-all button{
-    border:0;
-    background:transparent;
-    font-weight:bold;
-    cursor:pointer;
-    color:#111;
+.badge.sold{
+    background:#fee2e2;
+    color:#b91c1c;
 }
 
 /* =========================
-   ADD CAR FORM
+   FORM
 ========================= */
 
-.form-grid{
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:16px;
+.form-panel{
+    max-width:850px;
 }
 
-.field{
-    margin-bottom:15px;
+.form{
+    padding:25px;
 }
 
-.field.full{
-    grid-column:1 / -1;
+.form-group{
+    margin-bottom:18px;
 }
 
-.field label{
+.form-label{
     display:block;
-    font-size:12px;
-    font-weight:bold;
-    margin-bottom:7px;
-    color:#444;
+    font-size:13px;
+    font-weight:700;
+    margin-bottom:8px;
 }
 
 .input,
 .textarea{
     width:100%;
-    border:1px solid #ddd;
-    background:#fafafa;
-    border-radius:11px;
-    padding:12px;
-    font-family:inherit;
-    font-size:14px;
+    border:1px solid var(--border);
+    background:var(--soft);
+    color:var(--text);
+    border-radius:12px;
+    padding:13px 14px;
     outline:none;
-    transition:.2s;
+    font-size:14px;
 }
 
 .input:focus,
 .textarea:focus{
-    border-color:#111;
-    background:#fff;
-    box-shadow:0 0 0 3px rgba(0,0,0,.05);
+    border-color:#777;
 }
 
 .textarea{
@@ -569,305 +536,243 @@ body{
     resize:vertical;
 }
 
-.password-box{
-    background:#f7f7f7;
-    border:1px solid #e5e5e5;
-    border-radius:13px;
-    padding:15px;
-    margin-bottom:18px;
+.password-wrap{
+    position:relative;
 }
 
-.password-row{
-    display:flex;
-    gap:8px;
+.password-wrap .input{
+    padding-right:50px;
 }
 
-.password-row .input{
-    background:#fff;
+.eye{
+    position:absolute;
+    right:8px;
+    top:7px;
+    width:38px;
+    height:38px;
+    border:0;
+    background:transparent;
+    color:var(--muted);
+    cursor:pointer;
 }
 
-.file-box{
-    border:2px dashed #ddd;
-    border-radius:13px;
-    padding:25px 15px;
+.upload-box{
+    border:2px dashed var(--border);
+    background:var(--soft);
+    border-radius:15px;
+    padding:28px;
     text-align:center;
     cursor:pointer;
-    background:#fafafa;
-    transition:.2s;
 }
 
-.file-box:hover{
-    border-color:#111;
-    background:#f6f6f6;
+.upload-box:hover{
+    border-color:#999;
 }
 
-.file-box input{
-    display:none;
-}
-
-.file-icon{
+.upload-icon{
     font-size:30px;
-    margin-bottom:7px;
+    margin-bottom:8px;
 }
 
-.file-title{
-    font-size:13px;
-    font-weight:bold;
+.upload-title{
+    font-weight:800;
 }
 
-.file-hint{
-    font-size:11px;
-    color:#888;
+.upload-sub{
+    color:var(--muted);
+    font-size:12px;
     margin-top:5px;
 }
 
-.preview{
+#images{
+    display:none;
+}
+
+.preview-grid{
     display:grid;
-    grid-template-columns:repeat(8,1fr);
-    gap:7px;
-    margin-top:10px;
+    grid-template-columns:repeat(4,1fr);
+    gap:10px;
+    margin-top:12px;
+}
+
+.preview{
+    position:relative;
 }
 
 .preview img{
     width:100%;
-    aspect-ratio:1;
+    aspect-ratio:1/1;
     object-fit:cover;
-    border-radius:8px;
+    border-radius:10px;
 }
 
-.primary-btn{
+.main-btn{
+    width:100%;
     border:0;
-    background:#111;
+    background:#080808;
     color:white;
-    border-radius:11px;
-    padding:13px 20px;
-    font-size:14px;
-    font-weight:bold;
+    padding:15px;
+    border-radius:12px;
+    font-size:15px;
+    font-weight:800;
     cursor:pointer;
-    transition:.2s;
 }
 
-.primary-btn:hover{
-    background:#252525;
-    transform:translateY(-1px);
+body.dark .main-btn{
+    background:white;
+    color:#080808;
 }
 
-.primary-btn:disabled{
-    opacity:.5;
-    cursor:not-allowed;
-}
-
-.msg{
-    margin-top:12px;
-    padding:11px;
-    border-radius:9px;
+.message{
+    margin-top:14px;
+    padding:12px;
+    border-radius:10px;
+    font-size:13px;
     display:none;
-    font-size:12px;
-    font-weight:bold;
 }
 
-.msg.success{
+.message.show{
     display:block;
-    background:#e8f8ef;
-    color:#15834b;
 }
 
-.msg.error{
-    display:block;
-    background:#ffeaea;
-    color:#c62828;
+.message.ok{
+    background:#dcfce7;
+    color:#166534;
+}
+
+.message.error{
+    background:#fee2e2;
+    color:#991b1b;
 }
 
 /* =========================
-   CARS PAGE
+   MANAGE CARS
 ========================= */
 
-.cars-toolbar{
-    padding:16px 20px;
-    border-bottom:1px solid var(--border);
+.toolbar{
     display:flex;
-    align-items:center;
-    gap:9px;
-    flex-wrap:wrap;
+    gap:10px;
+    margin-bottom:18px;
 }
 
-.search-box{
+.search{
     flex:1;
-    min-width:200px;
-    position:relative;
 }
 
-.search-box input{
-    width:100%;
-    padding:11px 12px 11px 38px;
-    border:1px solid #ddd;
+.filters{
+    display:flex;
+    gap:7px;
+}
+
+.filter{
+    border:1px solid var(--border);
+    background:var(--card);
+    color:var(--text);
+    padding:11px 14px;
     border-radius:10px;
-    outline:none;
-    background:#fafafa;
-}
-
-.search-icon{
-    position:absolute;
-    left:13px;
-    top:10px;
-    color:#888;
-}
-
-.filter-btn{
-    border:1px solid #ddd;
-    background:#fff;
-    padding:10px 13px;
-    border-radius:9px;
     cursor:pointer;
     font-size:12px;
-    font-weight:bold;
 }
 
-.filter-btn.active{
-    background:#111;
-    color:#fff;
-    border-color:#111;
+.filter.active{
+    background:#080808;
+    color:white;
 }
 
-.car-list{
-    padding:12px;
+body.dark .filter.active{
+    background:white;
+    color:#080808;
 }
 
-.car{
+.manage-grid{
     display:grid;
-    grid-template-columns:105px 1fr auto;
-    gap:15px;
-    padding:14px;
-    border:1px solid #eee;
-    border-radius:14px;
-    margin-bottom:9px;
-    background:#fff;
-    transition:.2s;
+    grid-template-columns:repeat(3,1fr);
+    gap:18px;
 }
 
-.car:hover{
-    border-color:#d0d0d0;
-    transform:translateY(-1px);
-    box-shadow:0 7px 20px rgba(0,0,0,.05);
-}
-
-.car.sold{
-    opacity:.7;
-}
-
-.car-image{
-    width:105px;
-    height:82px;
-    border-radius:11px;
+.manage-card{
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:16px;
     overflow:hidden;
-    position:relative;
-    background:#eee;
+    box-shadow:var(--shadow);
 }
 
-.car-image img{
+.manage-image{
     width:100%;
-    height:100%;
+    height:200px;
     object-fit:cover;
+    background:#ddd;
 }
 
-.image-count{
-    position:absolute;
-    right:5px;
-    bottom:5px;
-    background:rgba(0,0,0,.7);
-    color:#fff;
-    font-size:10px;
-    padding:3px 6px;
-    border-radius:6px;
+.manage-body{
+    padding:17px;
 }
 
-.car-name{
-    font-size:15px;
+.manage-name{
     font-weight:900;
-    margin-bottom:5px;
+    font-size:17px;
 }
 
-.car-description{
-    color:#777;
+.manage-price{
+    font-weight:800;
+    margin-top:6px;
+}
+
+.manage-description{
+    color:var(--muted);
     font-size:12px;
-    line-height:1.4;
-    display:-webkit-box;
-    -webkit-line-clamp:2;
-    -webkit-box-orient:vertical;
-    overflow:hidden;
+    margin-top:9px;
+    min-height:32px;
 }
 
-.car-price{
-    margin-top:8px;
-    font-size:15px;
-    font-weight:900;
-}
-
-.car-actions{
+.manage-meta{
     display:flex;
-    flex-direction:column;
-    gap:7px;
-    min-width:130px;
+    justify-content:space-between;
+    align-items:center;
+    margin-top:14px;
+}
+
+.manage-actions{
+    display:flex;
+    gap:8px;
+    margin-top:14px;
 }
 
 .action-btn{
-    border:1px solid #ddd;
-    background:#fff;
-    border-radius:9px;
-    padding:8px 10px;
+    flex:1;
+    border:1px solid var(--border);
+    background:var(--soft);
+    color:var(--text);
+    padding:10px;
+    border-radius:10px;
     cursor:pointer;
-    font-size:11px;
-    font-weight:bold;
+    font-size:12px;
+    font-weight:700;
 }
 
-.action-sold.active{
-    background:#e8f8ef;
-    color:#168347;
-    border-color:#bde8ce;
+.action-btn.sold-btn{
+    background:#111;
+    color:white;
 }
 
-.action-delete{
-    color:#d32f2f;
-    background:#fff5f5;
-    border-color:#ffd0d0;
+body.dark .action-btn.sold-btn{
+    background:white;
+    color:#111;
+}
+
+.action-btn.delete{
+    color:#dc2626;
 }
 
 /* =========================
-   LOADING / EMPTY
+   EMPTY
 ========================= */
 
-.loading{
-    text-align:center;
-    padding:40px;
-    color:#888;
-    font-size:13px;
-}
-
-.loader{
-    width:26px;
-    height:26px;
-    border:3px solid #ddd;
-    border-top-color:#111;
-    border-radius:50%;
-    animation:spin .7s linear infinite;
-    margin:0 auto 10px;
-}
-
-@keyframes spin{
-    to{
-        transform:rotate(360deg);
-    }
-}
-
 .empty{
+    padding:45px 20px;
     text-align:center;
-    padding:50px 20px;
-    color:#888;
-}
-
-.empty-icon{
-    font-size:40px;
-    margin-bottom:10px;
+    color:var(--muted);
 }
 
 /* =========================
@@ -878,17 +783,15 @@ body{
     position:fixed;
     right:25px;
     bottom:25px;
-    background:#111;
-    color:#fff;
-    padding:13px 17px;
-    border-radius:11px;
+    background:#080808;
+    color:white;
+    padding:13px 18px;
+    border-radius:12px;
     font-size:13px;
-    font-weight:bold;
-    box-shadow:0 12px 35px rgba(0,0,0,.25);
+    z-index:5000;
     transform:translateY(100px);
     opacity:0;
     transition:.3s;
-    z-index:9999;
 }
 
 .toast.show{
@@ -897,91 +800,34 @@ body{
 }
 
 /* =========================
-   DARK MODE
+   LOADING
 ========================= */
 
-body.dark{
-    --bg:#101010;
-    --card:#181818;
-    --text:#f3f3f3;
-    --muted:#999;
-    --border:#292929;
-    --shadow:0 10px 35px rgba(0,0,0,.3);
-}
-
-body.dark .topbar,
-body.dark .card,
-body.dark .stat,
-body.dark .car{
-    background:#181818;
-    border-color:#292929;
-}
-
-body.dark .icon-btn,
-body.dark .small-btn,
-body.dark .filter-btn,
-body.dark .action-btn,
-body.dark .mobile-menu{
-    background:#181818;
-    color:#fff;
-    border-color:#333;
-}
-
-body.dark .input,
-body.dark .textarea,
-body.dark .search-box input,
-body.dark .file-box{
-    background:#111;
-    color:#fff;
-    border-color:#333;
-}
-
-body.dark .password-box,
-body.dark .activity-item{
-    background:#111;
-    border-color:#333;
-}
-
-body.dark .quick-btn{
-    background:#181818;
-    color:#fff;
-    border-color:#333;
-}
-
-body.dark .quick-btn.main{
-    background:#fff;
-    color:#111;
-}
-
-body.dark .recent-car:hover{
-    background:#202020;
-}
-
-body.dark .view-all button{
-    color:#fff;
-}
-
-body.dark .stat::after{
-    background:#202020;
+.loading{
+    opacity:.5;
+    pointer-events:none;
 }
 
 /* =========================
-   RESPONSIVE
+   MOBILE
 ========================= */
 
-@media(max-width:1100px){
+@media(max-width:1000px){
 
-    .stats{
+    .stats-grid{
         grid-template-columns:repeat(2,1fr);
     }
 
-    .dashboard-grid{
+    .two-grid{
         grid-template-columns:1fr;
     }
 
+    .manage-grid{
+        grid-template-columns:repeat(2,1fr);
+    }
 }
 
-@media(max-width:800px){
+@media(max-width:700px){
 
     .sidebar{
         transform:translateX(-100%);
@@ -995,108 +841,80 @@ body.dark .stat::after{
         margin-left:0;
     }
 
-    .mobile-menu{
-        display:block;
+    .topbar{
+        padding:0 16px;
     }
 
-    .topbar{
-        padding:0 15px;
+    .menu-btn{
+        display:block;
+        margin-right:10px;
+    }
+
+    .top-left{
+        display:flex;
+        align-items:center;
     }
 
     .content{
-        padding:15px;
+        padding:18px 14px;
     }
 
-}
-
-@media(max-width:600px){
-
-    .stats{
+    .stats-grid{
         grid-template-columns:1fr 1fr;
         gap:10px;
     }
 
-    .stat{
-        padding:14px;
+    .stat-card{
+        padding:16px;
         border-radius:14px;
     }
 
-    .stat-number{
-        font-size:22px;
+    .stat-value{
+        font-size:24px;
     }
 
-    .dashboard-grid{
-        gap:14px;
+    .stat-icon{
+        width:35px;
+        height:35px;
+        font-size:16px;
     }
 
-    .activity{
-        gap:8px;
-    }
-
-    .activity-item{
-        padding:12px;
-    }
-
-    .recent-car{
-        grid-template-columns:65px 1fr;
-    }
-
-    .recent-image{
-        width:65px;
-        height:55px;
-    }
-
-    .recent-car .small-btn{
-        grid-column:2;
-        justify-self:start;
-    }
-
-    .form-grid{
+    .quick-grid{
         grid-template-columns:1fr;
     }
 
-    .field.full{
-        grid-column:auto;
+    .manage-grid{
+        grid-template-columns:1fr;
     }
 
-    .preview{
-        grid-template-columns:repeat(4,1fr);
+    .toolbar{
+        flex-direction:column;
     }
 
-    .car{
-        grid-template-columns:75px 1fr;
-        gap:11px;
+    .filters{
+        overflow-x:auto;
     }
 
-    .car-image{
-        width:75px;
-        height:65px;
+    .preview-grid{
+        grid-template-columns:repeat(3,1fr);
     }
 
-    .car-actions{
-        grid-column:1 / -1;
-        display:grid;
-        grid-template-columns:1fr 1fr;
-        min-width:0;
+    .chart-wrap{
+        height:240px;
     }
 
-    .cars-toolbar{
-        padding:12px;
+    .top-sub{
+        display:none;
     }
-
-    .content{
-        padding:10px;
-    }
-
 }
 </style>
 </head>
 
 <body>
 
-<!-- =====================================================
+<!-- =========================
      SIDEBAR
-===================================================== -->
+========================= -->
 
 <aside class="sidebar" id="sidebar">
 
@@ -1104,118 +922,86 @@ body.dark .stat::after{
         pul<span>.zarill</span>
     </div>
 
-    <div class="sidebar-title">
-        Boshqaruv
+    <div class="nav">
+
+        <button
+            class="active"
+            data-page="dashboard"
+            onclick="showPage('dashboard')">
+            📊 Dashboard
+        </button>
+
+        <button
+            data-page="add"
+            onclick="showPage('add')">
+            ➕ Mashina qo‘shish
+        </button>
+
+        <button
+            data-page="cars"
+            onclick="showPage('cars')">
+            🚘 Mashinalar
+        </button>
+
+        <button onclick="loadAll(); toast('Yangilandi')">
+            🔄 Yangilash
+        </button>
+
     </div>
-
-    <button
-        class="nav-btn active"
-        onclick="showPage('dashboard',this)"
-    >
-        <span class="nav-icon">⌂</span>
-        Dashboard
-    </button>
-
-    <button
-        class="nav-btn"
-        onclick="showPage('addPage',this)"
-    >
-        <span class="nav-icon">＋</span>
-        Mashina qo‘shish
-    </button>
-
-    <button
-        class="nav-btn"
-        onclick="showPage('carsPage',this)"
-    >
-        <span class="nav-icon">🚘</span>
-        Mashinalar
-    </button>
-
-    <div class="sidebar-title" style="margin-top:25px;">
-        Tizim
-    </div>
-
-    <button
-        class="nav-btn"
-        onclick="loadAll()"
-    >
-        <span class="nav-icon">↻</span>
-        Yangilash
-    </button>
-
-    <button
-        class="nav-btn"
-        onclick="toggleDark()"
-    >
-        <span class="nav-icon">◐</span>
-        Dark mode
-    </button>
 
     <div class="sidebar-bottom">
-
-        <div class="server-status">
-            <span class="status-dot"></span>
-            Server ishlayapti
-        </div>
-
+        <button onclick="toggleDark()">
+            🌙 Dark mode
+        </button>
     </div>
 
 </aside>
 
-
-<!-- =====================================================
+<!-- =========================
      MAIN
-===================================================== -->
+========================= -->
 
-<div class="main">
-
-    <!-- TOPBAR -->
+<main class="main">
 
     <header class="topbar">
 
-        <div style="display:flex;align-items:center;gap:12px;">
+        <div class="top-left">
 
             <button
-                class="mobile-menu"
-                onclick="toggleSidebar()"
-            >
+                class="top-btn menu-btn"
+                onclick="toggleSidebar()">
                 ☰
             </button>
 
             <div>
-
                 <div
-                    class="page-title"
-                    id="pageTitle"
-                >
+                    class="top-title"
+                    id="pageTitle">
                     Dashboard
                 </div>
 
-                <div class="page-subtitle">
+                <div
+                    class="top-sub"
+                    id="pageSubtitle">
                     pul.zarill boshqaruv paneli
                 </div>
-
             </div>
 
         </div>
 
-
         <div class="top-actions">
 
             <button
-                class="icon-btn"
+                class="top-btn"
                 onclick="loadAll()"
-                title="Yangilash"
-            >
+                title="Yangilash">
                 ↻
             </button>
 
             <button
-                class="icon-btn"
+                class="top-btn"
                 onclick="toggleDark()"
-                title="Dark mode"
-            >
+                title="Dark mode">
                 ◐
             </button>
 
@@ -1223,225 +1009,144 @@ body.dark .stat::after{
 
     </header>
 
+    <div class="content">
 
-    <main class="content">
-
-
-        <!-- =================================================
+        <!-- =========================
              DASHBOARD
-        ================================================= -->
+        ========================= -->
 
         <section
-            id="dashboard"
-            class="page-section active"
-        >
+            class="page active"
+            id="page-dashboard">
 
-            <!-- STATS -->
+            <div class="stats-grid">
 
-            <div class="stats">
-
-                <div class="stat blue">
+                <div class="stat-card">
 
                     <div class="stat-top">
+                        <div class="stat-icon">👁️</div>
+                    </div>
 
-                        <div class="stat-label">
-                            Sayt ko‘rishlari
-                        </div>
-
-                        <div class="stat-icon">
-                            👁
-                        </div>
-
+                    <div class="stat-label">
+                        Sayt ko‘rishlari
                     </div>
 
                     <div
-                        class="stat-number"
-                        id="statViews"
-                    >
-                        -
+                        class="stat-value"
+                        id="viewsStat">
+                        0
+                    </div>
+
+                    <div class="stat-change">
+                        Jami ko‘rishlar
                     </div>
 
                 </div>
 
-
-                <div class="stat green">
+                <div class="stat-card">
 
                     <div class="stat-top">
+                        <div class="stat-icon">📞</div>
+                    </div>
 
-                        <div class="stat-label">
-                            Qo‘ng‘iroqlar
-                        </div>
-
-                        <div class="stat-icon">
-                            ☎
-                        </div>
-
+                    <div class="stat-label">
+                        Qo‘ng‘iroqlar
                     </div>
 
                     <div
-                        class="stat-number"
-                        id="statCalls"
-                    >
-                        -
+                        class="stat-value"
+                        id="callsStat">
+                        0
+                    </div>
+
+                    <div class="stat-change">
+                        Telefon tugmasi bosilishi
                     </div>
 
                 </div>
 
-
-                <div class="stat orange">
+                <div class="stat-card">
 
                     <div class="stat-top">
+                        <div class="stat-icon">🚘</div>
+                    </div>
 
-                        <div class="stat-label">
-                            Jami mashinalar
-                        </div>
-
-                        <div class="stat-icon">
-                            🚘
-                        </div>
-
+                    <div class="stat-label">
+                        Jami mashinalar
                     </div>
 
                     <div
-                        class="stat-number"
-                        id="statCars"
-                    >
-                        -
+                        class="stat-value"
+                        id="carsStat">
+                        0
+                    </div>
+
+                    <div class="stat-change">
+                        Saytdagi barcha avtomobillar
                     </div>
 
                 </div>
 
-
-                <div class="stat red">
+                <div class="stat-card">
 
                     <div class="stat-top">
+                        <div class="stat-icon">✅</div>
+                    </div>
 
-                        <div class="stat-label">
-                            Sotilganlar
-                        </div>
-
-                        <div class="stat-icon">
-                            ✓
-                        </div>
-
+                    <div class="stat-label">
+                        Sotilganlar
                     </div>
 
                     <div
-                        class="stat-number"
-                        id="statSold"
-                    >
-                        -
+                        class="stat-value"
+                        id="soldStat">
+                        0
+                    </div>
+
+                    <div class="stat-change">
+                        Sotildi deb belgilanganlar
                     </div>
 
                 </div>
 
             </div>
 
+            <!-- CHART + ACTIVITY -->
 
-            <!-- ACTIVITY + QUICK ACTIONS -->
+            <div class="two-grid">
 
-            <div class="dashboard-grid">
+                <div class="panel">
 
-                <div class="card">
-
-                    <div class="card-header">
+                    <div class="panel-head">
 
                         <div>
-
-                            <div class="card-title">
-                                📈 Bugungi faollik
+                            <div class="panel-title">
+                                Statistika
                             </div>
 
-                            <div class="card-subtitle">
-                                Admin paneldagi asosiy ko‘rsatkichlar
+                            <div class="panel-sub">
+                                Oxirgi 30 kun
                             </div>
-
                         </div>
 
                     </div>
 
+                    <div class="panel-body">
 
-                    <div class="card-body">
+                        <div class="chart-wrap">
+                            <canvas id="statsChart"></canvas>
+                        </div>
 
-                        <div class="activity">
+                        <div class="chart-legend">
 
-                            <div class="activity-item">
-
-                                <div class="activity-icon">
-                                    👁
-                                </div>
-
-                                <div
-                                    class="activity-number"
-                                    id="activityViews"
-                                >
-                                    -
-                                </div>
-
-                                <div class="activity-label">
-                                    Sayt ko‘rishlari
-                                </div>
-
+                            <div class="legend-item">
+                                <span class="legend-dot"></span>
+                                Ko‘rishlar
                             </div>
 
-
-                            <div class="activity-item">
-
-                                <div class="activity-icon">
-                                    📞
-                                </div>
-
-                                <div
-                                    class="activity-number"
-                                    id="activityCalls"
-                                >
-                                    -
-                                </div>
-
-                                <div class="activity-label">
-                                    Qo‘ng‘iroqlar
-                                </div>
-
-                            </div>
-
-
-                            <div class="activity-item">
-
-                                <div class="activity-icon">
-                                    🚘
-                                </div>
-
-                                <div
-                                    class="activity-number"
-                                    id="activityCars"
-                                >
-                                    -
-                                </div>
-
-                                <div class="activity-label">
-                                    Jami mashinalar
-                                </div>
-
-                            </div>
-
-
-                            <div class="activity-item">
-
-                                <div class="activity-icon">
-                                    🔴
-                                </div>
-
-                                <div
-                                    class="activity-number"
-                                    id="activitySold"
-                                >
-                                    -
-                                </div>
-
-                                <div class="activity-label">
-                                    Sotilgan mashinalar
-                                </div>
-
+                            <div class="legend-item">
+                                <span class="legend-dot calls"></span>
+                                Qo‘ng‘iroqlar
                             </div>
 
                         </div>
@@ -1450,52 +1155,137 @@ body.dark .stat::after{
 
                 </div>
 
+                <div class="panel">
 
-                <!-- QUICK ACTIONS -->
-
-                <div class="card">
-
-                    <div class="card-header">
+                    <div class="panel-head">
 
                         <div>
-
-                            <div class="card-title">
-                                ⚡ Tezkor amallar
+                            <div class="panel-title">
+                                Bugungi faollik
                             </div>
 
-                            <div class="card-subtitle">
-                                Kerakli bo‘limlarga tez o‘tish
+                            <div class="panel-sub">
+                                Bugungi statistika
                             </div>
-
                         </div>
 
                     </div>
 
+                    <div class="panel-body">
 
-                    <div class="card-body">
+                        <div class="activity-list">
 
-                        <div class="quick-actions">
+                            <div class="activity">
 
-                            <button
-                                class="quick-btn main"
-                                onclick="showPageById('addPage')"
-                            >
-                                ＋ Mashina qo‘shish
-                            </button>
+                                <div class="activity-left">
 
-                            <button
-                                class="quick-btn"
-                                onclick="showPageById('carsPage')"
-                            >
-                                🚘 Barcha mashinalar
-                            </button>
+                                    <div class="activity-icon">
+                                        👁️
+                                    </div>
 
-                            <button
-                                class="quick-btn"
-                                onclick="loadAll()"
-                            >
-                                📊 Statistikani yangilash
-                            </button>
+                                    <div>
+                                        <div class="activity-name">
+                                            Ko‘rishlar
+                                        </div>
+
+                                        <div class="activity-desc">
+                                            Bugungi sayt tashriflari
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                <div
+                                    class="activity-value"
+                                    id="todayViews">
+                                    0
+                                </div>
+
+                            </div>
+
+                            <div class="activity">
+
+                                <div class="activity-left">
+
+                                    <div class="activity-icon">
+                                        📞
+                                    </div>
+
+                                    <div>
+                                        <div class="activity-name">
+                                            Qo‘ng‘iroqlar
+                                        </div>
+
+                                        <div class="activity-desc">
+                                            Bugungi qo‘ng‘iroqlar
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                <div
+                                    class="activity-value"
+                                    id="todayCalls">
+                                    0
+                                </div>
+
+                            </div>
+
+                            <div class="activity">
+
+                                <div class="activity-left">
+
+                                    <div class="activity-icon">
+                                        🚘
+                                    </div>
+
+                                    <div>
+                                        <div class="activity-name">
+                                            Mashinalar
+                                        </div>
+
+                                        <div class="activity-desc">
+                                            Jami joylangan
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                <div
+                                    class="activity-value"
+                                    id="activityCars">
+                                    0
+                                </div>
+
+                            </div>
+
+                            <div class="activity">
+
+                                <div class="activity-left">
+
+                                    <div class="activity-icon">
+                                        ✅
+                                    </div>
+
+                                    <div>
+                                        <div class="activity-name">
+                                            Sotilgan
+                                        </div>
+
+                                        <div class="activity-desc">
+                                            Sotilgan avtomobillar
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                <div
+                                    class="activity-value"
+                                    id="activitySold">
+                                    0
+                                </div>
+
+                            </div>
 
                         </div>
 
@@ -1505,58 +1295,87 @@ body.dark .stat::after{
 
             </div>
 
+            <!-- QUICK ACTIONS -->
+
+            <div class="panel">
+
+                <div class="panel-head">
+
+                    <div>
+                        <div class="panel-title">
+                            Tezkor amallar
+                        </div>
+
+                        <div class="panel-sub">
+                            Admin boshqaruvi
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="panel-body">
+
+                    <div class="quick-grid">
+
+                        <button
+                            class="quick-btn"
+                            onclick="showPage('add')">
+                            ➕ Mashina qo‘shish
+                        </button>
+
+                        <button
+                            class="quick-btn"
+                            onclick="showPage('cars')">
+                            🚘 Barcha mashinalar
+                        </button>
+
+                        <button
+                            class="quick-btn"
+                            onclick="loadAll()">
+                            📊 Statistikani yangilash
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <br>
 
             <!-- RECENT CARS -->
 
-            <div class="card">
+            <div class="panel">
 
-                <div class="card-header">
+                <div class="panel-head">
 
                     <div>
-
-                        <div class="card-title">
-                            🚘 Oxirgi mashinalar
+                        <div class="panel-title">
+                            Oxirgi mashinalar
                         </div>
 
-                        <div class="card-subtitle">
+                        <div class="panel-sub">
                             Yaqinda qo‘shilgan avtomobillar
                         </div>
-
                     </div>
 
                     <button
-                        class="small-btn"
-                        onclick="showPageById('carsPage')"
-                    >
-                        Barchasi →
+                        class="filter"
+                        onclick="showPage('cars')">
+                        Barchasi
                     </button>
 
                 </div>
 
+                <div class="panel-body">
 
-                <div
-                    class="recent-list"
-                    id="recentCars"
-                >
-
-                    <div class="loading">
-
-                        <div class="loader"></div>
-
-                        Yuklanmoqda...
-
+                    <div
+                        class="car-list"
+                        id="recentCars">
+                        <div class="empty">
+                            Yuklanmoqda...
+                        </div>
                     </div>
-
-                </div>
-
-
-                <div class="view-all">
-
-                    <button
-                        onclick="showPageById('carsPage')"
-                    >
-                        Barcha mashinalarni ko‘rish →
-                    </button>
 
                 </div>
 
@@ -1564,920 +1383,574 @@ body.dark .stat::after{
 
         </section>
 
-
-        <!-- =================================================
-             ADD CAR PAGE
-        ================================================= -->
-
-        <section
-            id="addPage"
-            class="page-section"
-        >
-
-            <div class="card">
-
-                <div class="card-header">
-
-                    <div>
-
-                        <div class="card-title">
-                            🚘 Yangi mashina qo‘shish
-                        </div>
-
-                        <div class="card-subtitle">
-                            Saytga yangi avtomobil joylash
-                        </div>
-
-                    </div>
-
-                </div>
-
-
-                <div class="card-body">
-
-                    <!-- PASSWORD -->
-
-                    <div class="password-box">
-
-                        <div class="field" style="margin:0;">
-
-                            <label>
-                                🔐 Admin paroli
-                            </label>
-
-                            <div class="password-row">
-
-                                <input
-                                    id="password"
-                                    class="input"
-                                    type="password"
-                                    placeholder="Admin parolini kiriting"
-                                >
-
-                                <button
-                                    class="icon-btn"
-                                    onclick="togglePassword()"
-                                    type="button"
-                                >
-                                    👁
-                                </button>
-
-                            </div>
-
-                        </div>
-
-                    </div>
-
-
-                    <div class="form-grid">
-
-                        <div class="field">
-
-                            <label>
-                                Mashina nomi
-                            </label>
-
-                            <input
-                                id="name"
-                                class="input"
-                                placeholder="Masalan: Chevrolet Nexia 3"
-                            >
-
-                        </div>
-
-
-                        <div class="field">
-
-                            <label>
-                                Narxi (so‘m)
-                            </label>
-
-                            <input
-                                id="price"
-                                class="input"
-                                type="number"
-                                placeholder="65000000"
-                            >
-
-                        </div>
-
-
-                        <div class="field full">
-
-                            <label>
-                                Qo‘shimcha ma’lumot
-                            </label>
-
-                            <textarea
-                                id="description"
-                                class="textarea"
-                                placeholder="2012-yil, 120 000 km, mexanika, kumush rang..."
-                            ></textarea>
-
-                        </div>
-
-
-                        <div class="field full">
-
-                            <label>
-                                Rasmlar
-                            </label>
-
-                            <label class="file-box">
-
-                                <input
-                                    id="photo"
-                                    type="file"
-                                    accept="image/*"
-                                    multiple
-                                    onchange="previewImages()"
-                                >
-
-                                <div class="file-icon">
-                                    📸
-                                </div>
-
-                                <div class="file-title">
-                                    Rasmlarni tanlang
-                                </div>
-
-                                <div class="file-hint">
-                                    Ko‘pi bilan 8 ta rasm
-                                </div>
-
-                            </label>
-
-                            <div
-                                class="preview"
-                                id="preview"
-                            ></div>
-
-                        </div>
-
-                    </div>
-
-
-                    <button
-                        id="addButton"
-                        class="primary-btn"
-                        onclick="addCar()"
-                    >
-                        ＋ Mashinani qo‘shish
-                    </button>
-
-
-                    <div
-                        id="msg"
-                        class="msg"
-                    ></div>
-
-                </div>
-
-            </div>
-
-        </section>
-
-
-        <!-- =================================================
-             CARS PAGE
-        ================================================= -->
+        <!-- =========================
+             ADD CAR
+        ========================= -->
 
         <section
-            id="carsPage"
-            class="page-section"
-        >
+            class="page"
+            id="page-add">
 
-            <div class="card">
+            <div class="panel form-panel">
 
-                <div class="card-header">
+                <div class="panel-head">
 
                     <div>
-
-                        <div class="card-title">
-                            🚗 Barcha mashinalar
+                        <div class="panel-title">
+                            Mashina qo‘shish
                         </div>
 
-                        <div class="card-subtitle">
-                            Avtomobillarni boshqarish
+                        <div class="panel-sub">
+                            Yangi avtomobilni saytga joylang
                         </div>
-
-                    </div>
-
-                    <div
-                        id="carCount"
-                        style="
-                            font-size:12px;
-                            color:#777;
-                            font-weight:bold;
-                        "
-                    >
-                        0 ta
                     </div>
 
                 </div>
 
+                <div class="form">
 
-                <div class="cars-toolbar">
+                    <div class="form-group">
 
-                    <div class="search-box">
+                        <label class="form-label">
+                            Admin parol
+                        </label>
 
-                        <span class="search-icon">
-                            🔍
-                        </span>
+                        <div class="password-wrap">
+
+                            <input
+                                class="input"
+                                id="password"
+                                type="password"
+                                placeholder="Admin parolni kiriting">
+
+                            <button
+                                class="eye"
+                                onclick="togglePassword()">
+                                👁
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                    <div class="form-group">
+
+                        <label class="form-label">
+                            Mashina nomi
+                        </label>
 
                         <input
-                            id="search"
-                            placeholder="Mashina qidirish..."
-                            oninput="renderCars()"
-                        >
+                            class="input"
+                            id="carName"
+                            placeholder="Masalan: Chevrolet Gentra">
 
                     </div>
 
+                    <div class="form-group">
+
+                        <label class="form-label">
+                            Narxi
+                        </label>
+
+                        <input
+                            class="input"
+                            id="carPrice"
+                            type="number"
+                            placeholder="Masalan: 150000000">
+
+                    </div>
+
+                    <div class="form-group">
+
+                        <label class="form-label">
+                            Tavsif
+                        </label>
+
+                        <textarea
+                            class="textarea"
+                            id="carDescription"
+                            placeholder="Mashina haqida ma'lumot..."></textarea>
+
+                    </div>
+
+                    <div class="form-group">
+
+                        <label class="form-label">
+                            Rasmlar
+                        </label>
+
+                        <label
+                            class="upload-box"
+                            for="images">
+
+                            <div class="upload-icon">
+                                📷
+                            </div>
+
+                            <div class="upload-title">
+                                Rasmlarni tanlang
+                            </div>
+
+                            <div class="upload-sub">
+                                Ko‘pi bilan 8 ta JPG rasm
+                            </div>
+
+                        </label>
+
+                        <input
+                            id="images"
+                            type="file"
+                            accept="image/jpeg,image/jpg"
+                            multiple
+                            onchange="previewImages(event)">
+
+                        <div
+                            class="preview-grid"
+                            id="previewGrid">
+                        </div>
+
+                    </div>
 
                     <button
-                        id="allFilter"
-                        class="filter-btn active"
-                        onclick="setFilter('all')"
-                    >
+                        class="main-btn"
+                        id="addButton"
+                        onclick="addCar()">
+                        + Mashinani qo‘shish
+                    </button>
+
+                    <div
+                        class="message"
+                        id="formMessage">
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+        <!-- =========================
+             CARS
+        ========================= -->
+
+        <section
+            class="page"
+            id="page-cars">
+
+            <div class="toolbar">
+
+                <input
+                    class="input search"
+                    id="search"
+                    placeholder="Mashina qidirish..."
+                    oninput="renderCars()">
+
+                <div class="filters">
+
+                    <button
+                        class="filter active"
+                        id="filterAll"
+                        onclick="setFilter('all')">
                         Barchasi
                     </button>
 
                     <button
-                        id="newFilter"
-                        class="filter-btn"
-                        onclick="setFilter('new')"
-                    >
+                        class="filter"
+                        id="filterActive"
+                        onclick="setFilter('active')">
                         Aktiv
                     </button>
 
                     <button
-                        id="soldFilter"
-                        class="filter-btn"
-                        onclick="setFilter('sold')"
-                    >
+                        class="filter"
+                        id="filterSold"
+                        onclick="setFilter('sold')">
                         Sotilgan
                     </button>
 
                 </div>
 
+            </div>
 
-                <div
-                    class="car-list"
-                    id="list"
-                >
-
-                    <div class="loading">
-
-                        <div class="loader"></div>
-
-                        Ma’lumotlar yuklanmoqda...
-
-                    </div>
-
-                </div>
-
+            <div
+                class="manage-grid"
+                id="manageCars">
             </div>
 
         </section>
 
-    </main>
+    </div>
 
-</div>
-
-
-<!-- TOAST -->
+</main>
 
 <div
-    id="toast"
     class="toast"
-></div>
-
+    id="toast">
+</div>
 
 <script>
 
-/* =====================================================
-   GLOBAL
-===================================================== */
+/* =========================
+   STATE
+========================= */
 
-let allCars = [];
-let currentFilter = "all";
-let toastTimer;
+let cars = [];
+let currentFilter = 'all';
+let selectedImages = [];
+let dailyStats = [];
 
+/* =========================
+   PAGE
+========================= */
 
-/* =====================================================
-   PAGE NAVIGATION
-===================================================== */
+const pageInfo = {
 
-function showPage(pageId, button){
+    dashboard:{
+        title:'Dashboard',
+        subtitle:'pul.zarill boshqaruv paneli'
+    },
 
-    document
-        .querySelectorAll(".page-section")
-        .forEach(page=>{
-            page.classList.remove("active");
+    add:{
+        title:'Mashina qo‘shish',
+        subtitle:'Yangi avtomobil qo‘shish'
+    },
+
+    cars:{
+        title:'Mashinalar',
+        subtitle:'Barcha avtomobillarni boshqarish'
+    }
+
+};
+
+function showPage(page){
+
+    document.querySelectorAll('.page')
+        .forEach(el => {
+            el.classList.remove('active');
         });
 
-
     document
-        .getElementById(pageId)
-        .classList.add("active");
+        .getElementById('page-' + page)
+        .classList.add('active');
 
+    document.querySelectorAll('.nav button')
+        .forEach(btn => {
+            btn.classList.remove('active');
 
-    document
-        .querySelectorAll(".nav-btn")
-        .forEach(btn=>{
-            btn.classList.remove("active");
+            if(
+                btn.dataset.page === page
+            ){
+                btn.classList.add('active');
+            }
         });
 
+    document.getElementById('pageTitle')
+        .textContent =
+        pageInfo[page].title;
 
-    if(button){
-        button.classList.add("active");
+    document.getElementById('pageSubtitle')
+        .textContent =
+        pageInfo[page].subtitle;
+
+    if(page === 'cars'){
+        renderCars();
     }
 
-
-    const titles = {
-
-        dashboard:"Dashboard",
-
-        addPage:"Mashina qo‘shish",
-
-        carsPage:"Mashinalar"
-
-    };
-
-
-    document.getElementById(
-        "pageTitle"
-    ).textContent =
-        titles[pageId] || "Admin";
-
-
-    document
-        .getElementById("sidebar")
-        .classList.remove("open");
-
+    if(window.innerWidth <= 700){
+        document
+            .getElementById('sidebar')
+            .classList.remove('open');
+    }
 }
 
-
-function showPageById(pageId){
-
-    const buttons =
-        document.querySelectorAll(
-            ".nav-btn"
-        );
-
-    let button = null;
-
-    if(pageId === "dashboard"){
-        button = buttons[0];
-    }
-
-    if(pageId === "addPage"){
-        button = buttons[1];
-    }
-
-    if(pageId === "carsPage"){
-        button = buttons[2];
-    }
-
-    showPage(
-        pageId,
-        button
-    );
-
-}
-
-
-/* =====================================================
+/* =========================
    SIDEBAR
-===================================================== */
+========================= */
 
 function toggleSidebar(){
 
     document
-        .getElementById("sidebar")
-        .classList.toggle("open");
-
+        .getElementById('sidebar')
+        .classList.toggle('open');
 }
 
-
-/* =====================================================
+/* =========================
    TOAST
-===================================================== */
+========================= */
 
-function toast(text){
+let toastTimer;
 
-    const box =
-        document.getElementById("toast");
+function toast(message){
 
-    box.textContent = text;
+    const el =
+        document.getElementById('toast');
 
-    box.classList.add("show");
+    el.textContent = message;
+
+    el.classList.add('show');
 
     clearTimeout(toastTimer);
 
-    toastTimer =
-        setTimeout(()=>{
-            box.classList.remove("show");
-        },2500);
-
+    toastTimer = setTimeout(() => {
+        el.classList.remove('show');
+    },2500);
 }
 
-
-/* =====================================================
-   MESSAGE
-===================================================== */
-
-function showMessage(text,type){
-
-    const msg =
-        document.getElementById("msg");
-
-    msg.textContent = text;
-
-    msg.className =
-        "msg " + type;
-
-}
-
-
-/* =====================================================
+/* =========================
    PASSWORD
-===================================================== */
-
-function getPassword(){
-
-    return document
-        .getElementById("password")
-        .value
-        .trim();
-
-}
-
+========================= */
 
 function togglePassword(){
 
     const input =
-        document.getElementById("password");
+        document.getElementById('password');
 
     input.type =
-        input.type === "password"
-            ? "text"
-            : "password";
-
+        input.type === 'password'
+            ? 'text'
+            : 'password';
 }
 
+function getPassword(){
 
-/* =====================================================
-   RESIZE IMAGE
-===================================================== */
+    return document
+        .getElementById('password')
+        .value
+        .trim();
+}
+
+/* =========================
+   NUMBER ANIMATION
+========================= */
+
+function animateNumber(
+    element,
+    target
+){
+
+    const start =
+        Number(element.textContent) || 0;
+
+    const end =
+        Number(target) || 0;
+
+    if(start === end){
+        element.textContent = end;
+        return;
+    }
+
+    const duration = 500;
+
+    const startTime =
+        performance.now();
+
+    function update(time){
+
+        const progress =
+            Math.min(
+                (time - startTime) / duration,
+                1
+            );
+
+        const value =
+            Math.floor(
+                start +
+                (end - start) *
+                progress
+            );
+
+        element.textContent =
+            value.toLocaleString('uz-UZ');
+
+        if(progress < 1){
+            requestAnimationFrame(update);
+        }
+    }
+
+    requestAnimationFrame(update);
+}
+
+/* =========================
+   IMAGE RESIZE
+========================= */
 
 function resizeImage(file){
 
-    return new Promise((resolve,reject)=>{
+    return new Promise(
+        (resolve,reject) => {
 
-        const img =
-            new Image();
+            const img =
+                new Image();
 
-        const objectUrl =
-            URL.createObjectURL(file);
+            const reader =
+                new FileReader();
 
+            reader.onload = e => {
 
-        img.onload = ()=>{
+                img.onload = () => {
 
-            const max = 1000;
+                    const max = 1000;
 
-            const scale =
-                Math.min(
-                    1,
-                    max /
-                    Math.max(
-                        img.width,
-                        img.height
-                    )
-                );
+                    let width =
+                        img.width;
 
+                    let height =
+                        img.height;
 
-            const canvas =
-                document.createElement(
-                    "canvas"
-                );
+                    if(width > max){
 
+                        height =
+                            height *
+                            max /
+                            width;
 
-            canvas.width =
-                Math.round(
-                    img.width * scale
-                );
+                        width = max;
+                    }
 
-            canvas.height =
-                Math.round(
-                    img.height * scale
-                );
+                    if(height > max){
 
+                        width =
+                            width *
+                            max /
+                            height;
 
-            canvas
-                .getContext("2d")
-                .drawImage(
-                    img,
-                    0,
-                    0,
-                    canvas.width,
-                    canvas.height
-                );
+                        height = max;
+                    }
 
+                    const canvas =
+                        document
+                        .createElement('canvas');
 
-            URL.revokeObjectURL(
-                objectUrl
-            );
+                    canvas.width =
+                        Math.round(width);
 
+                    canvas.height =
+                        Math.round(height);
 
-            resolve(
-                canvas.toDataURL(
-                    "image/jpeg",
-                    .82
-                )
-            );
+                    const ctx =
+                        canvas.getContext(
+                            '2d'
+                        );
 
-        };
+                    ctx.drawImage(
+                        img,
+                        0,
+                        0,
+                        canvas.width,
+                        canvas.height
+                    );
 
+                    resolve(
+                        canvas.toDataURL(
+                            'image/jpeg',
+                            .82
+                        )
+                    );
+                };
 
-        img.onerror = ()=>{
+                img.onerror = reject;
 
-            URL.revokeObjectURL(
-                objectUrl
-            );
+                img.src =
+                    e.target.result;
+            };
 
-            reject(
-                new Error(
-                    "Rasmni o‘qib bo‘lmadi"
-                )
-            );
+            reader.onerror = reject;
 
-        };
-
-
-        img.src =
-            objectUrl;
-
-    });
-
+            reader.readAsDataURL(file);
+        }
+    );
 }
 
-
-/* =====================================================
+/* =========================
    PREVIEW
-===================================================== */
+========================= */
 
-function previewImages(){
-
-    const input =
-        document.getElementById(
-            "photo"
-        );
-
-    const preview =
-        document.getElementById(
-            "preview"
-        );
-
-
-    preview.innerHTML = "";
-
+async function previewImages(event){
 
     const files =
         Array.from(
-            input.files
-        ).slice(0,8);
+            event.target.files
+        );
 
-
-    files.forEach(file=>{
-
-        const img =
-            document.createElement(
-                "img"
-            );
-
-        img.src =
-            URL.createObjectURL(
-                file
-            );
-
-        preview.appendChild(img);
-
-    });
-
-}
-
-
-/* =====================================================
-   LOAD CARS
-===================================================== */
-
-async function loadCars(){
-
-    try{
-
-        const res =
-            await fetch(
-                "/api/cars"
-            );
-
-
-        if(!res.ok){
-
-            throw new Error(
-                "Mashinalarni olishda xato"
-            );
-
-        }
-
-
-        allCars =
-            await res.json();
-
-
-        updateCarStats();
-
-        renderRecentCars();
-
-        renderCars();
-
-
-    }catch(error){
-
-        document.getElementById(
-            "recentCars"
-        ).innerHTML = `
-
-            <div class="empty">
-
-                <div class="empty-icon">
-                    ⚠️
-                </div>
-
-                Ma’lumotlarni yuklab bo‘lmadi
-
-            </div>
-
-        `;
-
-
-        document.getElementById(
-            "list"
-        ).innerHTML = `
-
-            <div class="empty">
-
-                <div class="empty-icon">
-                    ⚠️
-                </div>
-
-                Server bilan aloqa bo‘lmadi
-
-            </div>
-
-        `;
+    if(files.length > 8){
 
         toast(
-            "Server bilan aloqa bo‘lmadi"
+            "Ko‘pi bilan 8 ta rasm tanlang"
         );
 
-    }
-
-}
-
-
-/* =====================================================
-   STATS
-===================================================== */
-
-function updateCarStats(){
-
-    const total =
-        allCars.length;
-
-
-    const sold =
-        allCars.filter(
-            car=>car.sold
-        ).length;
-
-
-    document.getElementById(
-        "statCars"
-    ).textContent =
-        total;
-
-
-    document.getElementById(
-        "statSold"
-    ).textContent =
-        sold;
-
-
-    document.getElementById(
-        "activityCars"
-    ).textContent =
-        total;
-
-
-    document.getElementById(
-        "activitySold"
-    ).textContent =
-        sold;
-
-}
-
-
-/* =====================================================
-   RECENT CARS
-===================================================== */
-
-function renderRecentCars(){
-
-    const box =
-        document.getElementById(
-            "recentCars"
-        );
-
-
-    if(!allCars.length){
-
-        box.innerHTML = `
-
-            <div class="empty">
-
-                <div class="empty-icon">
-                    🚘
-                </div>
-
-                Hozircha mashina yo‘q
-
-            </div>
-
-        `;
+        event.target.value = '';
 
         return;
-
     }
 
+    selectedImages = [];
 
-    const cars =
-        [...allCars]
-        .slice(-6)
-        .reverse();
+    const grid =
+        document.getElementById(
+            'previewGrid'
+        );
 
+    grid.innerHTML = '';
 
-    box.innerHTML = "";
+    for(const file of files){
 
+        if(!file.type.includes('jpeg')){
 
-    cars.forEach(car=>{
-
-        const row =
-            document.createElement(
-                "div"
+            toast(
+                "Faqat JPG rasmlar"
             );
 
-        row.className =
-            "recent-car";
-
-
-        const image =
-            document.createElement(
-                "div"
-            );
-
-        image.className =
-            "recent-image";
-
-
-        const images =
-            car.images || [];
-
-
-        if(images.length){
-
-            const img =
-                document.createElement(
-                    "img"
-                );
-
-            img.src =
-                "/uploads/" +
-                images[0];
-
-            image.appendChild(img);
-
+            continue;
         }
 
+        try{
 
-        const info =
-            document.createElement(
-                "div"
-            );
+            const data =
+                await resizeImage(file);
 
+            selectedImages.push(data);
 
-        const badges =
-            document.createElement(
-                "div"
-            );
+            const box =
+                document.createElement('div');
 
-        badges.className =
-            "badges";
+            box.className = 'preview';
 
+            box.innerHTML =
+                `<img src="${data}">`;
 
-        const badge =
-            document.createElement(
-                "span"
-            );
+            grid.appendChild(box);
 
-        badge.className =
-            car.sold
-                ? "badge badge-sold"
-                : "badge badge-new";
+        }catch(e){
 
-        badge.textContent =
-            car.sold
-                ? "SOTILDI"
-                : "YANGI";
+            console.error(e);
 
-
-        badges.appendChild(
-            badge
-        );
-
-
-        const name =
-            document.createElement(
-                "div"
-            );
-
-        name.className =
-            "recent-name";
-
-        name.textContent =
-            car.name ||
-            "Noma’lum";
-
-
-        const price =
-            document.createElement(
-                "div"
-            );
-
-        price.className =
-            "recent-price";
-
-        price.textContent =
-            Number(
-                car.price || 0
-            ).toLocaleString(
-                "ru-RU"
-            ) +
-            " so‘m";
-
-
-        info.append(
-            badges,
-            name,
-            price
-        );
-
-
-        const action =
-            document.createElement(
-                "button"
-            );
-
-        action.className =
-            "small-btn";
-
-        action.textContent =
-            "Boshqarish";
-
-        action.onclick = ()=>{
-            showPageById(
-                "carsPage"
-            );
-        };
-
-
-        row.append(
-            image,
-            info,
-            action
-        );
-
-
-        box.appendChild(row);
-
-    });
-
+        }
+    }
 }
 
+/* =========================
+   FORM MESSAGE
+========================= */
 
-/* =====================================================
+function showMessage(
+    message,
+    type
+){
+
+    const el =
+        document.getElementById(
+            'formMessage'
+        );
+
+    el.textContent = message;
+
+    el.className =
+        'message show ' + type;
+}
+
+/* =========================
    ADD CAR
-===================================================== */
+========================= */
 
 async function addCar(){
 
@@ -2486,39 +1959,32 @@ async function addCar(){
 
     const name =
         document
-            .getElementById("name")
-            .value
-            .trim();
+        .getElementById('carName')
+        .value
+        .trim();
 
     const price =
-        document
-            .getElementById("price")
+        Number(
+            document
+            .getElementById('carPrice')
             .value
-            .trim();
+        );
 
     const description =
         document
-            .getElementById("description")
-            .value
-            .trim();
-
-    const input =
-        document.getElementById(
-            "photo"
-        );
-
+        .getElementById('carDescription')
+        .value
+        .trim();
 
     if(!password){
 
         showMessage(
-            "Admin parolini kiriting",
+            "Admin parolni kiriting",
             "error"
         );
 
         return;
-
     }
-
 
     if(!name){
 
@@ -2528,841 +1994,1111 @@ async function addCar(){
         );
 
         return;
-
     }
 
-
-    if(!price){
+    if(!Number.isInteger(price) || price <= 0){
 
         showMessage(
-            "Narxni kiriting",
+            "Narxni to‘g‘ri kiriting",
             "error"
         );
 
         return;
-
     }
-
-
-    const files =
-        Array.from(
-            input.files
-        ).slice(0,8);
-
 
     const button =
         document.getElementById(
-            "addButton"
+            'addButton'
         );
-
 
     button.disabled = true;
 
     button.textContent =
-        "⏳ Qo‘shilmoqda...";
-
+        "Yuklanmoqda...";
 
     try{
 
-        const images = [];
-
-
-        for(
-            const file of files
-        ){
-
-            images.push(
-                await resizeImage(
-                    file
-                )
-            );
-
-        }
-
-
-        const res =
+        const response =
             await fetch(
-                "/api/cars",
+                '/api/cars',
                 {
-                    method:"POST",
+                    method:'POST',
 
                     headers:{
-                        "Content-Type":
-                            "application/json",
+                        'Content-Type':
+                            'application/json',
 
-                        "x-admin-password":
+                        'x-admin-password':
                             password
                     },
 
                     body:JSON.stringify({
-
-                        name:name,
-
-                        price:price,
-
-                        description:
-                            description,
-
-                        images:images
-
+                        name,
+                        price,
+                        description,
+                        images:selectedImages
                     })
-
                 }
             );
 
+        const data =
+            await response.json();
 
-        if(res.ok){
+        if(!response.ok){
 
-            showMessage(
-                "✓ Mashina muvaffaqiyatli qo‘shildi",
-                "success"
-            );
-
-
-            toast(
-                "Mashina qo‘shildi ✓"
-            );
-
-
-            document.getElementById(
-                "name"
-            ).value = "";
-
-
-            document.getElementById(
-                "price"
-            ).value = "";
-
-
-            document.getElementById(
-                "description"
-            ).value = "";
-
-
-            document.getElementById(
-                "photo"
-            ).value = "";
-
-
-            document.getElementById(
-                "preview"
-            ).innerHTML = "";
-
-
-            await loadCars();
-
-
-        }else{
-
-            let data = {};
-
-            try{
-                data =
-                    await res.json();
-            }catch(e){}
-
-
-            showMessage(
+            throw new Error(
                 data.error ||
-                "Mashina qo‘shilmadi",
-                "error"
+                "Xatolik yuz berdi"
             );
-
         }
 
-
-    }catch(error){
-
         showMessage(
-            error.message ||
-            "Xatolik yuz berdi",
-            "error"
+            "Mashina muvaffaqiyatli qo‘shildi!",
+            "ok"
         );
 
+        document
+            .getElementById('carName')
+            .value = '';
+
+        document
+            .getElementById('carPrice')
+            .value = '';
+
+        document
+            .getElementById('carDescription')
+            .value = '';
+
+        document
+            .getElementById('images')
+            .value = '';
+
+        document
+            .getElementById('previewGrid')
+            .innerHTML = '';
+
+        selectedImages = [];
+
+        await loadAll();
+
+        toast(
+            "Mashina qo‘shildi"
+        );
+
+    }catch(e){
+
+        showMessage(
+            e.message,
+            "error"
+        );
 
     }finally{
 
         button.disabled = false;
 
         button.textContent =
-            "＋ Mashinani qo‘shish";
-
+            "+ Mashinani qo‘shish";
     }
-
 }
 
+/* =========================
+   LOAD CARS
+========================= */
 
-/* =====================================================
+async function loadCars(){
+
+    try{
+
+        const response =
+            await fetch(
+                '/api/cars',
+                {
+                    cache:'no-store'
+                }
+            );
+
+        if(!response.ok){
+            throw new Error();
+        }
+
+        cars =
+            await response.json();
+
+        updateCarStats();
+
+        renderRecentCars();
+
+        renderCars();
+
+    }catch(e){
+
+        console.error(e);
+
+        toast(
+            "Mashinalarni yuklashda xatolik"
+        );
+    }
+}
+
+/* =========================
+   CAR STATS
+========================= */
+
+function updateCarStats(){
+
+    const total =
+        cars.length;
+
+    const sold =
+        cars.filter(
+            car => car.sold
+        ).length;
+
+    animateNumber(
+        document.getElementById(
+            'carsStat'
+        ),
+        total
+    );
+
+    animateNumber(
+        document.getElementById(
+            'soldStat'
+        ),
+        sold
+    );
+
+    animateNumber(
+        document.getElementById(
+            'activityCars'
+        ),
+        total
+    );
+
+    animateNumber(
+        document.getElementById(
+            'activitySold'
+        ),
+        sold
+    );
+}
+
+/* =========================
+   RECENT CARS
+========================= */
+
+function renderRecentCars(){
+
+    const box =
+        document.getElementById(
+            'recentCars'
+        );
+
+    if(!cars.length){
+
+        box.innerHTML =
+            `<div class="empty">
+                Hozircha mashinalar yo‘q
+            </div>`;
+
+        return;
+    }
+
+    const recent =
+        cars.slice(0,6);
+
+    box.innerHTML =
+        recent.map(car => {
+
+            const image =
+                car.images &&
+                car.images.length
+                    ? '/uploads/' +
+                      car.images[0]
+                    : '';
+
+            return `
+                <div class="car-row">
+
+                    ${
+                        image
+                        ? `<img
+                            class="car-img"
+                            src="${image}"
+                            alt="">`
+                        : `<div
+                            class="car-img">
+                            🚘
+                          </div>`
+                    }
+
+                    <div class="car-info">
+
+                        <div class="car-name">
+                            ${escapeHtml(car.name)}
+                        </div>
+
+                        <div class="car-price">
+                            ${formatPrice(car.price)}
+                        </div>
+
+                    </div>
+
+                    <div class="badge ${
+                        car.sold
+                            ? 'sold'
+                            : 'active'
+                    }">
+
+                        ${
+                            car.sold
+                            ? 'SOTILGAN'
+                            : 'AKTIV'
+                        }
+
+                    </div>
+
+                </div>
+            `;
+        }).join('');
+}
+
+/* =========================
    FILTER
-===================================================== */
+========================= */
 
 function setFilter(filter){
 
     currentFilter =
         filter;
 
-
     document
-        .querySelectorAll(
-            ".filter-btn"
-        )
-        .forEach(btn=>{
-            btn.classList.remove(
-                "active"
-            );
+        .querySelectorAll('.filter')
+        .forEach(btn => {
+
+            if(
+                btn.id ===
+                'filterAll' &&
+                filter === 'all'
+            ){
+                btn.classList.add('active');
+            }
+
+            else if(
+                btn.id ===
+                'filterActive' &&
+                filter === 'active'
+            ){
+                btn.classList.add('active');
+            }
+
+            else if(
+                btn.id ===
+                'filterSold' &&
+                filter === 'sold'
+            ){
+                btn.classList.add('active');
+            }
+
+            else if(
+                btn.id &&
+                btn.id.startsWith('filter')
+            ){
+                btn.classList.remove('active');
+            }
         });
 
-
-    if(filter === "all"){
-
-        document
-            .getElementById(
-                "allFilter"
-            )
-            .classList.add(
-                "active"
-            );
-
-    }
-
-
-    if(filter === "new"){
-
-        document
-            .getElementById(
-                "newFilter"
-            )
-            .classList.add(
-                "active"
-            );
-
-    }
-
-
-    if(filter === "sold"){
-
-        document
-            .getElementById(
-                "soldFilter"
-            )
-            .classList.add(
-                "active"
-            );
-
-    }
-
-
     renderCars();
-
 }
 
-
-/* =====================================================
-   RENDER ALL CARS
-===================================================== */
+/* =========================
+   RENDER CARS
+========================= */
 
 function renderCars(){
 
-    const list =
+    const box =
         document.getElementById(
-            "list"
+            'manageCars'
         );
 
-
     const search =
-        document
-            .getElementById(
-                "search"
-            )
-            .value
-            .toLowerCase()
-            .trim();
+        (
+            document
+            .getElementById('search')
+            ?.value || ''
+        )
+        .toLowerCase()
+        .trim();
 
+    let list =
+        [...cars];
 
-    let cars =
-        [...allCars];
+    if(currentFilter === 'active'){
 
+        list =
+            list.filter(
+                car => !car.sold
+            );
+    }
+
+    if(currentFilter === 'sold'){
+
+        list =
+            list.filter(
+                car => car.sold
+            );
+    }
 
     if(search){
 
-        cars =
-            cars.filter(car=>{
-
-                const name =
-                    String(
-                        car.name || ""
-                    ).toLowerCase();
-
-                const description =
-                    String(
-                        car.description || ""
-                    ).toLowerCase();
-
-
-                return (
-                    name.includes(
-                        search
-                    ) ||
-                    description.includes(
-                        search
-                    )
-                );
-
-            });
-
-    }
-
-
-    if(currentFilter === "new"){
-
-        cars =
-            cars.filter(
-                car=>!car.sold
+        list =
+            list.filter(car =>
+                String(car.name)
+                    .toLowerCase()
+                    .includes(search)
             );
-
     }
 
+    if(!list.length){
 
-    if(currentFilter === "sold"){
-
-        cars =
-            cars.filter(
-                car=>car.sold
-            );
-
-    }
-
-
-    document.getElementById(
-        "carCount"
-    ).textContent =
-        cars.length + " ta";
-
-
-    if(!cars.length){
-
-        list.innerHTML = `
-
-            <div class="empty">
-
-                <div class="empty-icon">
-                    🚘
+        box.innerHTML =
+            `<div class="panel"
+                style="grid-column:1/-1">
+                <div class="empty">
+                    Mashina topilmadi
                 </div>
-
-                Mos mashina topilmadi
-
-            </div>
-
-        `;
+            </div>`;
 
         return;
-
     }
 
+    box.innerHTML =
+        list.map(car => {
+
+            const image =
+                car.images &&
+                car.images.length
+                    ? '/uploads/' +
+                      car.images[0]
+                    : '';
+
+            return `
+                <div class="manage-card">
+
+                    ${
+                        image
+                        ? `<img
+                            class="manage-image"
+                            src="${image}"
+                            alt="">`
+                        : `<div
+                            class="manage-image"
+                            style="
+                            display:flex;
+                            align-items:center;
+                            justify-content:center;
+                            font-size:45px;">
+                            🚘
+                          </div>`
+                    }
+
+                    <div class="manage-body">
+
+                        <div class="manage-name">
+                            ${escapeHtml(car.name)}
+                        </div>
+
+                        <div class="manage-price">
+                            ${formatPrice(car.price)}
+                        </div>
+
+                        <div class="manage-description">
+                            ${
+                                escapeHtml(
+                                    car.description ||
+                                    "Tavsif yo‘q"
+                                )
+                            }
+                        </div>
+
+                        <div class="manage-meta">
+
+                            <div class="badge ${
+                                car.sold
+                                    ? 'sold'
+                                    : 'active'
+                            }">
+
+                                ${
+                                    car.sold
+                                    ? 'SOTILGAN'
+                                    : 'AKTIV'
+                                }
+
+                            </div>
+
+                            <span
+                                style="
+                                color:var(--muted);
+                                font-size:11px;">
+                                ${
+                                    car.images
+                                    ? car.images.length
+                                    : 0
+                                } ta rasm
+                            </span>
+
+                        </div>
+
+                        <div class="manage-actions">
+
+                            <button
+                                class="action-btn sold-btn"
+                                onclick="toggleSold(${car.id})">
+
+                                ${
+                                    car.sold
+                                    ? '↩ Qaytarish'
+                                    : '✓ Sotildi'
+                                }
+
+                            </button>
+
+                            <button
+                                class="action-btn delete"
+                                onclick="removeCar(${car.id})">
+
+                                🗑 O‘chirish
+
+                            </button>
+
+                        </div>
 
-    list.innerHTML = "";
+                    </div>
 
+                </div>
+            `;
 
-    cars.forEach(car=>{
-
-        const row =
-            document.createElement(
-                "div"
-            );
-
-        row.className =
-            "car" +
-            (
-                car.sold
-                    ? " sold"
-                    : ""
-            );
-
-
-        /* IMAGE */
-
-        const imageBox =
-            document.createElement(
-                "div"
-            );
-
-        imageBox.className =
-            "car-image";
-
-
-        const images =
-            car.images || [];
-
-
-        if(images.length){
-
-            const img =
-                document.createElement(
-                    "img"
-                );
-
-            img.src =
-                "/uploads/" +
-                images[0];
-
-            imageBox.appendChild(
-                img
-            );
-
-        }
-
-
-        if(images.length > 1){
-
-            const count =
-                document.createElement(
-                    "span"
-                );
-
-            count.className =
-                "image-count";
-
-            count.textContent =
-                "📷 " +
-                images.length;
-
-            imageBox.appendChild(
-                count
-            );
-
-        }
-
-
-        /* INFO */
-
-        const info =
-            document.createElement(
-                "div"
-            );
-
-        const badges =
-            document.createElement(
-                "div"
-            );
-
-        badges.className =
-            "badges";
-
-
-        const badge =
-            document.createElement(
-                "span"
-            );
-
-        badge.className =
-            car.sold
-                ? "badge badge-sold"
-                : "badge badge-new";
-
-        badge.textContent =
-            car.sold
-                ? "SOTILDI"
-                : "YANGI";
-
-
-        badges.appendChild(
-            badge
-        );
-
-
-        const name =
-            document.createElement(
-                "div"
-            );
-
-        name.className =
-            "car-name";
-
-        name.textContent =
-            car.name ||
-            "Noma’lum mashina";
-
-
-        const description =
-            document.createElement(
-                "div"
-            );
-
-        description.className =
-            "car-description";
-
-        description.textContent =
-            car.description ||
-            "Qo‘shimcha ma’lumot yo‘q";
-
-
-        const price =
-            document.createElement(
-                "div"
-            );
-
-        price.className =
-            "car-price";
-
-        price.textContent =
-            Number(
-                car.price || 0
-            ).toLocaleString(
-                "ru-RU"
-            ) +
-            " so‘m";
-
-
-        info.append(
-            badges,
-            name,
-            description,
-            price
-        );
-
-
-        /* ACTIONS */
-
-        const actions =
-            document.createElement(
-                "div"
-            );
-
-        actions.className =
-            "car-actions";
-
-
-        const soldBtn =
-            document.createElement(
-                "button"
-            );
-
-        soldBtn.className =
-            "action-btn action-sold" +
-            (
-                car.sold
-                    ? " active"
-                    : ""
-            );
-
-        soldBtn.textContent =
-            car.sold
-                ? "↩ Qaytarish"
-                : "✓ Sotildi";
-
-
-        soldBtn.onclick =
-            ()=>toggleSold(
-                car.id
-            );
-
-
-        const deleteBtn =
-            document.createElement(
-                "button"
-            );
-
-        deleteBtn.className =
-            "action-btn action-delete";
-
-        deleteBtn.textContent =
-            "🗑 O‘chirish";
-
-
-        deleteBtn.onclick =
-            ()=>removeCar(
-                car.id
-            );
-
-
-        actions.append(
-            soldBtn,
-            deleteBtn
-        );
-
-
-        row.append(
-            imageBox,
-            info,
-            actions
-        );
-
-
-        list.appendChild(
-            row
-        );
-
-    });
-
+        }).join('');
 }
 
-
-/* =====================================================
-   SOLD
-===================================================== */
+/* =========================
+   TOGGLE SOLD
+========================= */
 
 async function toggleSold(id){
 
     const password =
         getPassword();
 
-
     if(!password){
 
+        showPage('add');
+
         showMessage(
-            "Avval admin parolini kiriting",
+            "Avval admin parolni kiriting",
             "error"
         );
 
         return;
-
     }
-
 
     try{
 
-        const res =
+        const response =
             await fetch(
-                "/api/cars/" +
-                id +
-                "/sold",
+                `/api/cars/${id}/sold`,
                 {
-                    method:"POST",
+                    method:'POST',
 
                     headers:{
-                        "x-admin-password":
+                        'x-admin-password':
                             password
                     }
                 }
             );
 
+        const data =
+            await response.json();
 
-        if(res.ok){
+        if(!response.ok){
 
-            toast(
-                "Mashina holati o‘zgartirildi ✓"
+            throw new Error(
+                data.error ||
+                "Xatolik"
             );
-
-            await loadCars();
-
-        }else{
-
-            showMessage(
-                "Admin paroli noto‘g‘ri",
-                "error"
-            );
-
         }
 
-
-    }catch(error){
-
         toast(
-            "Server xatosi"
+            data.sold
+                ? "Mashina sotildi deb belgilandi"
+                : "Mashina qaytarildi"
         );
 
-    }
+        await loadAll();
 
+    }catch(e){
+
+        toast(e.message);
+    }
 }
 
-
-/* =====================================================
+/* =========================
    DELETE
-===================================================== */
+========================= */
 
 async function removeCar(id){
-
-    const car =
-        allCars.find(
-            item =>
-                item.id === id
-        );
-
-
-    const ok =
-        confirm(
-            "Rostdan ham " +
-            (
-                car?.name ||
-                "bu mashina"
-            ) +
-            " ni o‘chirmoqchimisiz?"
-        );
-
-
-    if(!ok){
-
-        return;
-
-    }
-
 
     const password =
         getPassword();
 
-
     if(!password){
 
+        showPage('add');
+
         showMessage(
-            "Avval admin parolini kiriting",
+            "Avval admin parolni kiriting",
             "error"
         );
 
         return;
-
     }
 
+    const ok =
+        confirm(
+            "Bu mashinani o‘chirishga ishonchingiz komilmi?"
+        );
+
+    if(!ok){
+        return;
+    }
 
     try{
 
-        const res =
+        const response =
             await fetch(
-                "/api/cars/" +
-                id,
+                `/api/cars/${id}`,
                 {
-                    method:"DELETE",
+                    method:'DELETE',
 
                     headers:{
-                        "x-admin-password":
+                        'x-admin-password':
                             password
                     }
                 }
             );
 
+        const data =
+            await response.json();
 
-        if(res.ok){
+        if(!response.ok){
 
-            toast(
-                "Mashina o‘chirildi"
+            throw new Error(
+                data.error ||
+                "O‘chirishda xatolik"
             );
-
-            await loadCars();
-
-        }else{
-
-            showMessage(
-                "Admin paroli noto‘g‘ri",
-                "error"
-            );
-
         }
 
-
-    }catch(error){
-
         toast(
-            "Server xatosi"
+            "Mashina o‘chirildi"
         );
 
-    }
+        await loadAll();
 
+    }catch(e){
+
+        toast(e.message);
+    }
 }
 
-
-/* =====================================================
+/* =========================
    LOAD STATS
-===================================================== */
+========================= */
 
 async function loadStats(){
 
     const password =
         getPassword();
 
-
     if(!password){
-
         return;
-
     }
-
 
     try{
 
-        const res =
+        const response =
             await fetch(
-                "/api/stats",
+                '/api/stats',
                 {
                     headers:{
-                        "x-admin-password":
+                        'x-admin-password':
                             password
-                    }
+                    },
+                    cache:'no-store'
                 }
             );
 
-
-        if(res.ok){
-
-            const data =
-                await res.json();
-
-
-            const views =
-                Number(
-                    data.views || 0
-                ).toLocaleString();
-
-
-            const calls =
-                Number(
-                    data.calls || 0
-                ).toLocaleString();
-
-
-            document.getElementById(
-                "statViews"
-            ).textContent =
-                views;
-
-
-            document.getElementById(
-                "statCalls"
-            ).textContent =
-                calls;
-
-
-            document.getElementById(
-                "activityViews"
-            ).textContent =
-                views;
-
-
-            document.getElementById(
-                "activityCalls"
-            ).textContent =
-                calls;
-
-
-        }else{
-
-            document.getElementById(
-                "statViews"
-            ).textContent =
-                "-";
-
-
-            document.getElementById(
-                "statCalls"
-            ).textContent =
-                "-";
-
+        if(!response.ok){
+            return;
         }
 
+        const data =
+            await response.json();
 
-    }catch(error){
-
-        console.log(
-            "Stats error:",
-            error
+        animateNumber(
+            document.getElementById(
+                'viewsStat'
+            ),
+            data.views
         );
 
-    }
+        animateNumber(
+            document.getElementById(
+                'callsStat'
+            ),
+            data.calls
+        );
 
+        animateNumber(
+            document.getElementById(
+                'carsStat'
+            ),
+            data.cars
+        );
+
+        animateNumber(
+            document.getElementById(
+                'soldStat'
+            ),
+            data.sold
+        );
+
+        animateNumber(
+            document.getElementById(
+                'activityCars'
+            ),
+            data.cars
+        );
+
+        animateNumber(
+            document.getElementById(
+                'activitySold'
+            ),
+            data.sold
+        );
+
+    }catch(e){
+
+        console.error(e);
+    }
 }
 
+/* =========================
+   DAILY STATS
+========================= */
 
-/* =====================================================
-   LOAD EVERYTHING
-===================================================== */
+async function loadDailyStats(){
+
+    const password =
+        getPassword();
+
+    if(!password){
+        return;
+    }
+
+    try{
+
+        const response =
+            await fetch(
+                '/api/stats/daily',
+                {
+                    headers:{
+                        'x-admin-password':
+                            password
+                    },
+                    cache:'no-store'
+                }
+            );
+
+        if(!response.ok){
+            return;
+        }
+
+        const data =
+            await response.json();
+
+        dailyStats =
+            data.days || [];
+
+        renderChart();
+
+    }catch(e){
+
+        console.error(e);
+    }
+}
+
+/* =========================
+   TODAY
+========================= */
+
+function updateToday(){
+
+    const today =
+        new Date()
+        .toISOString()
+        .slice(0,10);
+
+    const item =
+        dailyStats.find(
+            x => x.date === today
+        );
+
+    animateNumber(
+        document.getElementById(
+            'todayViews'
+        ),
+        item ? item.views : 0
+    );
+
+    animateNumber(
+        document.getElementById(
+            'todayCalls'
+        ),
+        item ? item.calls : 0
+    );
+}
+
+/* =========================
+   CHART
+========================= */
+
+function renderChart(){
+
+    updateToday();
+
+    const canvas =
+        document.getElementById(
+            'statsChart'
+        );
+
+    if(!canvas){
+        return;
+    }
+
+    const rect =
+        canvas.parentElement
+        .getBoundingClientRect();
+
+    const dpr =
+        window.devicePixelRatio || 1;
+
+    canvas.width =
+        rect.width * dpr;
+
+    canvas.height =
+        rect.height * dpr;
+
+    const ctx =
+        canvas.getContext('2d');
+
+    ctx.scale(dpr,dpr);
+
+    const width =
+        rect.width;
+
+    const height =
+        rect.height;
+
+    ctx.clearRect(
+        0,
+        0,
+        width,
+        height
+    );
+
+    // Oxirgi 30 kun uchun
+    const days = [];
+
+    for(let i = 29; i >= 0; i--){
+
+        const date =
+            new Date();
+
+        date.setDate(
+            date.getDate() - i
+        );
+
+        const key =
+            date
+            .toISOString()
+            .slice(0,10);
+
+        const item =
+            dailyStats.find(
+                x => x.date === key
+            );
+
+        days.push({
+            date:key,
+            views:item
+                ? item.views
+                : 0,
+            calls:item
+                ? item.calls
+                : 0
+        });
+    }
+
+    const maxValue =
+        Math.max(
+            5,
+            ...days.map(
+                d =>
+                    Math.max(
+                        d.views,
+                        d.calls
+                    )
+            )
+        );
+
+    const padding = {
+        left:38,
+        right:12,
+        top:15,
+        bottom:28
+    };
+
+    const chartWidth =
+        width -
+        padding.left -
+        padding.right;
+
+    const chartHeight =
+        height -
+        padding.top -
+        padding.bottom;
+
+    // GRID
+    ctx.strokeStyle =
+        getComputedStyle(
+            document.body
+        ).getPropertyValue(
+            '--border'
+        );
+
+    ctx.lineWidth = 1;
+
+    for(let i = 0; i <= 4; i++){
+
+        const y =
+            padding.top +
+            chartHeight *
+            i / 4;
+
+        ctx.beginPath();
+
+        ctx.moveTo(
+            padding.left,
+            y
+        );
+
+        ctx.lineTo(
+            width - padding.right,
+            y
+        );
+
+        ctx.stroke();
+    }
+
+    // Y labels
+    ctx.fillStyle =
+        getComputedStyle(
+            document.body
+        ).getPropertyValue(
+            '--muted'
+        );
+
+    ctx.font =
+        '10px Arial';
+
+    ctx.textAlign =
+        'right';
+
+    for(let i = 0; i <= 4; i++){
+
+        const value =
+            Math.round(
+                maxValue -
+                maxValue *
+                i / 4
+            );
+
+        const y =
+            padding.top +
+            chartHeight *
+            i / 4 +
+            4;
+
+        ctx.fillText(
+            value.toLocaleString(),
+            padding.left - 7,
+            y
+        );
+    }
+
+    function getPoint(
+        index,
+        value
+    ){
+
+        const x =
+            padding.left +
+            (
+                chartWidth *
+                index /
+                (days.length - 1)
+            );
+
+        const y =
+            padding.top +
+            chartHeight -
+            (
+                value /
+                maxValue
+            ) *
+            chartHeight;
+
+        return {x,y};
+    }
+
+    function drawLine(
+        key,
+        lineColor
+    ){
+
+        ctx.strokeStyle =
+            lineColor;
+
+        ctx.lineWidth = 2.5;
+
+        ctx.lineJoin =
+            'round';
+
+        ctx.lineCap =
+            'round';
+
+        ctx.beginPath();
+
+        days.forEach(
+            (day,index) => {
+
+                const point =
+                    getPoint(
+                        index,
+                        day[key]
+                    );
+
+                if(index === 0){
+
+                    ctx.moveTo(
+                        point.x,
+                        point.y
+                    );
+
+                }else{
+
+                    ctx.lineTo(
+                        point.x,
+                        point.y
+                    );
+                }
+            }
+        );
+
+        ctx.stroke();
+    }
+
+    drawLine(
+        'views',
+        '#111111'
+    );
+
+    drawLine(
+        'calls',
+        '#999999'
+    );
+
+    // X labels
+    ctx.fillStyle =
+        getComputedStyle(
+            document.body
+        ).getPropertyValue(
+            '--muted'
+        );
+
+    ctx.font =
+        '9px Arial';
+
+    ctx.textAlign =
+        'center';
+
+    const labelIndexes =
+        [0,5,10,15,20,25,29];
+
+    labelIndexes.forEach(
+        index => {
+
+            const point =
+                getPoint(
+                    index,
+                    0
+                );
+
+            const parts =
+                days[index]
+                .date
+                .split('-');
+
+            const label =
+                parts[2] +
+                '.' +
+                parts[1];
+
+            ctx.fillText(
+                label,
+                point.x,
+                height - 7
+            );
+        }
+    );
+}
+
+/* =========================
+   FORMAT
+========================= */
+
+function formatPrice(price){
+
+    return Number(price)
+        .toLocaleString('uz-UZ') +
+        " so‘m";
+}
+
+function escapeHtml(text){
+
+    return String(text)
+        .replace(/&/g,'&amp;')
+        .replace(/</g,'&lt;')
+        .replace(/>/g,'&gt;')
+        .replace(/"/g,'&quot;')
+        .replace(/'/g,'&#039;');
+}
+
+/* =========================
+   LOAD ALL
+========================= */
 
 async function loadAll(){
 
@@ -3370,78 +3106,97 @@ async function loadAll(){
 
     await loadStats();
 
-    toast(
-        "Dashboard yangilandi ✓"
-    );
-
+    await loadDailyStats();
 }
 
-
-/* =====================================================
+/* =========================
    DARK MODE
-===================================================== */
+========================= */
 
 function toggleDark(){
 
-    document.body.classList.toggle(
-        "dark"
-    );
-
+    document.body
+        .classList
+        .toggle('dark');
 
     localStorage.setItem(
-        "adminDark",
-        document.body.classList.contains(
-            "dark"
-        )
-            ? "1"
-            : "0"
+        'adminDark',
+        document.body
+            .classList
+            .contains('dark')
+            ? '1'
+            : '0'
     );
 
+    setTimeout(
+        renderChart,
+        50
+    );
 }
 
+/* =========================
+   INIT
+========================= */
 
 if(
     localStorage.getItem(
-        "adminDark"
-    ) === "1"
+        'adminDark'
+    ) === '1'
 ){
-
-    document.body.classList.add(
-        "dark"
-    );
-
+    document.body
+        .classList
+        .add('dark');
 }
 
+const savedPassword =
+    localStorage.getItem(
+        'adminPassword'
+    );
 
-/* =====================================================
-   PASSWORD ENTER
-===================================================== */
+if(savedPassword){
+
+    document
+        .getElementById('password')
+        .value =
+        savedPassword;
+}
 
 document
-    .getElementById(
-        "password"
-    )
+    .getElementById('password')
     .addEventListener(
-        "keydown",
-        event=>{
+        'change',
+        () => {
 
-            if(
-                event.key === "Enter"
-            ){
+            localStorage.setItem(
+                'adminPassword',
+                getPassword()
+            );
 
-                loadStats();
-
-            }
-
+            loadAll();
         }
     );
 
-
-/* =====================================================
-   START
-===================================================== */
+window.addEventListener(
+    'resize',
+    () => {
+        renderChart();
+    }
+);
 
 loadCars();
+
+if(savedPassword){
+    loadStats();
+    loadDailyStats();
+}
+
+// Har 30 soniyada yangilash
+setInterval(
+    () => {
+        loadAll();
+    },
+    30000
+);
 
 </script>
 
