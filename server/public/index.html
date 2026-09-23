@@ -2967,10 +2967,39 @@ function showPage(page){
 }
 
 
+/* =========================================
+   GO HOME
+   FAQAT SHU FUNKSIYA TUZATILDI
+========================================= */
+
 function goHome(){
 
     showPage("home");
 
+    filteredCars =
+        [...allCars];
+
+    document
+        .getElementById(
+            "searchInput"
+        )
+        .value = "";
+
+    renderFiltered();
+
+    document
+        .querySelectorAll(
+            ".bottom-nav button"
+        )
+        .forEach(
+            btn => {
+
+                btn.classList.remove(
+                    "active"
+                );
+
+            }
+        );
 
     document
         .getElementById(
