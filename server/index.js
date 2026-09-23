@@ -32,8 +32,14 @@ async function initDatabase() {
             name TEXT NOT NULL,
             price INTEGER NOT NULL,
             description TEXT DEFAULT '',
-            images TEXT DEFAULT '[]'
+            images TEXT DEFAULT '[]',
+            sold BOOLEAN DEFAULT false
         )
+    `);
+
+    // Eski jadvalda "sold" ustuni bo'lmasa ham xato bermasligi uchun
+    await pool.query(`
+        ALTER TABLE cars ADD COLUMN IF NOT EXISTS sold BOOLEAN DEFAULT false
     `);
 
     await pool.query(`
@@ -155,7 +161,8 @@ function carOut(row) {
         name: row.name,
         price: row.price,
         description: row.description || '',
-        images: parseImages(row)
+        images: parseImages(row),
+        sold: row.sold || false
     };
 }
 
@@ -292,6 +299,51 @@ const server = http.createServer(async (req, res) => {
             } finally {
                 client.release();
             }
+        }
+
+        // =========================
+        // TOGGLE SOLD
+        // =========================
+
+        if (
+            url.startsWith('/api/cars/') &&
+            url.endsWith('/sold') &&
+            req.method === 'POST'
+        ) {
+            if (!isAdmin(req)) {
+                return sendJson(res, 401, {
+                    error: "Parol noto'g'ri"
+                });
+            }
+
+            const id = Number(url.split('/')[3]);
+
+            if (!Number.isInteger(id)) {
+                return sendJson(res, 400, {
+                    error: "ID noto'g'ri"
+                });
+            }
+
+            const result = await pool.query(
+                `
+                UPDATE cars
+                SET sold = NOT sold
+                WHERE id = $1
+                RETURNING sold
+                `,
+                [id]
+            );
+
+            if (result.rows.length === 0) {
+                return sendJson(res, 404, {
+                    error: "Mashina topilmadi"
+                });
+            }
+
+            return sendJson(res, 200, {
+                ok: true,
+                sold: result.rows[0].sold
+            });
         }
 
         // =========================
