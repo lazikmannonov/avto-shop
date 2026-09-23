@@ -3,24 +3,26 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>pul.zarill</title>
 
 <style>
 *{
-    box-sizing:border-box;
     margin:0;
     padding:0;
+    box-sizing:border-box;
 }
 
 :root{
     --bg:#f4f5f7;
-    --card:#fff;
-    --text:#111;
-    --muted:#777;
+    --card:#ffffff;
+    --text:#111111;
+    --muted:#777777;
     --border:#e7e7e7;
     --black:#050505;
     --green:#19d66b;
-    --danger:#ff3b30;
+    --red:#ff3b30;
+    --yellow:#ffd21c;
     --shadow:0 10px 30px rgba(0,0,0,.08);
 }
 
@@ -29,18 +31,21 @@ body{
     background:var(--bg);
     color:var(--text);
     transition:.3s;
+    padding-bottom:75px;
 }
 
 body.dark{
     --bg:#101010;
     --card:#181818;
-    --text:#fff;
-    --muted:#aaa;
+    --text:#ffffff;
+    --muted:#aaaaaa;
     --border:#292929;
-    --shadow:0 10px 30px rgba(0,0,0,.35);
+    --shadow:0 10px 30px rgba(0,0,0,.4);
 }
 
-/* ================= HEADER ================= */
+/* =========================================
+   HEADER
+========================================= */
 
 header{
     position:sticky;
@@ -48,46 +53,66 @@ header{
     z-index:1000;
     background:#050505;
     color:#fff;
-    box-shadow:0 5px 20px rgba(0,0,0,.25);
+    box-shadow:0 5px 25px rgba(0,0,0,.35);
 }
 
 .header-inner{
     max-width:1250px;
+    min-height:78px;
     margin:auto;
-    min-height:72px;
-    padding:12px 18px;
+    padding:10px 18px;
+
     display:flex;
     align-items:center;
     justify-content:space-between;
     gap:15px;
 }
 
-/* ================= LOGO ================= */
+/* =========================================
+   LOGO
+========================================= */
 
 .logo{
     position:relative;
     z-index:1;
-    font-size:27px;
+
+    font-size:34px;
     font-weight:900;
-    letter-spacing:-1px;
+    letter-spacing:-1.5px;
+    line-height:1;
+
     white-space:nowrap;
 }
 
-/* KATTA RANGLI GLOW */
+.logo .green{
+    color:#19d66b;
+}
+
+/* KATTA GLOW */
 
 .logo::before{
     content:"";
+
     position:absolute;
+
     left:50%;
     top:50%;
-    width:240px;
-    height:100px;
+
+    width:280px;
+    height:120px;
+
     transform:translate(-50%,-50%);
+
     border-radius:50%;
+
     background:#19d66b;
-    filter:blur(42px);
-    opacity:.45;
+
+    filter:blur(48px);
+
+    opacity:.48;
+
     z-index:-1;
+
     animation:logoGlow 15s ease-in-out infinite;
 }
 
@@ -96,87 +121,87 @@ header{
     0%{
         background:#19d66b;
         transform:translate(-50%,-50%) scale(1);
-        opacity:.42;
+        opacity:.45;
     }
 
-    10%{
-        transform:translate(-58%,-50%) scale(1.15);
-        opacity:.50;
+    8%{
+        transform:translate(-62%,-50%) scale(1.12);
+        opacity:.52;
     }
 
-    20%{
-        transform:translate(-42%,-50%) scale(1);
-        opacity:.42;
-    }
-
-    30%{
-        background:#19d66b;
-        transform:translate(-50%,-50%) scale(1.12);
+    16%{
+        transform:translate(-38%,-50%) scale(1.05);
         opacity:.48;
+    }
+
+    25%{
+        background:#19d66b;
+        transform:translate(-50%,-50%) scale(1.15);
+        opacity:.52;
     }
 
     33%{
         background:#ffd21c;
+        transform:translate(-50%,-50%) scale(1.05);
+        opacity:.50;
     }
 
-    43%{
-        transform:translate(-43%,-52%) scale(1.18);
-        opacity:.52;
+    42%{
+        transform:translate(-38%,-52%) scale(1.18);
+        opacity:.56;
     }
 
-    53%{
-        transform:translate(-57%,-48%) scale(1);
-        opacity:.43;
-    }
-
-    63%{
-        background:#ffd21c;
-        transform:translate(-50%,-50%) scale(1.12);
+    50%{
+        transform:translate(-62%,-48%) scale(1.04);
         opacity:.48;
+    }
+
+    58%{
+        background:#ffd21c;
+        transform:translate(-50%,-50%) scale(1.14);
+        opacity:.53;
     }
 
     66%{
         background:#ff3b30;
+        transform:translate(-50%,-50%) scale(1.05);
+        opacity:.50;
     }
 
-    76%{
-        transform:translate(-57%,-50%) scale(1.2);
-        opacity:.53;
+    75%{
+        transform:translate(-62%,-50%) scale(1.2);
+        opacity:.57;
     }
 
-    86%{
-        transform:translate(-43%,-50%) scale(1);
-        opacity:.43;
+    83%{
+        transform:translate(-38%,-50%) scale(1.03);
+        opacity:.47;
     }
 
-    96%{
+    92%{
         background:#ff3b30;
-        transform:translate(-50%,-50%) scale(1.12);
-        opacity:.48;
+        transform:translate(-50%,-50%) scale(1.15);
+        opacity:.53;
     }
 
     100%{
         background:#19d66b;
         transform:translate(-50%,-50%) scale(1);
-        opacity:.42;
+        opacity:.45;
     }
-}
-
-.green{
-    color:var(--green);
 }
 
 .header-right{
     display:flex;
     align-items:center;
-    gap:8px;
+    gap:7px;
 }
 
 .phone-top{
     color:#fff;
     text-decoration:none;
-    font-weight:bold;
     font-size:14px;
+    font-weight:bold;
     margin-right:5px;
 }
 
@@ -185,26 +210,53 @@ header{
     border:1px solid #333;
     background:#151515;
     color:#fff;
+
     border-radius:10px;
+
     padding:8px 10px;
+
     cursor:pointer;
+
+    transition:.2s;
+}
+
+.lang-btn:hover,
+.theme-btn:hover{
+    border-color:#19d66b;
 }
 
 .lang-btn.active{
-    background:var(--green);
+    background:#19d66b;
     color:#000;
-    border-color:var(--green);
+    border-color:#19d66b;
 }
 
-/* ================= MAIN ================= */
+/* =========================================
+   MAIN
+========================================= */
 
 .container{
     max-width:1250px;
     margin:auto;
+
     padding:22px 18px 100px;
 }
 
-/* ================= SEARCH ================= */
+/* =========================================
+   PAGES
+========================================= */
+
+.page{
+    display:none;
+}
+
+.page.active{
+    display:block;
+}
+
+/* =========================================
+   SEARCH
+========================================= */
 
 .search-box{
     display:flex;
@@ -214,35 +266,55 @@ header{
 
 .search-box input{
     flex:1;
+
     height:50px;
+
     border:1px solid var(--border);
+
     background:var(--card);
     color:var(--text);
+
     border-radius:14px;
+
     padding:0 17px;
+
     outline:none;
+
     font-size:15px;
+
+    transition:.2s;
 }
 
 .search-box input:focus{
-    border-color:var(--green);
+    border-color:#19d66b;
+    box-shadow:0 0 0 3px rgba(25,214,107,.08);
 }
 
 .search-reset{
     width:50px;
+
     border:none;
+
     border-radius:14px;
-    background:var(--black);
+
+    background:#050505;
+
     color:#fff;
+
     cursor:pointer;
+
+    font-size:15px;
 }
 
-/* ================= RESULTS ================= */
+/* =========================================
+   RESULTS
+========================================= */
 
 .results-info{
     display:flex;
     justify-content:space-between;
     align-items:center;
+
     margin-bottom:14px;
 }
 
@@ -255,61 +327,101 @@ header{
     font-size:13px;
 }
 
-/* ================= GRID ================= */
+/* =========================================
+   CARS GRID
+========================================= */
 
 .cars-grid{
     display:grid;
-    grid-template-columns:repeat(3,1fr);
+
+    grid-template-columns:
+        repeat(3,1fr);
+
     gap:18px;
 }
 
-/* ================= CARD ================= */
+/* =========================================
+   CAR CARD
+========================================= */
 
 .car-card{
     position:relative;
+
     background:var(--card);
+
     border:1px solid var(--border);
+
     border-radius:20px;
+
     overflow:hidden;
+
     box-shadow:var(--shadow);
-    transition:.25s;
-    cursor:pointer;
+
+    transition:
+        transform .25s ease,
+        box-shadow .25s ease;
 }
 
 .car-card:hover{
-    transform:translateY(-4px);
+    transform:translateY(-5px);
+
+    box-shadow:
+        0 16px 35px rgba(0,0,0,.13);
 }
+
+/* =========================================
+   IMAGE
+========================================= */
 
 .car-image-box{
     position:relative;
+
     width:100%;
     height:235px;
+
     background:#ddd;
+
     overflow:hidden;
 }
 
 .car-image{
     width:100%;
     height:100%;
+
     object-fit:cover;
+
     display:block;
-    transition:.35s;
+
+    transition:
+        transform .35s ease;
 }
 
 .car-card:hover .car-image{
-    transform:scale(1.04);
+    transform:scale(1.045);
 }
+
+/* =========================================
+   BADGES
+========================================= */
 
 .badge{
     position:absolute;
+
     top:12px;
     left:12px;
+
     z-index:3;
+
     padding:7px 10px;
+
     border-radius:9px;
+
     font-size:11px;
+
     font-weight:900;
-    background:var(--green);
+
+    background:#19d66b;
+
     color:#000;
 }
 
@@ -318,36 +430,70 @@ header{
     color:#fff;
 }
 
-.image-count{
-    position:absolute;
-    right:12px;
-    bottom:12px;
-    z-index:3;
-    background:rgba(0,0,0,.7);
-    color:#fff;
-    padding:6px 9px;
-    border-radius:9px;
-    font-size:12px;
-}
+/* =========================================
+   FAVORITE
+========================================= */
 
 .favorite{
     position:absolute;
+
     right:12px;
     top:12px;
+
     z-index:4;
+
     width:40px;
     height:40px;
+
     border-radius:50%;
+
     border:none;
-    background:rgba(0,0,0,.65);
+
+    background:rgba(0,0,0,.68);
+
     color:#fff;
-    font-size:20px;
+
+    font-size:21px;
+
     cursor:pointer;
+
+    transition:.2s;
+}
+
+.favorite:hover{
+    transform:scale(1.08);
 }
 
 .favorite.active{
     color:#ff3b30;
 }
+
+/* =========================================
+   IMAGE COUNT
+========================================= */
+
+.image-count{
+    position:absolute;
+
+    right:12px;
+    bottom:12px;
+
+    z-index:3;
+
+    background:rgba(0,0,0,.72);
+
+    color:#fff;
+
+    padding:6px 9px;
+
+    border-radius:9px;
+
+    font-size:12px;
+}
+
+/* =========================================
+   CARD CONTENT
+========================================= */
 
 .car-content{
     padding:16px;
@@ -356,46 +502,68 @@ header{
 .car-name{
     font-size:19px;
     font-weight:800;
+
     margin-bottom:7px;
 }
 
 .car-price{
     font-size:20px;
     font-weight:900;
+
     margin-bottom:8px;
 }
 
 .car-description{
     color:var(--muted);
+
     font-size:13px;
+
     line-height:1.5;
+
     min-height:39px;
+
     display:-webkit-box;
+
     -webkit-line-clamp:2;
+
     -webkit-box-orient:vertical;
+
     overflow:hidden;
 }
 
+/* =========================================
+   CARD BUTTONS
+========================================= */
+
 .card-bottom{
     display:flex;
+
     gap:8px;
+
     margin-top:14px;
 }
 
 .detail-btn,
 .call-btn{
     flex:1;
+
     padding:11px 8px;
+
     border-radius:11px;
+
     border:none;
+
     cursor:pointer;
+
     font-weight:bold;
-    text-decoration:none;
+
     text-align:center;
+
+    text-decoration:none;
 }
 
 .detail-btn{
-    background:#eee;
+    background:#eeeeee;
     color:#111;
 }
 
@@ -405,23 +573,31 @@ body.dark .detail-btn{
 }
 
 .call-btn{
-    background:var(--green);
+    background:#19d66b;
     color:#000;
 }
 
-/* ================= EMPTY ================= */
+/* =========================================
+   EMPTY
+========================================= */
 
 .empty{
     grid-column:1/-1;
+
     text-align:center;
+
     padding:70px 20px;
+
     background:var(--card);
+
     border-radius:20px;
+
     border:1px solid var(--border);
 }
 
 .empty-icon{
     font-size:45px;
+
     margin-bottom:12px;
 }
 
@@ -433,24 +609,33 @@ body.dark .detail-btn{
     color:var(--muted);
 }
 
-/* ================= SKELETON ================= */
+/* =========================================
+   SKELETON
+========================================= */
 
 .skeleton{
     background:var(--card);
+
     border-radius:20px;
+
     overflow:hidden;
+
     border:1px solid var(--border);
 }
 
 .skeleton-img{
     height:235px;
-    background:linear-gradient(
-        90deg,
-        #e8e8e8 25%,
-        #f5f5f5 50%,
-        #e8e8e8 75%
-    );
+
+    background:
+        linear-gradient(
+            90deg,
+            #e8e8e8 25%,
+            #f5f5f5 50%,
+            #e8e8e8 75%
+        );
+
     background-size:200% 100%;
+
     animation:skeleton 1.2s infinite;
 }
 
@@ -460,9 +645,13 @@ body.dark .detail-btn{
 
 .skeleton-line{
     height:14px;
+
     background:#e5e5e5;
+
     border-radius:8px;
+
     margin-bottom:10px;
+
     animation:skeleton 1.2s infinite;
 }
 
@@ -472,6 +661,7 @@ body.dark .detail-btn{
 }
 
 @keyframes skeleton{
+
     0%{
         background-position:200% 0;
     }
@@ -481,44 +671,53 @@ body.dark .detail-btn{
     }
 }
 
-/* ================= DETAILS ================= */
-
-.page{
-    display:none;
-}
-
-.page.active{
-    display:block;
-}
+/* =========================================
+   DETAILS
+========================================= */
 
 .back-btn{
     border:none;
+
     background:var(--card);
+
     color:var(--text);
+
     border:1px solid var(--border);
+
     padding:10px 15px;
+
     border-radius:12px;
+
     cursor:pointer;
+
     margin-bottom:15px;
 }
 
 .details-card{
     background:var(--card);
+
     border:1px solid var(--border);
+
     border-radius:22px;
+
     overflow:hidden;
+
     box-shadow:var(--shadow);
 }
 
 .details-main{
     display:grid;
-    grid-template-columns:1.2fr 1fr;
+
+    grid-template-columns:
+        1.2fr 1fr;
 }
 
 .details-image{
     width:100%;
     height:500px;
+
     object-fit:cover;
+
     cursor:pointer;
 }
 
@@ -528,70 +727,102 @@ body.dark .detail-btn{
 
 .details-info h1{
     font-size:32px;
+
     margin-bottom:15px;
 }
 
 .details-price{
     font-size:27px;
+
     font-weight:900;
+
     margin-bottom:18px;
 }
 
 .details-description{
     color:var(--muted);
+
     line-height:1.7;
+
     white-space:pre-wrap;
+
     margin-bottom:25px;
 }
 
 .details-call{
     display:block;
+
     text-align:center;
+
     padding:15px;
+
     border-radius:13px;
-    background:var(--green);
+
+    background:#19d66b;
+
     color:#000;
+
     font-weight:900;
+
     text-decoration:none;
 }
 
-/* ================= THUMBNAILS ================= */
+/* =========================================
+   THUMBNAILS
+========================================= */
 
 .thumbnails{
     display:flex;
+
     gap:8px;
+
     padding:12px;
+
     overflow-x:auto;
 }
 
 .thumb{
     width:80px;
     height:65px;
+
     object-fit:cover;
+
     border-radius:9px;
+
     cursor:pointer;
+
     border:2px solid transparent;
 }
 
 .thumb.active{
-    border-color:var(--green);
+    border-color:#19d66b;
 }
 
-/* ================= MENU ================= */
+/* =========================================
+   MENU
+========================================= */
 
 .menu-card{
     background:var(--card);
+
     border:1px solid var(--border);
+
     border-radius:20px;
+
     padding:20px;
+
     box-shadow:var(--shadow);
 }
 
 .menu-item{
     display:flex;
+
     justify-content:space-between;
+
     align-items:center;
+
     padding:16px 5px;
+
     border-bottom:1px solid var(--border);
 }
 
@@ -601,7 +832,9 @@ body.dark .detail-btn{
 
 .menu-item-left{
     display:flex;
+
     flex-direction:column;
+
     gap:4px;
 }
 
@@ -611,23 +844,33 @@ body.dark .detail-btn{
 
 .menu-item-sub{
     color:var(--muted);
+
     font-size:13px;
 }
 
 .menu-item a{
-    color:var(--green);
+    color:#19d66b;
+
     text-decoration:none;
 }
 
-/* ================= LIGHTBOX ================= */
+/* =========================================
+   LIGHTBOX
+========================================= */
 
 .lightbox{
     position:fixed;
+
     inset:0;
+
     z-index:3000;
+
     background:rgba(0,0,0,.94);
+
     display:none;
+
     align-items:center;
+
     justify-content:center;
 }
 
@@ -638,6 +881,7 @@ body.dark .detail-btn{
 .lightbox img{
     max-width:92%;
     max-height:88%;
+
     object-fit:contain;
 }
 
@@ -645,18 +889,25 @@ body.dark .detail-btn{
 .lightbox-prev,
 .lightbox-next{
     position:absolute;
+
     border:none;
+
     background:rgba(255,255,255,.12);
+
     color:#fff;
+
     cursor:pointer;
+
     border-radius:50%;
 }
 
 .lightbox-close{
     top:20px;
     right:20px;
+
     width:45px;
     height:45px;
+
     font-size:25px;
 }
 
@@ -664,8 +915,11 @@ body.dark .detail-btn{
 .lightbox-next{
     width:50px;
     height:50px;
+
     font-size:25px;
+
     top:50%;
+
     transform:translateY(-50%);
 }
 
@@ -677,46 +931,65 @@ body.dark .detail-btn{
     right:20px;
 }
 
-/* ================= BOTTOM NAV ================= */
+/* =========================================
+   BOTTOM NAV
+========================================= */
 
 .bottom-nav{
     position:fixed;
+
     left:0;
     right:0;
     bottom:0;
+
     z-index:1500;
+
     display:flex;
-    background:rgba(0,0,0,.96);
+
+    background:rgba(0,0,0,.97);
+
     border-top:1px solid #333;
+
     padding:8px 5px;
 }
 
 .bottom-nav button{
     flex:1;
+
     border:none;
+
     background:none;
+
     color:#aaa;
+
     padding:7px 3px;
+
     font-size:11px;
+
     cursor:pointer;
 }
 
 .bottom-nav button.active{
-    color:var(--green);
+    color:#19d66b;
 }
 
 .bottom-icon{
     display:block;
+
     font-size:20px;
+
     margin-bottom:2px;
 }
 
-/* ================= RESPONSIVE ================= */
+/* =========================================
+   RESPONSIVE
+========================================= */
 
 @media(max-width:1000px){
 
     .cars-grid{
-        grid-template-columns:repeat(2,1fr);
+        grid-template-columns:
+            repeat(2,1fr);
     }
 
     .details-main{
@@ -731,19 +1004,23 @@ body.dark .detail-btn{
 @media(max-width:650px){
 
     .header-inner{
-        min-height:62px;
+        min-height:68px;
+
         padding:10px 12px;
     }
 
     .logo{
-        font-size:22px;
+        font-size:28px;
+        letter-spacing:-1px;
     }
 
     .logo::before{
-        width:180px;
-        height:75px;
-        filter:blur(35px);
-        opacity:.45;
+        width:220px;
+        height:95px;
+
+        filter:blur(40px);
+
+        opacity:.48;
     }
 
     .phone-top{
@@ -753,15 +1030,21 @@ body.dark .detail-btn{
     .lang-btn,
     .theme-btn{
         padding:7px 8px;
+
         font-size:12px;
     }
 
     .container{
-        padding:15px 10px 85px;
+        padding:
+            15px
+            10px
+            85px;
     }
 
     .cars-grid{
-        grid-template-columns:repeat(2,1fr);
+        grid-template-columns:
+            repeat(2,1fr);
+
         gap:9px;
     }
 
@@ -783,38 +1066,47 @@ body.dark .detail-btn{
 
     .car-description{
         font-size:11px;
+
         min-height:32px;
     }
 
     .card-bottom{
         flex-direction:column;
+
         gap:5px;
+
         margin-top:9px;
     }
 
     .detail-btn,
     .call-btn{
         padding:8px 5px;
+
         font-size:11px;
     }
 
     .favorite{
         width:34px;
         height:34px;
+
         font-size:17px;
     }
 
     .badge{
         top:8px;
         left:8px;
+
         padding:5px 7px;
+
         font-size:9px;
     }
 
     .image-count{
         right:7px;
         bottom:7px;
+
         font-size:10px;
+
         padding:5px 7px;
     }
 
@@ -838,6 +1130,10 @@ body.dark .detail-btn{
 </head>
 
 <body>
+
+<!-- =========================================
+     HEADER
+========================================= -->
 
 <header>
 
@@ -893,9 +1189,13 @@ body.dark .detail-btn{
 </header>
 
 
+<!-- =========================================
+     MAIN
+========================================= -->
+
 <main class="container">
 
-    <!-- BOSH SAHIFA -->
+    <!-- HOME -->
 
     <section
         id="homePage"
@@ -946,31 +1246,41 @@ body.dark .detail-btn{
                 <div class="skeleton-img"></div>
 
                 <div class="skeleton-content">
+
                     <div class="skeleton-line big"></div>
+
                     <div class="skeleton-line"></div>
+
                     <div class="skeleton-line"></div>
+
                 </div>
             </div>
-
 
             <div class="skeleton">
                 <div class="skeleton-img"></div>
 
                 <div class="skeleton-content">
+
                     <div class="skeleton-line big"></div>
+
                     <div class="skeleton-line"></div>
+
                     <div class="skeleton-line"></div>
+
                 </div>
             </div>
-
 
             <div class="skeleton">
                 <div class="skeleton-img"></div>
 
                 <div class="skeleton-content">
+
                     <div class="skeleton-line big"></div>
+
                     <div class="skeleton-line"></div>
+
                     <div class="skeleton-line"></div>
+
                 </div>
             </div>
 
@@ -1013,6 +1323,7 @@ body.dark .detail-btn{
             <div class="menu-item">
 
                 <div class="menu-item-left">
+
                     <span class="menu-item-title">
                         pul.zarill
                     </span>
@@ -1020,6 +1331,7 @@ body.dark .detail-btn{
                     <span class="menu-item-sub">
                         Avtomobillar platformasi
                     </span>
+
                 </div>
 
                 <span>🚗</span>
@@ -1030,6 +1342,7 @@ body.dark .detail-btn{
             <div class="menu-item">
 
                 <div class="menu-item-left">
+
                     <span class="menu-item-title">
                         Telefon
                     </span>
@@ -1037,6 +1350,7 @@ body.dark .detail-btn{
                     <span class="menu-item-sub">
                         Biz bilan bog‘lanish
                     </span>
+
                 </div>
 
                 <a
@@ -1052,6 +1366,7 @@ body.dark .detail-btn{
             <div class="menu-item">
 
                 <div class="menu-item-left">
+
                     <span class="menu-item-title">
                         Telegram
                     </span>
@@ -1059,6 +1374,7 @@ body.dark .detail-btn{
                     <span class="menu-item-sub">
                         Telegram orqali bog‘lanish
                     </span>
+
                 </div>
 
                 <a
@@ -1074,6 +1390,7 @@ body.dark .detail-btn{
             <div class="menu-item">
 
                 <div class="menu-item-left">
+
                     <span class="menu-item-title">
                         WhatsApp
                     </span>
@@ -1081,6 +1398,7 @@ body.dark .detail-btn{
                     <span class="menu-item-sub">
                         WhatsApp orqali bog‘lanish
                     </span>
+
                 </div>
 
                 <a
@@ -1096,6 +1414,7 @@ body.dark .detail-btn{
             <div class="menu-item">
 
                 <div class="menu-item-left">
+
                     <span class="menu-item-title">
                         Instagram
                     </span>
@@ -1103,6 +1422,7 @@ body.dark .detail-btn{
                     <span class="menu-item-sub">
                         Instagram sahifamiz
                     </span>
+
                 </div>
 
                 <a
@@ -1118,6 +1438,7 @@ body.dark .detail-btn{
             <div class="menu-item">
 
                 <div class="menu-item-left">
+
                     <span class="menu-item-title">
                         Manzil
                     </span>
@@ -1125,6 +1446,7 @@ body.dark .detail-btn{
                     <span class="menu-item-sub">
                         Toshkent, O'zbekiston
                     </span>
+
                 </div>
 
                 <span>📍</span>
@@ -1135,6 +1457,7 @@ body.dark .detail-btn{
             <div class="menu-item">
 
                 <div class="menu-item-left">
+
                     <span class="menu-item-title">
                         Til
                     </span>
@@ -1142,6 +1465,7 @@ body.dark .detail-btn{
                     <span class="menu-item-sub">
                         UZ / RU / EN
                     </span>
+
                 </div>
 
                 <span>🌐</span>
@@ -1152,6 +1476,7 @@ body.dark .detail-btn{
             <div class="menu-item">
 
                 <div class="menu-item-left">
+
                     <span class="menu-item-title">
                         Ko‘rinish
                     </span>
@@ -1159,6 +1484,7 @@ body.dark .detail-btn{
                     <span class="menu-item-sub">
                         Light / Dark
                     </span>
+
                 </div>
 
                 <button
@@ -1170,40 +1496,6 @@ body.dark .detail-btn{
 
             </div>
 
-
-            <div class="menu-item">
-
-                <div class="menu-item-left">
-                    <span class="menu-item-title">
-                        Shartlar
-                    </span>
-
-                    <span class="menu-item-sub">
-                        Foydalanish shartlari
-                    </span>
-                </div>
-
-                <span>ℹ️</span>
-
-            </div>
-
-
-            <div class="menu-item">
-
-                <div class="menu-item-left">
-                    <span class="menu-item-title">
-                        Maxfiylik
-                    </span>
-
-                    <span class="menu-item-sub">
-                        Maxfiylik siyosati
-                    </span>
-                </div>
-
-                <span>🔒</span>
-
-            </div>
-
         </div>
 
     </section>
@@ -1211,7 +1503,9 @@ body.dark .detail-btn{
 </main>
 
 
-<!-- PASTKI MENYU -->
+<!-- =========================================
+     BOTTOM NAV
+========================================= -->
 
 <nav class="bottom-nav">
 
@@ -1220,32 +1514,60 @@ body.dark .detail-btn{
         class="active"
         onclick="goHome()"
     >
-        <span class="bottom-icon">🏠</span>
+
+        <span class="bottom-icon">
+            🏠
+        </span>
+
         Bosh sahifa
+
     </button>
 
 
-    <button onclick="focusSearch()">
-        <span class="bottom-icon">🔎</span>
+    <button
+        onclick="focusSearch()"
+    >
+
+        <span class="bottom-icon">
+            🔎
+        </span>
+
         Qidiruv
+
     </button>
 
 
-    <button onclick="showFavorites()">
-        <span class="bottom-icon">❤️</span>
+    <button
+        onclick="showFavorites()"
+    >
+
+        <span class="bottom-icon">
+            ❤️
+        </span>
+
         Sevimlilar
+
     </button>
 
 
-    <button onclick="showMenu()">
-        <span class="bottom-icon">☰</span>
+    <button
+        onclick="showMenu()"
+    >
+
+        <span class="bottom-icon">
+            ☰
+        </span>
+
         Menyu
+
     </button>
 
 </nav>
 
 
-<!-- LIGHTBOX -->
+<!-- =========================================
+     LIGHTBOX
+========================================= -->
 
 <div
     class="lightbox"
@@ -1287,9 +1609,9 @@ body.dark .detail-btn{
 
 <script>
 
-/* =========================
-   DATA
-========================= */
+/* =========================================
+   VARIABLES
+========================================= */
 
 let allCars = [];
 
@@ -1297,20 +1619,24 @@ let filteredCars = [];
 
 let favorites =
     JSON.parse(
-        localStorage.getItem("favorites") || "[]"
+        localStorage.getItem(
+            "favorites"
+        ) || "[]"
     );
 
 let currentLang =
-    localStorage.getItem("language") || "uz";
+    localStorage.getItem(
+        "language"
+    ) || "uz";
 
 let currentDetailsCar = null;
 
 let currentLightboxIndex = 0;
 
 
-/* =========================
+/* =========================================
    TRANSLATIONS
-========================= */
+========================================= */
 
 const translations = {
 
@@ -1353,9 +1679,9 @@ const translations = {
 };
 
 
-/* =========================
+/* =========================================
    LANGUAGE
-========================= */
+========================================= */
 
 function setLang(lang){
 
@@ -1378,41 +1704,59 @@ function applyLang(){
         translations[currentLang];
 
     document
-        .getElementById("searchInput")
+        .getElementById(
+            "searchInput"
+        )
         .placeholder = t.search;
 
     document
-        .getElementById("carsTitle")
+        .getElementById(
+            "carsTitle"
+        )
         .textContent = t.cars;
 
 
     document
-        .querySelectorAll(".lang-btn")
-        .forEach(btn => {
+        .querySelectorAll(
+            ".lang-btn"
+        )
+        .forEach(
+            btn => {
 
-            btn.classList.remove("active");
+                btn.classList.remove(
+                    "active"
+                );
 
-            if(
-                btn.textContent.toLowerCase() === currentLang
-            ){
-                btn.classList.add("active");
+                if(
+                    btn.textContent
+                        .toLowerCase() ===
+                    currentLang
+                ){
+
+                    btn.classList.add(
+                        "active"
+                    );
+                }
+
             }
-
-        });
-
+        );
 }
 
 
-/* =========================
+/* =========================================
    THEME
-========================= */
+========================================= */
 
 function toggleTheme(){
 
-    document.body.classList.toggle("dark");
+    document.body
+        .classList
+        .toggle("dark");
 
     const isDark =
-        document.body.classList.contains("dark");
+        document.body
+            .classList
+            .contains("dark");
 
     localStorage.setItem(
         "darkMode",
@@ -1426,18 +1770,24 @@ function toggleTheme(){
 function updateThemeIcon(){
 
     const isDark =
-        document.body.classList.contains("dark");
+        document.body
+            .classList
+            .contains("dark");
 
     document
-        .getElementById("themeBtn")
+        .getElementById(
+            "themeBtn"
+        )
         .textContent =
-        isDark ? "☀️" : "🌙";
+        isDark
+            ? "☀️"
+            : "🌙";
 }
 
 
-/* =========================
+/* =========================================
    PRICE
-========================= */
+========================================= */
 
 function parsePrice(value){
 
@@ -1445,12 +1795,14 @@ function parsePrice(value){
         value === undefined ||
         value === null
     ){
+
         return 0;
     }
 
     if(
         typeof value === "number"
     ){
+
         return value;
     }
 
@@ -1488,15 +1840,17 @@ function formatPrice(value){
 }
 
 
-/* =========================
+/* =========================================
    SEARCH
-========================= */
+========================================= */
 
 function searchCars(){
 
     const input =
         document
-            .getElementById("searchInput")
+            .getElementById(
+                "searchInput"
+            )
             .value
             .toLowerCase()
             .trim();
@@ -1509,45 +1863,44 @@ function searchCars(){
     }else{
 
         filteredCars =
-            allCars.filter(car => {
+            allCars.filter(
+                car => {
 
-                const name =
-                    String(
-                        car.name || ""
-                    ).toLowerCase();
+                    const name =
+                        String(
+                            car.name || ""
+                        ).toLowerCase();
 
-                const description =
-                    String(
-                        car.description || ""
-                    ).toLowerCase();
+                    const description =
+                        String(
+                            car.description || ""
+                        ).toLowerCase();
 
-                const price =
-                    String(
-                        car.price || ""
-                    ).toLowerCase();
+                    const price =
+                        String(
+                            car.price || ""
+                        ).toLowerCase();
 
-                return (
-                    name.includes(input) ||
-                    description.includes(input) ||
-                    price.includes(input)
-                );
+                    return (
+                        name.includes(input) ||
+                        description.includes(input) ||
+                        price.includes(input)
+                    );
 
-            });
-
+                }
+            );
     }
 
     renderFiltered();
 }
 
 
-/* =========================
-   RESET SEARCH
-========================= */
-
 function resetSearch(){
 
     document
-        .getElementById("searchInput")
+        .getElementById(
+            "searchInput"
+        )
         .value = "";
 
     filteredCars =
@@ -1557,9 +1910,9 @@ function resetSearch(){
 }
 
 
-/* =========================
-   LOAD CARS
-========================= */
+/* =========================================
+   LOAD
+========================================= */
 
 async function load(){
 
@@ -1568,7 +1921,9 @@ async function load(){
     try{
 
         const response =
-            await fetch("/api/cars");
+            await fetch(
+                "/api/cars"
+            );
 
         if(!response.ok){
 
@@ -1618,9 +1973,9 @@ async function load(){
 }
 
 
-/* =========================
+/* =========================================
    SKELETON
-========================= */
+========================================= */
 
 function showSkeleton(){
 
@@ -1632,8 +1987,8 @@ function showSkeleton(){
     grid.innerHTML = "";
 
     for(
-        let i = 0;
-        i < 6;
+        let i=0;
+        i<6;
         i++
     ){
 
@@ -1660,25 +2015,28 @@ function showSkeleton(){
 }
 
 
-/* =========================
+/* =========================================
    IMAGE URL
-========================= */
+========================================= */
 
 function imageUrl(filename){
 
     if(!filename){
+
         return "";
     }
 
     if(
-        String(filename).startsWith("http")
+        String(filename)
+            .startsWith("http")
     ){
 
         return filename;
     }
 
     if(
-        String(filename).startsWith("/")
+        String(filename)
+            .startsWith("/")
     ){
 
         return filename;
@@ -1688,21 +2046,24 @@ function imageUrl(filename){
 }
 
 
-/* =========================
-   IMAGES
-========================= */
+/* =========================================
+   GET IMAGES
+========================================= */
 
 function getImages(car){
 
     if(
-        Array.isArray(car.images)
+        Array.isArray(
+            car.images
+        )
     ){
 
         return car.images;
     }
 
     if(
-        typeof car.images === "string"
+        typeof car.images ===
+        "string"
     ){
 
         try{
@@ -1733,9 +2094,9 @@ function getImages(car){
 }
 
 
-/* =========================
+/* =========================================
    RENDER
-========================= */
+========================================= */
 
 function render(){
 
@@ -1759,7 +2120,8 @@ function renderFiltered(){
         );
 
     count.textContent =
-        filteredCars.length + " ta";
+        filteredCars.length +
+        " ta";
 
 
     if(
@@ -1790,9 +2152,9 @@ function renderFiltered(){
 }
 
 
-/* =========================
+/* =========================================
    EMPTY
-========================= */
+========================================= */
 
 function renderEmpty(
     title,
@@ -1835,9 +2197,9 @@ function renderEmpty(
 }
 
 
-/* =========================
+/* =========================================
    CARD
-========================= */
+========================================= */
 
 function createCarCard(
     car,
@@ -1913,7 +2275,8 @@ function createCarCard(
                 class="car-image"
                 src="${image}"
                 alt="${escapeHtml(
-                    car.name || "Car"
+                    car.name ||
+                    "Car"
                 )}"
                 loading="lazy"
                 onerror="this.style.display='none'"
@@ -1923,7 +2286,9 @@ function createCarCard(
                 car.sold
                 ?
                 `
-                <span class="badge sold-badge">
+                <span
+                    class="badge sold-badge"
+                >
                     ${t.soldBadge}
                 </span>
                 `
@@ -1938,23 +2303,25 @@ function createCarCard(
             <button
                 class="favorite ${
                     isFavorite
-                    ? "active"
-                    : ""
+                        ? "active"
+                        : ""
                 }"
             >
                 ${
                     isFavorite
-                    ? "♥"
-                    : "♡"
+                        ? "♥"
+                        : "♡"
                 }
             </button>
+
 
             ${
                 images.length
                 ?
                 `
                 <span class="image-count">
-                    📷 ${images.length} ${t.photos}
+                    📷 ${images.length}
+                    ${t.photos}
                 </span>
                 `
                 :
@@ -2011,7 +2378,9 @@ function createCarCard(
 
 
     article
-        .querySelector(".favorite")
+        .querySelector(
+            ".favorite"
+        )
         .addEventListener(
             "click",
             function(event){
@@ -2021,13 +2390,14 @@ function createCarCard(
                 toggleFavorite(
                     car.id
                 );
-
             }
         );
 
 
     article
-        .querySelector(".detail-btn")
+        .querySelector(
+            ".detail-btn"
+        )
         .addEventListener(
             "click",
             function(event){
@@ -2035,13 +2405,14 @@ function createCarCard(
                 event.stopPropagation();
 
                 openDetails(car);
-
             }
         );
 
 
     article
-        .querySelector(".call-btn")
+        .querySelector(
+            ".call-btn"
+        )
         .addEventListener(
             "click",
             function(event){
@@ -2049,13 +2420,14 @@ function createCarCard(
                 event.stopPropagation();
 
                 trackCall(event);
-
             }
         );
 
 
     article
-        .querySelector(".car-image-box")
+        .querySelector(
+            ".car-image-box"
+        )
         .addEventListener(
             "click",
             function(event){
@@ -2065,11 +2437,11 @@ function createCarCard(
                         ".favorite"
                     )
                 ){
+
                     return;
                 }
 
                 openDetails(car);
-
             }
         );
 
@@ -2078,24 +2450,39 @@ function createCarCard(
 }
 
 
-/* =========================
+/* =========================================
    ESCAPE
-========================= */
+========================================= */
 
 function escapeHtml(value){
 
     return String(value)
-        .replace(/&/g,"&amp;")
-        .replace(/</g,"&lt;")
-        .replace(/>/g,"&gt;")
-        .replace(/"/g,"&quot;")
-        .replace(/'/g,"&#039;");
+        .replace(
+            /&/g,
+            "&amp;"
+        )
+        .replace(
+            /</g,
+            "&lt;"
+        )
+        .replace(
+            />/g,
+            "&gt;"
+        )
+        .replace(
+            /"/g,
+            "&quot;"
+        )
+        .replace(
+            /'/g,
+            "&#039;"
+        );
 }
 
 
-/* =========================
-   FAVORITES
-========================= */
+/* =========================================
+   FAVORITE
+========================================= */
 
 function toggleFavorite(id){
 
@@ -2115,7 +2502,6 @@ function toggleFavorite(id){
     }else{
 
         favorites.push(key);
-
     }
 
 
@@ -2131,9 +2517,9 @@ function toggleFavorite(id){
 }
 
 
-/* =========================
-   FAVORITES PAGE
-========================= */
+/* =========================================
+   FAVORITES
+========================================= */
 
 function showFavorites(){
 
@@ -2201,19 +2587,19 @@ function showFavorites(){
             "resultsCount"
         )
         .textContent =
-        favoriteCars.length + " ta";
+        favoriteCars.length +
+        " ta";
 }
 
 
-/* =========================
+/* =========================================
    DETAILS
-========================= */
+========================================= */
 
 function openDetails(car){
 
     currentDetailsCar =
         car;
-
 
     showPage("details");
 
@@ -2258,22 +2644,24 @@ function openDetails(car){
                 <div class="thumbnails">
 
                     ${
-                        images.map(
-                            (img,i) => `
+                        images
+                            .map(
+                                (img,i) => `
 
-                                <img
-                                    class="thumb ${
-                                        i === 0
-                                        ? "active"
-                                        : ""
-                                    }"
-                                    src="${imageUrl(img)}"
-                                    onclick="selectDetailImage(${i})"
-                                    alt=""
-                                >
+                                    <img
+                                        class="thumb ${
+                                            i===0
+                                                ? "active"
+                                                : ""
+                                        }"
+                                        src="${imageUrl(img)}"
+                                        onclick="selectDetailImage(${i})"
+                                        alt=""
+                                    >
 
-                            `
-                        ).join("")
+                                `
+                            )
+                            .join("")
                     }
 
                 </div>
@@ -2292,7 +2680,7 @@ function openDetails(car){
                         style="
                             position:static;
                             display:inline-block;
-                            margin-bottom:15px
+                            margin-bottom:15px;
                         "
                     >
                         ${t.soldBadge}
@@ -2339,7 +2727,6 @@ function openDetails(car){
         </div>
 
     `;
-
 }
 
 
@@ -2351,7 +2738,10 @@ function selectDetailImage(index){
         );
 
 
-    if(!images[index]){
+    if(
+        !images[index]
+    ){
+
         return;
     }
 
@@ -2367,7 +2757,9 @@ function selectDetailImage(index){
 
 
     document
-        .querySelectorAll(".thumb")
+        .querySelectorAll(
+            ".thumb"
+        )
         .forEach(
             (thumb,i) => {
 
@@ -2381,13 +2773,16 @@ function selectDetailImage(index){
 }
 
 
-/* =========================
+/* =========================================
    LIGHTBOX
-========================= */
+========================================= */
 
 function openLightbox(index){
 
-    if(!currentDetailsCar){
+    if(
+        !currentDetailsCar
+    ){
+
         return;
     }
 
@@ -2398,7 +2793,10 @@ function openLightbox(index){
         );
 
 
-    if(!images.length){
+    if(
+        !images.length
+    ){
+
         return;
     }
 
@@ -2445,7 +2843,10 @@ function changeLightbox(
     direction
 ){
 
-    if(!currentDetailsCar){
+    if(
+        !currentDetailsCar
+    ){
+
         return;
     }
 
@@ -2456,7 +2857,10 @@ function changeLightbox(
         );
 
 
-    if(!images.length){
+    if(
+        !images.length
+    ){
+
         return;
     }
 
@@ -2496,14 +2900,16 @@ function changeLightbox(
 }
 
 
-/* =========================
+/* =========================================
    PAGE NAVIGATION
-========================= */
+========================================= */
 
 function showPage(page){
 
     document
-        .querySelectorAll(".page")
+        .querySelectorAll(
+            ".page"
+        )
         .forEach(
             p =>
                 p.classList.remove(
@@ -2512,7 +2918,9 @@ function showPage(page){
         );
 
 
-    if(page === "home"){
+    if(
+        page === "home"
+    ){
 
         document
             .getElementById(
@@ -2524,7 +2932,9 @@ function showPage(page){
     }
 
 
-    if(page === "details"){
+    if(
+        page === "details"
+    ){
 
         document
             .getElementById(
@@ -2536,7 +2946,9 @@ function showPage(page){
     }
 
 
-    if(page === "menu"){
+    if(
+        page === "menu"
+    ){
 
         document
             .getElementById(
@@ -2605,9 +3017,9 @@ function focusSearch(){
 }
 
 
-/* =========================
+/* =========================================
    CALL STATISTICS
-========================= */
+========================================= */
 
 function trackCall(event){
 
@@ -2629,7 +3041,8 @@ function trackCall(event){
                     new Blob(
                         [],
                         {
-                            type:"text/plain"
+                            type:
+                                "text/plain"
                         }
                     )
                 );
@@ -2657,9 +3070,9 @@ function trackCall(event){
 }
 
 
-/* =========================
+/* =========================================
    VIEW STATISTICS
-========================= */
+========================================= */
 
 function trackView(){
 
@@ -2676,9 +3089,9 @@ function trackView(){
 }
 
 
-/* =========================
+/* =========================================
    KEYBOARD
-========================= */
+========================================= */
 
 document.addEventListener(
     "keydown",
@@ -2737,9 +3150,9 @@ document.addEventListener(
 );
 
 
-/* =========================
+/* =========================================
    LIGHTBOX CLICK
-========================= */
+========================================= */
 
 document
     .getElementById(
@@ -2760,9 +3173,9 @@ document
     );
 
 
-/* =========================
+/* =========================================
    START
-========================= */
+========================================= */
 
 if(
     localStorage.getItem(
@@ -2770,11 +3183,10 @@ if(
     ) === "true"
 ){
 
-    document.body.classList.add(
-        "dark"
-    );
+    document.body
+        .classList
+        .add("dark");
 }
-
 
 applyLang();
 
