@@ -37,9 +37,9 @@ async function initDatabase() {
         )
     `);
 
-    // Eski jadvalda "sold" ustuni bo'lmasa ham xato bermasligi uchun
     await pool.query(`
-        ALTER TABLE cars ADD COLUMN IF NOT EXISTS sold BOOLEAN DEFAULT false
+        ALTER TABLE cars
+        ADD COLUMN IF NOT EXISTS sold BOOLEAN DEFAULT false
     `);
 
     await pool.query(`
@@ -50,6 +50,7 @@ async function initDatabase() {
         )
     `);
 
+    // Umumiy statistika
     await pool.query(`
         CREATE TABLE IF NOT EXISTS stats (
             id INTEGER PRIMARY KEY DEFAULT 1,
@@ -64,6 +65,15 @@ async function initDatabase() {
         ON CONFLICT (id) DO NOTHING
     `);
 
+    // Kunlik statistika
+    await pool.query(`
+        CREATE TABLE IF NOT EXISTS daily_stats (
+            stat_date DATE PRIMARY KEY,
+            views INTEGER DEFAULT 0,
+            calls INTEGER DEFAULT 0
+        )
+    `);
+
     console.log('PostgreSQL database tayyor');
 }
 
@@ -73,7 +83,8 @@ async function initDatabase() {
 
 function sendJson(res, status, data) {
     res.writeHead(status, {
-        'Content-Type': 'application/json; charset=utf-8'
+        'Content-Type': 'application/json; charset=utf-8',
+        'Cache-Control': 'no-store'
     });
 
     res.end(JSON.stringify(data));
@@ -130,7 +141,8 @@ function isAdmin(req) {
 // =========================
 
 function prepareImage(dataUrl) {
-    const match = /^data:image\/jpeg;base64,(.+)$/.exec(dataUrl);
+    const match =
+        /^data:image\/jpeg;base64,(.+)$/.exec(dataUrl);
 
     if (!match) {
         throw new Error("Rasm formati noto'g'ri");
@@ -139,7 +151,9 @@ function prepareImage(dataUrl) {
     const buffer = Buffer.from(match[1], 'base64');
 
     if (buffer.length > 3000000) {
-        throw new Error('Bitta rasm 3 MB dan katta bo\'lmasligi kerak');
+        throw new Error(
+            'Bitta rasm 3 MB dan katta bo\'lmasligi kerak'
+        );
     }
 
     const imageName =
@@ -181,6 +195,32 @@ function carOut(row) {
 }
 
 // =========================
+// DAILY STAT
+// =========================
+
+async function recordDailyStat(type) {
+    if (type !== 'views' && type !== 'calls') {
+        return;
+    }
+
+    await pool.query(
+        `
+        INSERT INTO daily_stats
+        (stat_date, views, calls)
+        VALUES (CURRENT_DATE, $1, $2)
+        ON CONFLICT (stat_date)
+        DO UPDATE SET
+            views = daily_stats.views + EXCLUDED.views,
+            calls = daily_stats.calls + EXCLUDED.calls
+        `,
+        [
+            type === 'views' ? 1 : 0,
+            type === 'calls' ? 1 : 0
+        ]
+    );
+}
+
+// =========================
 // SERVER
 // =========================
 
@@ -192,7 +232,10 @@ const server = http.createServer(async (req, res) => {
         // GET CARS
         // =========================
 
-        if (url === '/api/cars' && req.method === 'GET') {
+        if (
+            url === '/api/cars' &&
+            req.method === 'GET'
+        ) {
             const result = await pool.query(`
                 SELECT *
                 FROM cars
@@ -210,7 +253,10 @@ const server = http.createServer(async (req, res) => {
         // ADD CAR
         // =========================
 
-        if (url === '/api/cars' && req.method === 'POST') {
+        if (
+            url === '/api/cars' &&
+            req.method === 'POST'
+        ) {
             if (!isAdmin(req)) {
                 return sendJson(res, 401, {
                     error: "Parol noto'g'ri"
@@ -220,10 +266,14 @@ const server = http.createServer(async (req, res) => {
             const client = await pool.connect();
 
             try {
-                const body = JSON.parse(await readBody(req));
+                const body =
+                    JSON.parse(await readBody(req));
 
-                const name = String(body.name || '').trim();
-                const price = Number(body.price);
+                const name =
+                    String(body.name || '').trim();
+
+                const price =
+                    Number(body.price);
 
                 const description =
                     String(body.description || '')
@@ -236,7 +286,8 @@ const server = http.createServer(async (req, res) => {
                     price <= 0
                 ) {
                     return sendJson(res, 400, {
-                        error: "Nom va narxni to'g'ri kiriting"
+                        error:
+                            "Nom va narxni to'g'ri kiriting"
                     });
                 }
 
@@ -247,11 +298,11 @@ const server = http.createServer(async (req, res) => {
 
                 if (incomingImages.length > 8) {
                     return sendJson(res, 400, {
-                        error: "Ko'pi bilan 8 ta rasm"
+                        error:
+                            "Ko'pi bilan 8 ta rasm"
                     });
                 }
 
-                // Rasmlarni oldindan tayyorlaymiz
                 const preparedImages =
                     incomingImages.map(prepareImage);
 
@@ -259,7 +310,6 @@ const server = http.createServer(async (req, res) => {
 
                 const savedNames = [];
 
-                // Rasmlarni PostgreSQL'ga saqlash
                 for (const image of preparedImages) {
                     await client.query(
                         `
@@ -276,7 +326,6 @@ const server = http.createServer(async (req, res) => {
                     savedNames.push(image.name);
                 }
 
-                // Mashinani saqlash
                 await client.query(
                     `
                     INSERT INTO cars
@@ -330,7 +379,8 @@ const server = http.createServer(async (req, res) => {
                 });
             }
 
-            const id = Number(url.split('/')[3]);
+            const id =
+                Number(url.split('/')[3]);
 
             if (!Number.isInteger(id)) {
                 return sendJson(res, 400, {
@@ -374,7 +424,8 @@ const server = http.createServer(async (req, res) => {
                 });
             }
 
-            const id = Number(url.split('/')[3]);
+            const id =
+                Number(url.split('/')[3]);
 
             if (!Number.isInteger(id)) {
                 return sendJson(res, 400, {
@@ -382,19 +433,21 @@ const server = http.createServer(async (req, res) => {
                 });
             }
 
-            const client = await pool.connect();
+            const client =
+                await pool.connect();
 
             try {
                 await client.query('BEGIN');
 
-                const result = await client.query(
-                    `
-                    SELECT images
-                    FROM cars
-                    WHERE id = $1
-                    `,
-                    [id]
-                );
+                const result =
+                    await client.query(
+                        `
+                        SELECT images
+                        FROM cars
+                        WHERE id = $1
+                        `,
+                        [id]
+                    );
 
                 if (result.rows.length > 0) {
                     const images =
@@ -433,7 +486,8 @@ const server = http.createServer(async (req, res) => {
                 console.error(e);
 
                 return sendJson(res, 500, {
-                    error: 'O\'chirishda xatolik'
+                    error:
+                        "O'chirishda xatolik"
                 });
 
             } finally {
@@ -452,19 +506,22 @@ const server = http.createServer(async (req, res) => {
             const name =
                 url.slice('/uploads/'.length);
 
-            if (!/^[a-f0-9]+\.jpg$/.test(name)) {
+            if (
+                !/^[a-f0-9]+\.jpg$/.test(name)
+            ) {
                 res.writeHead(404);
                 return res.end();
             }
 
-            const result = await pool.query(
-                `
-                SELECT data
-                FROM image_files
-                WHERE name = $1
-                `,
-                [name]
-            );
+            const result =
+                await pool.query(
+                    `
+                    SELECT data
+                    FROM image_files
+                    WHERE name = $1
+                    `,
+                    [name]
+                );
 
             if (result.rows.length === 0) {
                 res.writeHead(404);
@@ -477,51 +534,145 @@ const server = http.createServer(async (req, res) => {
                     'public, max-age=86400'
             });
 
-            return res.end(result.rows[0].data);
-        }
-
-        // =========================
-        // STATS: record a page view
-        // =========================
-
-        if (url === '/api/stats/view' && req.method === 'POST') {
-            await pool.query(
-                `UPDATE stats SET views = views + 1 WHERE id = 1`
+            return res.end(
+                result.rows[0].data
             );
-            return sendJson(res, 200, { ok: true });
         }
 
         // =========================
-        // STATS: record a call-button click
+        // STATS: PAGE VIEW
         // =========================
 
-        if (url === '/api/stats/call' && req.method === 'POST') {
+        if (
+            url === '/api/stats/view' &&
+            req.method === 'POST'
+        ) {
             await pool.query(
-                `UPDATE stats SET calls = calls + 1 WHERE id = 1`
+                `
+                UPDATE stats
+                SET views = views + 1
+                WHERE id = 1
+                `
             );
-            return sendJson(res, 200, { ok: true });
+
+            await recordDailyStat('views');
+
+            return sendJson(res, 200, {
+                ok: true
+            });
         }
 
         // =========================
-        // STATS: read totals (admin only)
+        // STATS: CALL
         // =========================
 
-        if (url === '/api/stats' && req.method === 'GET') {
+        if (
+            url === '/api/stats/call' &&
+            req.method === 'POST'
+        ) {
+            await pool.query(
+                `
+                UPDATE stats
+                SET calls = calls + 1
+                WHERE id = 1
+                `
+            );
+
+            await recordDailyStat('calls');
+
+            return sendJson(res, 200, {
+                ok: true
+            });
+        }
+
+        // =========================
+        // STATS: TOTALS
+        // =========================
+
+        if (
+            url === '/api/stats' &&
+            req.method === 'GET'
+        ) {
             if (!isAdmin(req)) {
                 return sendJson(res, 401, {
                     error: "Parol noto'g'ri"
                 });
             }
 
-            const result = await pool.query(
-                `SELECT views, calls FROM stats WHERE id = 1`
-            );
+            const result =
+                await pool.query(
+                    `
+                    SELECT views, calls
+                    FROM stats
+                    WHERE id = 1
+                    `
+                );
 
-            const row = result.rows[0] || { views: 0, calls: 0 };
+            const row =
+                result.rows[0] || {
+                    views: 0,
+                    calls: 0
+                };
+
+            const carsResult =
+                await pool.query(
+                    `
+                    SELECT
+                        COUNT(*)::int AS total,
+                        COUNT(*) FILTER
+                        (WHERE sold = true)::int
+                        AS sold
+                    FROM cars
+                    `
+                );
+
+            const cars =
+                carsResult.rows[0] || {
+                    total: 0,
+                    sold: 0
+                };
 
             return sendJson(res, 200, {
-                views: row.views,
-                calls: row.calls
+                views: Number(row.views) || 0,
+                calls: Number(row.calls) || 0,
+                cars: Number(cars.total) || 0,
+                sold: Number(cars.sold) || 0
+            });
+        }
+
+        // =========================
+        // STATS: DAILY
+        // =========================
+
+        if (
+            url === '/api/stats/daily' &&
+            req.method === 'GET'
+        ) {
+            if (!isAdmin(req)) {
+                return sendJson(res, 401, {
+                    error: "Parol noto'g'ri"
+                });
+            }
+
+            const result =
+                await pool.query(
+                    `
+                    SELECT
+                        stat_date,
+                        views,
+                        calls
+                    FROM daily_stats
+                    WHERE stat_date >= CURRENT_DATE - INTERVAL '29 days'
+                    ORDER BY stat_date ASC
+                    `
+                );
+
+            return sendJson(res, 200, {
+                days: result.rows.map(row => ({
+                    date: row.stat_date,
+                    views: Number(row.views) || 0,
+                    calls: Number(row.calls) || 0
+                }))
             });
         }
 
@@ -530,14 +681,20 @@ const server = http.createServer(async (req, res) => {
         // =========================
 
         if (url === '/admin') {
-            return sendFile(res, 'admin.html');
+            return sendFile(
+                res,
+                'admin.html'
+            );
         }
 
         // =========================
         // MAIN PAGE
         // =========================
 
-        return sendFile(res, 'index.html');
+        return sendFile(
+            res,
+            'index.html'
+        );
 
     } catch (e) {
         console.error(e);
@@ -557,7 +714,9 @@ async function start() {
         await initDatabase();
 
         server.listen(3000, () => {
-            console.log('Server 3000-portda ishlayapti');
+            console.log(
+                'Server 3000-portda ishlayapti'
+            );
         });
 
     } catch (error) {
@@ -577,7 +736,9 @@ start();
 // =========================
 
 process.on('SIGTERM', async () => {
-    console.log('Server to\'xtatilmoqda...');
+    console.log(
+        'Server to\'xtatilmoqda...'
+    );
 
     await pool.end();
 
