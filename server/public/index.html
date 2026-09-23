@@ -6,294 +6,1137 @@
 <title>pul.zarill</title>
 
 <style>
-*{margin:0;padding:0;box-sizing:border-box}
+*{
+ margin:0;
+ padding:0;
+ box-sizing:border-box
+}
 
 :root{
- --bg:#f4f5f7;--card:#fff;--text:#111;--muted:#777;
- --border:#e7e7e7;--black:#050505;--green:#19d66b;
- --red:#ff3b30;--yellow:#ffd21c;
+ --bg:#f4f5f7;
+ --card:#fff;
+ --text:#111;
+ --muted:#777;
+ --border:#e7e7e7;
+ --black:#050505;
+ --green:#19d66b;
+ --red:#ff3b30;
+ --yellow:#ffd21c;
  --shadow:0 10px 30px rgba(0,0,0,.08)
 }
 
 body{
- font-family:Arial,Helvetica,sans-serif;background:var(--bg);
- color:var(--text);transition:.3s;padding-bottom:75px
+ font-family:Arial,Helvetica,sans-serif;
+ background:var(--bg);
+ color:var(--text);
+ transition:.3s;
+ padding-bottom:75px
 }
 
 body.dark{
- --bg:#101010;--card:#181818;--text:#fff;
- --muted:#aaa;--border:#292929;
+ --bg:#101010;
+ --card:#181818;
+ --text:#fff;
+ --muted:#aaa;
+ --border:#292929;
  --shadow:0 10px 30px rgba(0,0,0,.4)
 }
 
-/* ICONS */
+/* =========================
+   PREMIUM ICON SYSTEM
+========================= */
+
 .icon{
- width:20px;height:20px;display:inline-block;
- vertical-align:middle;fill:none;stroke:currentColor;
- stroke-width:2;stroke-linecap:round;stroke-linejoin:round;
- flex:none
-}
-.icon-fill{fill:currentColor;stroke:none}
-.icon-lg{width:23px;height:23px}
-.icon-sm{width:17px;height:17px}
-.icon-btn{
- display:inline-flex;align-items:center;justify-content:center
-}
-.text-icon{
- display:inline-flex;align-items:center;gap:7px
+ width:20px;
+ height:20px;
+ display:inline-block;
+ vertical-align:middle;
+ fill:none;
+ stroke:currentColor;
+ stroke-width:1.8;
+ stroke-linecap:round;
+ stroke-linejoin:round;
+ flex:none;
+ transition:
+  transform .25s ease,
+  color .25s ease,
+  filter .25s ease,
+  stroke-width .25s ease
 }
 
-/* HEADER */
+.icon-fill{
+ fill:currentColor;
+ stroke:currentColor;
+ stroke-width:1.4
+}
+
+.icon-lg{
+ width:24px;
+ height:24px
+}
+
+.icon-sm{
+ width:16px;
+ height:16px
+}
+
+.icon-btn{
+ display:inline-flex;
+ align-items:center;
+ justify-content:center
+}
+
+/* premium icon hover */
+button:hover .icon,
+a:hover .icon{
+ transform:scale(1.08)
+}
+
+/* MENU ICON BADGE */
+.menu-item-title .icon{
+ width:20px;
+ height:20px;
+ padding:4px;
+ box-sizing:content-box;
+ border-radius:8px;
+ background:rgba(25,214,107,.10);
+ color:#19d66b;
+ transition:.25s
+}
+
+.menu-item:hover .menu-item-title .icon{
+ background:#19d66b;
+ color:#050505;
+ transform:translateY(-1px) scale(1.05);
+ box-shadow:0 5px 15px rgba(25,214,107,.22)
+}
+
+/* RIGHT MENU ICON */
+.menu-item > .icon{
+ width:20px;
+ height:20px;
+ padding:7px;
+ box-sizing:content-box;
+ border-radius:11px;
+ background:var(--bg);
+ color:var(--muted);
+ transition:.25s
+}
+
+.menu-item:hover > .icon{
+ color:#19d66b;
+ transform:translateX(-2px)
+}
+
+/* SOCIAL ICONS */
+.social-icon{
+ width:20px;
+ height:20px;
+ transition:.25s
+}
+
+.menu-item a:hover .social-icon{
+ transform:scale(1.1) rotate(-3deg)
+}
+
+/* FAVORITE */
+.favorite .icon{
+ transition:
+  transform .25s ease,
+  fill .25s ease,
+  stroke .25s ease
+}
+
+.favorite:hover .icon{
+ transform:scale(1.15)
+}
+
+.favorite.active .icon{
+ fill:#ff3b30;
+ stroke:#ff3b30;
+ filter:drop-shadow(0 3px 7px rgba(255,59,48,.35))
+}
+
+.favorite.active{
+ box-shadow:
+  0 5px 18px rgba(255,59,48,.18)
+}
+
+/* SEARCH ICON */
+.search-reset:hover .icon{
+ transform:rotate(-8deg) scale(1.12)
+}
+
+/* BOTTOM ICON */
+.bottom-icon .icon{
+ width:21px;
+ height:21px;
+ transition:.25s
+}
+
+.bottom-nav button:hover .icon{
+ transform:translateY(-2px) scale(1.08)
+}
+
+.bottom-nav button.active .icon{
+ filter:drop-shadow(0 3px 7px rgba(25,214,107,.3))
+}
+
+/* =========================
+   HEADER
+========================= */
+
 header{
- position:sticky;top:0;z-index:1000;background:#050505;color:#fff;
+ position:sticky;
+ top:0;
+ z-index:1000;
+ background:#050505;
+ color:#fff;
  box-shadow:0 5px 25px rgba(0,0,0,.35)
 }
+
 .header-inner{
- max-width:1250px;min-height:78px;margin:auto;padding:10px 18px;
- display:flex;align-items:center;justify-content:space-between;gap:15px
+ max-width:1250px;
+ min-height:78px;
+ margin:auto;
+ padding:10px 18px;
+ display:flex;
+ align-items:center;
+ justify-content:space-between;
+ gap:15px
 }
+
 .logo{
- position:relative;z-index:1;font-size:34px;font-weight:900;
- letter-spacing:-1.5px;line-height:1;white-space:nowrap
+ position:relative;
+ z-index:1;
+ font-size:34px;
+ font-weight:900;
+ letter-spacing:-1.5px;
+ line-height:1;
+ white-space:nowrap
 }
-.logo .green{color:#19d66b}
+
+.logo .green{
+ color:#19d66b
+}
+
 .logo:before{
- content:"";position:absolute;left:50%;top:50%;width:280px;height:120px;
- transform:translate(-50%,-50%);border-radius:50%;
- background:#19d66b;filter:blur(48px);opacity:.48;z-index:-1;
+ content:"";
+ position:absolute;
+ left:50%;
+ top:50%;
+ width:280px;
+ height:120px;
+ transform:translate(-50%,-50%);
+ border-radius:50%;
+ background:#19d66b;
+ filter:blur(48px);
+ opacity:.48;
+ z-index:-1;
  animation:logoGlow 15s ease-in-out infinite
 }
+
 @keyframes logoGlow{
- 0%,100%{background:#19d66b;transform:translate(-50%,-50%) scale(1);opacity:.45}
- 16%{transform:translate(-38%,-50%) scale(1.05)}
- 33%{background:#ffd21c;transform:translate(-50%,-50%) scale(1.05)}
- 50%{transform:translate(-62%,-48%) scale(1.04)}
- 66%{background:#ff3b30;transform:translate(-50%,-50%) scale(1.05)}
- 83%{transform:translate(-38%,-50%) scale(1.03)}
+ 0%,100%{
+  background:#19d66b;
+  transform:translate(-50%,-50%) scale(1);
+  opacity:.45
+ }
+
+ 16%{
+  transform:translate(-38%,-50%) scale(1.05)
+ }
+
+ 33%{
+  background:#ffd21c;
+  transform:translate(-50%,-50%) scale(1.05)
+ }
+
+ 50%{
+  transform:translate(-62%,-48%) scale(1.04)
+ }
+
+ 66%{
+  background:#ff3b30;
+  transform:translate(-50%,-50%) scale(1.05)
+ }
+
+ 83%{
+  transform:translate(-38%,-50%) scale(1.03)
+ }
 }
-.header-right{display:flex;align-items:center;gap:7px}
+
+.header-right{
+ display:flex;
+ align-items:center;
+ gap:7px
+}
+
 .phone-top{
- color:#fff;text-decoration:none;font-size:14px;font-weight:bold;margin-right:5px
+ color:#fff;
+ text-decoration:none;
+ font-size:14px;
+ font-weight:bold;
+ margin-right:5px;
+ transition:.2s
 }
-.lang-btn,.theme-btn{
- border:1px solid #333;background:#151515;color:#fff;border-radius:10px;
- padding:8px 10px;cursor:pointer;transition:.2s
+
+.phone-top:hover{
+ color:#19d66b
 }
-.lang-btn:hover,.theme-btn:hover{border-color:#19d66b}
-.lang-btn.active{background:#19d66b;color:#000;border-color:#19d66b}
-.theme-btn{display:inline-flex;align-items:center;justify-content:center}
 
-/* MAIN */
-.container{max-width:1250px;margin:auto;padding:22px 18px 100px}
-.page{display:none}.page.active{display:block}
+.lang-btn,
+.theme-btn{
+ border:1px solid #333;
+ background:#151515;
+ color:#fff;
+ border-radius:10px;
+ padding:8px 10px;
+ cursor:pointer;
+ transition:.25s
+}
 
-/* SEARCH */
-.search-box{display:flex;gap:10px;margin-bottom:20px}
+.lang-btn:hover,
+.theme-btn:hover{
+ border-color:#19d66b;
+ box-shadow:0 5px 18px rgba(25,214,107,.12)
+}
+
+.lang-btn.active{
+ background:#19d66b;
+ color:#000;
+ border-color:#19d66b;
+ box-shadow:0 5px 18px rgba(25,214,107,.2)
+}
+
+.theme-btn{
+ display:inline-flex;
+ align-items:center;
+ justify-content:center;
+ min-width:39px;
+ min-height:36px
+}
+
+.theme-btn .icon{
+ width:19px;
+ height:19px
+}
+
+/* =========================
+   MAIN
+========================= */
+
+.container{
+ max-width:1250px;
+ margin:auto;
+ padding:22px 18px 100px
+}
+
+.page{
+ display:none
+}
+
+.page.active{
+ display:block
+}
+
+/* =========================
+   SEARCH
+========================= */
+
+.search-box{
+ display:flex;
+ gap:10px;
+ margin-bottom:20px
+}
+
 .search-box input{
- flex:1;height:50px;border:1px solid var(--border);background:var(--card);
- color:var(--text);border-radius:14px;padding:0 17px;outline:none;
- font-size:15px;transition:.2s
+ flex:1;
+ height:50px;
+ border:1px solid var(--border);
+ background:var(--card);
+ color:var(--text);
+ border-radius:14px;
+ padding:0 17px;
+ outline:none;
+ font-size:15px;
+ transition:.2s
 }
+
 .search-box input:focus{
- border-color:#19d66b;box-shadow:0 0 0 3px rgba(25,214,107,.08)
+ border-color:#19d66b;
+ box-shadow:0 0 0 3px rgba(25,214,107,.08)
 }
+
 .search-reset{
- width:50px;border:none;border-radius:14px;background:#050505;
- color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center
+ width:50px;
+ border:none;
+ border-radius:14px;
+ background:#050505;
+ color:#fff;
+ cursor:pointer;
+ display:flex;
+ align-items:center;
+ justify-content:center;
+ transition:.25s
 }
 
-/* RESULTS */
+.search-reset:hover{
+ background:#111;
+ box-shadow:0 8px 20px rgba(0,0,0,.2)
+}
+
+/* =========================
+   RESULTS
+========================= */
+
 .results-info{
- display:flex;justify-content:space-between;align-items:center;margin-bottom:14px
+ display:flex;
+ justify-content:space-between;
+ align-items:center;
+ margin-bottom:14px
 }
-.results-info h2{font-size:20px}.results-count{color:var(--muted);font-size:13px}
 
-/* GRID */
-.cars-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.results-info h2{
+ font-size:20px
+}
 
-/* CARD */
+.results-count{
+ color:var(--muted);
+ font-size:13px
+}
+
+/* =========================
+   GRID
+========================= */
+
+.cars-grid{
+ display:grid;
+ grid-template-columns:repeat(3,1fr);
+ gap:18px
+}
+
+/* =========================
+   CARD
+========================= */
+
 .car-card{
- position:relative;background:var(--card);border:1px solid var(--border);
- border-radius:20px;overflow:hidden;box-shadow:var(--shadow);
- transition:transform .25s ease,box-shadow .25s ease
+ position:relative;
+ background:var(--card);
+ border:1px solid var(--border);
+ border-radius:20px;
+ overflow:hidden;
+ box-shadow:var(--shadow);
+ transition:
+  transform .25s ease,
+  box-shadow .25s ease
 }
-.car-card:hover{transform:translateY(-5px);box-shadow:0 16px 35px rgba(0,0,0,.13)}
+
+.car-card:hover{
+ transform:translateY(-5px);
+ box-shadow:0 16px 35px rgba(0,0,0,.13)
+}
+
 .car-image-box{
- position:relative;width:100%;height:235px;background:#ddd;overflow:hidden
+ position:relative;
+ width:100%;
+ height:235px;
+ background:#ddd;
+ overflow:hidden
 }
+
 .car-image{
- width:100%;height:100%;object-fit:cover;display:block;
+ width:100%;
+ height:100%;
+ object-fit:cover;
+ display:block;
  transition:transform .35s ease
 }
-.car-card:hover .car-image{transform:scale(1.045)}
+
+.car-card:hover .car-image{
+ transform:scale(1.045)
+}
 
 .badge{
- position:absolute;top:12px;left:12px;z-index:3;padding:7px 10px;
- border-radius:9px;font-size:11px;font-weight:900;background:#19d66b;color:#000
+ position:absolute;
+ top:12px;
+ left:12px;
+ z-index:3;
+ padding:7px 10px;
+ border-radius:9px;
+ font-size:11px;
+ font-weight:900;
+ background:#19d66b;
+ color:#000;
+ box-shadow:0 5px 15px rgba(0,0,0,.12)
 }
-.sold-badge{background:#ff3b30;color:#fff}
+
+.sold-badge{
+ background:#ff3b30;
+ color:#fff
+}
 
 .favorite{
- position:absolute;right:12px;top:12px;z-index:4;width:40px;height:40px;
- border-radius:50%;border:none;background:rgba(0,0,0,.68);color:#fff;
- cursor:pointer;transition:.2s;display:flex;align-items:center;justify-content:center
+ position:absolute;
+ right:12px;
+ top:12px;
+ z-index:4;
+ width:40px;
+ height:40px;
+ border-radius:50%;
+ border:1px solid rgba(255,255,255,.1);
+ background:rgba(0,0,0,.68);
+ color:#fff;
+ cursor:pointer;
+ transition:.25s;
+ display:flex;
+ align-items:center;
+ justify-content:center;
+ backdrop-filter:blur(8px)
 }
-.favorite:hover{transform:scale(1.08)}
-.favorite.active{color:#ff3b30}
+
+.favorite:hover{
+ transform:scale(1.08);
+ background:rgba(0,0,0,.8)
+}
+
+.favorite.active{
+ color:#ff3b30
+}
 
 .image-count{
- position:absolute;right:12px;bottom:12px;z-index:3;
- background:rgba(0,0,0,.72);color:#fff;padding:6px 9px;
- border-radius:9px;font-size:12px;display:flex;align-items:center;gap:5px
+ position:absolute;
+ right:12px;
+ bottom:12px;
+ z-index:3;
+ background:rgba(0,0,0,.72);
+ color:#fff;
+ padding:6px 9px;
+ border-radius:9px;
+ font-size:12px;
+ display:flex;
+ align-items:center;
+ gap:5px;
+ backdrop-filter:blur(7px)
 }
 
-.car-content{padding:16px}
-.car-name{font-size:19px;font-weight:800;margin-bottom:7px}
-.car-price{font-size:20px;font-weight:900;margin-bottom:8px}
+.image-count .icon{
+ color:#fff
+}
+
+.car-content{
+ padding:16px
+}
+
+.car-name{
+ font-size:19px;
+ font-weight:800;
+ margin-bottom:7px
+}
+
+.car-price{
+ font-size:20px;
+ font-weight:900;
+ margin-bottom:8px
+}
+
 .car-description{
- color:var(--muted);font-size:13px;line-height:1.5;min-height:39px;
- display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden
+ color:var(--muted);
+ font-size:13px;
+ line-height:1.5;
+ min-height:39px;
+ display:-webkit-box;
+ -webkit-line-clamp:2;
+ -webkit-box-orient:vertical;
+ overflow:hidden
 }
 
-.card-bottom{display:flex;gap:8px;margin-top:14px}
-.detail-btn,.call-btn{
- flex:1;padding:11px 8px;border-radius:11px;border:none;cursor:pointer;
- font-weight:bold;text-align:center;text-decoration:none;
- display:flex;align-items:center;justify-content:center;gap:6px
+.card-bottom{
+ display:flex;
+ gap:8px;
+ margin-top:14px
 }
-.detail-btn{background:#eee;color:#111}
-body.dark .detail-btn{background:#292929;color:#fff}
-.call-btn{background:#19d66b;color:#000}
 
-/* EMPTY */
+.detail-btn,
+.call-btn{
+ flex:1;
+ padding:11px 8px;
+ border-radius:11px;
+ border:none;
+ cursor:pointer;
+ font-weight:bold;
+ text-align:center;
+ text-decoration:none;
+ display:flex;
+ align-items:center;
+ justify-content:center;
+ gap:6px;
+ transition:.25s
+}
+
+.detail-btn{
+ background:#eee;
+ color:#111
+}
+
+body.dark .detail-btn{
+ background:#292929;
+ color:#fff
+}
+
+.detail-btn:hover{
+ transform:translateY(-1px);
+ box-shadow:0 6px 15px rgba(0,0,0,.1)
+}
+
+.call-btn{
+ background:#19d66b;
+ color:#000
+}
+
+.call-btn:hover{
+ transform:translateY(-1px);
+ box-shadow:0 7px 18px rgba(25,214,107,.25)
+}
+
+/* =========================
+   EMPTY
+========================= */
+
 .empty{
- grid-column:1/-1;text-align:center;padding:70px 20px;background:var(--card);
- border-radius:20px;border:1px solid var(--border)
+ grid-column:1/-1;
+ text-align:center;
+ padding:70px 20px;
+ background:var(--card);
+ border-radius:20px;
+ border:1px solid var(--border)
 }
-.empty-icon{margin-bottom:12px;color:var(--muted)}
-.empty h3{margin-bottom:7px}.empty p{color:var(--muted)}
 
-/* SKELETON */
-.skeleton{background:var(--card);border-radius:20px;overflow:hidden;border:1px solid var(--border)}
-.skeleton-img{height:235px;background:linear-gradient(90deg,#e8e8e8 25%,#f5f5f5 50%,#e8e8e8 75%);background-size:200% 100%;animation:skeleton 1.2s infinite}
-.skeleton-content{padding:16px}
-.skeleton-line{height:14px;background:#e5e5e5;border-radius:8px;margin-bottom:10px;animation:skeleton 1.2s infinite}
-.skeleton-line.big{width:65%;height:20px}
-@keyframes skeleton{0%{background-position:200% 0}100%{background-position:-200% 0}}
+.empty-icon{
+ margin-bottom:12px;
+ color:var(--muted)
+}
 
-/* DETAILS */
+.empty-icon .icon{
+ width:45px;
+ height:45px;
+ stroke-width:1.6;
+ opacity:.75
+}
+
+.empty h3{
+ margin-bottom:7px
+}
+
+.empty p{
+ color:var(--muted)
+}
+
+/* =========================
+   SKELETON
+========================= */
+
+.skeleton{
+ background:var(--card);
+ border-radius:20px;
+ overflow:hidden;
+ border:1px solid var(--border)
+}
+
+.skeleton-img{
+ height:235px;
+ background:
+ linear-gradient(
+  90deg,
+  #e8e8e8 25%,
+  #f5f5f5 50%,
+  #e8e8e8 75%
+ );
+ background-size:200% 100%;
+ animation:skeleton 1.2s infinite
+}
+
+.skeleton-content{
+ padding:16px
+}
+
+.skeleton-line{
+ height:14px;
+ background:#e5e5e5;
+ border-radius:8px;
+ margin-bottom:10px;
+ animation:skeleton 1.2s infinite
+}
+
+.skeleton-line.big{
+ width:65%;
+ height:20px
+}
+
+@keyframes skeleton{
+ 0%{background-position:200% 0}
+ 100%{background-position:-200% 0}
+}
+
+/* =========================
+   DETAILS
+========================= */
+
 .back-btn{
- border:none;background:var(--card);color:var(--text);border:1px solid var(--border);
- padding:10px 15px;border-radius:12px;cursor:pointer;margin-bottom:15px;
- display:inline-flex;align-items:center;gap:7px
+ border:none;
+ background:var(--card);
+ color:var(--text);
+ border:1px solid var(--border);
+ padding:10px 15px;
+ border-radius:12px;
+ cursor:pointer;
+ margin-bottom:15px;
+ display:inline-flex;
+ align-items:center;
+ gap:7px;
+ transition:.25s
 }
+
+.back-btn:hover{
+ border-color:#19d66b;
+ transform:translateX(-2px)
+}
+
+.back-btn .icon{
+ width:18px;
+ height:18px
+}
+
 .details-card{
- background:var(--card);border:1px solid var(--border);border-radius:22px;
- overflow:hidden;box-shadow:var(--shadow)
+ background:var(--card);
+ border:1px solid var(--border);
+ border-radius:22px;
+ overflow:hidden;
+ box-shadow:var(--shadow)
 }
-.details-main{display:grid;grid-template-columns:1.2fr 1fr}
-.details-image{width:100%;height:500px;object-fit:cover;cursor:pointer}
-.details-info{padding:28px}
-.details-info h1{font-size:32px;margin-bottom:15px}
-.details-price{font-size:27px;font-weight:900;margin-bottom:18px}
-.details-description{color:var(--muted);line-height:1.7;white-space:pre-wrap;margin-bottom:25px}
+
+.details-main{
+ display:grid;
+ grid-template-columns:1.2fr 1fr
+}
+
+.details-image{
+ width:100%;
+ height:500px;
+ object-fit:cover;
+ cursor:pointer
+}
+
+.details-info{
+ padding:28px
+}
+
+.details-info h1{
+ font-size:32px;
+ margin-bottom:15px
+}
+
+.details-price{
+ font-size:27px;
+ font-weight:900;
+ margin-bottom:18px
+}
+
+.details-description{
+ color:var(--muted);
+ line-height:1.7;
+ white-space:pre-wrap;
+ margin-bottom:25px
+}
+
 .details-call{
- display:flex;align-items:center;justify-content:center;gap:8px;
- padding:15px;border-radius:13px;background:#19d66b;color:#000;
- font-weight:900;text-decoration:none
+ display:flex;
+ align-items:center;
+ justify-content:center;
+ gap:8px;
+ padding:15px;
+ border-radius:13px;
+ background:#19d66b;
+ color:#000;
+ font-weight:900;
+ text-decoration:none;
+ transition:.25s
 }
 
-/* THUMBNAILS */
-.thumbnails{display:flex;gap:8px;padding:12px;overflow-x:auto}
-.thumb{width:80px;height:65px;object-fit:cover;border-radius:9px;cursor:pointer;border:2px solid transparent}
-.thumb.active{border-color:#19d66b}
+.details-call:hover{
+ transform:translateY(-2px);
+ box-shadow:0 8px 22px rgba(25,214,107,.25)
+}
 
-/* MENU */
+/* =========================
+   THUMBNAILS
+========================= */
+
+.thumbnails{
+ display:flex;
+ gap:8px;
+ padding:12px;
+ overflow-x:auto
+}
+
+.thumb{
+ width:80px;
+ height:65px;
+ object-fit:cover;
+ border-radius:9px;
+ cursor:pointer;
+ border:2px solid transparent;
+ transition:.2s
+}
+
+.thumb:hover{
+ transform:translateY(-2px)
+}
+
+.thumb.active{
+ border-color:#19d66b
+}
+
+/* =========================
+   MENU
+========================= */
+
 .menu-card{
- background:var(--card);border:1px solid var(--border);border-radius:20px;
- padding:20px;box-shadow:var(--shadow)
+ background:var(--card);
+ border:1px solid var(--border);
+ border-radius:20px;
+ padding:20px;
+ box-shadow:var(--shadow)
 }
+
 .menu-item{
- display:flex;justify-content:space-between;align-items:center;
- padding:16px 5px;border-bottom:1px solid var(--border)
+ display:flex;
+ justify-content:space-between;
+ align-items:center;
+ padding:16px 5px;
+ border-bottom:1px solid var(--border);
+ transition:.2s
 }
-.menu-item:last-child{border-bottom:none}
-.menu-item-left{display:flex;flex-direction:column;gap:4px}
-.menu-item-title{font-weight:bold;display:flex;align-items:center;gap:8px}
-.menu-item-sub{color:var(--muted);font-size:13px}
-.menu-item a{color:#19d66b;text-decoration:none;display:flex;align-items:center;gap:6px}
 
-/* LIGHTBOX */
+.menu-item:last-child{
+ border-bottom:none
+}
+
+.menu-item-left{
+ display:flex;
+ flex-direction:column;
+ gap:4px
+}
+
+.menu-item-title{
+ font-weight:bold;
+ display:flex;
+ align-items:center;
+ gap:8px
+}
+
+.menu-item-sub{
+ color:var(--muted);
+ font-size:13px
+}
+
+.menu-item a{
+ color:#19d66b;
+ text-decoration:none;
+ display:flex;
+ align-items:center;
+ gap:6px;
+ font-weight:600;
+ transition:.2s
+}
+
+.menu-item a:hover{
+ color:#12bd5b
+}
+
+/* =========================
+   LIGHTBOX
+========================= */
+
 .lightbox{
- position:fixed;inset:0;z-index:3000;background:rgba(0,0,0,.94);
- display:none;align-items:center;justify-content:center
+ position:fixed;
+ inset:0;
+ z-index:3000;
+ background:rgba(0,0,0,.94);
+ display:none;
+ align-items:center;
+ justify-content:center
 }
-.lightbox.active{display:flex}
-.lightbox img{max-width:92%;max-height:88%;object-fit:contain}
-.lightbox-close,.lightbox-prev,.lightbox-next{
- position:absolute;border:none;background:rgba(255,255,255,.12);
- color:#fff;cursor:pointer;border-radius:50%;display:flex;
- align-items:center;justify-content:center
-}
-.lightbox-close{top:20px;right:20px;width:45px;height:45px}
-.lightbox-prev,.lightbox-next{width:50px;height:50px;top:50%;transform:translateY(-50%)}
-.lightbox-prev{left:20px}.lightbox-next{right:20px}
 
-/* BOTTOM NAV */
+.lightbox.active{
+ display:flex
+}
+
+.lightbox img{
+ max-width:92%;
+ max-height:88%;
+ object-fit:contain
+}
+
+.lightbox-close,
+.lightbox-prev,
+.lightbox-next{
+ position:absolute;
+ border:none;
+ background:rgba(255,255,255,.12);
+ color:#fff;
+ cursor:pointer;
+ border-radius:50%;
+ display:flex;
+ align-items:center;
+ justify-content:center;
+ transition:.25s;
+ backdrop-filter:blur(8px)
+}
+
+.lightbox-close:hover,
+.lightbox-prev:hover,
+.lightbox-next:hover{
+ background:rgba(255,255,255,.22);
+ transform:scale(1.08)
+}
+
+.lightbox-close{
+ top:20px;
+ right:20px;
+ width:45px;
+ height:45px;
+ font-size:25px
+}
+
+.lightbox-prev,
+.lightbox-next{
+ width:50px;
+ height:50px;
+ top:50%;
+ transform:translateY(-50%);
+ font-size:30px
+}
+
+.lightbox-prev:hover,
+.lightbox-next:hover{
+ transform:translateY(-50%) scale(1.08)
+}
+
+.lightbox-prev{
+ left:20px
+}
+
+.lightbox-next{
+ right:20px
+}
+
+/* =========================
+   BOTTOM NAV
+========================= */
+
 .bottom-nav{
- position:fixed;left:0;right:0;bottom:0;z-index:1500;
- display:flex;background:rgba(0,0,0,.97);border-top:1px solid #333;padding:8px 5px
+ position:fixed;
+ left:0;
+ right:0;
+ bottom:0;
+ z-index:1500;
+ display:flex;
+ background:rgba(0,0,0,.97);
+ border-top:1px solid #333;
+ padding:8px 5px;
+ backdrop-filter:blur(12px)
 }
-.bottom-nav button{
- flex:1;border:none;background:none;color:#aaa;padding:7px 3px;
- font-size:11px;cursor:pointer;display:flex;flex-direction:column;
- align-items:center;gap:3px
-}
-.bottom-nav button.active{color:#19d66b}
-.bottom-icon{height:22px;display:flex;align-items:center;justify-content:center}
 
-/* RESPONSIVE */
-@media(max-width:1000px){
- .cars-grid{grid-template-columns:repeat(2,1fr)}
- .details-main{grid-template-columns:1fr}
- .details-image{height:420px}
+.bottom-nav button{
+ flex:1;
+ border:none;
+ background:none;
+ color:#aaa;
+ padding:7px 3px;
+ font-size:11px;
+ cursor:pointer;
+ display:flex;
+ flex-direction:column;
+ align-items:center;
+ gap:3px;
+ transition:.2s
 }
+
+.bottom-nav button.active{
+ color:#19d66b
+}
+
+.bottom-nav button:hover{
+ color:#fff
+}
+
+.bottom-nav button.active:hover{
+ color:#19d66b
+}
+
+.bottom-icon{
+ height:22px;
+ display:flex;
+ align-items:center;
+ justify-content:center
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media(max-width:1000px){
+
+ .cars-grid{
+  grid-template-columns:repeat(2,1fr)
+ }
+
+ .details-main{
+  grid-template-columns:1fr
+ }
+
+ .details-image{
+  height:420px
+ }
+}
+
 @media(max-width:650px){
- .header-inner{min-height:68px;padding:10px 12px}
- .logo{font-size:28px;letter-spacing:-1px}
- .logo:before{width:220px;height:95px;filter:blur(40px)}
- .phone-top{display:none}
- .lang-btn,.theme-btn{padding:7px 8px;font-size:12px}
- .container{padding:15px 10px 85px}
- .cars-grid{grid-template-columns:repeat(2,1fr);gap:9px}
- .car-image-box{height:170px}
- .car-content{padding:10px}
- .car-name{font-size:15px}.car-price{font-size:16px}
- .car-description{font-size:11px;min-height:32px}
- .card-bottom{flex-direction:column;gap:5px;margin-top:9px}
- .detail-btn,.call-btn{padding:8px 5px;font-size:11px}
- .favorite{width:34px;height:34px}
- .badge{top:8px;left:8px;padding:5px 7px;font-size:9px}
- .image-count{right:7px;bottom:7px;font-size:10px;padding:5px 7px}
- .details-image{height:300px}
- .details-info{padding:18px}
- .details-info h1{font-size:24px}.details-price{font-size:22px}
+
+ .header-inner{
+  min-height:68px;
+  padding:10px 12px
+ }
+
+ .logo{
+  font-size:28px;
+  letter-spacing:-1px
+ }
+
+ .logo:before{
+  width:220px;
+  height:95px;
+  filter:blur(40px)
+ }
+
+ .phone-top{
+  display:none
+ }
+
+ .lang-btn,
+ .theme-btn{
+  padding:7px 8px;
+  font-size:12px
+ }
+
+ .container{
+  padding:15px 10px 85px
+ }
+
+ .cars-grid{
+  grid-template-columns:repeat(2,1fr);
+  gap:9px
+ }
+
+ .car-image-box{
+  height:170px
+ }
+
+ .car-content{
+  padding:10px
+ }
+
+ .car-name{
+  font-size:15px
+ }
+
+ .car-price{
+  font-size:16px
+ }
+
+ .car-description{
+  font-size:11px;
+  min-height:32px
+ }
+
+ .card-bottom{
+  flex-direction:column;
+  gap:5px;
+  margin-top:9px
+ }
+
+ .detail-btn,
+ .call-btn{
+  padding:8px 5px;
+  font-size:11px
+ }
+
+ .favorite{
+  width:34px;
+  height:34px
+ }
+
+ .favorite .icon{
+  width:18px;
+  height:18px
+ }
+
+ .badge{
+  top:8px;
+  left:8px;
+  padding:5px 7px;
+  font-size:9px
+ }
+
+ .image-count{
+  right:7px;
+  bottom:7px;
+  font-size:10px;
+  padding:5px 7px
+ }
+
+ .details-image{
+  height:300px
+ }
+
+ .details-info{
+  padding:18px
+ }
+
+ .details-info h1{
+  font-size:24px
+ }
+
+ .details-price{
+  font-size:22px
+ }
+
+ .menu-item-title .icon{
+  width:18px;
+  height:18px
+ }
 }
 </style>
 </head>
 
 <body>
 
-<!-- SVG ICON SPRITE -->
+<!-- =========================
+     PREMIUM SVG ICON SPRITE
+========================= -->
+
 <svg width="0" height="0" style="position:absolute">
+
 <symbol id="i-location" viewBox="0 0 24 24">
- <path d="M20 10c0 5-8 12-8 12S4 15 4 10a8 8 0 1 1 16 0Z"/>
- <circle cx="12" cy="10" r="2.5"/>
+ <path d="M20 10.2c0 5.1-8 11.8-8 11.8S4 15.3 4 10.2a8 8 0 1 1 16 0Z"/>
+ <circle cx="12" cy="10.2" r="2.6"/>
 </symbol>
 
 <symbol id="i-globe" viewBox="0 0 24 24">
  <circle cx="12" cy="12" r="9"/>
- <path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18"/>
+ <path d="M3 12h18"/>
+ <path d="M12 3c2.7 2.5 4 5.5 4 9s-1.3 6.5-4 9"/>
+ <path d="M12 3c-2.7 2.5-4 5.5-4 9s1.3 6.5 4 9"/>
 </symbol>
 
 <symbol id="i-phone" viewBox="0 0 24 24">
@@ -301,24 +1144,25 @@ body.dark .detail-btn{background:#292929;color:#fff}
 </symbol>
 
 <symbol id="i-heart" viewBox="0 0 24 24">
- <path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8l1.1 1.1L12 21l7.8-7.5 1.1-1.1a5.5 5.5 0 0 0-.1-7.8Z"/>
+ <path d="M20.8 4.8a5.6 5.6 0 0 0-7.9 0L12 5.7l-.9-.9a5.6 5.6 0 0 0-7.9 7.9l.9.9L12 21l7.9-7.4.9-.9a5.6 5.6 0 0 0 0-7.9Z"/>
 </symbol>
 
 <symbol id="i-search" viewBox="0 0 24 24">
- <circle cx="11" cy="11" r="7"/>
- <path d="m20 20-4-4"/>
+ <circle cx="10.8" cy="10.8" r="6.8"/>
+ <path d="m16 16 4.5 4.5"/>
 </symbol>
 
 <symbol id="i-car" viewBox="0 0 24 24">
- <path d="m5 17-1-5 2-5h12l2 5-1 5"/>
- <path d="M4 12h16M7 7l1-3h8l1 3"/>
- <circle cx="7" cy="17" r="1.5"/>
- <circle cx="17" cy="17" r="1.5"/>
+ <path d="M5 17.5 4 12l2-5h12l2 5-1 5.5"/>
+ <path d="M4 12h16"/>
+ <path d="m7 7 1-3h8l1 3"/>
+ <circle cx="7" cy="17.5" r="1.5"/>
+ <circle cx="17" cy="17.5" r="1.5"/>
 </symbol>
 
 <symbol id="i-settings" viewBox="0 0 24 24">
  <circle cx="12" cy="12" r="3"/>
- <path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1-1.4 1.4-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.5V20h-2v-.2a1.7 1.7 0 0 0-1-1.5 1.7 1.7 0 0 0-1.9.3l-.1.1L9 17.1l.1-.1a1.7 1.7 0 0 0 .3-1.9 1.7 1.7 0 0 0-1.5-1H7v-2h.2a1.7 1.7 0 0 0 1.5-1 1.7 1.7 0 0 0-.3-1.9L8.3 9.1 9.7 7.7l.1.1a1.7 1.7 0 0 0 1.9.3 1.7 1.7 0 0 0 1-1.5V6h2v.2a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.9-.3l.1-.1 1.4 1.4-.1.1a1.7 1.7 0 0 0-.3 1.9 1.7 1.7 0 0 0 1.5 1h.2v2h-.2a1.7 1.7 0 0 0-1.5 1.3Z"/>
+ <path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1-1.4 1.4-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.5V20h-2v-.2a1.7 1.7 0 0 0-1-1.5 1.7 1.7 0 0 0-1.9.3l-.1.1L9 17.1l.1-.1a1.7 1.7 0 0 0 .3-1.9 1.7 1.7 0 0 0-1.5-1H7v-2h.2a1.7 1.7 0 0 0 1.5-1 1.7 1.7 0 0 0-.3-1.9L8.3 9.1 9.7 7.7l.1.1a1.7 1.7 0 0 0 1.9.3 1.7 1.7 0 0 0 1-1.5V6h2v.2a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.9-.3l.1-.1 1.4 1.4-.1.1a1.7 1.7 0 0 0-.3 1.9 1.7 1.7 0 0 0-.3 1.9 1.7 1.7 0 0 0 1.5 1h.2v2h-.2a1.7 1.7 0 0 0-1.5 1.1Z"/>
 </symbol>
 
 <symbol id="i-home" viewBox="0 0 24 24">
@@ -327,16 +1171,14 @@ body.dark .detail-btn{background:#292929;color:#fff}
 </symbol>
 
 <symbol id="i-menu" viewBox="0 0 24 24">
- <path d="M4 6h16M4 12h16M4 18h16"/>
+ <path d="M4 6h16"/>
+ <path d="M4 12h16"/>
+ <path d="M4 18h16"/>
 </symbol>
 
 <symbol id="i-camera" viewBox="0 0 24 24">
  <path d="M4 7h4l2-2h4l2 2h4v12H4Z"/>
  <circle cx="12" cy="13" r="3"/>
-</symbol>
-
-<symbol id="i-check" viewBox="0 0 24 24">
- <path d="m5 12 4 4L19 6"/>
 </symbol>
 
 <symbol id="i-arrow-left" viewBox="0 0 24 24">
@@ -345,194 +1187,546 @@ body.dark .detail-btn{background:#292929;color:#fff}
 
 <symbol id="i-sun" viewBox="0 0 24 24">
  <circle cx="12" cy="12" r="4"/>
- <path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>
+ <path d="M12 2v2"/>
+ <path d="M12 20v2"/>
+ <path d="m4.9 4.9 1.4 1.4"/>
+ <path d="m17.7 17.7 1.4 1.4"/>
+ <path d="M2 12h2"/>
+ <path d="M20 12h2"/>
+ <path d="m4.9 19.1 1.4-1.4"/>
+ <path d="m17.7 6.3 1.4-1.4"/>
 </symbol>
 
 <symbol id="i-moon" viewBox="0 0 24 24">
  <path d="M21 12.8A8.5 8.5 0 1 1 11.2 3 6.7 6.7 0 0 0 21 12.8Z"/>
 </symbol>
 
+<!-- TELEGRAM -->
 <symbol id="i-telegram" viewBox="0 0 24 24">
- <path d="m21 3-6.8 18-4.1-6.1L4 12.4 21 3Z"/>
- <path d="m10.1 14.9 5.5-5.2"/>
+ <path d="M21 3 3.7 10.2c-.7.3-.7 1.3 0 1.6l4.4 1.7 1.7 5.1c.2.7 1.1.9 1.6.3l2.5-2.7 3.9 2.9c.6.4 1.4.1 1.6-.6L21.9 4c.2-.8-.3-1.3-.9-1Z"/>
+ <path d="m8.2 13.5 8.5-6.4"/>
 </symbol>
 
+<!-- INSTAGRAM -->
 <symbol id="i-instagram" viewBox="0 0 24 24">
  <rect x="3" y="3" width="18" height="18" rx="5"/>
  <circle cx="12" cy="12" r="4"/>
- <circle cx="17.5" cy="6.5" r="1"/>
+ <circle cx="17.4" cy="6.6" r="1"/>
 </symbol>
 
+<!-- WHATSAPP -->
 <symbol id="i-whatsapp" viewBox="0 0 24 24">
- <path d="M20 11.5a8 8 0 0 1-11.7 7L4 20l1.5-4.1A8 8 0 1 1 20 11.5Z"/>
- <path d="M9 8.5c.2-.4.5-.4.8-.1l1 1c.2.2.2.5 0 .8l-.5.6c.7 1.1 1.5 1.8 2.7 2.4l.5-.5c.2-.2.5-.2.8 0l1 1c.3.3.3.6-.1.8-.5.3-1.1.4-1.6.2-2.5-.8-4.3-2.6-5.1-5.1-.2-.5-.1-1.1.2-1.6Z"/>
+ <path d="M20.4 11.4a8.3 8.3 0 0 1-12.2 7.3L4 20l1.4-4.1a8.3 8.3 0 1 1 15-4.5Z"/>
+ <path d="M9.1 8.2c.2-.4.5-.5.8-.2l1 1c.2.2.2.5.1.8l-.5.6c.6 1.1 1.5 1.9 2.6 2.4l.6-.5c.2-.2.5-.2.8 0l1 1c.3.3.2.7-.1.9-.6.3-1.2.3-1.8.1-2.5-.9-4.3-2.6-5.2-5.2-.2-.6-.2-1.2.1-1.9Z"/>
 </symbol>
+
 </svg>
 
+<!-- =========================
+     HEADER
+========================= -->
+
 <header>
+
 <div class="header-inner">
- <div class="logo">pul<span class="green">.zarill</span></div>
+
+ <div class="logo">
+  pul<span class="green">.zarill</span>
+ </div>
 
  <div class="header-right">
-  <a class="phone-top" id="headerPhone" href="tel:+998889500005" onclick="trackCall(event)">
+
+  <a
+   class="phone-top"
+   id="headerPhone"
+   href="tel:+998889500005"
+   onclick="trackCall(event)">
    +998 88 950 00 05
   </a>
 
-  <button class="lang-btn active" onclick="setLang('uz')">UZ</button>
-  <button class="lang-btn" onclick="setLang('ru')">RU</button>
-  <button class="lang-btn" onclick="setLang('en')">EN</button>
+  <button class="lang-btn active" onclick="setLang('uz')">
+   UZ
+  </button>
 
-  <button class="theme-btn" onclick="toggleTheme()" id="themeBtn"></button>
+  <button class="lang-btn" onclick="setLang('ru')">
+   RU
+  </button>
+
+  <button class="lang-btn" onclick="setLang('en')">
+   EN
+  </button>
+
+  <button
+   class="theme-btn"
+   onclick="toggleTheme()"
+   id="themeBtn">
+  </button>
+
  </div>
+
 </div>
+
 </header>
+
+<!-- =========================
+     MAIN
+========================= -->
 
 <main class="container">
 
 <section id="homePage" class="page active">
 
  <div class="search-box">
-  <input id="searchInput" type="text" placeholder="Mashina qidirish..." oninput="searchCars()">
-  <button class="search-reset" onclick="resetSearch()" aria-label="Tozalash">
-   <svg class="icon"><use href="#i-search"/></svg>
+
+  <input
+   id="searchInput"
+   type="text"
+   placeholder="Mashina qidirish..."
+   oninput="searchCars">
+
+  <button
+   class="search-reset"
+   onclick="resetSearch()"
+   aria-label="Tozalash">
+
+   <svg class="icon">
+    <use href="#i-search"/>
+   </svg>
+
   </button>
+
  </div>
 
  <div class="results-info">
-  <h2 id="carsTitle">Avtomobillar</h2>
-  <span class="results-count" id="resultsCount">0 ta</span>
+
+  <h2 id="carsTitle">
+   Avtomobillar
+  </h2>
+
+  <span
+   class="results-count"
+   id="resultsCount">
+   0 ta
+  </span>
+
  </div>
 
- <div class="cars-grid" id="carsGrid">
-  <div class="skeleton"><div class="skeleton-img"></div><div class="skeleton-content"><div class="skeleton-line big"></div><div class="skeleton-line"></div><div class="skeleton-line"></div></div></div>
-  <div class="skeleton"><div class="skeleton-img"></div><div class="skeleton-content"><div class="skeleton-line big"></div><div class="skeleton-line"></div><div class="skeleton-line"></div></div></div>
-  <div class="skeleton"><div class="skeleton-img"></div><div class="skeleton-content"><div class="skeleton-line big"></div><div class="skeleton-line"></div><div class="skeleton-line"></div></div></div>
+ <div
+  class="cars-grid"
+  id="carsGrid">
+
+  <div class="skeleton">
+   <div class="skeleton-img"></div>
+   <div class="skeleton-content">
+    <div class="skeleton-line big"></div>
+    <div class="skeleton-line"></div>
+    <div class="skeleton-line"></div>
+   </div>
+  </div>
+
+  <div class="skeleton">
+   <div class="skeleton-img"></div>
+   <div class="skeleton-content">
+    <div class="skeleton-line big"></div>
+    <div class="skeleton-line"></div>
+    <div class="skeleton-line"></div>
+   </div>
+  </div>
+
+  <div class="skeleton">
+   <div class="skeleton-img"></div>
+   <div class="skeleton-content">
+    <div class="skeleton-line big"></div>
+    <div class="skeleton-line"></div>
+    <div class="skeleton-line"></div>
+   </div>
+  </div>
+
  </div>
 
 </section>
+
+<!-- DETAILS -->
 
 <section id="detailsPage" class="page">
- <button class="back-btn" onclick="goHome()">
-  <svg class="icon"><use href="#i-arrow-left"/></svg> Orqaga
+
+ <button
+  class="back-btn"
+  onclick="goHome()">
+
+  <svg class="icon">
+   <use href="#i-arrow-left"/>
+  </svg>
+
+  Orqaga
+
  </button>
- <div class="details-card" id="detailsCard"></div>
+
+ <div
+  class="details-card"
+  id="detailsCard">
+ </div>
+
 </section>
 
+<!-- MENU -->
+
 <section id="menuPage" class="page">
+
 <div class="menu-card">
 
  <div class="menu-item">
+
   <div class="menu-item-left">
+
    <span class="menu-item-title">
-    <svg class="icon"><use href="#i-car"/></svg> pul.zarill
+
+    <svg class="icon">
+     <use href="#i-car"/>
+    </svg>
+
+    pul.zarill
+
    </span>
-   <span class="menu-item-sub">Avtomobillar platformasi</span>
+
+   <span class="menu-item-sub">
+    Avtomobillar platformasi
+   </span>
+
   </div>
-  <svg class="icon icon-lg"><use href="#i-car"/></svg>
+
+  <svg class="icon icon-lg">
+   <use href="#i-car"/>
+  </svg>
+
  </div>
 
  <div class="menu-item">
+
   <div class="menu-item-left">
-   <span class="menu-item-title"><svg class="icon"><use href="#i-phone"/></svg> Telefon</span>
-   <span class="menu-item-sub">Biz bilan bog‘lanish</span>
+
+   <span class="menu-item-title">
+
+    <svg class="icon">
+     <use href="#i-phone"/>
+    </svg>
+
+    Telefon
+
+   </span>
+
+   <span class="menu-item-sub">
+    Biz bilan bog‘lanish
+   </span>
+
   </div>
-  <a id="menuPhone" href="tel:+998889500005" onclick="trackCall(event)">+998 88 950 00 05</a>
+
+  <a
+   id="menuPhone"
+   href="tel:+998889500005"
+   onclick="trackCall(event)">
+   +998 88 950 00 05
+  </a>
+
  </div>
 
  <div class="menu-item">
+
   <div class="menu-item-left">
-   <span class="menu-item-title"><svg class="icon"><use href="#i-telegram"/></svg> Telegram</span>
-   <span class="menu-item-sub">Telegram orqali bog‘lanish</span>
+
+   <span class="menu-item-title">
+
+    <svg class="icon social-icon">
+     <use href="#i-telegram"/>
+    </svg>
+
+    Telegram
+
+   </span>
+
+   <span class="menu-item-sub">
+    Telegram orqali bog‘lanish
+   </span>
+
   </div>
-  <a id="menuTelegram" href="https://t.me/" target="_blank" rel="noopener">Ochish</a>
+
+  <a
+   id="menuTelegram"
+   href="https://t.me/"
+   target="_blank"
+   rel="noopener">
+
+   Ochish
+
+  </a>
+
  </div>
 
  <div class="menu-item">
+
   <div class="menu-item-left">
-   <span class="menu-item-title"><svg class="icon"><use href="#i-whatsapp"/></svg> WhatsApp</span>
-   <span class="menu-item-sub">WhatsApp orqali bog‘lanish</span>
+
+   <span class="menu-item-title">
+
+    <svg class="icon social-icon">
+     <use href="#i-whatsapp"/>
+    </svg>
+
+    WhatsApp
+
+   </span>
+
+   <span class="menu-item-sub">
+    WhatsApp orqali bog‘lanish
+   </span>
+
   </div>
-  <a id="menuWhatsapp" href="https://wa.me/" target="_blank" rel="noopener">Ochish</a>
+
+  <a
+   id="menuWhatsapp"
+   href="https://wa.me/"
+   target="_blank"
+   rel="noopener">
+
+   Ochish
+
+  </a>
+
  </div>
 
  <div class="menu-item">
+
   <div class="menu-item-left">
-   <span class="menu-item-title"><svg class="icon"><use href="#i-instagram"/></svg> Instagram</span>
-   <span class="menu-item-sub">Instagram sahifamiz</span>
+
+   <span class="menu-item-title">
+
+    <svg class="icon social-icon">
+     <use href="#i-instagram"/>
+    </svg>
+
+    Instagram
+
+   </span>
+
+   <span class="menu-item-sub">
+    Instagram sahifamiz
+   </span>
+
   </div>
-  <a id="menuInstagram" href="https://instagram.com/" target="_blank" rel="noopener">Ochish</a>
+
+  <a
+   id="menuInstagram"
+   href="https://instagram.com/"
+   target="_blank"
+   rel="noopener">
+
+   Ochish
+
+  </a>
+
  </div>
 
  <div class="menu-item">
+
   <div class="menu-item-left">
-   <span class="menu-item-title"><svg class="icon"><use href="#i-location"/></svg> Manzil</span>
-   <span class="menu-item-sub" id="menuAddress">Toshkent, O'zbekiston</span>
+
+   <span class="menu-item-title">
+
+    <svg class="icon">
+     <use href="#i-location"/>
+    </svg>
+
+    Manzil
+
+   </span>
+
+   <span
+    class="menu-item-sub"
+    id="menuAddress">
+    Toshkent, O'zbekiston
+   </span>
+
   </div>
-  <svg class="icon icon-lg"><use href="#i-location"/></svg>
+
+  <svg class="icon icon-lg">
+   <use href="#i-location"/>
+  </svg>
+
  </div>
 
  <div class="menu-item">
+
   <div class="menu-item-left">
-   <span class="menu-item-title"><svg class="icon"><use href="#i-globe"/></svg> Til</span>
-   <span class="menu-item-sub">UZ / RU / EN</span>
+
+   <span class="menu-item-title">
+
+    <svg class="icon">
+     <use href="#i-globe"/>
+    </svg>
+
+    Til
+
+   </span>
+
+   <span class="menu-item-sub">
+    UZ / RU / EN
+   </span>
+
   </div>
-  <svg class="icon icon-lg"><use href="#i-globe"/></svg>
+
+  <svg class="icon icon-lg">
+   <use href="#i-globe"/>
+  </svg>
+
  </div>
 
  <div class="menu-item">
+
   <div class="menu-item-left">
-   <span class="menu-item-title"><svg class="icon"><use href="#i-settings"/></svg> Ko‘rinish</span>
-   <span class="menu-item-sub">Light / Dark</span>
+
+   <span class="menu-item-title">
+
+    <svg class="icon">
+     <use href="#i-settings"/>
+    </svg>
+
+    Ko‘rinish
+
+   </span>
+
+   <span class="menu-item-sub">
+    Light / Dark
+   </span>
+
   </div>
-  <button class="theme-btn" onclick="toggleTheme()" id="themeBtnMenu"></button>
+
+  <button
+   class="theme-btn"
+   onclick="toggleTheme()"
+   id="themeBtnMenu">
+  </button>
+
  </div>
 
 </div>
+
 </section>
 
 </main>
 
+<!-- =========================
+     BOTTOM NAV
+========================= -->
+
 <nav class="bottom-nav">
 
-<button id="navHome" class="active" onclick="goHome()">
- <span class="bottom-icon"><svg class="icon"><use href="#i-home"/></svg></span>
+<button
+ id="navHome"
+ class="active"
+ onclick="goHome()">
+
+ <span class="bottom-icon">
+
+  <svg class="icon">
+   <use href="#i-home"/>
+  </svg>
+
+ </span>
+
  Bosh sahifa
+
 </button>
 
 <button onclick="focusSearch()">
- <span class="bottom-icon"><svg class="icon"><use href="#i-search"/></svg></span>
+
+ <span class="bottom-icon">
+
+  <svg class="icon">
+   <use href="#i-search"/>
+  </svg>
+
+ </span>
+
  Qidiruv
+
 </button>
 
 <button onclick="showFavorites()">
- <span class="bottom-icon"><svg class="icon"><use href="#i-heart"/></svg></span>
+
+ <span class="bottom-icon">
+
+  <svg class="icon">
+   <use href="#i-heart"/>
+  </svg>
+
+ </span>
+
  Sevimlilar
+
 </button>
 
 <button onclick="showMenu()">
- <span class="bottom-icon"><svg class="icon"><use href="#i-menu"/></svg></span>
+
+ <span class="bottom-icon">
+
+  <svg class="icon">
+   <use href="#i-menu"/>
+  </svg>
+
+ </span>
+
  Menyu
+
 </button>
 
 </nav>
 
-<div class="lightbox" id="lightbox">
+<!-- =========================
+     LIGHTBOX
+========================= -->
 
-<button class="lightbox-close" onclick="closeLightbox()">×</button>
+<div
+ class="lightbox"
+ id="lightbox">
 
-<button class="lightbox-prev" onclick="changeLightbox(-1)">‹</button>
+ <button
+  class="lightbox-close"
+  onclick="closeLightbox()">
+  ×
+ </button>
 
-<img id="lightboxImage" src="" alt="">
+ <button
+  class="lightbox-prev"
+  onclick="changeLightbox(-1)">
+  ‹
+ </button>
 
-<button class="lightbox-next" onclick="changeLightbox(1)">›</button>
+ <img
+  id="lightboxImage"
+  src=""
+  alt="">
+
+ <button
+  class="lightbox-next"
+  onclick="changeLightbox(1)">
+  ›
+ </button>
 
 </div>
 
 <script>
+
 let allCars=[];
 let filteredCars=[];
-let favorites=JSON.parse(localStorage.getItem("favorites")||"[]");
-let currentLang=localStorage.getItem("language")||"uz";
+
+let favorites=
+ JSON.parse(
+  localStorage.getItem("favorites")||"[]"
+ );
+
+let currentLang=
+ localStorage.getItem("language")||"uz";
+
 let currentDetailsCar=null;
 let currentLightboxIndex=0;
 
@@ -545,586 +1739,1234 @@ let siteSettings={
 };
 
 function phoneHref(phone){
- const value=String(phone||"").trim();
- const cleaned=value.replace(/[^\d+]/g,"");
- return cleaned?"tel:"+cleaned:"#";
+
+ const value=
+  String(phone||"").trim();
+
+ const cleaned=
+  value.replace(/[^\d+]/g,"");
+
+ return cleaned
+  ?"tel:"+cleaned
+  :"#";
 }
 
 async function loadSettings(){
+
  try{
-  const response=await fetch("/api/settings",{cache:"no-store"});
-  if(!response.ok)throw new Error("Settings API error");
-  const data=await response.json();
-  if(data&&data.settings)siteSettings={...siteSettings,...data.settings};
- }catch(error){console.error("Settings:",error)}
+
+  const response=
+   await fetch(
+    "/api/settings",
+    {cache:"no-store"}
+   );
+
+  if(!response.ok)
+   throw new Error("Settings API error");
+
+  const data=
+   await response.json();
+
+  if(data&&data.settings){
+
+   siteSettings={
+    ...siteSettings,
+    ...data.settings
+   };
+
+  }
+
+ }catch(error){
+
+  console.error("Settings:",error);
+
+ }
+
  applySettings();
 }
 
 function applySettings(){
- const phone=siteSettings.phone||"";
- const href=phoneHref(phone);
 
- const headerPhone=document.getElementById("headerPhone");
- if(headerPhone){headerPhone.textContent=phone;headerPhone.href=href}
+ const phone=
+  siteSettings.phone||"";
 
- const menuPhone=document.getElementById("menuPhone");
- if(menuPhone){menuPhone.textContent=phone;menuPhone.href=href}
+ const href=
+  phoneHref(phone);
 
- const telegram=document.getElementById("menuTelegram");
- if(telegram)telegram.href=siteSettings.telegram||"#";
+ const headerPhone=
+  document.getElementById("headerPhone");
 
- const whatsapp=document.getElementById("menuWhatsapp");
- if(whatsapp)whatsapp.href=siteSettings.whatsapp||"#";
+ if(headerPhone){
 
- const instagram=document.getElementById("menuInstagram");
- if(instagram)instagram.href=siteSettings.instagram||"#";
+  headerPhone.textContent=phone;
+  headerPhone.href=href;
 
- const address=document.getElementById("menuAddress");
- if(address)address.textContent=siteSettings.address||"";
+ }
 
- document.querySelectorAll(".call-btn").forEach(b=>b.href=href);
+ const menuPhone=
+  document.getElementById("menuPhone");
 
- const detailsCall=document.querySelector(".details-call");
- if(detailsCall)detailsCall.href=href;
+ if(menuPhone){
+
+  menuPhone.textContent=phone;
+  menuPhone.href=href;
+
+ }
+
+ const telegram=
+  document.getElementById("menuTelegram");
+
+ if(telegram)
+  telegram.href=
+   siteSettings.telegram||"#";
+
+ const whatsapp=
+  document.getElementById("menuWhatsapp");
+
+ if(whatsapp)
+  whatsapp.href=
+   siteSettings.whatsapp||"#";
+
+ const instagram=
+  document.getElementById("menuInstagram");
+
+ if(instagram)
+  instagram.href=
+   siteSettings.instagram||"#";
+
+ const address=
+  document.getElementById("menuAddress");
+
+ if(address)
+  address.textContent=
+   siteSettings.address||"";
+
+ document
+  .querySelectorAll(".call-btn")
+  .forEach(
+   b=>b.href=href
+  );
+
+ const detailsCall=
+  document.querySelector(".details-call");
+
+ if(detailsCall)
+  detailsCall.href=href;
 }
 
 const translations={
+
  uz:{
-  search:"Mashina qidirish...",cars:"Avtomobillar",back:"Orqaga",
-  call:"Qo‘ng‘iroq qilish",new:"YANGI",soldBadge:"SOTILDI",
-  photos:"rasm",empty:"Hozircha mashina topilmadi",
+  search:"Mashina qidirish...",
+  cars:"Avtomobillar",
+  back:"Orqaga",
+  call:"Qo‘ng‘iroq qilish",
+  new:"YANGI",
+  soldBadge:"SOTILDI",
+  photos:"rasm",
+  empty:"Hozircha mashina topilmadi",
   emptyText:"Boshqa mashina nomini qidirib ko‘ring."
  },
+
  ru:{
-  search:"Поиск автомобиля...",cars:"Автомобили",back:"Назад",
-  call:"Позвонить",new:"НОВИНКА",soldBadge:"ПРОДАНО",
-  photos:"фото",empty:"Автомобили не найдены",
+  search:"Поиск автомобиля...",
+  cars:"Автомобили",
+  back:"Назад",
+  call:"Позвонить",
+  new:"НОВИНКА",
+  soldBadge:"ПРОДАНО",
+  photos:"фото",
+  empty:"Автомобили не найдены",
   emptyText:"Попробуйте поискать другой автомобиль."
  },
+
  en:{
-  search:"Search car...",cars:"Cars",back:"Back",
-  call:"Call",new:"NEW",soldBadge:"SOLD",
-  photos:"photos",empty:"No cars found",
+  search:"Search car...",
+  cars:"Cars",
+  back:"Back",
+  call:"Call",
+  new:"NEW",
+  soldBadge:"SOLD",
+  photos:"photos",
+  empty:"No cars found",
   emptyText:"Try searching for another car."
  }
+
 };
 
 function setLang(lang){
+
  currentLang=lang;
- localStorage.setItem("language",lang);
+
+ localStorage.setItem(
+  "language",
+  lang
+ );
+
  applyLang();
  render();
 }
 
 function applyLang(){
- const t=translations[currentLang];
- document.getElementById("searchInput").placeholder=t.search;
- document.getElementById("carsTitle").textContent=t.cars;
 
- document.querySelectorAll(".lang-btn").forEach(btn=>{
-  btn.classList.toggle("active",btn.textContent.toLowerCase()===currentLang);
- });
+ const t=
+  translations[currentLang];
+
+ document
+  .getElementById("searchInput")
+  .placeholder=t.search;
+
+ document
+  .getElementById("carsTitle")
+  .textContent=t.cars;
+
+ document
+  .querySelectorAll(".lang-btn")
+  .forEach(btn=>{
+
+   btn.classList.toggle(
+    "active",
+    btn.textContent
+     .toLowerCase()===currentLang
+   );
+
+  });
 }
 
 function toggleTheme(){
+
  document.body.classList.toggle("dark");
- const isDark=document.body.classList.contains("dark");
- localStorage.setItem("darkMode",isDark);
+
+ const isDark=
+  document.body.classList.contains("dark");
+
+ localStorage.setItem(
+  "darkMode",
+  isDark
+ );
+
  updateThemeIcon();
 }
 
 function updateThemeIcon(){
- const isDark=document.body.classList.contains("dark");
- const icon=isDark?"i-sun":"i-moon";
 
- ["themeBtn","themeBtnMenu"].forEach(id=>{
-  const el=document.getElementById(id);
-  if(el)el.innerHTML=`<svg class="icon"><use href="#${icon}"/></svg>`;
+ const isDark=
+  document.body.classList.contains("dark");
+
+ const icon=
+  isDark
+   ?"i-sun"
+   :"i-moon";
+
+ [
+  "themeBtn",
+  "themeBtnMenu"
+ ].forEach(id=>{
+
+  const el=
+   document.getElementById(id);
+
+  if(el){
+
+   el.innerHTML=
+    `<svg class="icon">
+      <use href="#${icon}"/>
+     </svg>`;
+
+  }
+
  });
 }
 
 function parsePrice(value){
- if(value===undefined||value===null)return 0;
- if(typeof value==="number")return value;
- const str=String(value).replace(/\s/g,"").replace(/\$/g,"").replace(/,/g,"").replace(/\./g,"");
+
+ if(value===undefined||value===null)
+  return 0;
+
+ if(typeof value==="number")
+  return value;
+
+ const str=
+  String(value)
+   .replace(/\s/g,"")
+   .replace(/\$/g,"")
+   .replace(/,/g,"")
+   .replace(/\./g,"");
+
  const num=Number(str);
+
  return isNaN(num)?0:num;
 }
 
 function formatPrice(value){
- const number=parsePrice(value);
- if(!number)return String(value||"");
- return number.toLocaleString("en-US").replace(/,/g," ");
+
+ const number=
+  parsePrice(value);
+
+ if(!number)
+  return String(value||"");
+
+ return number
+  .toLocaleString("en-US")
+  .replace(/,/g," ");
 }
 
 function searchCars(){
- const input=document.getElementById("searchInput").value.toLowerCase().trim();
 
- if(!input)filteredCars=[...allCars];
- else{
-  filteredCars=allCars.filter(car=>{
-   const name=String(car.name||"").toLowerCase();
-   const description=String(car.description||"").toLowerCase();
-   const price=String(car.price||"").toLowerCase();
-   return name.includes(input)||description.includes(input)||price.includes(input);
-  });
+ const input=
+  document
+   .getElementById("searchInput")
+   .value
+   .toLowerCase()
+   .trim();
+
+ if(!input){
+
+  filteredCars=
+   [...allCars];
+
+ }else{
+
+  filteredCars=
+   allCars.filter(car=>{
+
+    const name=
+     String(car.name||"")
+      .toLowerCase();
+
+    const description=
+     String(car.description||"")
+      .toLowerCase();
+
+    const price=
+     String(car.price||"")
+      .toLowerCase();
+
+    return(
+     name.includes(input)||
+     description.includes(input)||
+     price.includes(input)
+    );
+
+   });
+
  }
+
  renderFiltered();
 }
 
 function resetSearch(){
- document.getElementById("searchInput").value="";
- filteredCars=[...allCars];
+
+ document
+  .getElementById("searchInput")
+  .value="";
+
+ filteredCars=
+  [...allCars];
+
  renderFiltered();
 }
 
 async function load(){
+
  showSkeleton();
 
  try{
-  const response=await fetch("/api/cars");
-  if(!response.ok)throw new Error("API error");
 
-  const data=await response.json();
+  const response=
+   await fetch("/api/cars");
 
-  if(Array.isArray(data))allCars=data;
-  else if(Array.isArray(data.cars))allCars=data.cars;
-  else allCars=[];
+  if(!response.ok)
+   throw new Error("API error");
 
-  filteredCars=[...allCars];
+  const data=
+   await response.json();
+
+  if(Array.isArray(data))
+   allCars=data;
+
+  else if(Array.isArray(data.cars))
+   allCars=data.cars;
+
+  else
+   allCars=[];
+
+  filteredCars=
+   [...allCars];
+
   renderFiltered();
+
  }catch(error){
+
   console.error(error);
+
   allCars=[];
-  renderEmpty("Ma'lumot yuklanmadi","Server bilan bog‘lanishda xatolik yuz berdi.");
+
+  renderEmpty(
+   "Ma'lumot yuklanmadi",
+   "Server bilan bog‘lanishda xatolik yuz berdi."
+  );
+
  }
 }
 
 function showSkeleton(){
- const grid=document.getElementById("carsGrid");
+
+ const grid=
+  document.getElementById("carsGrid");
+
  grid.innerHTML="";
+
  for(let i=0;i<6;i++){
+
   grid.innerHTML+=`
+
    <div class="skeleton">
+
     <div class="skeleton-img"></div>
+
     <div class="skeleton-content">
+
      <div class="skeleton-line big"></div>
+
      <div class="skeleton-line"></div>
+
      <div class="skeleton-line"></div>
+
     </div>
-   </div>`;
+
+   </div>
+
+  `;
+
  }
 }
 
 function imageUrl(filename){
- if(!filename)return "";
- if(String(filename).startsWith("http"))return filename;
- if(String(filename).startsWith("/"))return filename;
+
+ if(!filename)
+  return "";
+
+ if(String(filename).startsWith("http"))
+  return filename;
+
+ if(String(filename).startsWith("/"))
+  return filename;
+
  return "/uploads/"+filename;
 }
 
 function getImages(car){
- if(Array.isArray(car.images))return car.images;
+
+ if(Array.isArray(car.images))
+  return car.images;
 
  if(typeof car.images==="string"){
+
   try{
-   const parsed=JSON.parse(car.images);
-   if(Array.isArray(parsed))return parsed;
+
+   const parsed=
+    JSON.parse(car.images);
+
+   if(Array.isArray(parsed))
+    return parsed;
+
   }catch(e){}
-  return car.images.split(",").map(x=>x.trim()).filter(Boolean);
+
+  return car.images
+   .split(",")
+   .map(x=>x.trim())
+   .filter(Boolean);
  }
 
  return [];
 }
 
 function render(){
- filteredCars=[...allCars];
+
+ filteredCars=
+  [...allCars];
+
  renderFiltered();
 }
 
 function renderFiltered(){
- const grid=document.getElementById("carsGrid");
- const count=document.getElementById("resultsCount");
 
- count.textContent=filteredCars.length+" ta";
+ const grid=
+  document.getElementById("carsGrid");
+
+ const count=
+  document.getElementById("resultsCount");
+
+ count.textContent=
+  filteredCars.length+" ta";
 
  if(filteredCars.length===0){
+
   renderEmpty();
+
   return;
  }
 
  grid.innerHTML="";
 
- filteredCars.forEach((car,index)=>{
-  grid.appendChild(createCarCard(car,index));
- });
+ filteredCars.forEach(
+  (car,index)=>{
+   grid.appendChild(
+    createCarCard(car,index)
+   );
+  }
+ );
 
  applySettings();
 }
 
 function renderEmpty(title,text){
- const t=translations[currentLang];
- const grid=document.getElementById("carsGrid");
+
+ const t=
+  translations[currentLang];
+
+ const grid=
+  document.getElementById("carsGrid");
 
  grid.innerHTML=`
-  <div class="empty">
-   <div class="empty-icon">
-    <svg class="icon" style="width:45px;height:45px"><use href="#i-car"/></svg>
-   </div>
-   <h3>${title||t.empty}</h3>
-   <p>${text||t.emptyText}</p>
-  </div>`;
 
- document.getElementById("resultsCount").textContent="0 ta";
+  <div class="empty">
+
+   <div class="empty-icon">
+
+    <svg
+     class="icon"
+     style="width:45px;height:45px">
+
+     <use href="#i-car"/>
+
+    </svg>
+
+   </div>
+
+   <h3>
+    ${title||t.empty}
+   </h3>
+
+   <p>
+    ${text||t.emptyText}
+   </p>
+
+  </div>
+
+ `;
+
+ document
+  .getElementById("resultsCount")
+  .textContent="0 ta";
 }
 
 function createCarCard(car,index){
- const article=document.createElement("article");
+
+ const article=
+  document.createElement("article");
+
  article.className="car-card";
 
- const images=getImages(car);
- const firstImage=images.length?imageUrl(images[0]):"";
- const isFavorite=favorites.includes(String(car.id));
- const t=translations[currentLang];
+ const images=
+  getImages(car);
 
- const image=firstImage||
- "data:image/svg+xml;charset=UTF-8,"+
- encodeURIComponent(`
- <svg xmlns="http://www.w3.org/2000/svg" width="800" height="500">
-  <rect width="100%" height="100%" fill="#222"/>
-  <text x="50%" y="50%" fill="white" text-anchor="middle" font-size="30">pul.zarill</text>
- </svg>`);
+ const firstImage=
+  images.length
+   ?imageUrl(images[0])
+   :"";
+
+ const isFavorite=
+  favorites.includes(
+   String(car.id)
+  );
+
+ const t=
+  translations[currentLang];
+
+ const image=
+  firstImage||
+
+  "data:image/svg+xml;charset=UTF-8,"+
+  encodeURIComponent(`
+
+   <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="800"
+    height="500">
+
+    <rect
+     width="100%"
+     height="100%"
+     fill="#222"/>
+
+    <text
+     x="50%"
+     y="50%"
+     fill="white"
+     text-anchor="middle"
+     font-size="30">
+     pul.zarill
+    </text>
+
+   </svg>
+
+  `);
 
  article.innerHTML=`
- <div class="car-image-box">
 
-  <img class="car-image"
-   src="${image}"
-   alt="${escapeHtml(car.name||"Car")}"
-   loading="lazy"
-   onerror="this.style.display='none'">
+  <div class="car-image-box">
 
-  ${
-   car.sold
-   ? `<span class="badge sold-badge">${t.soldBadge}</span>`
-   : `<span class="badge">${t.new}</span>`
-  }
+   <img
+    class="car-image"
+    src="${image}"
+    alt="${escapeHtml(car.name||"Car")}"
+    loading="lazy"
+    onerror="this.style.display='none'">
 
-  <button class="favorite ${isFavorite?"active":""}" aria-label="Sevimli">
-   <svg class="icon ${isFavorite?"icon-fill":""}">
-    <use href="#i-heart"/>
-   </svg>
-  </button>
+   ${
+    car.sold
+    ?`
 
-  ${
-   images.length
-   ? `<span class="image-count">
-       <svg class="icon icon-sm"><use href="#i-camera"/></svg>
-       ${images.length} ${t.photos}
-      </span>`
-   : ""
-  }
+     <span class="badge sold-badge">
+      ${t.soldBadge}
+     </span>
 
- </div>
+    `
+    :`
 
- <div class="car-content">
+     <span class="badge">
+      ${t.new}
+     </span>
 
-  <div class="car-name">${escapeHtml(car.name||"Avtomobil")}</div>
+    `
+   }
 
-  <div class="car-price">${formatPrice(car.price)}</div>
+   <button
+    class="favorite ${isFavorite?"active":""}"
+    aria-label="Sevimli">
 
-  <div class="car-description">
-   ${escapeHtml(car.description||"")}
+    <svg
+     class="icon ${isFavorite?"icon-fill":""}">
+
+     <use href="#i-heart"/>
+
+    </svg>
+
+   </button>
+
+   ${
+    images.length
+    ?`
+
+     <span class="image-count">
+
+      <svg class="icon icon-sm">
+       <use href="#i-camera"/>
+      </svg>
+
+      ${images.length} ${t.photos}
+
+     </span>
+
+    `
+    :""
+   }
+
   </div>
 
-  <div class="card-bottom">
+  <div class="car-content">
 
-   <button class="detail-btn">Batafsil</button>
+   <div class="car-name">
+    ${escapeHtml(car.name||"Avtomobil")}
+   </div>
 
-   <a class="call-btn" href="${phoneHref(siteSettings.phone)}">
-    <svg class="icon"><use href="#i-phone"/></svg>
-    <span>Qo‘ng‘iroq</span>
-   </a>
+   <div class="car-price">
+    ${formatPrice(car.price)}
+   </div>
+
+   <div class="car-description">
+    ${escapeHtml(car.description||"")}
+   </div>
+
+   <div class="card-bottom">
+
+    <button class="detail-btn">
+     Batafsil
+    </button>
+
+    <a
+     class="call-btn"
+     href="${phoneHref(siteSettings.phone)}">
+
+     <svg class="icon">
+      <use href="#i-phone"/>
+     </svg>
+
+     <span>
+      Qo‘ng‘iroq
+     </span>
+
+    </a>
+
+   </div>
 
   </div>
- </div>`;
 
- article.querySelector(".favorite").addEventListener("click",function(event){
-  event.stopPropagation();
-  toggleFavorite(car.id);
- });
+ `;
 
- article.querySelector(".detail-btn").addEventListener("click",function(event){
-  event.stopPropagation();
-  openDetails(car);
- });
+ article
+  .querySelector(".favorite")
+  .addEventListener(
+   "click",
+   function(event){
 
- article.querySelector(".call-btn").addEventListener("click",function(event){
-  event.stopPropagation();
-  trackCall(event);
- });
+    event.stopPropagation();
 
- article.querySelector(".car-image-box").addEventListener("click",function(event){
-  if(event.target.closest(".favorite"))return;
-  openDetails(car);
- });
+    toggleFavorite(car.id);
+   }
+  );
+
+ article
+  .querySelector(".detail-btn")
+  .addEventListener(
+   "click",
+   function(event){
+
+    event.stopPropagation();
+
+    openDetails(car);
+   }
+  );
+
+ article
+  .querySelector(".call-btn")
+  .addEventListener(
+   "click",
+   function(event){
+
+    event.stopPropagation();
+
+    trackCall(event);
+   }
+  );
+
+ article
+  .querySelector(".car-image-box")
+  .addEventListener(
+   "click",
+   function(event){
+
+    if(
+     event.target.closest(".favorite")
+    )
+     return;
+
+    openDetails(car);
+   }
+  );
 
  return article;
 }
 
 function escapeHtml(value){
+
  return String(value)
- .replace(/&/g,"&amp;")
- .replace(/</g,"&lt;")
- .replace(/>/g,"&gt;")
- .replace(/"/g,"&quot;")
- .replace(/'/g,"&#039;");
+
+  .replace(/&/g,"&amp;")
+  .replace(/</g,"&lt;")
+  .replace(/>/g,"&gt;")
+  .replace(/"/g,"&quot;")
+  .replace(/'/g,"&#039;");
 }
 
 function toggleFavorite(id){
- const key=String(id);
 
- if(favorites.includes(key))
-  favorites=favorites.filter(x=>x!==key);
- else
+ const key=
+  String(id);
+
+ if(favorites.includes(key)){
+
+  favorites=
+   favorites.filter(
+    x=>x!==key
+   );
+
+ }else{
+
   favorites.push(key);
 
- localStorage.setItem("favorites",JSON.stringify(favorites));
+ }
+
+ localStorage.setItem(
+  "favorites",
+  JSON.stringify(favorites)
+ );
+
  renderFiltered();
 }
 
 function showFavorites(){
+
  showPage("home");
 
- const favoriteCars=allCars.filter(car=>
-  favorites.includes(String(car.id))
- );
+ const favoriteCars=
+  allCars.filter(car=>
+   favorites.includes(
+    String(car.id)
+   )
+  );
 
- filteredCars=favoriteCars;
- document.getElementById("searchInput").value="";
+ filteredCars=
+  favoriteCars;
+
+ document
+  .getElementById("searchInput")
+  .value="";
 
  if(favoriteCars.length===0){
+
   renderEmpty(
    "Sevimli mashinalar yo‘q",
    "Mashina kartasidagi yurak tugmasini bosing."
   );
+
   return;
  }
 
- const grid=document.getElementById("carsGrid");
+ const grid=
+  document.getElementById("carsGrid");
+
  grid.innerHTML="";
 
- favoriteCars.forEach((car,index)=>{
-  grid.appendChild(createCarCard(car,index));
- });
+ favoriteCars.forEach(
+  (car,index)=>{
 
- document.getElementById("resultsCount").textContent=favoriteCars.length+" ta";
+   grid.appendChild(
+    createCarCard(car,index)
+   );
+
+  }
+ );
+
+ document
+  .getElementById("resultsCount")
+  .textContent=
+   favoriteCars.length+" ta";
+
  applySettings();
 }
 
 function openDetails(car){
- currentDetailsCar=car;
+
+ currentDetailsCar=
+  car;
+
  showPage("details");
 
- const images=getImages(car);
- const t=translations[currentLang];
- const firstImage=images.length?imageUrl(images[0]):"";
- const details=document.getElementById("detailsCard");
+ const images=
+  getImages(car);
+
+ const t=
+  translations[currentLang];
+
+ const firstImage=
+  images.length
+   ?imageUrl(images[0])
+   :"";
+
+ const details=
+  document.getElementById("detailsCard");
 
  details.innerHTML=`
- <div class="details-main">
 
-  <div>
+  <div class="details-main">
 
-   ${
-    firstImage
-    ? `<img id="detailsMainImage" class="details-image"
-        src="${firstImage}"
-        alt="${escapeHtml(car.name||"")}"
-        onclick="openLightbox(0)">`
-    : `<div class="details-image" style="background:#222;display:flex;align-items:center;justify-content:center;color:#fff">
-        <svg class="icon" style="width:70px;height:70px"><use href="#i-car"/></svg>
-       </div>`
-   }
+   <div>
 
-   <div class="thumbnails">
     ${
-     images.map((img,i)=>`
-      <img class="thumb ${i===0?"active":""}"
-       src="${imageUrl(img)}"
-       onclick="selectDetailImage(${i})"
-       alt="">
-     `).join("")
+     firstImage
+     ?`
+
+      <img
+       id="detailsMainImage"
+       class="details-image"
+       src="${firstImage}"
+       alt="${escapeHtml(car.name||"")}"
+       onclick="openLightbox(0)">
+
+     `
+     :`
+
+      <div
+       class="details-image"
+       style="
+        background:#222;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        color:#fff">
+
+       <svg
+        class="icon"
+        style="
+         width:70px;
+         height:70px;
+         stroke-width:1.4">
+
+        <use href="#i-car"/>
+
+       </svg>
+
+      </div>
+
+     `
     }
+
+    <div class="thumbnails">
+
+     ${
+      images.map(
+       (img,i)=>`
+
+        <img
+         class="thumb ${i===0?"active":""}"
+         src="${imageUrl(img)}"
+         onclick="selectDetailImage(${i})"
+         alt="">
+
+       `
+      ).join("")
+     }
+
+    </div>
+
    </div>
 
-  </div>
+   <div class="details-info">
 
-  <div class="details-info">
+    ${
+     car.sold
+     ?`
 
-   ${
-    car.sold
-    ? `<span class="badge sold-badge"
-       style="position:static;display:inline-block;margin-bottom:15px">
+      <span
+       class="badge sold-badge"
+       style="
+        position:static;
+        display:inline-block;
+        margin-bottom:15px">
+
        ${t.soldBadge}
-      </span>`
-    : ""
-   }
 
-   <h1>${escapeHtml(car.name||"Avtomobil")}</h1>
+      </span>
 
-   <div class="details-price">${formatPrice(car.price)}</div>
+     `
+     :""
+    }
 
-   <div class="details-description">
-    ${escapeHtml(car.description||"")}
+    <h1>
+     ${escapeHtml(car.name||"Avtomobil")}
+    </h1>
+
+    <div class="details-price">
+     ${formatPrice(car.price)}
+    </div>
+
+    <div class="details-description">
+     ${escapeHtml(car.description||"")}
+    </div>
+
+    <a
+     class="details-call"
+     href="${phoneHref(siteSettings.phone)}"
+     onclick="trackCall(event)">
+
+     <svg class="icon">
+      <use href="#i-phone"/>
+     </svg>
+
+     ${t.call}
+
+    </a>
+
    </div>
-
-   <a class="details-call"
-    href="${phoneHref(siteSettings.phone)}"
-    onclick="trackCall(event)">
-    <svg class="icon"><use href="#i-phone"/></svg>
-    ${t.call}
-   </a>
 
   </div>
 
- </div>`;
+ `;
 
  applySettings();
 }
 
 function selectDetailImage(index){
- const images=getImages(currentDetailsCar);
- if(!images[index])return;
 
- const main=document.getElementById("detailsMainImage");
- if(main)main.src=imageUrl(images[index]);
+ const images=
+  getImages(currentDetailsCar);
 
- document.querySelectorAll(".thumb").forEach((thumb,i)=>{
-  thumb.classList.toggle("active",i===index);
- });
+ if(!images[index])
+  return;
+
+ const main=
+  document.getElementById(
+   "detailsMainImage"
+  );
+
+ if(main)
+  main.src=
+   imageUrl(images[index]);
+
+ document
+  .querySelectorAll(".thumb")
+  .forEach(
+   (thumb,i)=>{
+
+    thumb.classList.toggle(
+     "active",
+     i===index
+    );
+
+   }
+  );
 }
 
 function openLightbox(index){
- if(!currentDetailsCar)return;
 
- const images=getImages(currentDetailsCar);
- if(!images.length)return;
+ if(!currentDetailsCar)
+  return;
 
- currentLightboxIndex=index;
+ const images=
+  getImages(currentDetailsCar);
 
- document.getElementById("lightboxImage").src=
-  imageUrl(images[currentLightboxIndex]);
+ if(!images.length)
+  return;
 
- document.getElementById("lightbox").classList.add("active");
+ currentLightboxIndex=
+  index;
+
+ document
+  .getElementById("lightboxImage")
+  .src=
+   imageUrl(
+    images[currentLightboxIndex]
+   );
+
+ document
+  .getElementById("lightbox")
+  .classList.add("active");
 }
 
 function closeLightbox(){
- document.getElementById("lightbox").classList.remove("active");
+
+ document
+  .getElementById("lightbox")
+  .classList.remove("active");
 }
 
 function changeLightbox(direction){
- if(!currentDetailsCar)return;
 
- const images=getImages(currentDetailsCar);
- if(!images.length)return;
+ if(!currentDetailsCar)
+  return;
 
- currentLightboxIndex+=direction;
+ const images=
+  getImages(currentDetailsCar);
+
+ if(!images.length)
+  return;
+
+ currentLightboxIndex+=
+  direction;
 
  if(currentLightboxIndex<0)
-  currentLightboxIndex=images.length-1;
+  currentLightboxIndex=
+   images.length-1;
 
- if(currentLightboxIndex>=images.length)
+ if(
+  currentLightboxIndex>=images.length
+ )
   currentLightboxIndex=0;
 
- document.getElementById("lightboxImage").src=
-  imageUrl(images[currentLightboxIndex]);
+ document
+  .getElementById("lightboxImage")
+  .src=
+   imageUrl(
+    images[currentLightboxIndex]
+   );
 }
 
 function showPage(page){
- document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
+
+ document
+  .querySelectorAll(".page")
+  .forEach(
+   p=>p.classList.remove("active")
+  );
 
  if(page==="home")
-  document.getElementById("homePage").classList.add("active");
+  document
+   .getElementById("homePage")
+   .classList.add("active");
 
  if(page==="details")
-  document.getElementById("detailsPage").classList.add("active");
+  document
+   .getElementById("detailsPage")
+   .classList.add("active");
 
  if(page==="menu")
-  document.getElementById("menuPage").classList.add("active");
+  document
+   .getElementById("menuPage")
+   .classList.add("active");
 
- window.scrollTo({top:0,behavior:"smooth"});
+ window.scrollTo({
+  top:0,
+  behavior:"smooth"
+ });
 }
 
 function goHome(){
+
  showPage("home");
 
- filteredCars=[...allCars];
+ filteredCars=
+  [...allCars];
 
- document.getElementById("searchInput").value="";
+ document
+  .getElementById("searchInput")
+  .value="";
+
  renderFiltered();
 
- document.querySelectorAll(".bottom-nav button")
-  .forEach(btn=>btn.classList.remove("active"));
+ document
+  .querySelectorAll(".bottom-nav button")
+  .forEach(
+   btn=>btn.classList.remove("active")
+  );
 
- document.getElementById("navHome").classList.add("active");
+ document
+  .getElementById("navHome")
+  .classList.add("active");
 }
 
 function showMenu(){
+
  showPage("menu");
 
- document.getElementById("navHome").classList.remove("active");
+ document
+  .getElementById("navHome")
+  .classList.remove("active");
 }
 
 function focusSearch(){
+
  showPage("home");
 
  setTimeout(()=>{
-  document.getElementById("searchInput").focus();
+
+  document
+   .getElementById("searchInput")
+   .focus();
+
  },200);
 }
 
 function trackCall(event){
- if(event)event.stopPropagation();
+
+ if(event)
+  event.stopPropagation();
 
  try{
+
   if(navigator.sendBeacon){
-   const sent=navigator.sendBeacon(
-    "/api/stats/call",
-    new Blob([],{type:"text/plain"})
-   );
-   if(sent)return;
+
+   const sent=
+    navigator.sendBeacon(
+     "/api/stats/call",
+     new Blob(
+      [],
+      {type:"text/plain"}
+     )
+    );
+
+   if(sent)
+    return;
   }
+
  }catch(error){}
 
- fetch("/api/stats/call",{method:"POST",keepalive:true}).catch(()=>{});
+ fetch(
+  "/api/stats/call",
+  {
+   method:"POST",
+   keepalive:true
+  }
+ ).catch(()=>{});
 }
 
 function trackView(){
- fetch("/api/stats/view",{method:"POST",keepalive:true}).catch(()=>{});
+
+ fetch(
+  "/api/stats/view",
+  {
+   method:"POST",
+   keepalive:true
+  }
+ ).catch(()=>{});
 }
 
-document.addEventListener("keydown",function(event){
+document.addEventListener(
+ "keydown",
+ function(event){
 
- if(event.key==="Escape")closeLightbox();
+  if(event.key==="Escape")
+   closeLightbox();
 
- if(event.key==="ArrowLeft"){
-  const box=document.getElementById("lightbox");
-  if(box.classList.contains("active"))changeLightbox(-1);
+  if(event.key==="ArrowLeft"){
+
+   const box=
+    document.getElementById(
+     "lightbox"
+    );
+
+   if(
+    box.classList.contains("active")
+   )
+    changeLightbox(-1);
+  }
+
+  if(event.key==="ArrowRight"){
+
+   const box=
+    document.getElementById(
+     "lightbox"
+    );
+
+   if(
+    box.classList.contains("active")
+   )
+    changeLightbox(1);
+  }
+
  }
+);
 
- if(event.key==="ArrowRight"){
-  const box=document.getElementById("lightbox");
-  if(box.classList.contains("active"))changeLightbox(1);
- }
-});
+document
+ .getElementById("lightbox")
+ .addEventListener(
+  "click",
+  function(event){
 
-document.getElementById("lightbox").addEventListener("click",function(event){
- if(event.target===this)closeLightbox();
-});
+   if(event.target===this)
+    closeLightbox();
 
-if(localStorage.getItem("darkMode")==="true"){
+  }
+ );
+
+if(
+ localStorage.getItem("darkMode")==="true"
+){
+
  document.body.classList.add("dark");
+
 }
 
 applyLang();
@@ -1133,6 +2975,7 @@ trackView();
 
 loadSettings();
 load();
+
 </script>
 
 </body>
