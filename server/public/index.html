@@ -1,583 +1,428 @@
 <!DOCTYPE html>
 <html lang="uz">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-
-<title>pul.zarill</title>
-
-<style>
-* {
-    box-sizing: border-box;
-    -webkit-tap-highlight-color: transparent;
-}
-
-html {
-    scroll-behavior: smooth;
-}
-
-body {
-    margin: 0;
-    font-family: Arial, sans-serif;
-    background: #f5f6f8;
-    color: #171717;
-    padding-bottom: 78px;
-}
-
-/* =========================
-   HEADER
-========================= */
-
-header {
-    background: #111;
-    color: white;
-    padding: 20px 16px 18px;
-    text-align: center;
-}
-
-.logo {
-    font-size: 28px;
-    font-weight: 800;
-    letter-spacing: -1px;
-    margin: 0;
-}
-
-.tagline {
-    color: #aaa;
-    margin: 5px 0 14px;
-    font-size: 14px;
-}
-
-.contact {
-    font-size: 14px;
-    margin-bottom: 14px;
-}
-
-.contact a {
-    color: #7CFC9A;
-    text-decoration: none;
-    font-weight: bold;
-}
-
-.lang-bar {
-    display: flex;
-    justify-content: center;
-    gap: 6px;
-}
-
-.lang-bar button {
-    border: 1px solid #444;
-    background: #222;
-    color: #bbb;
-    padding: 6px 12px;
-    border-radius: 7px;
-    cursor: pointer;
-    font-size: 12px;
-}
-
-.lang-bar button.active {
-    background: #7CFC9A;
-    color: #111;
-    border-color: #7CFC9A;
-    font-weight: bold;
-}
-
-/* =========================
-   MAIN
-========================= */
-
-main {
-    max-width: 1050px;
-    margin: auto;
-    padding: 18px 14px;
-}
-
-/* =========================
-   SEARCH
-========================= */
-
-.search-box {
-    background: white;
-    border-radius: 16px;
-    padding: 14px;
-    box-shadow: 0 2px 10px rgba(0,0,0,.07);
-    margin-bottom: 16px;
-}
-
-.search-title {
-    font-size: 13px;
-    color: #777;
-    margin-bottom: 7px;
-}
-
-.search-row {
-    display: flex;
-    gap: 9px;
-}
-
-.search-input-wrap {
-    flex: 1;
-    position: relative;
-}
-
-.search-icon {
-    position: absolute;
-    left: 13px;
-    top: 50%;
-    transform: translateY(-50%);
-    color: #888;
-    font-size: 17px;
-}
-
-#search {
-    width: 100%;
-    height: 46px;
-    border: 1px solid #ddd;
-    border-radius: 11px;
-    padding: 0 12px 0 40px;
-    font-size: 15px;
-    outline: none;
-    background: #fafafa;
-}
-
-#search:focus {
-    border-color: #0a7d3b;
-    background: white;
-}
-
-.reset {
-    height: 46px;
-    padding: 0 15px;
-    border: none;
-    border-radius: 11px;
-    background: #eee;
-    cursor: pointer;
-    font-weight: bold;
-}
-
-/* =========================
-   FILTER BAR
-========================= */
-
-.filter-bar {
-    display: flex;
-    gap: 8px;
-    overflow-x: auto;
-    padding: 2px 0 12px;
-    scrollbar-width: none;
-}
-
-.filter-bar::-webkit-scrollbar {
-    display: none;
-}
-
-.filter-chip {
-    flex: 0 0 auto;
-    border: 1px solid #ddd;
-    background: white;
-    padding: 9px 15px;
-    border-radius: 20px;
-    font-size: 13px;
-    cursor: pointer;
-}
-
-.filter-chip.active {
-    background: #111;
-    color: white;
-    border-color: #111;
-}
-
-/* =========================
-   FAVORITES
-========================= */
-
-.favorite-filter {
-    background: white;
-    border-radius: 12px;
-    padding: 11px 13px;
-    display: flex;
-    align-items: center;
-    gap: 9px;
-    margin-bottom: 17px;
-    box-shadow: 0 1px 6px rgba(0,0,0,.05);
-    font-size: 14px;
-}
-
-.favorite-filter input {
-    width: 18px;
-    height: 18px;
-}
-
-/* =========================
-   GRID
-========================= */
-
-.grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 15px;
-}
-
-/* =========================
-   CARD
-========================= */
-
-.card {
-    position: relative;
-    background: white;
-    border-radius: 16px;
-    overflow: hidden;
-    box-shadow: 0 2px 9px rgba(0,0,0,.08);
-    transition: transform .15s ease;
-}
-
-.card:active {
-    transform: scale(.985);
-}
-
-.card-image-box {
-    position: relative;
-    width: 100%;
-    height: 220px;
-    background: #eee;
-    overflow: hidden;
-}
-
-.card img.thumb {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-    cursor: pointer;
-}
-
-.fav-btn {
-    position: absolute;
-    top: 11px;
-    right: 11px;
-    width: 40px;
-    height: 40px;
-    border: none;
-    border-radius: 50%;
-    background: rgba(255,255,255,.94);
-    font-size: 21px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 3;
-    box-shadow: 0 2px 8px rgba(0,0,0,.12);
-}
-
-.fav-btn.active {
-    color: #e33434;
-}
-
-.card-content {
-    padding: 13px;
-}
-
-.card h3 {
-    margin: 0 0 7px;
-    font-size: 17px;
-    line-height: 1.25;
-}
-
-.badge-sold {
-    display: inline-block;
-    background: #d93434;
-    color: white;
-    font-size: 10px;
-    padding: 4px 7px;
-    border-radius: 5px;
-    margin-left: 5px;
-    vertical-align: middle;
-}
-
-.desc {
-    color: #666;
-    font-size: 13px;
-    line-height: 1.4;
-    margin-bottom: 10px;
-    white-space: pre-wrap;
-}
-
-.price {
-    color: #087a3b;
-    font-size: 19px;
-    font-weight: 800;
-    margin-bottom: 11px;
-}
-
-.call {
-    display: block;
-    width: 100%;
-    text-align: center;
-    background: #0a7d3b;
-    color: white;
-    text-decoration: none;
-    padding: 11px;
-    border-radius: 10px;
-    font-weight: bold;
-    font-size: 14px;
-}
-
-.call:active {
-    transform: scale(.98);
-}
-
-/* =========================
-   EMPTY
-========================= */
-
-.empty {
-    grid-column: 1 / -1;
-    text-align: center;
-    color: #777;
-    padding: 50px 20px;
-}
-
-/* =========================
-   BOTTOM NAV
-========================= */
-
-.bottom-nav {
-    position: fixed;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    height: 68px;
-    background: rgba(255,255,255,.96);
-    border-top: 1px solid #ddd;
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-    z-index: 50;
-    padding-bottom: env(safe-area-inset-bottom);
-    backdrop-filter: blur(10px);
-}
-
-.nav-item {
-    border: none;
-    background: none;
-    color: #777;
-    font-size: 11px;
-    cursor: pointer;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 4px;
-}
-
-.nav-item span {
-    font-size: 21px;
-}
-
-.nav-item.active {
-    color: #0a7d3b;
-    font-weight: bold;
-}
-
-/* =========================
-   LIGHTBOX
-========================= */
-
-#lightbox {
-    display: none;
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,.94);
-    z-index: 100;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
-}
-
-#lightbox.open {
-    display: flex;
-}
-
-#lightbox img {
-    max-width: 94vw;
-    max-height: 75vh;
-    object-fit: contain;
-    border-radius: 8px;
-}
-
-#lightbox .nav {
-    display: flex;
-    align-items: center;
-    gap: 22px;
-    margin-top: 16px;
-}
-
-#lightbox button {
-    background: white;
-    border: none;
-    border-radius: 8px;
-    padding: 10px 17px;
-    font-size: 20px;
-    cursor: pointer;
-}
-
-#lightbox .close {
-    position: absolute;
-    top: 18px;
-    right: 18px;
-    background: transparent;
-    color: white;
-    font-size: 32px;
-}
-
-.counter {
-    color: #ddd;
-    font-size: 14px;
-}
-
-/* =========================
-   TABLET
-========================= */
-
-@media (max-width: 800px) {
-
-    .grid {
-        grid-template-columns: repeat(2, 1fr);
-    }
-
-    .card-image-box {
-        height: 190px;
-    }
-}
-
-/* =========================
-   PHONE
-========================= */
-
-@media (max-width: 520px) {
-
-    body {
-        padding-bottom: 78px;
-    }
-
-    header {
-        padding: 17px 13px;
-    }
-
-    .logo {
-        font-size: 25px;
-    }
-
-    main {
-        padding: 13px 10px;
-    }
-
-    .search-box {
-        padding: 11px;
-        border-radius: 14px;
-    }
-
-    .search-row {
-        gap: 7px;
-    }
-
-    #search {
-        height: 44px;
-    }
-
-    .reset {
-        height: 44px;
-        padding: 0 12px;
-    }
-
-    .grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 9px;
-    }
-
-    .card {
-        border-radius: 13px;
-    }
-
-    .card-image-box {
-        height: 145px;
-    }
-
-    .card-content {
-        padding: 9px;
-    }
-
-    .card h3 {
-        font-size: 14px;
-        margin-bottom: 5px;
-    }
-
-    .desc {
-        font-size: 11px;
-        margin-bottom: 7px;
-    }
-
-    .price {
-        font-size: 15px;
-        margin-bottom: 8px;
-    }
-
-    .call {
-        padding: 9px 5px;
-        font-size: 12px;
-        border-radius: 8px;
-    }
-
-    .fav-btn {
-        width: 34px;
-        height: 34px;
-        font-size: 18px;
-        top: 7px;
-        right: 7px;
-    }
-
-    .badge-sold {
-        font-size: 8px;
-        padding: 3px 5px;
-    }
-}
-
-/* =========================
-   VERY SMALL PHONE
-========================= */
-
-@media (max-width: 360px) {
-
-    .grid {
-        gap: 7px;
-    }
-
-    .card-image-box {
-        height: 125px;
-    }
-
-    .card-content {
-        padding: 8px;
-    }
-
-    .card h3 {
-        font-size: 13px;
-    }
-
-    .price {
-        font-size: 14px;
-    }
-
-    .call {
-        font-size: 11px;
-    }
-}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <title>pul.zarill</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f5f6f8;
+            color: #171717;
+            padding-bottom: 78px;
+        }
+
+        header {
+            background: #111;
+            color: white;
+            padding: 20px 16px 18px;
+            text-align: center;
+        }
+
+        .logo {
+            font-size: 28px;
+            font-weight: 800;
+            margin: 0;
+        }
+
+        .tagline {
+            color: #aaa;
+            margin: 5px 0 14px;
+            font-size: 14px;
+        }
+
+        .contact {
+            font-size: 14px;
+            margin-bottom: 14px;
+        }
+
+        .contact a {
+            color: #7CFC9A;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .lang-bar {
+            display: flex;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .lang-bar button {
+            border: 1px solid #444;
+            background: #222;
+            color: #bbb;
+            padding: 6px 12px;
+            border-radius: 7px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .lang-bar button.active {
+            background: #7CFC9A;
+            color: #111;
+            border-color: #7CFC9A;
+            font-weight: bold;
+        }
+
+        main {
+            max-width: 1050px;
+            margin: auto;
+            padding: 18px 14px;
+        }
+
+        .search-box {
+            background: white;
+            border-radius: 16px;
+            padding: 14px;
+            box-shadow: 0 2px 10px rgba(0,0,0,.07);
+            margin-bottom: 16px;
+        }
+
+        .search-title {
+            font-size: 13px;
+            color: #777;
+            margin-bottom: 7px;
+        }
+
+        .search-row {
+            display: flex;
+            gap: 9px;
+        }
+
+        .search-input-wrap {
+            flex: 1;
+            position: relative;
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 13px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #888;
+            font-size: 17px;
+        }
+
+        #search {
+            width: 100%;
+            height: 46px;
+            border: 1px solid #ddd;
+            border-radius: 11px;
+            padding: 0 12px 0 40px;
+            font-size: 15px;
+            outline: none;
+            background: #fafafa;
+        }
+
+        #search:focus {
+            border-color: #0a7d3b;
+            background: white;
+        }
+
+        .reset {
+            height: 46px;
+            padding: 0 15px;
+            border: none;
+            border-radius: 11px;
+            background: #eee;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+        }
+
+        .card {
+            position: relative;
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 2px 9px rgba(0,0,0,.08);
+        }
+
+        .card-image-box {
+            position: relative;
+            width: 100%;
+            height: 220px;
+            background: #eee;
+            overflow: hidden;
+        }
+
+        .card img.thumb {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            cursor: pointer;
+        }
+
+        .fav-btn {
+            position: absolute;
+            top: 11px;
+            right: 11px;
+            width: 40px;
+            height: 40px;
+            border: none;
+            border-radius: 50%;
+            background: rgba(255,255,255,.94);
+            font-size: 21px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 3;
+            box-shadow: 0 2px 8px rgba(0,0,0,.12);
+        }
+
+        .fav-btn.active {
+            color: #e33434;
+        }
+
+        .card-content {
+            padding: 13px;
+        }
+
+        .card h3 {
+            margin: 0 0 7px;
+            font-size: 17px;
+            line-height: 1.25;
+        }
+
+        .badge-sold {
+            display: inline-block;
+            background: #d93434;
+            color: white;
+            font-size: 10px;
+            padding: 4px 7px;
+            border-radius: 5px;
+            margin-left: 5px;
+            vertical-align: middle;
+        }
+
+        .desc {
+            color: #666;
+            font-size: 13px;
+            line-height: 1.4;
+            margin-bottom: 10px;
+            white-space: pre-wrap;
+        }
+
+        .price {
+            color: #087a3b;
+            font-size: 19px;
+            font-weight: 800;
+            margin-bottom: 11px;
+        }
+
+        .call {
+            display: block;
+            width: 100%;
+            text-align: center;
+            background: #0a7d3b;
+            color: white;
+            text-decoration: none;
+            padding: 11px;
+            border-radius: 10px;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .empty {
+            grid-column: 1 / -1;
+            text-align: center;
+            color: #777;
+            padding: 50px 20px;
+        }
+
+        .bottom-nav {
+            position: fixed;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            min-height: 68px;
+            background: rgba(255,255,255,.96);
+            border-top: 1px solid #ddd;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            z-index: 50;
+            padding-bottom: env(safe-area-inset-bottom);
+            backdrop-filter: blur(10px);
+        }
+
+        .nav-item {
+            border: none;
+            background: none;
+            color: #777;
+            font-size: 11px;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .nav-item span {
+            font-size: 21px;
+        }
+
+        .nav-item.active {
+            color: #0a7d3b;
+            font-weight: bold;
+        }
+
+        #lightbox {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,.94);
+            z-index: 100;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+        }
+
+        #lightbox.open {
+            display: flex;
+        }
+
+        #lightbox img {
+            max-width: 94vw;
+            max-height: 75vh;
+            object-fit: contain;
+            border-radius: 8px;
+        }
+
+        #lightbox .nav {
+            display: flex;
+            align-items: center;
+            gap: 22px;
+            margin-top: 16px;
+        }
+
+        #lightbox button {
+            background: white;
+            border: none;
+            border-radius: 8px;
+            padding: 10px 17px;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        #lightbox .close {
+            position: absolute;
+            top: 18px;
+            right: 18px;
+            background: transparent;
+            color: white;
+            font-size: 32px;
+        }
+
+        .counter {
+            color: #ddd;
+            font-size: 14px;
+        }
+
+        @media (max-width: 800px) {
+            .grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .card-image-box {
+                height: 190px;
+            }
+        }
+
+        @media (max-width: 520px) {
+            header {
+                padding: 17px 13px;
+            }
+
+            .logo {
+                font-size: 25px;
+            }
+
+            main {
+                padding: 13px 10px;
+            }
+
+            .search-box {
+                padding: 11px;
+                border-radius: 14px;
+            }
+
+            .search-row {
+                gap: 7px;
+            }
+
+            #search {
+                height: 44px;
+            }
+
+            .reset {
+                height: 44px;
+                padding: 0 12px;
+            }
+
+            .grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: 9px;
+            }
+
+            .card {
+                border-radius: 13px;
+            }
+
+            .card-image-box {
+                height: 145px;
+            }
+
+            .card-content {
+                padding: 9px;
+            }
+
+            .card h3 {
+                font-size: 14px;
+            }
+
+            .desc {
+                font-size: 11px;
+            }
+
+            .price {
+                font-size: 15px;
+            }
+
+            .call {
+                padding: 9px 5px;
+                font-size: 12px;
+            }
+
+            .fav-btn {
+                width: 34px;
+                height: 34px;
+                font-size: 18px;
+                top: 7px;
+                right: 7px;
+            }
+        }
+    </style>
 </head>
 
 <body>
 
 <header>
-
     <h1 class="logo">pul.zarill</h1>
 
     <p class="tagline" id="tagline">
@@ -586,9 +431,7 @@ main {
 
     <div class="contact">
         <span id="contactLabel">Bog'lanish</span>:
-        <a href="tel:+998889500005">
-            +998 88 950 00 05
-        </a>
+        <a href="tel:+998889500005">+998 88 950 00 05</a>
     </div>
 
     <div class="lang-bar">
@@ -596,24 +439,17 @@ main {
         <button data-lang="ru" onclick="setLang('ru')">RU</button>
         <button data-lang="en" onclick="setLang('en')">EN</button>
     </div>
-
 </header>
-
 
 <main>
 
-    <!-- SEARCH -->
-
     <div class="search-box">
-
         <div class="search-title" id="searchLabel">
             Qidirish
         </div>
 
         <div class="search-row">
-
             <div class="search-input-wrap">
-
                 <span class="search-icon">⌕</span>
 
                 <input
@@ -622,140 +458,44 @@ main {
                     placeholder="Masalan: Nexia"
                     autocomplete="off"
                 >
-
             </div>
 
             <button
                 class="reset"
-                onclick="resetFilters()"
+                onclick="resetSearch()"
                 id="resetBtn">
                 Tozalash
             </button>
-
         </div>
-
     </div>
-
-
-    <!-- CATEGORIES -->
-
-    <div class="filter-bar">
-
-        <button
-            class="filter-chip active"
-            onclick="showAllCars(this)">
-            🚗 Barchasi
-        </button>
-
-        <button
-            class="filter-chip"
-            onclick="searchCategory('Chevrolet', this)">
-            Chevrolet
-        </button>
-
-        <button
-            class="filter-chip"
-            onclick="searchCategory('Kia', this)">
-            Kia
-        </button>
-
-        <button
-            class="filter-chip"
-            onclick="searchCategory('Toyota', this)">
-            Toyota
-        </button>
-
-        <button
-            class="filter-chip"
-            onclick="searchCategory('BYD', this)">
-            BYD
-        </button>
-
-        <button
-            class="filter-chip"
-            onclick="searchCategory('Nexia', this)">
-            Nexia
-        </button>
-
-        <button
-            class="filter-chip"
-            onclick="searchCategory('Cobalt', this)">
-            Cobalt
-        </button>
-
-    </div>
-
-
-    <!-- FAVORITES -->
-
-    <label class="favorite-filter">
-
-        <input
-            id="favOnly"
-            type="checkbox"
-        >
-
-        <span id="favOnlyLabel">
-            Faqat sevimlilar
-        </span>
-
-    </label>
-
-
-    <!-- CARS -->
 
     <div id="list" class="grid"></div>
 
 </main>
 
-
-<!-- BOTTOM NAV -->
-
 <nav class="bottom-nav">
 
-    <button
-        class="nav-item active"
-        onclick="goHome()">
-
+    <button class="nav-item active" onclick="goHome()">
         <span>⌂</span>
         <div id="navHome">Bosh sahifa</div>
-
     </button>
 
-
-    <button
-        class="nav-item"
-        onclick="focusSearch()">
-
+    <button class="nav-item" onclick="focusSearch()">
         <span>⌕</span>
         <div id="navSearch">Qidirish</div>
-
     </button>
 
-
-    <button
-        class="nav-item"
-        onclick="showFavorites()">
-
+    <button class="nav-item" onclick="showFavorites()">
         <span>♡</span>
         <div id="navFav">Sevimlilar</div>
-
     </button>
 
-
-    <button
-        class="nav-item"
-        onclick="callNumber()">
-
+    <button class="nav-item" onclick="callNumber()">
         <span>☎</span>
         <div id="navContact">Aloqa</div>
-
     </button>
 
 </nav>
-
-
-<!-- LIGHTBOX -->
 
 <div id="lightbox">
 
@@ -771,1018 +511,496 @@ main {
         alt="Car">
 
     <div class="nav">
-
-        <button onclick="prevImage()">
-            ←
-        </button>
+        <button onclick="prevImage()">←</button>
 
         <span
             class="counter"
             id="lightbox-counter">
         </span>
 
-        <button onclick="nextImage()">
-            →
-        </button>
-
+        <button onclick="nextImage()">→</button>
     </div>
 
 </div>
 
-
 <script>
+    let currentImages = [];
+    let currentIndex = 0;
+    let allCars = [];
+    let favoritesMode = false;
 
-/* =========================
-   VARIABLES
-========================= */
+    const translations = {
+        uz: {
+            tagline: "Arzon avtomobillar do'koni",
+            contactLabel: "Bog'lanish",
+            searchLabel: "Qidirish",
+            searchPlaceholder: "Masalan: Nexia",
+            resetBtn: "Tozalash",
+            callBtn: "Qo'ng'iroq qilish",
+            soldBadge: "SOTILDI",
+            emptyNoCars: "Hozircha mashinalar yo'q",
+            emptyNoMatch: "Mos mashina topilmadi",
+            navHome: "Bosh sahifa",
+            navSearch: "Qidirish",
+            navFav: "Sevimlilar",
+            navContact: "Aloqa"
+        },
 
-let currentImages = [];
-let currentIndex = 0;
-let allCars = [];
+        ru: {
+            tagline: "Магазин недорогих автомобилей",
+            contactLabel: "Связаться",
+            searchLabel: "Поиск",
+            searchPlaceholder: "Например: Nexia",
+            resetBtn: "Очистить",
+            callBtn: "Позвонить",
+            soldBadge: "ПРОДАНО",
+            emptyNoCars: "Пока нет автомобилей",
+            emptyNoMatch: "Ничего не найдено",
+            navHome: "Главная",
+            navSearch: "Поиск",
+            navFav: "Избранное",
+            navContact: "Связаться"
+        },
 
+        en: {
+            tagline: "Affordable car store",
+            contactLabel: "Contact",
+            searchLabel: "Search",
+            searchPlaceholder: "e.g. Nexia",
+            resetBtn: "Clear",
+            callBtn: "Call",
+            soldBadge: "SOLD",
+            emptyNoCars: "No cars yet",
+            emptyNoMatch: "No matching cars",
+            navHome: "Home",
+            navSearch: "Search",
+            navFav: "Favorites",
+            navContact: "Contact"
+        }
+    };
 
-/* =========================
-   TRANSLATIONS
-========================= */
+    let currentLang =
+        localStorage.getItem('lang') || 'uz';
 
-const translations = {
-
-    uz: {
-        tagline: "Arzon avtomobillar do'koni",
-        contactLabel: "Bog'lanish",
-        searchLabel: "Qidirish",
-        searchPlaceholder: "Masalan: Nexia",
-        favOnlyLabel: "Faqat sevimlilar",
-        resetBtn: "Tozalash",
-        callBtn: "Qo'ng'iroq qilish",
-        soldBadge: "SOTILDI",
-        emptyNoCars: "Hozircha mashinalar yo'q",
-        emptyNoMatch: "Mos mashina topilmadi",
-        navHome: "Bosh sahifa",
-        navSearch: "Qidirish",
-        navFav: "Sevimlilar",
-        navContact: "Aloqa"
-    },
-
-    ru: {
-        tagline: "Магазин недорогих автомобилей",
-        contactLabel: "Связаться",
-        searchLabel: "Поиск",
-        searchPlaceholder: "Например: Nexia",
-        favOnlyLabel: "Только избранное",
-        resetBtn: "Очистить",
-        callBtn: "Позвонить",
-        soldBadge: "ПРОДАНО",
-        emptyNoCars: "Пока нет автомобилей",
-        emptyNoMatch: "Ничего не найдено",
-        navHome: "Главная",
-        navSearch: "Поиск",
-        navFav: "Избранное",
-        navContact: "Связаться"
-    },
-
-    en: {
-        tagline: "Affordable car store",
-        contactLabel: "Contact",
-        searchLabel: "Search",
-        searchPlaceholder: "e.g. Nexia",
-        favOnlyLabel: "Favorites only",
-        resetBtn: "Clear",
-        callBtn: "Call",
-        soldBadge: "SOLD",
-        emptyNoCars: "No cars yet",
-        emptyNoMatch: "No matching cars",
-        navHome: "Home",
-        navSearch: "Search",
-        navFav: "Favorites",
-        navContact: "Contact"
+    function setLang(lang) {
+        currentLang = lang;
+        localStorage.setItem('lang', lang);
+        applyLang();
+        render();
     }
 
-};
+    function applyLang() {
+        const t = translations[currentLang];
 
+        document.getElementById('tagline').textContent = t.tagline;
+        document.getElementById('contactLabel').textContent = t.contactLabel;
+        document.getElementById('searchLabel').textContent = t.searchLabel;
+        document.getElementById('search').placeholder = t.searchPlaceholder;
+        document.getElementById('resetBtn').textContent = t.resetBtn;
+        document.getElementById('navHome').textContent = t.navHome;
+        document.getElementById('navSearch').textContent = t.navSearch;
+        document.getElementById('navFav').textContent = t.navFav;
+        document.getElementById('navContact').textContent = t.navContact;
 
-let currentLang =
-    localStorage.getItem('lang') || 'uz';
+        document.querySelectorAll('.lang-bar button')
+            .forEach(btn => {
+                btn.classList.toggle(
+                    'active',
+                    btn.dataset.lang === currentLang
+                );
+            });
+    }
 
-
-/* =========================
-   LANGUAGE
-========================= */
-
-function setLang(lang) {
-
-    currentLang = lang;
-
-    localStorage.setItem(
-        'lang',
-        lang
-    );
-
-    applyLang();
-
-    render();
-
-}
-
-
-function applyLang() {
-
-    const t =
-        translations[currentLang];
-
-
-    document.getElementById(
-        'tagline'
-    ).textContent =
-        t.tagline;
-
-
-    document.getElementById(
-        'contactLabel'
-    ).textContent =
-        t.contactLabel;
-
-
-    document.getElementById(
-        'searchLabel'
-    ).textContent =
-        t.searchLabel;
-
-
-    document.getElementById(
-        'search'
-    ).placeholder =
-        t.searchPlaceholder;
-
-
-    document.getElementById(
-        'favOnlyLabel'
-    ).textContent =
-        t.favOnlyLabel;
-
-
-    document.getElementById(
-        'resetBtn'
-    ).textContent =
-        t.resetBtn;
-
-
-    document.getElementById(
-        'navHome'
-    ).textContent =
-        t.navHome;
-
-
-    document.getElementById(
-        'navSearch'
-    ).textContent =
-        t.navSearch;
-
-
-    document.getElementById(
-        'navFav'
-    ).textContent =
-        t.navFav;
-
-
-    document.getElementById(
-        'navContact'
-    ).textContent =
-        t.navContact;
-
-
-    document
-        .querySelectorAll(
-            '.lang-bar button'
-        )
-        .forEach(btn => {
-
-            btn.classList.toggle(
-                'active',
-                btn.dataset.lang === currentLang
+    function getFavorites() {
+        try {
+            return JSON.parse(
+                localStorage.getItem('favorites') || '[]'
             );
+        } catch (e) {
+            return [];
+        }
+    }
 
-        });
+    function isFavorite(id) {
+        return getFavorites().includes(id);
+    }
 
-}
+    function toggleFavorite(id) {
+        let favs = getFavorites();
 
+        if (favs.includes(id)) {
+            favs = favs.filter(f => f !== id);
+        } else {
+            favs.push(id);
+        }
 
-/* =========================
-   FAVORITES
-========================= */
-
-function getFavorites() {
-
-    try {
-
-        return JSON.parse(
-            localStorage.getItem(
-                'favorites'
-            ) || '[]'
+        localStorage.setItem(
+            'favorites',
+            JSON.stringify(favs)
         );
-
-    } catch (e) {
-
-        return [];
-
-    }
-
-}
-
-
-function isFavorite(id) {
-
-    return getFavorites()
-        .includes(id);
-
-}
-
-
-function toggleFavorite(id) {
-
-    let favs =
-        getFavorites();
-
-
-    if (favs.includes(id)) {
-
-        favs =
-            favs.filter(
-                f => f !== id
-            );
-
-    } else {
-
-        favs.push(id);
-
-    }
-
-
-    localStorage.setItem(
-        'favorites',
-        JSON.stringify(favs)
-    );
-
-
-    render();
-
-}
-
-
-/* =========================
-   STATS
-========================= */
-
-function trackView() {
-
-    fetch(
-        '/api/stats/view',
-        {
-            method: 'POST'
-        }
-    ).catch(() => {});
-
-}
-
-
-function trackCall() {
-
-    fetch(
-        '/api/stats/call',
-        {
-            method: 'POST'
-        }
-    ).catch(() => {});
-
-}
-
-
-/* =========================
-   LOAD CARS
-========================= */
-
-async function load() {
-
-    try {
-
-        const res =
-            await fetch('/api/cars');
-
-        allCars =
-            await res.json();
 
         render();
-
-    } catch (error) {
-
-        console.log(
-            'Mashinalarni yuklashda xato:',
-            error
-        );
-
     }
 
-}
+    function trackView() {
+        fetch('/api/stats/view', {
+            method: 'POST'
+        }).catch(() => {});
+    }
 
+    function trackCall() {
+        fetch('/api/stats/call', {
+            method: 'POST'
+        }).catch(() => {});
+    }
 
-/* =========================
-   RENDER
-========================= */
+    async function load() {
+        try {
+            const res = await fetch('/api/cars');
 
-function render() {
+            allCars = await res.json();
 
-    const t =
-        translations[currentLang];
+            render();
+        } catch (error) {
+            console.log(
+                'Mashinalarni yuklashda xato:',
+                error
+            );
+        }
+    }
 
+    function render() {
+        const t = translations[currentLang];
 
-    const query =
-        document
-            .getElementById('search')
-            .value
-            .trim()
-            .toLowerCase();
+        const query =
+            document
+                .getElementById('search')
+                .value
+                .trim()
+                .toLowerCase();
 
-
-    const favOnly =
-        document
-            .getElementById('favOnly')
-            .checked;
-
-
-    const cars =
-        allCars.filter(car => {
-
+        const cars = allCars.filter(car => {
             const name =
-                String(
-                    car.name || ''
-                ).toLowerCase();
-
+                String(car.name || '').toLowerCase();
 
             const description =
-                String(
-                    car.description || ''
-                ).toLowerCase();
-
+                String(car.description || '').toLowerCase();
 
             const matchesSearch =
                 !query ||
                 name.includes(query) ||
                 description.includes(query);
 
-
-            const matchesFav =
-                !favOnly ||
+            const matchesFavorite =
+                !favoritesMode ||
                 isFavorite(car.id);
 
-
-            return (
-                matchesSearch &&
-                matchesFav
-            );
-
+            return matchesSearch && matchesFavorite;
         });
 
+        const list =
+            document.getElementById('list');
 
-    const list =
-        document.getElementById('list');
+        list.innerHTML = '';
 
+        if (cars.length === 0) {
+            const message =
+                allCars.length === 0
+                    ? t.emptyNoCars
+                    : t.emptyNoMatch;
 
-    list.innerHTML = '';
+            list.innerHTML =
+                '<p class="empty">' +
+                message +
+                '</p>';
 
-
-    if (cars.length === 0) {
-
-        const message =
-            allCars.length === 0
-                ? t.emptyNoCars
-                : t.emptyNoMatch;
-
-
-        list.innerHTML =
-            '<p class="empty">' +
-            message +
-            '</p>';
-
-        return;
-
-    }
-
-
-    for (const car of cars) {
-
-        const images =
-            car.images || [];
-
-
-        const card =
-            document.createElement(
-                'div'
-            );
-
-        card.className =
-            'card';
-
-
-        /* IMAGE */
-
-        const imageBox =
-            document.createElement(
-                'div'
-            );
-
-        imageBox.className =
-            'card-image-box';
-
-
-        if (images.length) {
-
-            const img =
-                document.createElement(
-                    'img'
-                );
-
-            img.className =
-                'thumb';
-
-            img.src =
-                '/uploads/' +
-                images[0];
-
-            img.alt =
-                car.name || 'Car';
-
-
-            img.loading =
-                'lazy';
-
-
-            img.onclick =
-                () =>
-                    openLightbox(
-                        images,
-                        0
-                    );
-
-
-            imageBox.appendChild(
-                img
-            );
-
+            return;
         }
 
+        for (const car of cars) {
+            const images =
+                car.images || [];
 
-        /* FAVORITE */
+            const card =
+                document.createElement('div');
 
-        const favBtn =
-            document.createElement(
-                'button'
-            );
+            card.className = 'card';
 
+            const imageBox =
+                document.createElement('div');
 
-        favBtn.className =
-            'fav-btn' +
-            (
-                isFavorite(car.id)
-                    ? ' active'
-                    : ''
-            );
+            imageBox.className =
+                'card-image-box';
 
+            if (images.length) {
+                const img =
+                    document.createElement('img');
 
-        favBtn.textContent =
-            isFavorite(car.id)
-                ? '♥'
-                : '♡';
+                img.className = 'thumb';
 
+                img.src =
+                    '/uploads/' +
+                    images[0];
 
-        favBtn.onclick =
-            () =>
-                toggleFavorite(
-                    car.id
-                );
+                img.alt =
+                    car.name || 'Car';
 
+                img.loading = 'lazy';
 
-        imageBox.appendChild(
-            favBtn
-        );
+                img.onclick =
+                    () =>
+                        openLightbox(
+                            images,
+                            0
+                        );
 
-
-        card.appendChild(
-            imageBox
-        );
-
-
-        /* CONTENT */
-
-        const content =
-            document.createElement(
-                'div'
-            );
-
-        content.className =
-            'card-content';
-
-
-        /* TITLE */
-
-        const title =
-            document.createElement(
-                'h3'
-            );
-
-        title.textContent =
-            car.name || 'Avtomobil';
-
-
-        if (car.sold) {
-
-            const badge =
-                document.createElement(
-                    'span'
-                );
-
-            badge.className =
-                'badge-sold';
-
-            badge.textContent =
-                t.soldBadge;
-
-
-            title.appendChild(
-                badge
-            );
-
-        }
-
-
-        content.appendChild(
-            title
-        );
-
-
-        /* DESCRIPTION */
-
-        if (car.description) {
-
-            const desc =
-                document.createElement(
-                    'div'
-                );
-
-            desc.className =
-                'desc';
-
-            desc.textContent =
-                car.description;
-
-
-            content.appendChild(
-                desc
-            );
-
-        }
-
-
-        /* PRICE */
-
-        const price =
-            document.createElement(
-                'div'
-            );
-
-        price.className =
-            'price';
-
-
-        const numericPrice =
-            Number(
-                car.price || 0
-            );
-
-
-        price.textContent =
-            numericPrice.toLocaleString(
-                'ru-RU'
-            ) +
-            " so'm";
-
-
-        content.appendChild(
-            price
-        );
-
-
-        /* CALL */
-
-        const call =
-            document.createElement(
-                'a'
-            );
-
-        call.className =
-            'call';
-
-        call.href =
-            'tel:+998889500005';
-
-        call.textContent =
-            t.callBtn;
-
-
-        call.onclick =
-            trackCall;
-
-
-        content.appendChild(
-            call
-        );
-
-
-        card.appendChild(
-            content
-        );
-
-
-        list.appendChild(
-            card
-        );
-
-    }
-
-}
-
-
-/* =========================
-   CATEGORY SEARCH
-========================= */
-
-function searchCategory(
-    category,
-    button
-) {
-
-    document
-        .getElementById(
-            'search'
-        )
-        .value =
-        category;
-
-
-    document
-        .querySelectorAll(
-            '.filter-chip'
-        )
-        .forEach(btn => {
-
-            btn.classList.remove(
-                'active'
-            );
-
-        });
-
-
-    button.classList.add(
-        'active'
-    );
-
-
-    render();
-
-}
-
-
-function showAllCars(button) {
-
-    document
-        .getElementById(
-            'search'
-        )
-        .value = '';
-
-
-    document
-        .querySelectorAll(
-            '.filter-chip'
-        )
-        .forEach(btn => {
-
-            btn.classList.remove(
-                'active'
-            );
-
-        });
-
-
-    button.classList.add(
-        'active'
-    );
-
-
-    render();
-
-}
-
-
-/* =========================
-   LIGHTBOX
-========================= */
-
-function openLightbox(
-    images,
-    index
-) {
-
-    currentImages =
-        images;
-
-    currentIndex =
-        index;
-
-
-    showCurrent();
-
-
-    document
-        .getElementById(
-            'lightbox'
-        )
-        .classList.add(
-            'open'
-        );
-
-}
-
-
-function closeLightbox() {
-
-    document
-        .getElementById(
-            'lightbox'
-        )
-        .classList.remove(
-            'open'
-        );
-
-}
-
-
-function showCurrent() {
-
-    if (
-        !currentImages.length
-    ) return;
-
-
-    document
-        .getElementById(
-            'lightbox-img'
-        )
-        .src =
-        '/uploads/' +
-        currentImages[
-            currentIndex
-        ];
-
-
-    document
-        .getElementById(
-            'lightbox-counter'
-        )
-        .textContent =
-        (
-            currentIndex + 1
-        ) +
-        ' / ' +
-        currentImages.length;
-
-}
-
-
-function nextImage() {
-
-    if (
-        !currentImages.length
-    ) return;
-
-
-    currentIndex =
-        (
-            currentIndex + 1
-        ) %
-        currentImages.length;
-
-
-    showCurrent();
-
-}
-
-
-function prevImage() {
-
-    if (
-        !currentImages.length
-    ) return;
-
-
-    currentIndex =
-        (
-            currentIndex - 1 +
-            currentImages.length
-        ) %
-        currentImages.length;
-
-
-    showCurrent();
-
-}
-
-
-document
-    .getElementById(
-        'lightbox'
-    )
-    .addEventListener(
-        'click',
-        e => {
-
-            if (
-                e.target.id ===
-                'lightbox'
-            ) {
-
-                closeLightbox();
-
+                imageBox.appendChild(img);
             }
 
+            const favBtn =
+                document.createElement('button');
+
+            favBtn.className =
+                'fav-btn' +
+                (
+                    isFavorite(car.id)
+                        ? ' active'
+                        : ''
+                );
+
+            favBtn.textContent =
+                isFavorite(car.id)
+                    ? '♥'
+                    : '♡';
+
+            favBtn.onclick =
+                () =>
+                    toggleFavorite(
+                        car.id
+                    );
+
+            imageBox.appendChild(favBtn);
+
+            card.appendChild(imageBox);
+
+            const content =
+                document.createElement('div');
+
+            content.className =
+                'card-content';
+
+            const title =
+                document.createElement('h3');
+
+            title.textContent =
+                car.name || 'Avtomobil';
+
+            if (car.sold) {
+                const badge =
+                    document.createElement('span');
+
+                badge.className =
+                    'badge-sold';
+
+                badge.textContent =
+                    t.soldBadge;
+
+                title.appendChild(badge);
+            }
+
+            content.appendChild(title);
+
+            if (car.description) {
+                const desc =
+                    document.createElement('div');
+
+                desc.className = 'desc';
+
+                desc.textContent =
+                    car.description;
+
+                content.appendChild(desc);
+            }
+
+            const price =
+                document.createElement('div');
+
+            price.className = 'price';
+
+            const numericPrice =
+                Number(car.price || 0);
+
+            price.textContent =
+                numericPrice.toLocaleString('ru-RU') +
+                " so'm";
+
+            content.appendChild(price);
+
+            const call =
+                document.createElement('a');
+
+            call.className = 'call';
+
+            call.href =
+                'tel:+998889500005';
+
+            call.textContent =
+                t.callBtn;
+
+            call.onclick =
+                trackCall;
+
+            content.appendChild(call);
+
+            card.appendChild(content);
+
+            list.appendChild(card);
         }
-    );
+    }
 
+    function openLightbox(images, index) {
+        currentImages = images;
+        currentIndex = index;
 
-/* =========================
-   RESET
-========================= */
+        showCurrent();
 
-function resetFilters() {
+        document
+            .getElementById('lightbox')
+            .classList.add('open');
+    }
+
+    function closeLightbox() {
+        document
+            .getElementById('lightbox')
+            .classList.remove('open');
+    }
+
+    function showCurrent() {
+        if (!currentImages.length) return;
+
+        document
+            .getElementById('lightbox-img')
+            .src =
+            '/uploads/' +
+            currentImages[currentIndex];
+
+        document
+            .getElementById('lightbox-counter')
+            .textContent =
+            (currentIndex + 1) +
+            ' / ' +
+            currentImages.length;
+    }
+
+    function nextImage() {
+        if (!currentImages.length) return;
+
+        currentIndex =
+            (currentIndex + 1) %
+            currentImages.length;
+
+        showCurrent();
+    }
+
+    function prevImage() {
+        if (!currentImages.length) return;
+
+        currentIndex =
+            (
+                currentIndex - 1 +
+                currentImages.length
+            ) %
+            currentImages.length;
+
+        showCurrent();
+    }
 
     document
-        .getElementById(
-            'search'
-        )
-        .value = '';
-
-
-    document
-        .getElementById(
-            'favOnly'
-        )
-        .checked = false;
-
-
-    document
-        .querySelectorAll(
-            '.filter-chip'
-        )
-        .forEach(
-            btn =>
-                btn.classList.remove(
-                    'active'
-                )
+        .getElementById('lightbox')
+        .addEventListener(
+            'click',
+            e => {
+                if (
+                    e.target.id ===
+                    'lightbox'
+                ) {
+                    closeLightbox();
+                }
+            }
         );
 
+    function resetSearch() {
+        document
+            .getElementById('search')
+            .value = '';
+
+        favoritesMode = false;
+
+        render();
+    }
 
     document
-        .querySelector(
-            '.filter-chip'
-        )
-        .classList.add(
-            'active'
+        .getElementById('search')
+        .addEventListener(
+            'input',
+            render
         );
 
+    function goHome() {
+        favoritesMode = false;
 
-    render();
+        document
+            .getElementById('search')
+            .value = '';
 
-}
+        render();
 
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        });
+    }
 
-/* =========================
-   SEARCH INPUT
-========================= */
+    function focusSearch() {
+        favoritesMode = false;
 
-document
-    .getElementById(
-        'search'
-    )
-    .addEventListener(
-        'input',
-        render
-    );
+        render();
 
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        });
 
-document
-    .getElementById(
-        'favOnly'
-    )
-    .addEventListener(
-        'change',
-        render
-    );
-
-
-/* =========================
-   MOBILE NAV
-========================= */
-
-function goHome() {
-
-    document
-        .getElementById(
-            'search'
-        )
-        .value = '';
-
-
-    document
-        .getElementById(
-            'favOnly'
-        )
-        .checked = false;
-
-
-    render();
-
-
-    window.scrollTo({
-        top: 0,
-        behavior: 'smooth'
-    });
-
-}
-
-
-function focusSearch() {
-
-    window.scrollTo({
-        top: 0,
-        behavior: 'smooth'
-    });
-
-
-    setTimeout(
-        () => {
-
+        setTimeout(() => {
             document
-                .getElementById(
-                    'search'
-                )
+                .getElementById('search')
                 .focus();
+        }, 300);
+    }
 
-        },
-        400
-    );
+    function showFavorites() {
+        favoritesMode = true;
 
-}
+        render();
 
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        });
+    }
 
-function showFavorites() {
+    function callNumber() {
+        trackCall();
 
-    document
-        .getElementById(
-            'favOnly'
-        )
-        .checked = true;
+        window.location.href =
+            'tel:+998889500005';
+    }
 
+    applyLang();
 
-    render();
+    trackView();
 
-
-    window.scrollTo({
-        top: 0,
-        behavior: 'smooth'
-    });
-
-}
-
-
-function callNumber() {
-
-    trackCall();
-
-    window.location.href =
-        'tel:+998889500005';
-
-}
-
-
-/* =========================
-   START
-========================= */
-
-applyLang();
-
-trackView();
-
-load();
-
+    load();
 </script>
 
 </body>
