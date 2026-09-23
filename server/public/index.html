@@ -997,14 +997,10 @@ body.dark .detail-btn{
 
 <symbol id="i-whatsapp" viewBox="0 0 24 24">
  <path d="M20 11.5a8 8 0 0 1-11.7 7L4 20l1.5-4.1A8 8 0 1 1 20 11.5Z"/>
- <path d="M9 8.5c.2-.4.5-.4.8-.1l1 1c.2.2.2.5 0 .8l-.5.6c.7 1.1 1.5 1.8 2.7 2.4l.5-.5c.2-.2.5-.2.8 0l1 1c.3.3.3.6-.1.8-.5.3-1.1.4-1.6.2-2.5-.8-.4.3-2.6-2.6-5.1-5.1-.2-.5-.1-1.1.2-1.6Z"/>
+ <path d="M9 8.5c.2-.4.5-.4.8-.1l1 1c.2.2.2.5 0 .8l-.5.6c.7 1.1 1.5 1.8 2.7 2.4l.5-.5c.2-.2.5-.2.8 0l1 1c.3.3.3.6-.1.8-.5.3-1.1.4-1.6.2-2.5-.8-.8-.4.3-2.6-2.6-5.1-.2-.5-.1-1.1.2-1.6Z"/>
 </symbol>
 
 </svg>
-
-<!-- =========================
-     HEADER
-========================= -->
 
 <header>
 
@@ -1050,13 +1046,7 @@ body.dark .detail-btn{
 
 </header>
 
-<!-- =========================
-     MAIN
-========================= -->
-
 <main class="container">
-
-<!-- HOME -->
 
 <section id="homePage" class="page active">
 
@@ -1132,8 +1122,6 @@ body.dark .detail-btn{
 
 </section>
 
-<!-- DETAILS -->
-
 <section id="detailsPage" class="page">
 
  <button
@@ -1158,13 +1146,9 @@ body.dark .detail-btn{
 
 </section>
 
-<!-- MENU -->
-
 <section id="menuPage" class="page">
 
 <div class="menu-card">
-
- <!-- ABOUT -->
 
  <div class="menu-item">
 
@@ -1196,8 +1180,6 @@ body.dark .detail-btn{
   </svg>
 
  </div>
-
- <!-- PHONE -->
 
  <div class="menu-item">
 
@@ -1233,8 +1215,6 @@ body.dark .detail-btn{
   </a>
 
  </div>
-
- <!-- TELEGRAM -->
 
  <div class="menu-item">
 
@@ -1274,8 +1254,6 @@ body.dark .detail-btn{
 
  </div>
 
- <!-- WHATSAPP -->
-
  <div class="menu-item">
 
   <div class="menu-item-left">
@@ -1313,8 +1291,6 @@ body.dark .detail-btn{
   </a>
 
  </div>
-
- <!-- INSTAGRAM -->
 
  <div class="menu-item">
 
@@ -1354,8 +1330,6 @@ body.dark .detail-btn{
 
  </div>
 
- <!-- LOCATION -->
-
  <div class="menu-item">
 
   <div class="menu-item-left">
@@ -1387,8 +1361,6 @@ body.dark .detail-btn{
 
  </div>
 
- <!-- LANGUAGE -->
-
  <div class="menu-item">
 
   <div class="menu-item-left">
@@ -1419,8 +1391,6 @@ body.dark .detail-btn{
   </svg>
 
  </div>
-
- <!-- THEME -->
 
  <div class="menu-item">
 
@@ -1460,10 +1430,6 @@ body.dark .detail-btn{
 </section>
 
 </main>
-
-<!-- =========================
-     BOTTOM NAV
-========================= -->
 
 <nav class="bottom-nav">
 
@@ -1536,10 +1502,6 @@ body.dark .detail-btn{
 </button>
 
 </nav>
-
-<!-- =========================
-     LIGHTBOX
-========================= -->
 
 <div
  class="lightbox"
@@ -1923,18 +1885,8 @@ function setLang(lang){
 
  applyLang();
 
- /*
-   Muhim:
-   Til o‘zgarganda mavjud sahifadagi
-   dinamik kartalar ham qayta chiziladi.
- */
  renderFiltered();
 
- /*
-   Agar details ochiq bo‘lsa,
-   uning ichidagi barcha matn ham
-   qayta tarjima qilinadi.
- */
  if(
   document
    .getElementById("detailsPage")
@@ -1961,8 +1913,6 @@ function applyLang(){
  const t=
   translations[currentLang];
 
- /* Search */
-
  const searchInput=
   document.getElementById(
    "searchInput"
@@ -1971,8 +1921,6 @@ function applyLang(){
  if(searchInput)
   searchInput.placeholder=
    t.search;
-
- /* Main title */
 
  const carsTitle=
   document.getElementById(
@@ -1983,8 +1931,6 @@ function applyLang(){
   carsTitle.textContent=
    t.cars;
 
- /* Back */
-
  const backText=
   document.getElementById(
    "backText"
@@ -1993,8 +1939,6 @@ function applyLang(){
  if(backText)
   backText.textContent=
    t.back;
-
- /* Bottom navigation */
 
  const navHomeText=
   document.getElementById(
@@ -2031,8 +1975,6 @@ function applyLang(){
  if(navMenuText)
   navMenuText.textContent=
    t.menu;
-
- /* Menu */
 
  setText(
   "menuPlatform",
@@ -2118,8 +2060,6 @@ function applyLang(){
   "menuOpenInstagram",
   t.open
  );
-
- /* Language buttons */
 
  document
   .querySelectorAll(".lang-btn")
@@ -3357,45 +3297,60 @@ function focusSearch(){
 
 /* =========================
    CALL TRACKING
+   TUZATILGAN VERSIYA
 ========================= */
 
 function trackCall(event){
 
- if(event)
+ if(event){
   event.stopPropagation();
-
- try{
-
-  if(
-   navigator.sendBeacon
-  ){
-
-   const sent=
-    navigator.sendBeacon(
-     "/api/stats/call",
-     new Blob(
-      [],
-      {
-       type:
-        "text/plain"
-      }
-     )
-    );
-
-   if(sent)
-    return;
-  }
-
- }catch(error){}
+ }
 
  fetch(
   "/api/stats/call",
   {
    method:"POST",
-   keepalive:true
+   keepalive:true,
+   cache:"no-store"
   }
- ).catch(
-  ()=>{}
+ )
+ .then(
+  response=>{
+
+   if(!response.ok){
+
+    throw new Error(
+     "Call statistikasi yuborilmadi"
+    );
+
+   }
+
+   return response.json()
+    .catch(
+     ()=>({})
+    );
+
+  }
+ )
+ .then(
+  data=>{
+
+   console.log(
+    "Qo‘ng‘iroq statistikasi qayd etildi:",
+    data
+   );
+
+  }
+ )
+ .catch(
+  error=>{
+
+   console.error(
+    "Call stat error:",
+    error
+   );
+
+  }
  );
 }
 
@@ -3409,7 +3364,8 @@ function trackView(){
   "/api/stats/view",
   {
    method:"POST",
-   keepalive:true
+   keepalive:true,
+   cache:"no-store"
   }
  ).catch(
   ()=>{}
