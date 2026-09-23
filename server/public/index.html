@@ -1,11 +1,23 @@
+```html
 <!DOCTYPE html>
 <html lang="uz">
+
 <head>
+
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+>
+
 <title>pul.zarill</title>
 
+
 <style>
+
+/* ================= RESET ================= */
+
 *{
     box-sizing:border-box;
     -webkit-tap-highlight-color:transparent;
@@ -20,52 +32,80 @@ body{
     transition:.25s;
 }
 
-button,input{
+button,
+input{
     font:inherit;
 }
+
 
 /* ================= HEADER ================= */
 
 header{
+
     position:relative;
+
     min-height:235px;
+
     padding:28px 22px;
+
     overflow:hidden;
 
     background:
+
         linear-gradient(
             90deg,
             rgba(0,0,0,.72),
             rgba(0,0,0,.25)
         ),
+
         url("data:image/png;base64,PASTE_YOUR_IMAGE_BASE64_HERE")
+
         center top/100% auto no-repeat;
 
     background-color:#111;
+
     color:#fff;
 }
 
+
 header:after{
+
     content:"";
+
     position:absolute;
+
     inset:0;
+
     background:
+
         linear-gradient(
             180deg,
             rgba(0,0,0,.05),
             rgba(0,0,0,.35)
         );
+
     pointer-events:none;
 }
 
+
+/* ================= LOGO ================= */
+
 .logo{
+
     position:relative;
+
     z-index:3;
+
     margin-top:58px;
+
     font-size:clamp(42px,10vw,76px);
+
     font-weight:900;
+
     letter-spacing:-4px;
+
     font-style:italic;
+
     line-height:.9;
 }
 
@@ -73,152 +113,251 @@ header:after{
     color:#36ef70;
 }
 
+
+/* ================= HEADER TEXT ================= */
+
 .tagline{
+
     position:relative;
+
     z-index:3;
+
     margin:18px 0 8px;
+
     font-size:clamp(15px,3.5vw,21px);
+
     color:#eee;
 }
 
 .contact{
+
     position:relative;
+
     z-index:3;
+
     margin:0;
+
     color:#fff;
+
     font-size:16px;
 }
 
 .contact a{
+
     color:#39ef72;
+
     text-decoration:none;
+
     font-weight:800;
 }
 
+
+/* ================= LANGUAGE ================= */
+
 .lang-bar{
+
     position:absolute;
+
     right:22px;
+
     top:22px;
+
     z-index:5;
+
     display:flex;
+
     gap:5px;
+
     align-items:center;
 }
 
 .lang-bar button{
+
     border:1px solid #4b4b4b;
+
     background:rgba(12,15,18,.88);
+
     color:#ddd;
+
     border-radius:9px;
+
     padding:8px 12px;
+
     cursor:pointer;
 }
 
 .lang-bar button.active{
+
     background:#39ef72;
+
     color:#07120a;
+
     border-color:#39ef72;
+
     font-weight:800;
 }
 
 .theme-btn{
+
     width:40px;
+
     height:37px;
+
     padding:0!important;
+
     font-size:18px;
 }
+
 
 /* ================= MAIN ================= */
 
 main{
+
     max-width:1100px;
+
     margin:20px auto;
+
     padding:0 14px;
 }
 
+
+/* ================= FILTERS ================= */
+
 .filters{
+
     background:#fff;
+
     border-radius:16px;
+
     padding:14px;
+
     box-shadow:0 2px 9px rgba(0,0,0,.1);
+
     margin-bottom:18px;
 }
 
 .search-row{
+
     display:flex;
+
     gap:9px;
 }
 
 .search-wrap{
+
     position:relative;
+
     flex:1;
 }
 
 .search-icon{
+
     position:absolute;
+
     left:13px;
+
     top:9px;
+
     font-size:24px;
+
     color:#777;
 }
 
 #search{
+
     width:100%;
+
     height:48px;
+
     border:1px solid #ddd;
+
     border-radius:10px;
+
     padding:0 12px 0 42px;
+
     outline:none;
 }
 
 .reset{
+
     height:48px;
+
     padding:0 18px;
+
     border:0;
+
     border-radius:10px;
+
     background:#eee;
+
     cursor:pointer;
 }
+
 
 /* ================= CARS ================= */
 
 .grid{
+
     display:grid;
+
     grid-template-columns:repeat(3,1fr);
+
     gap:15px;
 }
 
 .card{
+
     background:#fff;
+
     border-radius:15px;
+
     overflow:hidden;
+
     box-shadow:0 2px 9px rgba(0,0,0,.1);
+
     cursor:pointer;
 }
 
 .image-box{
+
     height:205px;
+
     position:relative;
+
     background:#eee;
 }
 
 .thumb{
+
     width:100%;
+
     height:100%;
+
     object-fit:cover;
+
     display:block;
 }
 
 .fav-btn{
+
     position:absolute;
+
     right:11px;
+
     top:11px;
+
     width:40px;
+
     height:40px;
+
     border:0;
+
     border-radius:50%;
+
     background:rgba(255,255,255,.94);
+
     font-size:22px;
+
     cursor:pointer;
 }
 
@@ -231,58 +370,92 @@ main{
 }
 
 .content h3{
+
     margin:0 0 7px;
+
     font-size:18px;
 }
 
 .badge{
+
     background:#d83a3a;
+
     color:#fff;
+
     padding:3px 7px;
+
     border-radius:5px;
+
     font-size:10px;
+
     margin-left:5px;
 }
 
 .desc{
+
     font-size:13px;
+
     color:#666;
+
     line-height:1.45;
+
     max-height:40px;
+
     overflow:hidden;
 }
 
 .more{
+
     font-size:12px;
+
     color:#07803e;
+
     font-weight:700;
+
     margin:7px 0;
 }
 
 .price{
+
     font-size:19px;
+
     font-weight:800;
+
     color:#087d3d;
+
     margin:8px 0 11px;
 }
 
 .call{
+
     display:block;
+
     text-align:center;
+
     background:#0a803f;
+
     color:#fff;
+
     padding:11px;
+
     border-radius:9px;
+
     text-decoration:none;
+
     font-weight:700;
 }
 
 .empty{
+
     grid-column:1/-1;
+
     text-align:center;
+
     color:#777;
+
     padding:50px;
 }
+
 
 /* ================= PAGES ================= */
 
@@ -296,54 +469,87 @@ main{
 
 .detail-page,
 .menu-page{
+
     min-height:100vh;
+
     background:#f3f5f7;
+
     padding-bottom:30px;
 }
 
 .page-head{
+
     background:#111;
+
     color:#fff;
+
     padding:14px;
+
     display:flex;
+
     align-items:center;
+
     gap:14px;
 }
 
 .back-btn{
+
     border:0;
+
     background:#242424;
+
     color:#fff;
+
     border-radius:9px;
+
     padding:8px 13px;
+
     font-size:20px;
+
     cursor:pointer;
 }
 
 .page-head h2{
+
     margin:0;
+
     font-size:20px;
 }
 
 .detail-container,
 .menu-container{
+
     max-width:700px;
+
     margin:20px auto;
+
     padding:0 14px;
 }
 
+
+/* ================= DETAIL ================= */
+
 .detail-box{
+
     background:#fff;
+
     border-radius:15px;
+
     overflow:hidden;
+
     box-shadow:0 2px 8px rgba(0,0,0,.1);
 }
 
 .detail-image{
+
     width:100%;
+
     height:390px;
+
     object-fit:cover;
+
     display:block;
+
     cursor:pointer;
 }
 
@@ -352,66 +558,108 @@ main{
 }
 
 .detail-content h1{
+
     margin:0 0 10px;
+
     font-size:26px;
 }
 
 .detail-price{
+
     font-size:24px;
+
     color:#087d3d;
+
     font-weight:800;
+
     margin-bottom:16px;
 }
 
 .detail-description{
+
     background:#f5f5f5;
+
     border-radius:10px;
+
     padding:15px;
+
     line-height:1.6;
+
     white-space:pre-wrap;
+
     word-break:break-word;
 }
 
 .detail-call{
+
     display:block;
+
     text-align:center;
+
     margin-top:15px;
+
     padding:14px;
+
     background:#0a803f;
+
     color:#fff;
+
     text-decoration:none;
+
     border-radius:9px;
+
     font-weight:800;
 }
+
 
 /* ================= MENU ================= */
 
 .menu-section{
+
     background:#fff;
+
     border-radius:15px;
+
     overflow:hidden;
+
     margin-bottom:15px;
+
     box-shadow:0 2px 8px rgba(0,0,0,.08);
 }
 
 .menu-title{
+
     padding:15px;
+
     color:#777;
+
     font-weight:800;
+
     border-bottom:1px solid #eee;
 }
 
 .menu-row{
+
     width:100%;
+
     display:flex;
+
     align-items:center;
+
     gap:13px;
+
     padding:16px;
+
     border:0;
+
     border-bottom:1px solid #eee;
+
     background:none;
+
     color:inherit;
+
     text-align:left;
+
     cursor:pointer;
 }
 
@@ -420,14 +668,20 @@ main{
 }
 
 .menu-icon{
+
     width:30px;
+
     text-align:center;
+
     font-size:20px;
 }
 
 .menu-row a{
+
     color:inherit;
+
     text-decoration:none;
+
     flex:1;
 }
 
@@ -436,35 +690,55 @@ main{
 }
 
 .arrow{
+
     margin-left:auto;
+
     color:#999;
+
     font-size:22px;
 }
 
 .menu-langs{
+
     margin-left:auto;
+
     display:flex;
+
     gap:4px;
 }
 
 .menu-langs button{
+
     border:0;
+
     background:none;
+
     cursor:pointer;
+
     font-weight:700;
+
     padding:5px;
 }
+
 
 /* ================= LIGHTBOX ================= */
 
 #lightbox{
+
     display:none;
+
     position:fixed;
+
     inset:0;
+
     background:rgba(0,0,0,.95);
+
     z-index:500;
+
     align-items:center;
+
     justify-content:center;
+
     flex-direction:column;
 }
 
@@ -473,32 +747,50 @@ main{
 }
 
 #lightbox-img{
+
     max-width:94vw;
+
     max-height:76vh;
+
     object-fit:contain;
 }
 
 .light-close{
+
     position:absolute;
+
     right:16px;
+
     top:10px;
+
     background:none;
+
     border:0;
+
     color:#fff;
+
     font-size:38px;
 }
 
 .light-nav{
+
     display:flex;
+
     align-items:center;
+
     gap:20px;
+
     margin-top:15px;
 }
 
 .light-nav button{
+
     border:0;
+
     border-radius:8px;
+
     padding:8px 15px;
+
     font-size:20px;
 }
 
@@ -506,31 +798,52 @@ main{
     color:#fff;
 }
 
+
 /* ================= BOTTOM NAV ================= */
 
 .bottom-nav{
+
     position:fixed;
+
     left:0;
+
     right:0;
+
     bottom:0;
+
     height:70px;
+
     background:rgba(255,255,255,.98);
+
     border-top:1px solid #ddd;
+
     display:flex;
+
     justify-content:space-around;
+
     align-items:center;
+
     z-index:100;
 }
 
 .nav-item{
+
     border:0;
+
     background:none;
+
     color:#777;
+
     font-size:11px;
+
     display:flex;
+
     flex-direction:column;
+
     align-items:center;
+
     gap:3px;
+
     cursor:pointer;
 }
 
@@ -539,14 +852,19 @@ main{
 }
 
 .nav-item.active{
+
     color:#08a34b;
+
     font-weight:800;
 }
 
-/* ================= DARK MODE ================= */
+
+/* ================= DARK ================= */
 
 body.dark{
+
     background:#0d1013;
+
     color:#eee;
 }
 
@@ -554,7 +872,9 @@ body.dark .filters,
 body.dark .card,
 body.dark .detail-box,
 body.dark .menu-section{
+
     background:#1a1d21;
+
     color:#eee;
 }
 
@@ -564,13 +884,18 @@ body.dark .menu-page{
 }
 
 body.dark #search{
+
     background:#25282d;
+
     color:#fff;
+
     border-color:#444;
 }
 
 body.dark .reset{
+
     background:#25282d;
+
     color:#fff;
 }
 
@@ -588,7 +913,9 @@ body.dark .menu-row{
 }
 
 body.dark .bottom-nav{
+
     background:#17191c;
+
     border-color:#333;
 }
 
@@ -599,6 +926,7 @@ body.dark .nav-item{
 body.dark .nav-item.active{
     color:#39ef72;
 }
+
 
 /* ================= MOBILE ================= */
 
@@ -613,15 +941,22 @@ body.dark .nav-item.active{
 @media(max-width:600px){
 
     header{
+
         min-height:235px;
+
         padding:22px 15px;
+
         background-size:100% auto;
+
         background-position:center top;
     }
 
     .logo{
+
         margin-top:65px;
+
         font-size:46px;
+
         letter-spacing:-2px;
     }
 
@@ -634,17 +969,23 @@ body.dark .nav-item.active{
     }
 
     .lang-bar{
+
         right:12px;
+
         top:13px;
     }
 
     .lang-bar button{
+
         padding:7px 9px;
+
         font-size:11px;
     }
 
     main{
+
         margin:13px auto;
+
         padding:0 10px;
     }
 
@@ -665,7 +1006,9 @@ body.dark .nav-item.active{
     }
 
     .desc{
+
         font-size:11px;
+
         max-height:32px;
     }
 
@@ -674,7 +1017,9 @@ body.dark .nav-item.active{
     }
 
     .call{
+
         font-size:12px;
+
         padding:9px 3px;
     }
 
@@ -699,14 +1044,21 @@ body.dark .nav-item.active{
     }
 
 }
+
 </style>
+
 </head>
+
 
 <body>
 
+
 <!-- ================= HOME ================= -->
 
-<div id="homePage" class="page active">
+<div
+    id="homePage"
+    class="page active"
+>
 
 <header>
 
@@ -714,40 +1066,50 @@ body.dark .nav-item.active{
 
         <button
             data-lang="uz"
-            onclick="setLang('uz')">
+            onclick="setLang('uz')"
+        >
             UZ
         </button>
 
         <button
             data-lang="ru"
-            onclick="setLang('ru')">
+            onclick="setLang('ru')"
+        >
             RU
         </button>
 
         <button
             data-lang="en"
-            onclick="setLang('en')">
+            onclick="setLang('en')"
+        >
             EN
         </button>
 
         <button
             class="theme-btn"
             id="themeBtn"
-            onclick="toggleDarkMode()">
+            onclick="toggleDarkMode()"
+        >
             ☀️
         </button>
 
     </div>
 
+
     <div class="logo">
+
         pul<span class="green">.zarill</span>
+
     </div>
+
 
     <p
         class="tagline"
-        id="tagline">
+        id="tagline"
+    >
         Arzon avtomobillar do'koni
     </p>
+
 
     <p class="contact">
 
@@ -762,6 +1124,7 @@ body.dark .nav-item.active{
     </p>
 
 </header>
+
 
 <main>
 
@@ -778,52 +1141,58 @@ body.dark .nav-item.active{
                 <input
                     id="search"
                     type="text"
-                    placeholder="Masalan: Nexia">
+                    placeholder="Masalan: Nexia"
+                >
 
             </div>
+
 
             <button
                 class="reset"
                 id="resetBtn"
-                onclick="resetFilters()">
-
+                onclick="resetFilters()"
+            >
                 Tozalash
-
             </button>
 
         </div>
 
     </div>
 
+
     <div
         id="list"
-        class="grid">
-    </div>
+        class="grid"
+    ></div>
 
 </main>
 
 </div>
 
 
+
 <!-- ================= DETAIL PAGE ================= -->
 
 <div
     id="detailPage"
-    class="page detail-page">
+    class="page detail-page"
+>
 
     <div class="page-head">
 
         <button
             class="back-btn"
-            onclick="showPage('homePage')">
+            onclick="goHome()"
+        >
             ←
         </button>
 
-        <h2>
+        <h2 id="detailPageTitle">
             Avtomobil
         </h2>
 
     </div>
+
 
     <div class="detail-container">
 
@@ -833,30 +1202,34 @@ body.dark .nav-item.active{
                 id="detailImage"
                 class="detail-image"
                 src=""
-                alt="">
+                alt=""
+            >
+
 
             <div class="detail-content">
 
                 <h1 id="detailTitle"></h1>
 
+
                 <div
                     id="detailPrice"
-                    class="detail-price">
-                </div>
+                    class="detail-price"
+                ></div>
+
 
                 <div
                     id="detailDescription"
-                    class="detail-description">
-                </div>
+                    class="detail-description"
+                ></div>
+
 
                 <a
                     id="detailCall"
                     class="detail-call"
                     href="tel:+998889500005"
-                    onclick="trackCall()">
-
+                    onclick="trackCall()"
+                >
                     Qo'ng'iroq qilish
-
                 </a>
 
             </div>
@@ -868,41 +1241,51 @@ body.dark .nav-item.active{
 </div>
 
 
+
 <!-- ================= MENU PAGE ================= -->
 
 <div
     id="menuPage"
-    class="page menu-page">
+    class="page menu-page"
+>
 
     <div class="page-head">
 
         <button
             class="back-btn"
-            onclick="showPage('homePage')">
+            onclick="goHome()"
+        >
             ←
         </button>
 
-        <h2>
+        <h2 id="menuPageTitle">
             Menyu
         </h2>
 
     </div>
 
+
     <div class="menu-container">
+
 
         <!-- ABOUT -->
 
         <div class="menu-section">
 
-            <div class="menu-title">
+            <div
+                class="menu-title"
+                id="menuAboutTitle"
+            >
                 Biz haqimizda
             </div>
+
 
             <div class="menu-row">
 
                 <div class="menu-icon">
                     🚗
                 </div>
+
 
                 <div class="menu-text">
 
@@ -912,7 +1295,7 @@ body.dark .nav-item.active{
 
                     <br>
 
-                    <small>
+                    <small id="aboutText">
                         Avtomobillar savdosi uchun qulay platforma.
                     </small>
 
@@ -923,13 +1306,18 @@ body.dark .nav-item.active{
         </div>
 
 
+
         <!-- CONTACT -->
 
         <div class="menu-section">
 
-            <div class="menu-title">
+            <div
+                class="menu-title"
+                id="contactUsTitle"
+            >
                 Biz bilan bog'lanish
             </div>
+
 
             <div class="menu-row">
 
@@ -956,10 +1344,9 @@ body.dark .nav-item.active{
 
                 <a
                     href="https://t.me/"
-                    target="_blank">
-
+                    target="_blank"
+                >
                     Telegram
-
                 </a>
 
                 <div class="arrow">
@@ -977,10 +1364,9 @@ body.dark .nav-item.active{
 
                 <a
                     href="https://wa.me/"
-                    target="_blank">
-
+                    target="_blank"
+                >
                     WhatsApp
-
                 </a>
 
                 <div class="arrow">
@@ -998,10 +1384,9 @@ body.dark .nav-item.active{
 
                 <a
                     href="https://instagram.com/"
-                    target="_blank">
-
+                    target="_blank"
+                >
                     Instagram
-
                 </a>
 
                 <div class="arrow">
@@ -1013,13 +1398,18 @@ body.dark .nav-item.active{
         </div>
 
 
+
         <!-- LOCATION -->
 
         <div class="menu-section">
 
-            <div class="menu-title">
+            <div
+                class="menu-title"
+                id="addressTitle"
+            >
                 Manzil
             </div>
+
 
             <div class="menu-row">
 
@@ -1027,7 +1417,10 @@ body.dark .nav-item.active{
                     📍
                 </div>
 
-                <div class="menu-text">
+                <div
+                    class="menu-text"
+                    id="locationText"
+                >
                     Toshkent, O'zbekiston
                 </div>
 
@@ -1040,11 +1433,15 @@ body.dark .nav-item.active{
         </div>
 
 
+
         <!-- SETTINGS -->
 
         <div class="menu-section">
 
-            <div class="menu-title">
+            <div
+                class="menu-title"
+                id="settingsTitle"
+            >
                 Sozlamalar
             </div>
 
@@ -1055,24 +1452,31 @@ body.dark .nav-item.active{
                     🌐
                 </div>
 
-                <div class="menu-text">
+                <div
+                    class="menu-text"
+                    id="languageText"
+                >
                     Til
                 </div>
+
 
                 <div class="menu-langs">
 
                     <button
-                        onclick="setLang('uz')">
+                        onclick="setLang('uz')"
+                    >
                         UZ
                     </button>
 
                     <button
-                        onclick="setLang('ru')">
+                        onclick="setLang('ru')"
+                    >
                         RU
                     </button>
 
                     <button
-                        onclick="setLang('en')">
+                        onclick="setLang('en')"
+                    >
                         EN
                     </button>
 
@@ -1083,17 +1487,20 @@ body.dark .nav-item.active{
 
             <div
                 class="menu-row"
-                onclick="toggleDarkMode()">
+                onclick="toggleDarkMode()"
+            >
 
                 <div
                     class="menu-icon"
-                    id="menuThemeIcon">
-
+                    id="menuThemeIcon"
+                >
                     ☀️
-
                 </div>
 
-                <div class="menu-text">
+                <div
+                    class="menu-text"
+                    id="appearanceText"
+                >
                     Ko'rinish
                 </div>
 
@@ -1106,11 +1513,15 @@ body.dark .nav-item.active{
         </div>
 
 
+
         <!-- INFORMATION -->
 
         <div class="menu-section">
 
-            <div class="menu-title">
+            <div
+                class="menu-title"
+                id="informationTitle"
+            >
                 Ma'lumot
             </div>
 
@@ -1121,7 +1532,10 @@ body.dark .nav-item.active{
                     📄
                 </div>
 
-                <div class="menu-text">
+                <div
+                    class="menu-text"
+                    id="termsText"
+                >
                     Foydalanish shartlari
                 </div>
 
@@ -1138,7 +1552,10 @@ body.dark .nav-item.active{
                     🔒
                 </div>
 
-                <div class="menu-text">
+                <div
+                    class="menu-text"
+                    id="privacyText"
+                >
                     Maxfiylik
                 </div>
 
@@ -1155,42 +1572,39 @@ body.dark .nav-item.active{
 </div>
 
 
+
 <!-- ================= LIGHTBOX ================= -->
 
 <div id="lightbox">
 
     <button
         class="light-close"
-        onclick="closeLightbox()">
-
+        onclick="closeLightbox()"
+    >
         ×
-
     </button>
+
 
     <img
         id="lightbox-img"
         src=""
-        alt="">
+        alt=""
+    >
+
 
     <div class="light-nav">
 
-        <button
-            onclick="prevImage()">
-
+        <button onclick="prevImage()">
             ←
-
         </button>
 
         <span
             id="lightbox-counter"
-            class="counter">
-        </span>
+            class="counter"
+        ></span>
 
-        <button
-            onclick="nextImage()">
-
+        <button onclick="nextImage()">
             →
-
         </button>
 
     </div>
@@ -1198,19 +1612,23 @@ body.dark .nav-item.active{
 </div>
 
 
+
 <!-- ================= BOTTOM NAV ================= -->
 
 <nav class="bottom-nav">
 
+
     <button
         class="nav-item active"
-        onclick="showPage('homePage')">
+        id="homeNav"
+        onclick="goHome()"
+    >
 
         <span>
             ⌂
         </span>
 
-        <div>
+        <div id="homeNavText">
             Bosh sahifa
         </div>
 
@@ -1219,13 +1637,15 @@ body.dark .nav-item.active{
 
     <button
         class="nav-item"
-        onclick="focusSearch()">
+        id="searchNav"
+        onclick="focusSearch()"
+    >
 
         <span>
             ⌕
         </span>
 
-        <div>
+        <div id="searchNavText">
             Qidirish
         </div>
 
@@ -1234,13 +1654,15 @@ body.dark .nav-item.active{
 
     <button
         class="nav-item"
-        onclick="showFavorites()">
+        id="favoritesNav"
+        onclick="showFavorites()"
+    >
 
         <span>
             ♡
         </span>
 
-        <div>
+        <div id="favoritesNavText">
             Sevimlilar
         </div>
 
@@ -1249,13 +1671,15 @@ body.dark .nav-item.active{
 
     <button
         class="nav-item"
-        onclick="showPage('menuPage')">
+        id="menuNav"
+        onclick="showMenu()"
+    >
 
         <span>
             ☰
         </span>
 
-        <div>
+        <div id="menuNavText">
             Menyu
         </div>
 
@@ -1264,9 +1688,13 @@ body.dark .nav-item.active{
 </nav>
 
 
+
 <script>
 
-/* ================= VARIABLES ================= */
+
+/* =====================================================
+   VARIABLES
+===================================================== */
 
 let allCars = [];
 
@@ -1277,62 +1705,227 @@ let currentImages = [];
 let currentIndex = 0;
 
 
-/* ================= TRANSLATIONS ================= */
+
+/* =====================================================
+   TRANSLATIONS
+===================================================== */
 
 const translations = {
 
     uz:{
+
         tagline:"Arzon avtomobillar do'koni",
+
         contact:"Bog'lanish",
+
         placeholder:"Masalan: Nexia",
+
         reset:"Tozalash",
+
         call:"Qo'ng'iroq qilish",
+
         sold:"SOTILDI",
-        more:"Batafsil ko'rish →"
+
+        more:"Batafsil ko'rish →",
+
+        home:"Bosh sahifa",
+
+        search:"Qidirish",
+
+        favorites:"Sevimlilar",
+
+        menu:"Menyu",
+
+        car:"Avtomobil",
+
+        about:"Biz haqimizda",
+
+        aboutText:"Avtomobillar savdosi uchun qulay platforma.",
+
+        contactUs:"Biz bilan bog'lanish",
+
+        address:"Manzil",
+
+        location:"Toshkent, O'zbekiston",
+
+        settings:"Sozlamalar",
+
+        language:"Til",
+
+        appearance:"Ko'rinish",
+
+        information:"Ma'lumot",
+
+        terms:"Foydalanish shartlari",
+
+        privacy:"Maxfiylik",
+
+        noCars:"Hozircha mashinalar yo'q",
+
+        noMatch:"Mos mashina topilmadi",
+
+        noInfo:"Ma'lumot mavjud emas",
+
+        loadError:"Ma'lumotlarni yuklashda xatolik",
+
+        currency:"so'm"
+
     },
+
 
     ru:{
+
         tagline:"Магазин недорогих автомобилей",
+
         contact:"Связаться",
+
         placeholder:"Например: Nexia",
+
         reset:"Очистить",
+
         call:"Позвонить",
+
         sold:"ПРОДАНО",
-        more:"Подробнее →"
+
+        more:"Подробнее →",
+
+        home:"Главная",
+
+        search:"Поиск",
+
+        favorites:"Избранное",
+
+        menu:"Меню",
+
+        car:"Автомобиль",
+
+        about:"О нас",
+
+        aboutText:"Удобная платформа для продажи автомобилей.",
+
+        contactUs:"Связаться с нами",
+
+        address:"Адрес",
+
+        location:"Ташкент, Узбекистан",
+
+        settings:"Настройки",
+
+        language:"Язык",
+
+        appearance:"Внешний вид",
+
+        information:"Информация",
+
+        terms:"Условия использования",
+
+        privacy:"Конфиденциальность",
+
+        noCars:"Пока автомобилей нет",
+
+        noMatch:"Подходящих автомобилей не найдено",
+
+        noInfo:"Информация отсутствует",
+
+        loadError:"Ошибка загрузки данных",
+
+        currency:"сум"
+
     },
 
+
     en:{
+
         tagline:"Affordable car store",
+
         contact:"Contact",
+
         placeholder:"e.g. Nexia",
+
         reset:"Clear",
+
         call:"Call",
+
         sold:"SOLD",
-        more:"View details →"
+
+        more:"View details →",
+
+        home:"Home",
+
+        search:"Search",
+
+        favorites:"Favorites",
+
+        menu:"Menu",
+
+        car:"Car",
+
+        about:"About us",
+
+        aboutText:"A convenient platform for selling cars.",
+
+        contactUs:"Contact us",
+
+        address:"Address",
+
+        location:"Tashkent, Uzbekistan",
+
+        settings:"Settings",
+
+        language:"Language",
+
+        appearance:"Appearance",
+
+        information:"Information",
+
+        terms:"Terms of use",
+
+        privacy:"Privacy",
+
+        noCars:"No cars available yet",
+
+        noMatch:"No matching cars found",
+
+        noInfo:"No information available",
+
+        loadError:"Error loading data",
+
+        currency:"sum"
+
     }
 
 };
+
 
 
 let currentLang =
     localStorage.getItem("lang") || "uz";
 
 
-/* ================= LANGUAGE ================= */
+
+/* =====================================================
+   LANGUAGE
+===================================================== */
 
 function setLang(lang){
+
+    if(!translations[lang]){
+        lang = "uz";
+    }
 
     currentLang = lang;
 
     localStorage.setItem(
         "lang",
-        lang
+        currentLang
     );
 
     applyLang();
 
     render();
+
 }
+
 
 
 function applyLang(){
@@ -1340,6 +1933,8 @@ function applyLang(){
     const t =
         translations[currentLang];
 
+
+    /* HEADER */
 
     document.getElementById(
         "tagline"
@@ -1371,13 +1966,131 @@ function applyLang(){
         t.call;
 
 
+
+    /* DETAIL */
+
+    document.getElementById(
+        "detailPageTitle"
+    ).textContent =
+        t.car;
+
+
+
+    /* MENU */
+
+    document.getElementById(
+        "menuPageTitle"
+    ).textContent =
+        t.menu;
+
+
+    document.getElementById(
+        "menuAboutTitle"
+    ).textContent =
+        t.about;
+
+
+    document.getElementById(
+        "aboutText"
+    ).textContent =
+        t.aboutText;
+
+
+    document.getElementById(
+        "contactUsTitle"
+    ).textContent =
+        t.contactUs;
+
+
+    document.getElementById(
+        "addressTitle"
+    ).textContent =
+        t.address;
+
+
+    document.getElementById(
+        "locationText"
+    ).textContent =
+        t.location;
+
+
+    document.getElementById(
+        "settingsTitle"
+    ).textContent =
+        t.settings;
+
+
+    document.getElementById(
+        "languageText"
+    ).textContent =
+        t.language;
+
+
+    document.getElementById(
+        "appearanceText"
+    ).textContent =
+        t.appearance;
+
+
+    document.getElementById(
+        "informationTitle"
+    ).textContent =
+        t.information;
+
+
+    document.getElementById(
+        "termsText"
+    ).textContent =
+        t.terms;
+
+
+    document.getElementById(
+        "privacyText"
+    ).textContent =
+        t.privacy;
+
+
+
+    /* BOTTOM NAV */
+
+    document.getElementById(
+        "homeNavText"
+    ).textContent =
+        t.home;
+
+
+    document.getElementById(
+        "searchNavText"
+    ).textContent =
+        t.search;
+
+
+    document.getElementById(
+        "favoritesNavText"
+    ).textContent =
+        t.favorites;
+
+
+    document.getElementById(
+        "menuNavText"
+    ).textContent =
+        t.menu;
+
+
+
+    /* ACTIVE LANGUAGE */
+
     document
         .querySelectorAll("[data-lang]")
         .forEach(button => {
 
             button.classList.toggle(
+
                 "active",
-                button.dataset.lang === currentLang
+
+                button.dataset.lang ===
+                currentLang
+
             );
 
         });
@@ -1385,19 +2098,28 @@ function applyLang(){
 }
 
 
-/* ================= FAVORITES ================= */
+
+/* =====================================================
+   FAVORITES
+===================================================== */
 
 function getFavorites(){
 
     try{
 
-        return JSON.parse(
-            localStorage.getItem(
-                "favorites"
-            ) || "[]"
-        );
+        const data =
+            JSON.parse(
+                localStorage.getItem(
+                    "favorites"
+                ) || "[]"
+            );
 
-    }catch{
+
+        return Array.isArray(data)
+            ? data
+            : [];
+
+    }catch(error){
 
         return [];
 
@@ -1406,11 +2128,17 @@ function getFavorites(){
 }
 
 
+
 function isFavorite(id){
 
-    return getFavorites().includes(id);
+    return getFavorites().some(
+        favoriteId =>
+            String(favoriteId) ===
+            String(id)
+    );
 
 }
+
 
 
 function toggleFavorite(id){
@@ -1419,13 +2147,21 @@ function toggleFavorite(id){
         getFavorites();
 
 
-    if(
-        favorites.includes(id)
-    ){
+    const exists =
+        favorites.some(
+            favoriteId =>
+                String(favoriteId) ===
+                String(id)
+        );
+
+
+    if(exists){
 
         favorites =
             favorites.filter(
-                x => x !== id
+                favoriteId =>
+                    String(favoriteId) !==
+                    String(id)
             );
 
     }else{
@@ -1436,8 +2172,13 @@ function toggleFavorite(id){
 
 
     localStorage.setItem(
+
         "favorites",
-        JSON.stringify(favorites)
+
+        JSON.stringify(
+            favorites
+        )
+
     );
 
 
@@ -1446,7 +2187,10 @@ function toggleFavorite(id){
 }
 
 
-/* ================= LOAD CARS ================= */
+
+/* =====================================================
+   LOAD CARS
+===================================================== */
 
 async function load(){
 
@@ -1455,27 +2199,50 @@ async function load(){
         const response =
             await fetch("/api/cars");
 
+
+        if(!response.ok){
+            throw new Error(
+                "Server error"
+            );
+        }
+
+
         allCars =
             await response.json();
+
+
+        if(!Array.isArray(allCars)){
+            allCars = [];
+        }
+
 
         render();
 
     }catch(error){
 
+        allCars = [];
+
+
         document.getElementById(
             "list"
         ).innerHTML =
 
-        '<p class="empty">' +
-        "Ma'lumotlarni yuklashda xatolik" +
-        "</p>";
+            '<p class="empty">' +
+
+            translations[currentLang]
+                .loadError +
+
+            '</p>';
 
     }
 
 }
 
 
-/* ================= RENDER ================= */
+
+/* =====================================================
+   RENDER CARS
+===================================================== */
 
 function render(){
 
@@ -1483,12 +2250,18 @@ function render(){
         translations[currentLang];
 
 
+    const searchElement =
+        document.getElementById(
+            "search"
+        );
+
+
     const query =
-        document
-            .getElementById("search")
-            .value
-            .trim()
-            .toLowerCase();
+        searchElement
+            ? searchElement.value
+                .trim()
+                .toLowerCase()
+            : "";
 
 
     const cars =
@@ -1507,21 +2280,27 @@ function render(){
                 );
 
 
+            const matchesSearch =
+
+                !query ||
+
+                text
+                    .toLowerCase()
+                    .includes(query);
+
+
+            const matchesFavorites =
+
+                !favoritesOnly ||
+
+                isFavorite(car.id);
+
+
             return (
 
-                (
-                    !query ||
-                    text
-                        .toLowerCase()
-                        .includes(query)
-                )
+                matchesSearch &&
 
-                &&
-
-                (
-                    !favoritesOnly ||
-                    isFavorite(car.id)
-                )
+                matchesFavorites
 
             );
 
@@ -1529,73 +2308,108 @@ function render(){
 
 
     const list =
-        document.getElementById("list");
+        document.getElementById(
+            "list"
+        );
 
 
     list.innerHTML = "";
 
 
+
+    /* EMPTY */
+
     if(!cars.length){
+
+        const message =
+
+            favoritesOnly
+
+                ? t.noMatch
+
+                : (
+
+                    allCars.length
+                        ? t.noMatch
+                        : t.noCars
+
+                );
+
 
         list.innerHTML =
 
             '<p class="empty">' +
 
-            (
-                allCars.length
-                ? "Mos mashina topilmadi"
-                : "Hozircha mashinalar yo'q"
-            )
+            message +
 
-            +
+            '</p>';
 
-            "</p>";
 
         return;
 
     }
 
 
+
+    /* CARDS */
+
     cars.forEach(car => {
 
         const card =
-            document.createElement("div");
+            document.createElement(
+                "div"
+            );
+
 
         card.className =
             "card";
 
 
-        /* IMAGE */
+
+        /* IMAGE BOX */
 
         const box =
-            document.createElement("div");
+            document.createElement(
+                "div"
+            );
+
 
         box.className =
             "image-box";
 
 
         const images =
-            car.images || [];
+            Array.isArray(car.images)
+                ? car.images
+                : [];
+
 
 
         if(images.length){
 
             const image =
-                document.createElement("img");
+                document.createElement(
+                    "img"
+                );
+
 
             image.className =
                 "thumb";
+
 
             image.src =
                 "/uploads/" +
                 images[0];
 
+
             image.alt =
                 car.name ||
-                "Avtomobil";
+                t.car;
+
 
             image.loading =
                 "lazy";
+
 
             box.appendChild(
                 image
@@ -1604,31 +2418,44 @@ function render(){
         }
 
 
-        /* FAVORITE */
+
+        /* FAVORITE BUTTON */
 
         const fav =
-            document.createElement("button");
+            document.createElement(
+                "button"
+            );
+
 
         fav.className =
+
             "fav-btn" +
 
             (
+
                 isFavorite(car.id)
-                ? " active"
-                : ""
+
+                    ? " active"
+
+                    : ""
+
             );
 
 
         fav.textContent =
+
             isFavorite(car.id)
-            ? "♥"
-            : "♡";
+
+                ? "♥"
+
+                : "♡";
 
 
         fav.onclick =
             event => {
 
                 event.stopPropagation();
+
 
                 toggleFavorite(
                     car.id
@@ -1647,23 +2474,31 @@ function render(){
         );
 
 
+
         /* CONTENT */
 
         const content =
-            document.createElement("div");
+            document.createElement(
+                "div"
+            );
+
 
         content.className =
             "content";
 
 
+
         /* TITLE */
 
         const title =
-            document.createElement("h3");
+            document.createElement(
+                "h3"
+            );
+
 
         title.textContent =
             car.name ||
-            "Avtomobil";
+            t.car;
 
 
         if(car.sold){
@@ -1673,11 +2508,14 @@ function render(){
                     "span"
                 );
 
+
             badge.className =
                 "badge";
 
+
             badge.textContent =
                 t.sold;
+
 
             title.appendChild(
                 badge
@@ -1691,6 +2529,7 @@ function render(){
         );
 
 
+
         /* DESCRIPTION */
 
         if(car.description){
@@ -1700,17 +2539,21 @@ function render(){
                     "div"
                 );
 
+
             description.className =
                 "desc";
 
+
             description.textContent =
                 car.description;
+
 
             content.appendChild(
                 description
             );
 
         }
+
 
 
         /* MORE */
@@ -1720,15 +2563,19 @@ function render(){
                 "div"
             );
 
+
         more.className =
             "more";
+
 
         more.textContent =
             t.more;
 
+
         content.appendChild(
             more
         );
+
 
 
         /* PRICE */
@@ -1738,8 +2585,10 @@ function render(){
                 "div"
             );
 
+
         price.className =
             "price";
+
 
         price.textContent =
 
@@ -1751,12 +2600,15 @@ function render(){
 
             +
 
-            " so'm";
+            " " +
+
+            t.currency;
 
 
         content.appendChild(
             price
         );
+
 
 
         /* CALL */
@@ -1766,14 +2618,18 @@ function render(){
                 "a"
             );
 
+
         call.className =
             "call";
+
 
         call.href =
             "tel:+998889500005";
 
+
         call.textContent =
             t.call;
+
 
         call.onclick =
             trackCall;
@@ -1789,7 +2645,8 @@ function render(){
         );
 
 
-        /* OPEN DETAILS */
+
+        /* OPEN DETAIL */
 
         card.onclick =
             event => {
@@ -1798,14 +2655,18 @@ function render(){
                     event.target.closest(
                         ".fav-btn"
                     )
-                ) return;
+                ){
+                    return;
+                }
 
 
                 if(
                     event.target.closest(
                         ".call"
                     )
-                ) return;
+                ){
+                    return;
+                }
 
 
                 openDetails(
@@ -1824,15 +2685,25 @@ function render(){
 }
 
 
-/* ================= DETAIL ================= */
+
+/* =====================================================
+   DETAIL
+===================================================== */
 
 function openDetails(car){
+
+    const t =
+        translations[currentLang];
+
 
     document.getElementById(
         "detailTitle"
     ).textContent =
+
         car.name ||
-        "Avtomobil";
+
+        t.car;
+
 
 
     document.getElementById(
@@ -1847,7 +2718,10 @@ function openDetails(car){
 
         +
 
-        " so'm";
+        " " +
+
+        t.currency;
+
 
 
     document.getElementById(
@@ -1855,7 +2729,9 @@ function openDetails(car){
     ).textContent =
 
         car.description ||
-        "Ma'lumot mavjud emas";
+
+        t.noInfo;
+
 
 
     const image =
@@ -1865,7 +2741,10 @@ function openDetails(car){
 
 
     const images =
-        car.images || [];
+        Array.isArray(car.images)
+            ? car.images
+            : [];
+
 
 
     if(images.length){
@@ -1874,16 +2753,20 @@ function openDetails(car){
             "/uploads/" +
             images[0];
 
+
         image.style.display =
             "block";
 
 
         image.onclick =
-            () =>
+            () => {
+
                 openLightbox(
                     images,
                     0
                 );
+
+            };
 
     }else{
 
@@ -1900,12 +2783,17 @@ function openDetails(car){
 }
 
 
-/* ================= PAGE ================= */
+
+/* =====================================================
+   PAGE
+===================================================== */
 
 function showPage(id){
 
     document
-        .querySelectorAll(".page")
+        .querySelectorAll(
+            ".page"
+        )
         .forEach(page => {
 
             page.classList.remove(
@@ -1915,11 +2803,19 @@ function showPage(id){
         });
 
 
-    document
-        .getElementById(id)
-        .classList.add(
+    const page =
+        document.getElementById(
+            id
+        );
+
+
+    if(page){
+
+        page.classList.add(
             "active"
         );
+
+    }
 
 
     window.scrollTo({
@@ -1930,7 +2826,70 @@ function showPage(id){
 }
 
 
-/* ================= SEARCH ================= */
+
+/* =====================================================
+   HOME
+===================================================== */
+
+function goHome(){
+
+    /*
+       MUHIM:
+       Bosh sahifaga o'tganda
+       Sevimlilar rejimi o'chadi.
+    */
+
+    favoritesOnly =
+        false;
+
+
+    document.getElementById(
+        "search"
+    ).value = "";
+
+
+    showPage(
+        "homePage"
+    );
+
+
+    setActiveNav(
+        "homeNav"
+    );
+
+
+    render();
+
+}
+
+
+
+/* =====================================================
+   MENU
+===================================================== */
+
+function showMenu(){
+
+    favoritesOnly =
+        false;
+
+
+    showPage(
+        "menuPage"
+    );
+
+
+    setActiveNav(
+        "menuNav"
+    );
+
+}
+
+
+
+/* =====================================================
+   SEARCH
+===================================================== */
 
 function resetFilters(){
 
@@ -1938,16 +2897,21 @@ function resetFilters(){
         "search"
     ).value = "";
 
+
     favoritesOnly =
         false;
+
 
     render();
 
 }
 
 
+
 document
-    .getElementById("search")
+    .getElementById(
+        "search"
+    )
     .addEventListener(
         "input",
         () => {
@@ -1955,17 +2919,31 @@ document
             favoritesOnly =
                 false;
 
+
             render();
 
         }
     );
 
 
+
 function focusSearch(){
+
+    favoritesOnly =
+        false;
+
 
     showPage(
         "homePage"
     );
+
+
+    setActiveNav(
+        "searchNav"
+    );
+
+
+    render();
 
 
     setTimeout(
@@ -1984,21 +2962,73 @@ function focusSearch(){
 }
 
 
+
+/* =====================================================
+   FAVORITES
+===================================================== */
+
 function showFavorites(){
+
+    favoritesOnly =
+        true;
+
 
     showPage(
         "homePage"
     );
 
-    favoritesOnly =
-        true;
+
+    setActiveNav(
+        "favoritesNav"
+    );
+
 
     render();
 
 }
 
 
-/* ================= LIGHTBOX ================= */
+
+/* =====================================================
+   ACTIVE NAV
+===================================================== */
+
+function setActiveNav(id){
+
+    document
+        .querySelectorAll(
+            ".nav-item"
+        )
+        .forEach(item => {
+
+            item.classList.remove(
+                "active"
+            );
+
+        });
+
+
+    const button =
+        document.getElementById(
+            id
+        );
+
+
+    if(button){
+
+        button.classList.add(
+            "active"
+        );
+
+    }
+
+}
+
+
+
+/* =====================================================
+   LIGHTBOX
+===================================================== */
 
 function openLightbox(
     images,
@@ -2007,6 +3037,7 @@ function openLightbox(
 
     currentImages =
         images;
+
 
     currentIndex =
         index;
@@ -2026,6 +3057,7 @@ function openLightbox(
 }
 
 
+
 function closeLightbox(){
 
     document
@@ -2039,11 +3071,14 @@ function closeLightbox(){
 }
 
 
+
 function showCurrent(){
 
     if(
         !currentImages.length
-    ) return;
+    ){
+        return;
+    }
 
 
     document
@@ -2052,10 +3087,11 @@ function showCurrent(){
         )
         .src =
 
-        "/uploads/" +
-        currentImages[
-            currentIndex
-        ];
+            "/uploads/" +
+
+            currentImages[
+                currentIndex
+            ];
 
 
     document
@@ -2064,20 +3100,28 @@ function showCurrent(){
         )
         .textContent =
 
-        (
-            currentIndex + 1
-        )
+            (
+                currentIndex + 1
+            )
 
-        +
+            +
 
-        " / " +
+            " / " +
 
-        currentImages.length;
+            currentImages.length;
 
 }
 
 
+
 function nextImage(){
+
+    if(
+        !currentImages.length
+    ){
+        return;
+    }
+
 
     currentIndex =
 
@@ -2095,12 +3139,21 @@ function nextImage(){
 }
 
 
+
 function prevImage(){
+
+    if(
+        !currentImages.length
+    ){
+        return;
+    }
+
 
     currentIndex =
 
         (
             currentIndex - 1 +
+
             currentImages.length
         )
 
@@ -2114,14 +3167,19 @@ function prevImage(){
 }
 
 
-/* ================= DARK MODE ================= */
+
+/* =====================================================
+   DARK MODE
+===================================================== */
 
 function toggleDarkMode(){
 
     const dark =
         document.body
             .classList
-            .toggle("dark");
+            .toggle(
+                "dark"
+            );
 
 
     localStorage.setItem(
@@ -2135,33 +3193,41 @@ function toggleDarkMode(){
 }
 
 
+
 function updateThemeIcon(){
 
     const dark =
         document.body
             .classList
-            .contains("dark");
+            .contains(
+                "dark"
+            );
 
 
     document.getElementById(
         "themeBtn"
     ).textContent =
+
         dark
-        ? "🌙"
-        : "☀️";
+            ? "🌙"
+            : "☀️";
 
 
     document.getElementById(
         "menuThemeIcon"
     ).textContent =
+
         dark
-        ? "🌙"
-        : "☀️";
+            ? "🌙"
+            : "☀️";
 
 }
 
 
-/* ================= STATS ================= */
+
+/* =====================================================
+   STATS
+===================================================== */
 
 function trackView(){
 
@@ -2170,11 +3236,13 @@ function trackView(){
         {
             method:"POST"
         }
-    ).catch(
+    )
+    .catch(
         () => {}
     );
 
 }
+
 
 
 function trackCall(){
@@ -2184,14 +3252,18 @@ function trackCall(){
         {
             method:"POST"
         }
-    ).catch(
+    )
+    .catch(
         () => {}
     );
 
 }
 
 
-/* ================= START ================= */
+
+/* =====================================================
+   START
+===================================================== */
 
 if(
     localStorage.getItem(
@@ -2217,4 +3289,6 @@ load();
 </script>
 
 </body>
+
 </html>
+```
