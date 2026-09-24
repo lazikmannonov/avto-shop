@@ -1160,6 +1160,255 @@ body.dark .detail-btn{
  }
 
 }
+
+/* =====================================================
+   TELEFON EKRANI — TO'LIQ RESPONSIVE TUZATISH
+   ===================================================== */
+
+html,
+body{
+  width:100%;
+  max-width:100%;
+  overflow-x:hidden;
+}
+
+body{
+  min-width:0;
+}
+
+.container{
+  width:100%;
+  max-width:1250px;
+  min-width:0;
+}
+
+.details-card,
+.details-main,
+.details-info,
+.details-meta,
+.details-meta-item{
+  min-width:0;
+  max-width:100%;
+}
+
+.details-info h1,
+.details-price,
+.details-meta-item,
+.details-description{
+  overflow-wrap:anywhere;
+  word-break:break-word;
+}
+
+.details-call{
+  width:100%;
+  max-width:100%;
+  box-sizing:border-box;
+}
+
+@media(max-width:650px){
+
+  .header-inner{
+    width:100%;
+    min-width:0;
+    overflow:hidden;
+  }
+
+  .header-right{
+    min-width:0;
+    flex-shrink:0;
+  }
+
+  .logo{
+    min-width:0;
+    max-width:45vw;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+
+  .container{
+    width:100%;
+    max-width:100%;
+    padding-left:10px;
+    padding-right:10px;
+    overflow-x:hidden;
+  }
+
+  .details-card{
+    width:100%;
+    max-width:100%;
+    border-radius:18px;
+  }
+
+  .details-main{
+    display:block;
+    width:100%;
+    max-width:100%;
+  }
+
+  .details-image{
+    width:100%;
+    max-width:100%;
+    height:300px;
+  }
+
+  .details-info{
+    width:100%;
+    max-width:100%;
+    padding:18px 16px;
+    overflow:hidden;
+  }
+
+  .details-info h1{
+    max-width:100%;
+    font-size:24px;
+    line-height:1.2;
+  }
+
+  .details-price{
+    max-width:100%;
+    font-size:22px;
+    line-height:1.25;
+  }
+
+  .details-meta{
+    width:100%;
+    max-width:100%;
+    display:grid;
+    grid-template-columns:1fr;
+    gap:9px;
+  }
+
+  .details-meta-item{
+    width:100%;
+    min-width:0;
+    max-width:100%;
+    padding:13px;
+  }
+
+  .details-description{
+    width:100%;
+    max-width:100%;
+    font-size:16px;
+    line-height:1.6;
+  }
+
+  .details-call{
+    width:100%;
+    max-width:100%;
+    min-width:0;
+    padding:15px 10px;
+    font-size:16px;
+    white-space:normal;
+    overflow-wrap:anywhere;
+  }
+
+  .thumbnails{
+    width:100%;
+    max-width:100%;
+    overflow-x:auto;
+  }
+
+  .thumb{
+    flex:0 0 80px;
+  }
+
+  .menu-card{
+    width:100%;
+    max-width:100%;
+  }
+
+  .menu-item{
+    min-width:0;
+  }
+
+  .menu-item-left{
+    min-width:0;
+    max-width:calc(100% - 35px);
+  }
+
+  .menu-item-sub{
+    overflow-wrap:anywhere;
+    word-break:break-word;
+  }
+
+  .search-box{
+    width:100%;
+    min-width:0;
+  }
+
+  .search-box input{
+    min-width:0;
+  }
+
+  .cars-grid{
+    width:100%;
+    min-width:0;
+  }
+
+  .car-card{
+    min-width:0;
+  }
+
+  .car-content{
+    min-width:0;
+  }
+
+  .car-name,
+  .car-price,
+  .car-address,
+  .car-description{
+    overflow-wrap:anywhere;
+    word-break:break-word;
+  }
+
+  .bottom-nav{
+    width:100%;
+    max-width:100%;
+  }
+}
+
+@media(max-width:380px){
+
+  .header-inner{
+    padding-left:8px;
+    padding-right:8px;
+  }
+
+  .logo{
+    font-size:24px;
+    max-width:42vw;
+  }
+
+  .lang-btn,
+  .theme-btn{
+    padding:6px;
+  }
+
+  .details-info{
+    padding:16px 12px;
+  }
+
+  .details-info h1{
+    font-size:22px;
+  }
+
+  .details-price{
+    font-size:21px;
+  }
+
+  .details-meta-item{
+    padding:11px;
+  }
+
+  .details-description{
+    font-size:15px;
+  }
+
+  .details-call{
+    font-size:15px;
+  }
+}
+
 </style>
 </head>
 
