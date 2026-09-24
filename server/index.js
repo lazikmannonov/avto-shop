@@ -1,4 +1,3 @@
-```javascript
 const http = require('http');
 const fs = require('fs');
 const path = require('path');
@@ -27,6 +26,11 @@ const pool = new Pool({
 // =====================================================
 
 async function initDatabase() {
+
+    // =================================================
+    // CARS
+    // =================================================
+
     await pool.query(`
         CREATE TABLE IF NOT EXISTS cars (
             id SERIAL PRIMARY KEY,
@@ -46,7 +50,8 @@ async function initDatabase() {
         )
     `);
 
-    // Eski database uchun ustunlarni qo'shish
+    // Eski database uchun ustunlar
+
     await pool.query(`
         ALTER TABLE cars
         ADD COLUMN IF NOT EXISTS sold BOOLEAN DEFAULT false
@@ -92,6 +97,10 @@ async function initDatabase() {
         ADD COLUMN IF NOT EXISTS phone TEXT DEFAULT ''
     `);
 
+    // =================================================
+    // IMAGE FILES
+    // =================================================
+
     await pool.query(`
         CREATE TABLE IF NOT EXISTS image_files (
             id SERIAL PRIMARY KEY,
@@ -99,6 +108,10 @@ async function initDatabase() {
             data BYTEA NOT NULL
         )
     `);
+
+    // =================================================
+    // TOTAL STATS
+    // =================================================
 
     await pool.query(`
         CREATE TABLE IF NOT EXISTS stats (
@@ -109,10 +122,22 @@ async function initDatabase() {
     `);
 
     await pool.query(`
-        INSERT INTO stats (id, views, calls)
-        VALUES (1, 0, 0)
+        INSERT INTO stats (
+            id,
+            views,
+            calls
+        )
+        VALUES (
+            1,
+            0,
+            0
+        )
         ON CONFLICT (id) DO NOTHING
     `);
+
+    // =================================================
+    // DAILY STATS
+    // =================================================
 
     await pool.query(`
         CREATE TABLE IF NOT EXISTS daily_stats (
@@ -121,6 +146,10 @@ async function initDatabase() {
             calls INTEGER DEFAULT 0
         )
     `);
+
+    // =================================================
+    // SITE SETTINGS
+    // =================================================
 
     await pool.query(`
         CREATE TABLE IF NOT EXISTS site_settings (
@@ -460,7 +489,7 @@ const server = http.createServer(async (req, res) => {
         }
 
         // =================================================
-        // ADD CAR / HOME
+        // ADD CAR
         // =================================================
 
         if (
@@ -745,7 +774,7 @@ const server = http.createServer(async (req, res) => {
         }
 
         // =================================================
-        // EDIT CAR / HOME
+        // EDIT CAR
         // =================================================
 
         if (
@@ -810,7 +839,7 @@ const server = http.createServer(async (req, res) => {
                         res,
                         404,
                         {
-                            error: "Uy topilmadi"
+                            error: "Mashina topilmadi"
                         }
                     );
                 }
@@ -981,10 +1010,8 @@ const server = http.createServer(async (req, res) => {
                 let finalImages =
                     parseImages(oldCar);
 
-                // Agar images yuborilsa,
-                // eski rasmlar o'chirilib,
-                // yangi rasmlar saqlanadi.
                 if (incomingImages !== null) {
+
                     if (incomingImages.length > 8) {
                         throw new Error(
                             "Ko'pi bilan 8 ta rasm"
@@ -1337,7 +1364,7 @@ const server = http.createServer(async (req, res) => {
                     res,
                     404,
                     {
-                        error: "Uy topilmadi"
+                        error: "Mashina topilmadi"
                     }
                 );
             }
@@ -1354,7 +1381,7 @@ const server = http.createServer(async (req, res) => {
         }
 
         // =================================================
-        // DELETE CAR / HOME
+        // DELETE CAR
         // =================================================
 
         if (
@@ -1414,6 +1441,7 @@ const server = http.createServer(async (req, res) => {
                     );
 
                 if (result.rows.length > 0) {
+
                     const images =
                         parseImages(
                             result.rows[0]
@@ -1443,6 +1471,7 @@ const server = http.createServer(async (req, res) => {
                     );
 
                 if (deleted.rowCount === 0) {
+
                     await client.query(
                         'ROLLBACK'
                     );
@@ -1452,7 +1481,7 @@ const server = http.createServer(async (req, res) => {
                         404,
                         {
                             error:
-                                "Uy topilmadi"
+                                "Mashina topilmadi"
                         }
                     );
                 }
@@ -1468,6 +1497,7 @@ const server = http.createServer(async (req, res) => {
                 );
 
             } catch (e) {
+
                 try {
                     await client.query('ROLLBACK');
                 } catch (_) {}
@@ -1739,6 +1769,7 @@ const server = http.createServer(async (req, res) => {
         );
 
     } catch (e) {
+
         console.error(e);
 
         return sendJson(
@@ -1758,6 +1789,7 @@ const server = http.createServer(async (req, res) => {
 
 async function start() {
     try {
+
         await initDatabase();
 
         const PORT =
@@ -1773,6 +1805,7 @@ async function start() {
         );
 
     } catch (error) {
+
         console.error(
             'Database ulanishida xatolik:',
             error
@@ -1791,6 +1824,7 @@ start();
 process.on(
     'SIGTERM',
     async () => {
+
         console.log(
             "Server to'xtatilmoqda..."
         );
@@ -1800,4 +1834,3 @@ process.on(
         process.exit(0);
     }
 );
-```
