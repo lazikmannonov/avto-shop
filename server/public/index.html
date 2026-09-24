@@ -1409,6 +1409,27 @@ body{
   }
 }
 
+
+/* =====================================================
+   SEARCH CATEGORY — ADMIN TYPE FILTER
+   ===================================================== */
+.search-category{
+  min-width:0;
+}
+
+@media(max-width:650px){
+  .search-page-categories{
+    width:100%;
+    grid-template-columns:repeat(2,minmax(0,1fr));
+  }
+
+  .search-category{
+    width:100%;
+    min-width:0;
+    overflow:hidden;
+  }
+}
+
 </style>
 </head>
 
@@ -3003,16 +3024,22 @@ function searchFromSearchPage(){
 
    if(searchPageType!=="all"){
 
-    matchesType=
-     types.some(
-      item=>
-       String(item).toLowerCase()===
-       searchPageType.toLowerCase()
-     )||
-     mainType.toLowerCase()===
-     searchPageType.toLowerCase();
+     const wantedType =
+      String(searchPageType||"")
+       .trim()
+       .toLowerCase();
 
-   }
+     matchesType =
+      types.some(item=>
+       String(item||"")
+        .trim()
+        .toLowerCase() === wantedType
+      ) ||
+      mainType
+       .trim()
+       .toLowerCase() === wantedType;
+
+    }
 
    return matchesText&&matchesType;
 
