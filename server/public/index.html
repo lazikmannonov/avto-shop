@@ -228,6 +228,147 @@ header{
 }
 
 /* =========================
+   SEARCH PAGE
+========================= */
+
+.search-page-top{
+ display:flex;
+ align-items:center;
+ gap:10px;
+ margin-bottom:15px
+}
+
+.search-page-title{
+ font-size:25px;
+ font-weight:900
+}
+
+.search-back{
+ width:43px;
+ height:43px;
+ border:1px solid var(--border);
+ background:var(--card);
+ color:var(--text);
+ border-radius:13px;
+ cursor:pointer;
+ display:flex;
+ align-items:center;
+ justify-content:center;
+ transition:.2s
+}
+
+.search-back:hover{
+ transform:translateX(-2px)
+}
+
+.search-page-categories{
+ display:grid;
+ grid-template-columns:repeat(5,minmax(0,1fr));
+ gap:9px;
+ margin-bottom:12px
+}
+
+.search-category{
+ min-height:58px;
+ border:1px solid var(--border);
+ background:var(--card);
+ color:var(--text);
+ border-radius:15px;
+ padding:9px 8px;
+ cursor:pointer;
+ display:flex;
+ align-items:center;
+ justify-content:center;
+ gap:7px;
+ font-size:12px;
+ font-weight:800;
+ transition:.2s;
+ text-align:center
+}
+
+.search-category:hover{
+ transform:translateY(-2px);
+ border-color:#19d66b
+}
+
+.search-category.active{
+ background:#050505;
+ color:#fff;
+ border-color:#050505;
+ box-shadow:0 7px 18px rgba(0,0,0,.12)
+}
+
+body.dark .search-category.active{
+ background:#fff;
+ color:#111;
+ border-color:#fff
+}
+
+.search-category .icon{
+ width:19px;
+ height:19px
+}
+
+.filter-toggle{
+ width:100%;
+ height:43px;
+ border:1px solid var(--border);
+ background:var(--card);
+ color:var(--text);
+ border-radius:13px;
+ cursor:pointer;
+ display:flex;
+ align-items:center;
+ justify-content:center;
+ font-size:23px;
+ font-weight:900;
+ margin-bottom:10px;
+ transition:.2s
+}
+
+.filter-toggle:hover{
+ border-color:#19d66b
+}
+
+.filter-toggle.open{
+ background:#050505;
+ color:#fff
+}
+
+body.dark .filter-toggle.open{
+ background:#fff;
+ color:#111
+}
+
+.extra-filters{
+ display:none;
+ grid-template-columns:repeat(3,1fr);
+ gap:9px;
+ margin-bottom:14px
+}
+
+.extra-filters.open{
+ display:grid
+}
+
+.extra-filter{
+ min-height:50px;
+ border:1px solid var(--border);
+ background:var(--card);
+ color:var(--text);
+ border-radius:13px;
+ cursor:pointer;
+ font-size:12px;
+ font-weight:800;
+ transition:.2s
+}
+
+.extra-filter:hover{
+ border-color:#19d66b;
+ transform:translateY(-1px)
+}
+
+/* =========================
    PROPERTY CATEGORIES
 ========================= */
 
@@ -843,6 +984,11 @@ body.dark .detail-btn{
  .details-image{
   height:420px
  }
+
+ .search-page-categories{
+  grid-template-columns:repeat(3,1fr)
+ }
+
 }
 
 @media(max-width:650px){
@@ -959,6 +1105,60 @@ body.dark .detail-btn{
  .details-meta{
   grid-template-columns:1fr 1fr
  }
+
+ .search-page-top{
+  margin-bottom:12px
+ }
+
+ .search-page-title{
+  font-size:22px
+ }
+
+ .search-page-categories{
+  grid-template-columns:repeat(2,1fr);
+  gap:8px
+ }
+
+ .search-category{
+  min-height:52px;
+  font-size:11px;
+  padding:8px 5px
+ }
+
+ .search-category:last-child{
+  grid-column:1/-1
+ }
+
+ .extra-filters{
+  grid-template-columns:1fr;
+  gap:7px
+ }
+
+ .extra-filter{
+  min-height:45px
+ }
+
+}
+
+@media(max-width:380px){
+
+ .logo{
+  font-size:24px
+ }
+
+ .lang-btn,
+ .theme-btn{
+  padding:6px
+ }
+
+ .search-page-categories{
+  gap:6px
+ }
+
+ .search-category{
+  font-size:10px
+ }
+
 }
 </style>
 </head>
@@ -1150,62 +1350,6 @@ body.dark .detail-btn{
 
  </div>
 
-<!-- KATEGORIYALAR -->
-
- <div class="categories">
-
-  <button
-   class="category-btn active"
-   onclick="filterType('all',this)"
-  >
-   <svg class="icon">
-    <use href="#i-grid"></use>
-   </svg>
-   <span id="catAll">Barchasi</span>
-  </button>
-
-  <button
-   class="category-btn"
-   onclick="filterType('Hovli',this)"
-  >
-   <svg class="icon">
-    <use href="#i-house"></use>
-   </svg>
-   <span id="catHovli">Hovli</span>
-  </button>
-
-  <button
-   class="category-btn"
-   onclick="filterType('Kvartira',this)"
-  >
-   <svg class="icon">
-    <use href="#i-building"></use>
-   </svg>
-   <span id="catKvartira">Kvartira</span>
-  </button>
-
-  <button
-   class="category-btn"
-   onclick="filterType('Yer',this)"
-  >
-   <svg class="icon">
-    <use href="#i-map"></use>
-   </svg>
-   <span id="catYer">Yer</span>
-  </button>
-
-  <button
-   class="category-btn"
-   onclick="filterType('Yangi qurilish',this)"
-  >
-   <svg class="icon">
-    <use href="#i-construction"></use>
-   </svg>
-   <span id="catYangi">Yangi qurilish</span>
-  </button>
-
- </div>
-
  <div class="results-info">
 
   <h2 id="carsTitle">
@@ -1253,6 +1397,195 @@ body.dark .detail-btn{
    </div>
   </div>
 
+ </div>
+
+</section>
+
+<!-- =========================
+     SEARCH PAGE
+========================= -->
+
+<section id="searchPage" class="page">
+
+ <div class="search-page-top">
+
+  <button
+   class="search-back"
+   onclick="goHome()"
+   aria-label="Back"
+  >
+   <svg class="icon">
+    <use href="#i-arrow-left"></use>
+   </svg>
+  </button>
+
+  <div
+   class="search-page-title"
+   id="searchPageTitle"
+  >
+   Qidiruv
+  </div>
+
+ </div>
+
+ <div class="search-box">
+
+  <input
+   id="searchPageInput"
+   type="text"
+   placeholder="Uy qidirish..."
+   oninput="searchFromSearchPage()"
+  >
+
+  <button
+   class="search-reset"
+   onclick="resetSearchPage()"
+  >
+   <svg class="icon">
+    <use href="#i-search"></use>
+   </svg>
+  </button>
+
+ </div>
+
+ <!-- SEARCH CATEGORIES -->
+
+ <div class="search-page-categories">
+
+  <button
+   class="search-category active"
+   onclick="filterSearchPage('all',this)"
+  >
+
+   <svg class="icon">
+    <use href="#i-grid"></use>
+   </svg>
+
+   <span id="searchCatAll">
+    Barchasi
+   </span>
+
+  </button>
+
+  <button
+   class="search-category"
+   onclick="filterSearchPage('Hovli',this)"
+  >
+
+   <svg class="icon">
+    <use href="#i-house"></use>
+   </svg>
+
+   <span id="searchCatHovli">
+    Hovli
+   </span>
+
+  </button>
+
+  <button
+   class="search-category"
+   onclick="filterSearchPage('Kvartira',this)"
+  >
+
+   <svg class="icon">
+    <use href="#i-building"></use>
+   </svg>
+
+   <span id="searchCatKvartira">
+    Kvartira
+   </span>
+
+  </button>
+
+  <button
+   class="search-category"
+   onclick="filterSearchPage('Yer',this)"
+  >
+
+   <svg class="icon">
+    <use href="#i-map"></use>
+   </svg>
+
+   <span id="searchCatYer">
+    Yer
+   </span>
+
+  </button>
+
+  <button
+   class="search-category"
+   onclick="filterSearchPage('Yangi qurilish',this)"
+  >
+
+   <svg class="icon">
+    <use href="#i-construction"></use>
+   </svg>
+
+   <span id="searchCatYangi">
+    Yangi qurilish
+   </span>
+
+  </button>
+
+ </div>
+
+ <!-- EXTRA FILTER TOGGLE -->
+
+ <button
+  class="filter-toggle"
+  id="filterToggle"
+  onclick="toggleExtraFilters()"
+ >
+  ^
+ </button>
+
+ <div
+  class="extra-filters"
+  id="extraFilters"
+ >
+
+  <button
+   class="extra-filter"
+   id="priceFilterText"
+  >
+   💰 Narx bo‘yicha
+  </button>
+
+  <button
+   class="extra-filter"
+   id="addressFilterText"
+  >
+   📍 Manzil bo‘yicha
+  </button>
+
+  <button
+   class="extra-filter"
+   id="roomsFilterText"
+  >
+   🛏 Xonalar bo‘yicha
+  </button>
+
+ </div>
+
+ <div class="results-info">
+
+  <h2 id="searchResultsTitle">
+   Uylar
+  </h2>
+
+  <span
+   class="results-count"
+   id="searchResultsCount"
+  >
+   0 ta
+  </span>
+
+ </div>
+
+ <div
+  class="cars-grid"
+  id="searchCarsGrid"
+ >
  </div>
 
 </section>
@@ -1592,7 +1925,10 @@ body.dark .detail-btn{
 
 </button>
 
-<button onclick="focusSearch()">
+<button
+ id="navSearch"
+ onclick="focusSearch()"
+>
 
  <span class="bottom-icon">
   <svg class="icon">
@@ -1606,7 +1942,10 @@ body.dark .detail-btn{
 
 </button>
 
-<button onclick="showFavorites()">
+<button
+ id="navFavorites"
+ onclick="showFavorites()"
+>
 
  <span class="bottom-icon">
   <svg class="icon">
@@ -1620,7 +1959,10 @@ body.dark .detail-btn{
 
 </button>
 
-<button onclick="showMenu()">
+<button
+ id="navMenu"
+ onclick="showMenu()"
+>
 
  <span class="bottom-icon">
   <svg class="icon">
@@ -1680,6 +2022,8 @@ let allCars=[];
 let filteredCars=[];
 let currentType="all";
 
+let searchPageType="all";
+
 let favorites=
  JSON.parse(
   localStorage.getItem("favorites")||"[]"
@@ -1723,6 +2067,11 @@ const translations={
    yer:"Yer",
    yangi:"Yangi qurilish"
   },
+
+  searchTitle:"Qidiruv",
+  priceFilter:"💰 Narx bo‘yicha",
+  addressFilter:"📍 Manzil bo‘yicha",
+  roomsFilter:"🛏 Xonalar bo‘yicha",
 
   home:"Bosh sahifa",
   searchNav:"Qidiruv",
@@ -1787,6 +2136,11 @@ const translations={
    yangi:"Новостройка"
   },
 
+  searchTitle:"Поиск",
+  priceFilter:"💰 По цене",
+  addressFilter:"📍 По адресу",
+  roomsFilter:"🛏 По комнатам",
+
   home:"Главная",
   searchNav:"Поиск",
   favorites:"Избранное",
@@ -1849,6 +2203,11 @@ const translations={
    yer:"Land",
    yangi:"New building"
   },
+
+  searchTitle:"Search",
+  priceFilter:"💰 By price",
+  addressFilter:"📍 By address",
+  roomsFilter:"🛏 By rooms",
 
   home:"Home",
   searchNav:"Search",
@@ -2040,6 +2399,7 @@ function setLang(lang){
 
  applyLang();
  renderFiltered();
+ renderSearchPage();
 
  if(
   document
@@ -2067,18 +2427,34 @@ function applyLang(){
  if(searchInput)
   searchInput.placeholder=t.search;
 
+ const searchPageInput=
+  document.getElementById("searchPageInput");
+
+ if(searchPageInput)
+  searchPageInput.placeholder=t.search;
+
  setText("carsTitle",t.cars);
+ setText("searchResultsTitle",t.cars);
  setText("backText",t.back);
+ setText("searchPageTitle",t.searchTitle);
 
  /* =========================
-    CATEGORY TRANSLATIONS
+    SEARCH CATEGORY TRANSLATIONS
  ========================= */
 
- setText("catAll",t.categories.all);
- setText("catHovli",t.categories.hovli);
- setText("catKvartira",t.categories.kvartira);
- setText("catYer",t.categories.yer);
- setText("catYangi",t.categories.yangi);
+ setText("searchCatAll",t.categories.all);
+ setText("searchCatHovli",t.categories.hovli);
+ setText("searchCatKvartira",t.categories.kvartira);
+ setText("searchCatYer",t.categories.yer);
+ setText("searchCatYangi",t.categories.yangi);
+
+ /* =========================
+    EXTRA FILTERS
+ ========================= */
+
+ setText("priceFilterText",t.priceFilter);
+ setText("addressFilterText",t.addressFilter);
+ setText("roomsFilterText",t.roomsFilter);
 
  /* =========================
     BOTTOM NAV
@@ -2224,7 +2600,7 @@ function formatPrice(value,currency){
 }
 
 /* =========================
-   SEARCH
+   HOME SEARCH
 ========================= */
 
 function searchCars(){
@@ -2275,35 +2651,218 @@ function searchCars(){
 
 function resetSearch(){
 
- document
-  .getElementById("searchInput")
-  .value="";
+ const input=
+  document.getElementById("searchInput");
+
+ if(input)
+  input.value="";
 
  currentType="all";
-
- document
-  .querySelectorAll(".category-btn")
-  .forEach((button,index)=>{
-   button.classList.toggle("active",index===0);
-  });
 
  filteredCars=[...allCars];
 
  renderFiltered();
 }
 
-function filterType(type,button){
+/* =========================
+   SEARCH PAGE
+========================= */
 
- currentType=type;
+function toggleExtraFilters(){
+
+ const filters=
+  document.getElementById("extraFilters");
+
+ const button=
+  document.getElementById("filterToggle");
+
+ if(!filters||!button)
+  return;
+
+ const isOpen=
+  filters.classList.toggle("open");
+
+ button.classList.toggle(
+  "open",
+  isOpen
+ );
+}
+
+function filterSearchPage(type,button){
+
+ searchPageType=type;
 
  document
-  .querySelectorAll(".category-btn")
+  .querySelectorAll(".search-category")
   .forEach(item=>{
    item.classList.remove("active");
   });
 
- button.classList.add("active");
+ if(button)
+  button.classList.add("active");
 
+ searchFromSearchPage();
+}
+
+function searchFromSearchPage(){
+
+ const inputElement=
+  document.getElementById("searchPageInput");
+
+ const input=
+  inputElement
+   ?inputElement.value.toLowerCase().trim()
+   :"";
+
+ const result=
+  allCars.filter(car=>{
+
+   const types=
+    Array.isArray(car.types)
+     ?car.types
+     :[];
+
+   const mainType=
+    String(car.type||"");
+
+   const name=
+    String(car.name||"").toLowerCase();
+
+   const description=
+    String(car.description||"").toLowerCase();
+
+   const address=
+    String(car.address||"").toLowerCase();
+
+   const price=
+    String(car.price||"").toLowerCase();
+
+   const typeText=
+    types.join(" ").toLowerCase()+
+    " "+
+    mainType.toLowerCase();
+
+   const matchesText=
+    !input||
+    name.includes(input)||
+    description.includes(input)||
+    address.includes(input)||
+    price.includes(input)||
+    typeText.includes(input);
+
+   let matchesType=true;
+
+   if(searchPageType!=="all"){
+
+    matchesType=
+     types.some(
+      item=>
+       String(item).toLowerCase()===
+       searchPageType.toLowerCase()
+     )||
+     mainType.toLowerCase()===
+     searchPageType.toLowerCase();
+
+   }
+
+   return matchesText&&matchesType;
+
+  });
+
+ renderSearchPage(result);
+}
+
+function resetSearchPage(){
+
+ const input=
+  document.getElementById("searchPageInput");
+
+ if(input)
+  input.value="";
+
+ searchPageType="all";
+
+ document
+  .querySelectorAll(".search-category")
+  .forEach((button,index)=>{
+   button.classList.toggle(
+    "active",
+    index===0
+   );
+  });
+
+ renderSearchPage([...allCars]);
+}
+
+function renderSearchPage(cars){
+
+ const grid=
+  document.getElementById("searchCarsGrid");
+
+ const count=
+  document.getElementById("searchResultsCount");
+
+ if(!grid||!count)
+  return;
+
+ count.textContent=
+  cars.length+" ta";
+
+ if(cars.length===0){
+
+  const t=
+   translations[currentLang];
+
+  grid.innerHTML=`
+
+   <div class="empty">
+
+    <div class="empty-icon">
+
+     <svg
+      class="icon"
+      style="width:55px;height:55px"
+     >
+      <use href="#i-home"></use>
+     </svg>
+
+    </div>
+
+    <h3>
+     ${escapeHtml(t.empty)}
+    </h3>
+
+    <p>
+     ${escapeHtml(t.emptyText)}
+    </p>
+
+   </div>
+
+  `;
+
+  return;
+ }
+
+ grid.innerHTML="";
+
+ cars.forEach((car,index)=>{
+
+  grid.appendChild(
+   createCarCard(car,index)
+  );
+
+ });
+
+ applySettings();
+}
+
+/* =========================
+   FILTER TYPE
+========================= */
+
+function filterType(type){
+
+ currentType=type;
  searchCars();
 }
 
@@ -2336,6 +2895,7 @@ async function load(){
   filteredCars=[...allCars];
 
   renderFiltered();
+  renderSearchPage([...allCars]);
 
  }catch(error){
 
@@ -2350,6 +2910,9 @@ async function load(){
    t.loadingError,
    t.serverError
   );
+
+  renderSearchPage([]);
+
  }
 }
 
@@ -2357,6 +2920,9 @@ function showSkeleton(){
 
  const grid=
   document.getElementById("carsGrid");
+
+ if(!grid)
+  return;
 
  grid.innerHTML="";
 
@@ -2438,6 +3004,9 @@ function renderFiltered(){
  const count=
   document.getElementById("resultsCount");
 
+ if(!grid||!count)
+  return;
+
  count.textContent=
   filteredCars.length+" ta";
 
@@ -2469,6 +3038,9 @@ function renderEmpty(title,text){
  const grid=
   document.getElementById("carsGrid");
 
+ if(!grid)
+  return;
+
  grid.innerHTML=`
 
   <div class="empty">
@@ -2496,9 +3068,11 @@ function renderEmpty(title,text){
 
  `;
 
- document
-  .getElementById("resultsCount")
-  .textContent="0 ta";
+ const count=
+  document.getElementById("resultsCount");
+
+ if(count)
+  count.textContent="0 ta";
 }
 
 /* =========================
@@ -2552,7 +3126,12 @@ function createCarCard(car,index){
   `);
 
  const type=
-  car.type||"Uy";
+  car.type||
+  (
+   Array.isArray(car.types)&&car.types.length
+    ?car.types.join(", ")
+    :"Uy"
+  );
 
  const rooms=
   car.rooms||"—";
@@ -2563,7 +3142,8 @@ function createCarCard(car,index){
    :"—";
 
  const address=
-  car.address||"Manzil ko‘rsatilmagan";
+  car.address||
+  "Manzil ko‘rsatilmagan";
 
  article.innerHTML=`
 
@@ -2636,7 +3216,7 @@ function createCarCard(car,index){
     </span>
 
     <span class="meta-item">
-     🛏️ ${escapeHtml(rooms)} xona
+     🛏️ ${escapeHtml(rooms)} ${t.rooms.toLowerCase()}
     </span>
 
     <span class="meta-item">
@@ -2770,7 +3350,22 @@ function toggleFavorite(id){
   JSON.stringify(favorites)
  );
 
- renderFiltered();
+ const activePage=
+  document
+   .querySelector(".page.active");
+
+ if(
+  activePage &&
+  activePage.id==="searchPage"
+ ){
+
+  searchFromSearchPage();
+
+ }else{
+
+  renderFiltered();
+
+ }
 }
 
 function showFavorites(){
@@ -2787,9 +3382,11 @@ function showFavorites(){
 
  filteredCars=favoriteCars;
 
- document
-  .getElementById("searchInput")
-  .value="";
+ const input=
+  document.getElementById("searchInput");
+
+ if(input)
+  input.value="";
 
  if(favoriteCars.length===0){
 
@@ -2801,28 +3398,31 @@ function showFavorites(){
    t.noFavoritesText
   );
 
-  return;
+ }else{
+
+  const grid=
+   document.getElementById("carsGrid");
+
+  grid.innerHTML="";
+
+  favoriteCars.forEach((car,index)=>{
+
+   grid.appendChild(
+    createCarCard(car,index)
+   );
+
+  });
+
+  document
+   .getElementById("resultsCount")
+   .textContent=
+    favoriteCars.length+" ta";
+
+  applySettings();
+
  }
 
- const grid=
-  document.getElementById("carsGrid");
-
- grid.innerHTML="";
-
- favoriteCars.forEach((car,index)=>{
-
-  grid.appendChild(
-   createCarCard(car,index)
-  );
-
- });
-
- document
-  .getElementById("resultsCount")
-  .textContent=
-   favoriteCars.length+" ta";
-
- applySettings();
+ setActiveNav("navFavorites");
 }
 
 /* =========================
@@ -2937,7 +3537,14 @@ function openDetails(car){
 
      <div class="details-meta-item">
       <b>${t.type}</b>
-      ${escapeHtml(car.type||"Uy")}
+      ${escapeHtml(
+       car.type||
+       (
+        Array.isArray(car.types)&&car.types.length
+         ?car.types.join(", ")
+         :"Uy"
+       )
+      )}
      </div>
 
      <div class="details-meta-item">
@@ -3096,6 +3703,11 @@ function showPage(page){
    .getElementById("homePage")
    .classList.add("active");
 
+ if(page==="search")
+  document
+   .getElementById("searchPage")
+   .classList.add("active");
+
  if(page==="details")
   document
    .getElementById("detailsPage")
@@ -3112,6 +3724,21 @@ function showPage(page){
  });
 }
 
+function setActiveNav(id){
+
+ document
+  .querySelectorAll(".bottom-nav button")
+  .forEach(btn=>{
+   btn.classList.remove("active");
+  });
+
+ const button=
+  document.getElementById(id);
+
+ if(button)
+  button.classList.add("active");
+}
+
 function goHome(){
 
  showPage("home");
@@ -3120,50 +3747,61 @@ function goHome(){
 
  filteredCars=[...allCars];
 
- document
-  .getElementById("searchInput")
-  .value="";
+ const input=
+  document.getElementById("searchInput");
 
- document
-  .querySelectorAll(".category-btn")
-  .forEach((button,index)=>{
-   button.classList.toggle(
-    "active",
-    index===0
-   );
-  });
+ if(input)
+  input.value="";
 
  renderFiltered();
 
- document
-  .querySelectorAll(".bottom-nav button")
-  .forEach(btn=>{
-   btn.classList.remove("active");
-  });
-
- document
-  .getElementById("navHome")
-  .classList.add("active");
+ setActiveNav("navHome");
 }
 
 function showMenu(){
 
  showPage("menu");
 
- document
-  .getElementById("navHome")
-  .classList.remove("active");
+ setActiveNav("navMenu");
 }
 
 function focusSearch(){
 
- showPage("home");
+ showPage("search");
+
+ setActiveNav("navSearch");
+
+ renderSearchPage(
+  searchPageType==="all"
+   ?[...allCars]
+   :allCars.filter(car=>{
+
+     const types=
+      Array.isArray(car.types)
+       ?car.types
+       :[];
+
+     const mainType=
+      String(car.type||"");
+
+     return types.some(
+      item=>
+       String(item).toLowerCase()===
+       searchPageType.toLowerCase()
+     )||
+     mainType.toLowerCase()===
+     searchPageType.toLowerCase();
+
+    })
+ );
 
  setTimeout(()=>{
 
-  document
-   .getElementById("searchInput")
-   .focus();
+  const input=
+   document.getElementById("searchPageInput");
+
+  if(input)
+   input.focus();
 
  },200);
 }
