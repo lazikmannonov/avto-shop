@@ -21,9 +21,9 @@ const pool = new Pool({
     max: 10
 });
 
-// =========================
+// =====================================================
 // DATABASE
-// =========================
+// =====================================================
 
 async function initDatabase() {
 
@@ -51,10 +51,6 @@ async function initDatabase() {
         )
     `);
 
-    // =========================
-    // UMUMIY STATISTIKA
-    // =========================
-
     await pool.query(`
         CREATE TABLE IF NOT EXISTS stats (
             id INTEGER PRIMARY KEY DEFAULT 1,
@@ -69,10 +65,6 @@ async function initDatabase() {
         ON CONFLICT (id) DO NOTHING
     `);
 
-    // =========================
-    // KUNLIK STATISTIKA
-    // =========================
-
     await pool.query(`
         CREATE TABLE IF NOT EXISTS daily_stats (
             stat_date DATE PRIMARY KEY,
@@ -80,10 +72,6 @@ async function initDatabase() {
             calls INTEGER DEFAULT 0
         )
     `);
-
-    // =========================
-    // SAYT SOZLAMALARI
-    // =========================
 
     await pool.query(`
         CREATE TABLE IF NOT EXISTS site_settings (
@@ -121,9 +109,9 @@ async function initDatabase() {
     console.log('PostgreSQL database tayyor');
 }
 
-// =========================
-// HELPERS
-// =========================
+// =====================================================
+// RESPONSE
+// =====================================================
 
 function sendJson(res, status, data) {
 
@@ -135,14 +123,17 @@ function sendJson(res, status, data) {
     res.end(JSON.stringify(data));
 }
 
+// =====================================================
+// FILE
+// =====================================================
+
 function sendFile(res, name) {
 
-    const file =
-        path.join(
-            __dirname,
-            'public',
-            name
-        );
+    const file = path.join(
+        __dirname,
+        'public',
+        name
+    );
 
     if (!fs.existsSync(file)) {
 
@@ -153,15 +144,28 @@ function sendFile(res, name) {
         );
     }
 
+    let contentType = 'text/html; charset=utf-8';
+
+    if (name.endsWith('.css')) {
+        contentType = 'text/css; charset=utf-8';
+    }
+
+    if (name.endsWith('.js')) {
+        contentType = 'application/javascript; charset=utf-8';
+    }
+
     res.writeHead(200, {
-        'Content-Type':
-            'text/html; charset=utf-8'
+        'Content-Type': contentType
     });
 
     res.end(
         fs.readFileSync(file)
     );
 }
+
+// =====================================================
+// READ BODY
+// =====================================================
 
 function readBody(req) {
 
@@ -179,11 +183,7 @@ function readBody(req) {
 
                 data += chunk;
 
-                // 30 MB
-                if (
-                    data.length >
-                    30000000
-                ) {
+                if (data.length > 30000000) {
 
                     tooBig = true;
 
@@ -207,28 +207,70 @@ function readBody(req) {
     );
 }
 
-function isAdmin(req) {
+// =====================================================
+// ADMIN PASSWORD
+// =====================================================
+
+// Header orqali tekshirish
+function isAdminHeader(req) {
+
+    const password =
+        req.headers['x-admin-password'];
 
     return (
-        req.headers['x-admin-password'] ===
-        ADMIN_PASSWORD
+        typeof password === 'string' &&
+        password === ADMIN_PASSWORD
     );
 }
 
-// =========================
+// Body orqali tekshirish
+function isAdminBody(body) {
+
+    if (!body || typeof body !== 'object') {
+        return false;
+    }
+
+    const password =
+        String(body.password || '');
+
+    return password === ADMIN_PASSWORD;
+}
+
+// Ikkalasini ham qabul qiladi
+function isAdmin(req, body = null) {
+
+    if (isAdminHeader(req)) {
+        return true;
+    }
+
+    if (isAdminBody(body)) {
+        return true;
+    }
+
+    return false;
+}
+
+// =====================================================
 // IMAGE
-// =========================
+// =====================================================
 
 function prepareImage(dataUrl) {
 
+    if (typeof dataUrl !== 'string') {
+
+        throw new Error(
+            "Rasm formati noto'g'ri"
+        );
+    }
+
     const match =
         /^data:image\/jpeg;base64,(.+)$/
-        .exec(dataUrl);
+            .exec(dataUrl);
 
     if (!match) {
 
         throw new Error(
-            "Rasm formati noto'g'ri"
+            "Rasm faqat JPEG formatda bo'lishi kerak"
         );
     }
 
@@ -280,42 +322,58 @@ function parseImages(row) {
     }
 }
 
+// =====================================================
+// CAR OUTPUT
+// =====================================================
+
 function carOut(row) {
 
     return {
         id: row.id,
+
         name: row.name,
+
         price: row.price,
+
         description:
             row.description || '',
-        images: parseImages(row),
-        sold: row.sold || false
+
+        images:
+            parseImages(row),
+
+        sold:
+            row.sold || false
     };
 }
 
-// =========================
-// SETTINGS HELPER
-// =========================
+// =====================================================
+// SETTINGS
+// =====================================================
 
 function settingsOut(row) {
 
     return {
+
         phone:
             row.phone || '',
+
         telegram:
             row.telegram || '',
+
         whatsapp:
             row.whatsapp || '',
+
         instagram:
             row.instagram || '',
+
         address:
             row.address || ''
     };
 }
 
-// =========================
-// DAILY STAT
-// =========================
+// =====================================================
+// DAILY STATISTICS
+// =====================================================
 
 async function recordDailyStat(type) {
 
@@ -329,11 +387,21 @@ async function recordDailyStat(type) {
     await pool.query(
         `
         INSERT INTO daily_stats
-        (stat_date, views, calls)
-        VALUES (CURRENT_DATE, $1, $2)
+        (
+            stat_date,
+            views,
+            calls
+        )
+        VALUES
+        (
+            CURRENT_DATE,
+            $1,
+            $2
+        )
 
         ON CONFLICT (stat_date)
         DO UPDATE SET
+
             views =
                 daily_stats.views +
                 EXCLUDED.views,
@@ -349,9 +417,9 @@ async function recordDailyStat(type) {
     );
 }
 
-// =========================
+// =====================================================
 // SERVER
-// =========================
+// =====================================================
 
 const server =
     http.createServer(
@@ -362,9 +430,9 @@ const server =
                 const url =
                     req.url.split('?')[0];
 
-                // =========================
+                // =================================================
                 // GET CARS
-                // =========================
+                // =================================================
 
                 if (
                     url === '/api/cars' &&
@@ -385,16 +453,39 @@ const server =
                     );
                 }
 
-                // =========================
-                // ADD CAR
-                // =========================
+                // =================================================
+                // ADD CAR / ADD HOME
+                // =================================================
 
                 if (
                     url === '/api/cars' &&
                     req.method === 'POST'
                 ) {
 
-                    if (!isAdmin(req)) {
+                    let body;
+
+                    try {
+
+                        body =
+                            JSON.parse(
+                                await readBody(req)
+                            );
+
+                    } catch (e) {
+
+                        return sendJson(
+                            res,
+                            400,
+                            {
+                                error:
+                                    "Ma'lumot formati noto'g'ri"
+                            }
+                        );
+                    }
+
+                    // MUHIM:
+                    // Admin paneldagi password body ichidan ham olinadi
+                    if (!isAdmin(req, body)) {
 
                         return sendJson(
                             res,
@@ -410,11 +501,6 @@ const server =
                         await pool.connect();
 
                     try {
-
-                        const body =
-                            JSON.parse(
-                                await readBody(req)
-                            );
 
                         const name =
                             String(
@@ -452,12 +538,11 @@ const server =
                             Array.isArray(
                                 body.images
                             )
-                            ? body.images
-                            : [];
+                                ? body.images
+                                : [];
 
                         if (
-                            incomingImages.length >
-                            8
+                            incomingImages.length > 8
                         ) {
 
                             return sendJson(
@@ -489,8 +574,15 @@ const server =
                             await client.query(
                                 `
                                 INSERT INTO image_files
-                                (name, data)
-                                VALUES ($1, $2)
+                                (
+                                    name,
+                                    data
+                                )
+                                VALUES
+                                (
+                                    $1,
+                                    $2
+                                )
                                 `,
                                 [
                                     image.name,
@@ -506,8 +598,19 @@ const server =
                         await client.query(
                             `
                             INSERT INTO cars
-                            (name, price, description, images)
-                            VALUES ($1, $2, $3, $4)
+                            (
+                                name,
+                                price,
+                                description,
+                                images
+                            )
+                            VALUES
+                            (
+                                $1,
+                                $2,
+                                $3,
+                                $4
+                            )
                             `,
                             [
                                 name,
@@ -534,9 +637,11 @@ const server =
                     } catch (e) {
 
                         try {
+
                             await client.query(
                                 'ROLLBACK'
                             );
+
                         } catch (_) {}
 
                         console.error(e);
@@ -557,9 +662,9 @@ const server =
                     }
                 }
 
-                // =========================
+                // =================================================
                 // GET SETTINGS
-                // =========================
+                // =================================================
 
                 if (
                     url === '/api/settings' &&
@@ -574,7 +679,9 @@ const server =
                                 whatsapp,
                                 instagram,
                                 address
+
                             FROM site_settings
+
                             WHERE id = 1
                         `);
 
@@ -588,14 +695,19 @@ const server =
                             200,
                             {
                                 settings: {
+
                                     phone:
                                         '+998 88 950 00 05',
+
                                     telegram:
                                         'https://t.me/',
+
                                     whatsapp:
                                         'https://wa.me/',
+
                                     instagram:
                                         'https://instagram.com/',
+
                                     address:
                                         "Toshkent, O'zbekiston"
                                 }
@@ -613,26 +725,14 @@ const server =
                     );
                 }
 
-                // =========================
+                // =================================================
                 // SAVE SETTINGS
-                // =========================
+                // =================================================
 
                 if (
                     url === '/api/settings' &&
                     req.method === 'POST'
                 ) {
-
-                    if (!isAdmin(req)) {
-
-                        return sendJson(
-                            res,
-                            401,
-                            {
-                                error:
-                                    "Parol noto'g'ri"
-                            }
-                        );
-                    }
 
                     let body;
 
@@ -651,6 +751,18 @@ const server =
                             {
                                 error:
                                     "Ma'lumot formati noto'g'ri"
+                            }
+                        );
+                    }
+
+                    if (!isAdmin(req, body)) {
+
+                        return sendJson(
+                            res,
+                            401,
+                            {
+                                error:
+                                    "Parol noto'g'ri"
                             }
                         );
                     }
@@ -706,13 +818,16 @@ const server =
                         await pool.query(
                             `
                             UPDATE site_settings
+
                             SET
                                 phone = $1,
                                 telegram = $2,
                                 whatsapp = $3,
                                 instagram = $4,
                                 address = $5
+
                             WHERE id = 1
+
                             RETURNING
                                 phone,
                                 telegram,
@@ -734,6 +849,7 @@ const server =
                         200,
                         {
                             ok: true,
+
                             settings:
                                 settingsOut(
                                     result.rows[0]
@@ -742,19 +858,34 @@ const server =
                     );
                 }
 
-                // =========================
+                // =================================================
                 // TOGGLE SOLD
-                // =========================
+                // =================================================
 
                 if (
-                    url.startsWith(
-                        '/api/cars/'
-                    ) &&
+                    url.startsWith('/api/cars/') &&
                     url.endsWith('/sold') &&
                     req.method === 'POST'
                 ) {
 
-                    if (!isAdmin(req)) {
+                    let body = {};
+
+                    try {
+
+                        const raw =
+                            await readBody(req);
+
+                        if (raw) {
+                            body =
+                                JSON.parse(raw);
+                        }
+
+                    } catch (e) {
+
+                        body = {};
+                    }
+
+                    if (!isAdmin(req, body)) {
 
                         return sendJson(
                             res,
@@ -789,8 +920,12 @@ const server =
                         await pool.query(
                             `
                             UPDATE cars
-                            SET sold = NOT sold
+
+                            SET sold =
+                                NOT sold
+
                             WHERE id = $1
+
                             RETURNING sold
                             `,
                             [id]
@@ -805,7 +940,7 @@ const server =
                             404,
                             {
                                 error:
-                                    "Mashina topilmadi"
+                                    "Uy topilmadi"
                             }
                         );
                     }
@@ -815,25 +950,40 @@ const server =
                         200,
                         {
                             ok: true,
+
                             sold:
-                                result.rows[0]
-                                    .sold
+                                result.rows[0].sold
                         }
                     );
                 }
 
-                // =========================
-                // DELETE CAR
-                // =========================
+                // =================================================
+                // DELETE CAR / HOME
+                // =================================================
 
                 if (
-                    url.startsWith(
-                        '/api/cars/'
-                    ) &&
+                    url.startsWith('/api/cars/') &&
                     req.method === 'DELETE'
                 ) {
 
-                    if (!isAdmin(req)) {
+                    let body = {};
+
+                    try {
+
+                        const raw =
+                            await readBody(req);
+
+                        if (raw) {
+                            body =
+                                JSON.parse(raw);
+                        }
+
+                    } catch (e) {
+
+                        body = {};
+                    }
+
+                    if (!isAdmin(req, body)) {
 
                         return sendJson(
                             res,
@@ -884,8 +1034,7 @@ const server =
                             );
 
                         if (
-                            result.rows.length >
-                            0
+                            result.rows.length > 0
                         ) {
 
                             const images =
@@ -908,13 +1057,32 @@ const server =
                             }
                         }
 
-                        await client.query(
-                            `
-                            DELETE FROM cars
-                            WHERE id = $1
-                            `,
-                            [id]
-                        );
+                        const deleted =
+                            await client.query(
+                                `
+                                DELETE FROM cars
+                                WHERE id = $1
+                                `,
+                                [id]
+                            );
+
+                        if (
+                            deleted.rowCount === 0
+                        ) {
+
+                            await client.query(
+                                'ROLLBACK'
+                            );
+
+                            return sendJson(
+                                res,
+                                404,
+                                {
+                                    error:
+                                        "Uy topilmadi"
+                                }
+                            );
+                        }
 
                         await client.query(
                             'COMMIT'
@@ -931,9 +1099,11 @@ const server =
                     } catch (e) {
 
                         try {
+
                             await client.query(
                                 'ROLLBACK'
                             );
+
                         } catch (_) {}
 
                         console.error(e);
@@ -953,14 +1123,12 @@ const server =
                     }
                 }
 
-                // =========================
+                // =================================================
                 // GET IMAGE
-                // =========================
+                // =================================================
 
                 if (
-                    url.startsWith(
-                        '/uploads/'
-                    ) &&
+                    url.startsWith('/uploads/') &&
                     req.method === 'GET'
                 ) {
 
@@ -970,8 +1138,7 @@ const server =
                         );
 
                     if (
-                        !/^[a-f0-9]+\.jpg$/
-                            .test(name)
+                        !/^[a-f0-9]+\.jpg$/.test(name)
                     ) {
 
                         res.writeHead(404);
@@ -1014,20 +1181,22 @@ const server =
                     );
                 }
 
-                // =========================
-                // STATS: PAGE VIEW
-                // =========================
+                // =================================================
+                // STAT VIEW
+                // =================================================
 
                 if (
-                    url ===
-                        '/api/stats/view' &&
+                    url === '/api/stats/view' &&
                     req.method === 'POST'
                 ) {
 
                     await pool.query(
                         `
                         UPDATE stats
-                        SET views = views + 1
+
+                        SET views =
+                            views + 1
+
                         WHERE id = 1
                         `
                     );
@@ -1045,20 +1214,22 @@ const server =
                     );
                 }
 
-                // =========================
-                // STATS: CALL
-                // =========================
+                // =================================================
+                // STAT CALL
+                // =================================================
 
                 if (
-                    url ===
-                        '/api/stats/call' &&
+                    url === '/api/stats/call' &&
                     req.method === 'POST'
                 ) {
 
                     await pool.query(
                         `
                         UPDATE stats
-                        SET calls = calls + 1
+
+                        SET calls =
+                            calls + 1
+
                         WHERE id = 1
                         `
                     );
@@ -1076,16 +1247,16 @@ const server =
                     );
                 }
 
-                // =========================
-                // STATS: TOTALS
-                // =========================
+                // =================================================
+                // TOTAL STATS
+                // =================================================
 
                 if (
                     url === '/api/stats' &&
                     req.method === 'GET'
                 ) {
 
-                    if (!isAdmin(req)) {
+                    if (!isAdminHeader(req)) {
 
                         return sendJson(
                             res,
@@ -1103,7 +1274,9 @@ const server =
                             SELECT
                                 views,
                                 calls
+
                             FROM stats
+
                             WHERE id = 1
                             `
                         );
@@ -1118,15 +1291,15 @@ const server =
                         await pool.query(
                             `
                             SELECT
+
                                 COUNT(*)::int
-                                    AS total,
+                                AS total,
 
                                 COUNT(*)
-                                    FILTER
-                                    (
-                                        WHERE sold = true
-                                    )::int
-                                    AS sold
+                                FILTER (
+                                    WHERE sold = true
+                                )::int
+                                AS sold
 
                             FROM cars
                             `
@@ -1165,17 +1338,16 @@ const server =
                     );
                 }
 
-                // =========================
-                // STATS: DAILY
-                // =========================
+                // =================================================
+                // DAILY STATS
+                // =================================================
 
                 if (
-                    url ===
-                        '/api/stats/daily' &&
+                    url === '/api/stats/daily' &&
                     req.method === 'GET'
                 ) {
 
-                    if (!isAdmin(req)) {
+                    if (!isAdminHeader(req)) {
 
                         return sendJson(
                             res,
@@ -1194,6 +1366,7 @@ const server =
                                 stat_date,
                                 views,
                                 calls
+
                             FROM daily_stats
 
                             WHERE stat_date >=
@@ -1212,6 +1385,7 @@ const server =
                             days:
                                 result.rows.map(
                                     row => ({
+
                                         date:
                                             row.stat_date,
 
@@ -1230,9 +1404,9 @@ const server =
                     );
                 }
 
-                // =========================
-                // ADMIN
-                // =========================
+                // =================================================
+                // ADMIN PAGE
+                // =================================================
 
                 if (
                     url === '/admin'
@@ -1244,9 +1418,9 @@ const server =
                     );
                 }
 
-                // =========================
+                // =================================================
                 // MAIN PAGE
-                // =========================
+                // =================================================
 
                 return sendFile(
                     res,
@@ -1269,9 +1443,9 @@ const server =
         }
     );
 
-// =========================
-// START
-// =========================
+// =====================================================
+// START SERVER
+// =====================================================
 
 async function start() {
 
@@ -1279,12 +1453,15 @@ async function start() {
 
         await initDatabase();
 
+        const PORT =
+            process.env.PORT || 3000;
+
         server.listen(
-            3000,
+            PORT,
             () => {
 
                 console.log(
-                    'Server 3000-portda ishlayapti'
+                    `Server ${PORT}-portda ishlayapti`
                 );
             }
         );
@@ -1302,9 +1479,9 @@ async function start() {
 
 start();
 
-// =========================
+// =====================================================
 // SHUTDOWN
-// =========================
+// =====================================================
 
 process.on(
     'SIGTERM',
