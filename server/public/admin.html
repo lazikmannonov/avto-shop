@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>pul.zarill — Admin</title>
+<title>pul.zarill — Uy-joy Admin</title>
 
 <style>
 *{
@@ -410,15 +410,15 @@ canvas{
     transform:translateY(-2px);
 }
 
-/* CARS */
+/* HOMES */
 
-.car-list{
+.home-list{
     display:flex;
     flex-direction:column;
     gap:10px;
 }
 
-.car-row{
+.home-row{
     display:flex;
     align-items:center;
     gap:14px;
@@ -427,7 +427,7 @@ canvas{
     border-radius:13px;
 }
 
-.car-img{
+.home-img{
     width:65px;
     height:50px;
     border-radius:9px;
@@ -436,12 +436,12 @@ canvas{
     flex-shrink:0;
 }
 
-.car-info{
+.home-info{
     min-width:0;
     flex:1;
 }
 
-.car-name{
+.home-name{
     font-weight:800;
     font-size:14px;
     white-space:nowrap;
@@ -449,10 +449,16 @@ canvas{
     text-overflow:ellipsis;
 }
 
-.car-price{
+.home-price{
     font-size:13px;
     color:var(--muted);
     margin-top:4px;
+}
+
+.home-type{
+    font-size:11px;
+    color:var(--muted);
+    margin-top:3px;
 }
 
 .badge{
@@ -495,7 +501,8 @@ canvas{
 }
 
 .input,
-.textarea{
+.textarea,
+.select{
     width:100%;
     border:1px solid var(--border);
     background:var(--soft);
@@ -507,7 +514,8 @@ canvas{
 }
 
 .input:focus,
-.textarea:focus{
+.textarea:focus,
+.select:focus{
     border-color:#777;
 }
 
@@ -727,6 +735,16 @@ body.dark .filter.active{
     margin-top:6px;
 }
 
+.manage-type{
+    display:inline-block;
+    margin-top:7px;
+    padding:5px 9px;
+    background:var(--soft);
+    border-radius:8px;
+    font-size:11px;
+    color:var(--muted);
+}
+
 .manage-description{
     color:var(--muted);
     font-size:12px;
@@ -922,13 +940,13 @@ body.dark .action-btn.sold-btn{
         <button
             data-page="add"
             onclick="showPage('add')">
-            ➕ Mashina qo‘shish
+            ➕ Uy qo‘shish
         </button>
 
         <button
-            data-page="cars"
-            onclick="showPage('cars')">
-            🚘 Mashinalar
+            data-page="homes"
+            onclick="showPage('homes')">
+            🏠 Uylar
         </button>
 
         <button
@@ -974,7 +992,7 @@ body.dark .action-btn.sold-btn{
             <div
                 class="top-sub"
                 id="pageSubtitle">
-                pul.zarill boshqaruv paneli
+                pul.zarill uy-joy boshqaruv paneli
             </div>
 
         </div>
@@ -1056,11 +1074,11 @@ body.dark .action-btn.sold-btn{
         <div class="stat-card">
 
             <div class="stat-top">
-                <div class="stat-icon">🚘</div>
+                <div class="stat-icon">🏠</div>
             </div>
 
             <div class="stat-label">
-                Jami mashinalar
+                Jami uylar
             </div>
 
             <div
@@ -1070,7 +1088,7 @@ body.dark .action-btn.sold-btn{
             </div>
 
             <div class="stat-change">
-                Saytdagi barcha avtomobillar
+                Saytdagi barcha uy-joylar
             </div>
 
         </div>
@@ -1230,17 +1248,17 @@ body.dark .action-btn.sold-btn{
                         <div class="activity-left">
 
                             <div class="activity-icon">
-                                🚘
+                                🏠
                             </div>
 
                             <div>
 
                                 <div class="activity-name">
-                                    Mashinalar
+                                    Uylar
                                 </div>
 
                                 <div class="activity-desc">
-                                    Jami joylangan
+                                    Jami joylangan uy-joylar
                                 </div>
 
                             </div>
@@ -1270,7 +1288,7 @@ body.dark .action-btn.sold-btn{
                                 </div>
 
                                 <div class="activity-desc">
-                                    Sotilgan avtomobillar
+                                    Sotilgan uy-joylar
                                 </div>
 
                             </div>
@@ -1304,7 +1322,7 @@ body.dark .action-btn.sold-btn{
                 </div>
 
                 <div class="panel-sub">
-                    Admin boshqaruvi
+                    Uy-joy boshqaruvi
                 </div>
 
             </div>
@@ -1318,13 +1336,13 @@ body.dark .action-btn.sold-btn{
                 <button
                     class="quick-btn"
                     onclick="showPage('add')">
-                    ➕ Mashina qo‘shish
+                    ➕ Uy qo‘shish
                 </button>
 
                 <button
                     class="quick-btn"
-                    onclick="showPage('cars')">
-                    🚘 Barcha mashinalar
+                    onclick="showPage('homes')">
+                    🏠 Barcha uylar
                 </button>
 
                 <button
@@ -1348,18 +1366,18 @@ body.dark .action-btn.sold-btn{
             <div>
 
                 <div class="panel-title">
-                    Oxirgi mashinalar
+                    Oxirgi uylar
                 </div>
 
                 <div class="panel-sub">
-                    Yaqinda qo‘shilgan avtomobillar
+                    Yaqinda qo‘shilgan uy-joylar
                 </div>
 
             </div>
 
             <button
                 class="filter"
-                onclick="showPage('cars')">
+                onclick="showPage('homes')">
                 Barchasi
             </button>
 
@@ -1368,8 +1386,8 @@ body.dark .action-btn.sold-btn{
         <div class="panel-body">
 
             <div
-                class="car-list"
-                id="recentCars">
+                class="home-list"
+                id="recentHomes">
 
                 <div class="empty">
                     Yuklanmoqda...
@@ -1394,11 +1412,11 @@ body.dark .action-btn.sold-btn{
             <div>
 
                 <div class="panel-title">
-                    Mashina qo‘shish
+                    Uy qo‘shish
                 </div>
 
                 <div class="panel-sub">
-                    Yangi avtomobilni saytga joylang
+                    Yangi uy-joyni saytga joylang
                 </div>
 
             </div>
@@ -1434,13 +1452,47 @@ body.dark .action-btn.sold-btn{
             <div class="form-group">
 
                 <label class="form-label">
-                    Mashina nomi
+                    Uy nomi
                 </label>
 
                 <input
                     class="input"
                     id="carName"
-                    placeholder="Masalan: Chevrolet Gentra">
+                    placeholder="Masalan: 3 xonali hovli uy">
+
+            </div>
+
+            <div class="form-group">
+
+                <label class="form-label">
+                    Uy turi
+                </label>
+
+                <select
+                    class="select"
+                    id="homeType">
+
+                    <option value="🏠 Uy">
+                        🏠 Uy
+                    </option>
+
+                    <option value="🏡 Hovli">
+                        🏡 Hovli
+                    </option>
+
+                    <option value="🏢 Kvartira">
+                        🏢 Kvartira
+                    </option>
+
+                    <option value="🌳 Yer">
+                        🌳 Yer
+                    </option>
+
+                    <option value="🏗️ Yangi qurilish">
+                        🏗️ Yangi qurilish
+                    </option>
+
+                </select>
 
             </div>
 
@@ -1454,7 +1506,47 @@ body.dark .action-btn.sold-btn{
                     class="input"
                     id="carPrice"
                     type="number"
-                    placeholder="Masalan: 150000000">
+                    placeholder="Masalan: 500000000">
+
+            </div>
+
+            <div class="form-group">
+
+                <label class="form-label">
+                    Manzil
+                </label>
+
+                <input
+                    class="input"
+                    id="homeAddress"
+                    placeholder="Masalan: Toshkent, Chilonzor">
+
+            </div>
+
+            <div class="form-group">
+
+                <label class="form-label">
+                    Xonalar soni
+                </label>
+
+                <input
+                    class="input"
+                    id="homeRooms"
+                    type="number"
+                    placeholder="Masalan: 3">
+
+            </div>
+
+            <div class="form-group">
+
+                <label class="form-label">
+                    Maydoni
+                </label>
+
+                <input
+                    class="input"
+                    id="homeArea"
+                    placeholder="Masalan: 120 m²">
 
             </div>
 
@@ -1467,7 +1559,7 @@ body.dark .action-btn.sold-btn{
                 <textarea
                     class="textarea"
                     id="carDescription"
-                    placeholder="Mashina haqida ma'lumot..."></textarea>
+                    placeholder="Uy haqida ma'lumot..."></textarea>
 
             </div>
 
@@ -1486,7 +1578,7 @@ body.dark .action-btn.sold-btn{
                     </div>
 
                     <div class="upload-title">
-                        Rasmlarni tanlang
+                        Uy rasmlarini tanlang
                     </div>
 
                     <div class="upload-sub">
@@ -1513,7 +1605,7 @@ body.dark .action-btn.sold-btn{
                 class="main-btn"
                 id="addButton"
                 onclick="addCar()">
-                + Mashinani qo‘shish
+                + Uyni qo‘shish
             </button>
 
             <div
@@ -1646,15 +1738,15 @@ body.dark .action-btn.sold-btn{
 
 <section
     class="page"
-    id="page-cars">
+    id="page-homes">
 
     <div class="toolbar">
 
         <input
             class="input search"
             id="search"
-            placeholder="Mashina qidirish..."
-            oninput="renderCars()">
+            placeholder="Uy qidirish..."
+            oninput="renderHomes()">
 
         <div class="filters">
 
@@ -1683,9 +1775,59 @@ body.dark .action-btn.sold-btn{
 
     </div>
 
+    <div class="toolbar">
+
+        <div class="filters">
+
+            <button
+                class="filter active"
+                id="typeAll"
+                onclick="setHomeType('all')">
+                🏠 Barchasi
+            </button>
+
+            <button
+                class="filter"
+                id="typeHouse"
+                onclick="setHomeType('🏠 Uy')">
+                🏠 Uy
+            </button>
+
+            <button
+                class="filter"
+                id="typeYard"
+                onclick="setHomeType('🏡 Hovli')">
+                🏡 Hovli
+            </button>
+
+            <button
+                class="filter"
+                id="typeApartment"
+                onclick="setHomeType('🏢 Kvartira')">
+                🏢 Kvartira
+            </button>
+
+            <button
+                class="filter"
+                id="typeLand"
+                onclick="setHomeType('🌳 Yer')">
+                🌳 Yer
+            </button>
+
+            <button
+                class="filter"
+                id="typeNew"
+                onclick="setHomeType('🏗️ Yangi qurilish')">
+                🏗️ Yangi qurilish
+            </button>
+
+        </div>
+
+    </div>
+
     <div
         class="manage-grid"
-        id="manageCars">
+        id="manageHomes">
     </div>
 
 </section>
@@ -1707,6 +1849,7 @@ body.dark .action-btn.sold-btn{
 
 let cars = [];
 let currentFilter = 'all';
+let currentHomeType = 'all';
 let selectedImages = [];
 let dailyStats = [];
 
@@ -1726,17 +1869,17 @@ const pageInfo = {
 
     dashboard:{
         title:'Dashboard',
-        subtitle:'pul.zarill boshqaruv paneli'
+        subtitle:'pul.zarill uy-joy boshqaruv paneli'
     },
 
     add:{
-        title:'Mashina qo‘shish',
-        subtitle:'Yangi avtomobil qo‘shish'
+        title:'Uy qo‘shish',
+        subtitle:'Yangi uy-joy qo‘shish'
     },
 
-    cars:{
-        title:'Mashinalar',
-        subtitle:'Barcha avtomobillarni boshqarish'
+    homes:{
+        title:'Uylar',
+        subtitle:'Barcha uy-joylarni boshqarish'
     },
 
     settings:{
@@ -1787,8 +1930,8 @@ function showPage(page){
         .textContent =
         pageInfo[page].subtitle;
 
-    if(page === 'cars'){
-        renderCars();
+    if(page === 'homes'){
+        renderHomes();
     }
 
     if(page === 'settings'){
@@ -2105,7 +2248,7 @@ function showMessage(message,type){
 }
 
 /* =========================
-   ADD CAR
+   ADD HOME
 ========================= */
 
 async function addCar(){
@@ -2119,12 +2262,35 @@ async function addCar(){
         .value
         .trim();
 
+    const type =
+        document
+        .getElementById('homeType')
+        .value;
+
     const price =
         Number(
             document
             .getElementById('carPrice')
             .value
         );
+
+    const address =
+        document
+        .getElementById('homeAddress')
+        .value
+        .trim();
+
+    const rooms =
+        document
+        .getElementById('homeRooms')
+        .value
+        .trim();
+
+    const area =
+        document
+        .getElementById('homeArea')
+        .value
+        .trim();
 
     const description =
         document
@@ -2145,7 +2311,7 @@ async function addCar(){
     if(!name){
 
         showMessage(
-            "Mashina nomini kiriting",
+            "Uy nomini kiriting",
             "error"
         );
 
@@ -2197,10 +2363,23 @@ async function addCar(){
                     },
 
                     body:JSON.stringify({
+
                         name,
+
                         price,
+
                         description,
-                        images:selectedImages
+
+                        images:selectedImages,
+
+                        type,
+
+                        address,
+
+                        rooms,
+
+                        area
+
                     })
                 }
             );
@@ -2217,7 +2396,7 @@ async function addCar(){
         }
 
         showMessage(
-            "Mashina muvaffaqiyatli qo‘shildi!",
+            "Uy muvaffaqiyatli qo‘shildi!",
             "ok"
         );
 
@@ -2227,6 +2406,18 @@ async function addCar(){
 
         document
             .getElementById('carPrice')
+            .value = '';
+
+        document
+            .getElementById('homeAddress')
+            .value = '';
+
+        document
+            .getElementById('homeRooms')
+            .value = '';
+
+        document
+            .getElementById('homeArea')
             .value = '';
 
         document
@@ -2245,7 +2436,7 @@ async function addCar(){
 
         await loadAll();
 
-        toast("Mashina qo‘shildi");
+        toast("Uy qo‘shildi");
 
     }catch(e){
 
@@ -2259,7 +2450,7 @@ async function addCar(){
         button.disabled = false;
 
         button.textContent =
-            "+ Mashinani qo‘shish";
+            "+ Uyni qo‘shish";
     }
 }
 
@@ -2468,7 +2659,7 @@ async function saveSettings(){
 }
 
 /* =========================
-   LOAD CARS
+   LOAD HOMES
 ========================= */
 
 async function loadCars(){
@@ -2494,20 +2685,20 @@ async function loadCars(){
 
         renderRecentCars();
 
-        renderCars();
+        renderHomes();
 
     }catch(e){
 
         console.error(e);
 
         toast(
-            "Mashinalarni yuklashda xatolik"
+            "Uylarni yuklashda xatolik"
         );
     }
 }
 
 /* =========================
-   CAR STATS
+   HOME STATS
 ========================= */
 
 function updateCarStats(){
@@ -2550,21 +2741,21 @@ function updateCarStats(){
 }
 
 /* =========================
-   RECENT CARS
+   RECENT HOMES
 ========================= */
 
 function renderRecentCars(){
 
     const box =
         document.getElementById(
-            'recentCars'
+            'recentHomes'
         );
 
     if(!cars.length){
 
         box.innerHTML =
             `<div class="empty">
-                Hozircha mashinalar yo‘q
+                Hozircha uylar yo‘q
             </div>`;
 
         return;
@@ -2583,32 +2774,41 @@ function renderRecentCars(){
                       car.images[0]
                     : '';
 
+            const type =
+                car.type ||
+                '🏠 Uy';
+
             return `
-                <div class="car-row">
+                <div class="home-row">
 
                     ${
                         image
                         ? `<img
-                            class="car-img"
+                            class="home-img"
                             src="${image}"
                             alt="">`
-                        : `<div class="car-img"
+                        : `<div class="home-img"
                             style="
                             display:flex;
                             align-items:center;
-                            justify-content:center;">
-                            🚘
+                            justify-content:center;
+                            font-size:25px;">
+                            🏠
                           </div>`
                     }
 
-                    <div class="car-info">
+                    <div class="home-info">
 
-                        <div class="car-name">
+                        <div class="home-name">
                             ${escapeHtml(car.name)}
                         </div>
 
-                        <div class="car-price">
+                        <div class="home-price">
                             ${formatPrice(car.price)}
+                        </div>
+
+                        <div class="home-type">
+                            ${escapeHtml(type)}
                         </div>
 
                     </div>
@@ -2643,51 +2843,96 @@ function setFilter(filter){
         filter;
 
     document
-        .querySelectorAll('.filter')
+        .querySelectorAll('#filterAll,#filterActive,#filterSold')
         .forEach(btn => {
-
-            if(
-                btn.id === 'filterAll' &&
-                filter === 'all'
-            ){
-                btn.classList.add('active');
-            }
-
-            else if(
-                btn.id === 'filterActive' &&
-                filter === 'active'
-            ){
-                btn.classList.add('active');
-            }
-
-            else if(
-                btn.id === 'filterSold' &&
-                filter === 'sold'
-            ){
-                btn.classList.add('active');
-            }
-
-            else if(
-                btn.id &&
-                btn.id.startsWith('filter')
-            ){
-                btn.classList.remove('active');
-            }
-
+            btn.classList.remove('active');
         });
 
-    renderCars();
+    if(filter === 'all'){
+        document
+            .getElementById('filterAll')
+            .classList.add('active');
+    }
+
+    if(filter === 'active'){
+        document
+            .getElementById('filterActive')
+            .classList.add('active');
+    }
+
+    if(filter === 'sold'){
+        document
+            .getElementById('filterSold')
+            .classList.add('active');
+    }
+
+    renderHomes();
 }
 
 /* =========================
-   RENDER CARS
+   HOME TYPE FILTER
 ========================= */
 
-function renderCars(){
+function setHomeType(type){
+
+    currentHomeType = type;
+
+    document
+        .querySelectorAll(
+            '#typeAll,#typeHouse,#typeYard,#typeApartment,#typeLand,#typeNew'
+        )
+        .forEach(btn => {
+            btn.classList.remove('active');
+        });
+
+    if(type === 'all'){
+        document
+            .getElementById('typeAll')
+            .classList.add('active');
+    }
+
+    if(type === '🏠 Uy'){
+        document
+            .getElementById('typeHouse')
+            .classList.add('active');
+    }
+
+    if(type === '🏡 Hovli'){
+        document
+            .getElementById('typeYard')
+            .classList.add('active');
+    }
+
+    if(type === '🏢 Kvartira'){
+        document
+            .getElementById('typeApartment')
+            .classList.add('active');
+    }
+
+    if(type === '🌳 Yer'){
+        document
+            .getElementById('typeLand')
+            .classList.add('active');
+    }
+
+    if(type === '🏗️ Yangi qurilish'){
+        document
+            .getElementById('typeNew')
+            .classList.add('active');
+    }
+
+    renderHomes();
+}
+
+/* =========================
+   RENDER HOMES
+========================= */
+
+function renderHomes(){
 
     const box =
         document.getElementById(
-            'manageCars'
+            'manageHomes'
         );
 
     const search =
@@ -2718,14 +2963,34 @@ function renderCars(){
             );
     }
 
+    if(currentHomeType !== 'all'){
+
+        list =
+            list.filter(
+                car =>
+                    (car.type || '🏠 Uy') ===
+                    currentHomeType
+            );
+    }
+
     if(search){
 
         list =
-            list.filter(car =>
-                String(car.name)
-                    .toLowerCase()
-                    .includes(search)
-            );
+            list.filter(car => {
+
+                const text =
+                    [
+                        car.name,
+                        car.type,
+                        car.address,
+                        car.description
+                    ]
+                    .filter(Boolean)
+                    .join(' ')
+                    .toLowerCase();
+
+                return text.includes(search);
+            });
     }
 
     if(!list.length){
@@ -2734,7 +2999,7 @@ function renderCars(){
             `<div class="panel"
                 style="grid-column:1/-1">
                 <div class="empty">
-                    Mashina topilmadi
+                    Uy topilmadi
                 </div>
             </div>`;
 
@@ -2751,6 +3016,24 @@ function renderCars(){
                       car.images[0]
                     : '';
 
+            const type =
+                car.type ||
+                '🏠 Uy';
+
+            const address =
+                car.address ||
+                '';
+
+            const rooms =
+                car.rooms
+                ? `${escapeHtml(car.rooms)} xona`
+                : '';
+
+            const area =
+                car.area
+                ? escapeHtml(car.area)
+                : '';
+
             return `
                 <div class="manage-card">
 
@@ -2766,8 +3049,8 @@ function renderCars(){
                             display:flex;
                             align-items:center;
                             justify-content:center;
-                            font-size:45px;">
-                            🚘
+                            font-size:55px;">
+                            🏠
                           </div>`
                     }
 
@@ -2780,6 +3063,48 @@ function renderCars(){
                         <div class="manage-price">
                             ${formatPrice(car.price)}
                         </div>
+
+                        <div class="manage-type">
+                            ${escapeHtml(type)}
+                        </div>
+
+                        ${
+                            address
+                            ? `<div
+                                style="
+                                color:var(--muted);
+                                font-size:12px;
+                                margin-top:9px;">
+                                📍 ${escapeHtml(address)}
+                              </div>`
+                            : ''
+                        }
+
+                        ${
+                            rooms || area
+                            ? `<div
+                                style="
+                                color:var(--muted);
+                                font-size:12px;
+                                margin-top:6px;">
+                                ${
+                                    rooms
+                                    ? '🛏️ ' + rooms
+                                    : ''
+                                }
+                                ${
+                                    rooms && area
+                                    ? ' • '
+                                    : ''
+                                }
+                                ${
+                                    area
+                                    ? '📐 ' + area
+                                    : ''
+                                }
+                              </div>`
+                            : ''
+                        }
 
                         <div class="manage-description">
                             ${
@@ -2902,8 +3227,8 @@ async function toggleSold(id){
 
         toast(
             data.sold
-                ? "Mashina sotildi deb belgilandi"
-                : "Mashina qaytarildi"
+                ? "Uy sotildi deb belgilandi"
+                : "Uy qaytarildi"
         );
 
         await loadAll();
@@ -2937,7 +3262,7 @@ async function removeCar(id){
 
     const ok =
         confirm(
-            "Bu mashinani o‘chirishga ishonchingiz komilmi?"
+            "Bu uyni o‘chirishga ishonchingiz komilmi?"
         );
 
     if(!ok){
@@ -2971,7 +3296,7 @@ async function removeCar(id){
         }
 
         toast(
-            "Mashina o‘chirildi"
+            "Uy o‘chirildi"
         );
 
         await loadAll();
