@@ -1,3 +1,4 @@
+```javascript
 const http = require('http');
 const fs = require('fs');
 const path = require('path');
@@ -38,9 +39,50 @@ async function initDatabase() {
         )
     `);
 
+    // Eski database uchun yangi ustunlar
     await pool.query(`
         ALTER TABLE cars
         ADD COLUMN IF NOT EXISTS sold BOOLEAN DEFAULT false
+    `);
+
+    await pool.query(`
+        ALTER TABLE cars
+        ADD COLUMN IF NOT EXISTS currency TEXT DEFAULT 'UZS'
+    `);
+
+    await pool.query(`
+        ALTER TABLE cars
+        ADD COLUMN IF NOT EXISTS type TEXT DEFAULT ''
+    `);
+
+    await pool.query(`
+        ALTER TABLE cars
+        ADD COLUMN IF NOT EXISTS types TEXT DEFAULT '[]'
+    `);
+
+    await pool.query(`
+        ALTER TABLE cars
+        ADD COLUMN IF NOT EXISTS location TEXT DEFAULT ''
+    `);
+
+    await pool.query(`
+        ALTER TABLE cars
+        ADD COLUMN IF NOT EXISTS address TEXT DEFAULT ''
+    `);
+
+    await pool.query(`
+        ALTER TABLE cars
+        ADD COLUMN IF NOT EXISTS rooms INTEGER DEFAULT 0
+    `);
+
+    await pool.query(`
+        ALTER TABLE cars
+        ADD COLUMN IF NOT EXISTS area INTEGER DEFAULT 0
+    `);
+
+    await pool.query(`
+        ALTER TABLE cars
+        ADD COLUMN IF NOT EXISTS phone TEXT DEFAULT ''
     `);
 
     await pool.query(`
@@ -211,7 +253,6 @@ function readBody(req) {
 // ADMIN PASSWORD
 // =====================================================
 
-// Header orqali tekshirish
 function isAdminHeader(req) {
 
     const password =
@@ -223,7 +264,6 @@ function isAdminHeader(req) {
     );
 }
 
-// Body orqali tekshirish
 function isAdminBody(body) {
 
     if (!body || typeof body !== 'object') {
@@ -236,7 +276,6 @@ function isAdminBody(body) {
     return password === ADMIN_PASSWORD;
 }
 
-// Ikkalasini ham qabul qiladi
 function isAdmin(req, body = null) {
 
     if (isAdminHeader(req)) {
@@ -264,7 +303,7 @@ function prepareImage(dataUrl) {
     }
 
     const match =
-        /^data:image\/jpeg;base64,(.+)$/
+        /^data:image\/jpeg;base64,(.+)$/i
             .exec(dataUrl);
 
     if (!match) {
@@ -322,18 +361,84 @@ function parseImages(row) {
     }
 }
 
+function parseTypes(row) {
+
+    if (!row.types) {
+
+        if (row.type) {
+            return [row.type];
+        }
+
+        return [];
+    }
+
+    try {
+
+        const types =
+            JSON.parse(row.types);
+
+        if (Array.isArray(types)) {
+            return types;
+        }
+
+    } catch (e) {}
+
+    if (row.type) {
+        return [row.type];
+    }
+
+    return [];
+}
+
 // =====================================================
 // CAR OUTPUT
 // =====================================================
 
 function carOut(row) {
 
+    const types = parseTypes(row);
+
     return {
+
         id: row.id,
 
-        name: row.name,
+        name:
+            row.name || '',
 
-        price: row.price,
+        title:
+            row.name || '',
+
+        price:
+            Number(row.price) || 0,
+
+        currency:
+            row.currency || 'UZS',
+
+        type:
+            row.type ||
+            types[0] ||
+            '',
+
+        types,
+
+        location:
+            row.location ||
+            row.address ||
+            '',
+
+        address:
+            row.address ||
+            row.location ||
+            '',
+
+        rooms:
+            Number(row.rooms) || 0,
+
+        area:
+            Number(row.area) || 0,
+
+        phone:
+            row.phone || '',
 
         description:
             row.description || '',
@@ -342,7 +447,10 @@ function carOut(row) {
             parseImages(row),
 
         sold:
-            row.sold || false
+            row.sold || false,
+
+        status:
+            row.sold ? 'sold' : 'available'
     };
 }
 
@@ -454,7 +562,7 @@ const server =
                 }
 
                 // =================================================
-                // ADD CAR / ADD HOME
+                // ADD CAR / HOME
                 // =================================================
 
                 if (
@@ -483,8 +591,6 @@ const server =
                         );
                     }
 
-                    // MUHIM:
-                    // Admin paneldagi password body ichidan ham olinadi
                     if (!isAdmin(req, body)) {
 
                         return sendJson(
@@ -504,12 +610,76 @@ const server =
 
                         const name =
                             String(
-                                body.name || ''
+                                body.name ||
+                                body.title ||
+                                ''
                             )
-                            .trim();
+                            .trim()
+                            .slice(0, 300);
 
                         const price =
                             Number(body.price);
+
+                        const currency =
+                            String(
+                                body.currency || 'UZS'
+                            )
+                            .toUpperCase();
+
+                        const type =
+                            String(
+                                body.type ||
+                                ''
+                            )
+                            .trim()
+                            .slice(0, 100);
+
+                        const types =
+                            Array.isArray(body.types)
+                                ? body.types
+                                    .map(
+                                        x =>
+                                            String(x)
+                                                .trim()
+                                    )
+                                    .filter(Boolean)
+                                    .slice(0, 3)
+                                : (
+                                    type
+                                        ? [type]
+                                        : []
+                                );
+
+                        const location =
+                            String(
+                                body.location ||
+                                body.address ||
+                                ''
+                            )
+                            .trim()
+                            .slice(0, 500);
+
+                        const address =
+                            String(
+                                body.address ||
+                                body.location ||
+                                ''
+                            )
+                            .trim()
+                            .slice(0, 500);
+
+                        const rooms =
+                            Number(body.rooms) || 0;
+
+                        const area =
+                            Number(body.area) || 0;
+
+                        const phone =
+                            String(
+                                body.phone || ''
+                            )
+                            .trim()
+                            .slice(0, 100);
 
                         const description =
                             String(
@@ -530,6 +700,36 @@ const server =
                                 {
                                     error:
                                         "Nom va narxni to'g'ri kiriting"
+                                }
+                            );
+                        }
+
+                        if (
+                            currency !== 'UZS' &&
+                            currency !== 'USD'
+                        ) {
+
+                            return sendJson(
+                                res,
+                                400,
+                                {
+                                    error:
+                                        "Valyuta noto'g'ri"
+                                }
+                            );
+                        }
+
+                        if (
+                            rooms < 0 ||
+                            area < 0
+                        ) {
+
+                            return sendJson(
+                                res,
+                                400,
+                                {
+                                    error:
+                                        "Xona yoki maydon noto'g'ri"
                                 }
                             );
                         }
@@ -595,32 +795,58 @@ const server =
                             );
                         }
 
-                        await client.query(
-                            `
-                            INSERT INTO cars
-                            (
-                                name,
-                                price,
-                                description,
-                                images
-                            )
-                            VALUES
-                            (
-                                $1,
-                                $2,
-                                $3,
-                                $4
-                            )
-                            `,
-                            [
-                                name,
-                                price,
-                                description,
-                                JSON.stringify(
-                                    savedNames
+                        const inserted =
+                            await client.query(
+                                `
+                                INSERT INTO cars
+                                (
+                                    name,
+                                    price,
+                                    description,
+                                    images,
+                                    currency,
+                                    type,
+                                    types,
+                                    location,
+                                    address,
+                                    rooms,
+                                    area,
+                                    phone,
+                                    sold
                                 )
-                            ]
-                        );
+                                VALUES
+                                (
+                                    $1,
+                                    $2,
+                                    $3,
+                                    $4,
+                                    $5,
+                                    $6,
+                                    $7,
+                                    $8,
+                                    $9,
+                                    $10,
+                                    $11,
+                                    $12,
+                                    false
+                                )
+                                RETURNING *
+                                `,
+                                [
+                                    name,
+                                    price,
+                                    description,
+                                    JSON.stringify(savedNames),
+                                    currency,
+                                    types[0] || '',
+                                    JSON.stringify(types),
+                                    location,
+                                    address,
+                                    rooms,
+                                    area,
+                                    phone
+                                ]
+                            );
 
                         await client.query(
                             'COMMIT'
@@ -630,18 +856,20 @@ const server =
                             res,
                             201,
                             {
-                                ok: true
+                                ok: true,
+                                car:
+                                    carOut(
+                                        inserted.rows[0]
+                                    )
                             }
                         );
 
                     } catch (e) {
 
                         try {
-
                             await client.query(
                                 'ROLLBACK'
                             );
-
                         } catch (_) {}
 
                         console.error(e);
@@ -653,6 +881,412 @@ const server =
                                 error:
                                     e.message ||
                                     "Ma'lumot noto'g'ri yoki juda katta"
+                            }
+                        );
+
+                    } finally {
+
+                        client.release();
+                    }
+                }
+
+                // =================================================
+                // EDIT CAR / HOME
+                // PUT /api/cars/:id
+                // =================================================
+
+                if (
+                    /^\/api\/cars\/\d+$/.test(url) &&
+                    req.method === 'PUT'
+                ) {
+
+                    let body;
+
+                    try {
+
+                        body =
+                            JSON.parse(
+                                await readBody(req)
+                            );
+
+                    } catch (e) {
+
+                        return sendJson(
+                            res,
+                            400,
+                            {
+                                error:
+                                    "Ma'lumot formati noto'g'ri"
+                            }
+                        );
+                    }
+
+                    if (!isAdmin(req, body)) {
+
+                        return sendJson(
+                            res,
+                            401,
+                            {
+                                error:
+                                    "Parol noto'g'ri"
+                            }
+                        );
+                    }
+
+                    const id =
+                        Number(
+                            url.split('/')[3]
+                        );
+
+                    if (
+                        !Number.isInteger(id)
+                    ) {
+
+                        return sendJson(
+                            res,
+                            400,
+                            {
+                                error:
+                                    "ID noto'g'ri"
+                            }
+                        );
+                    }
+
+                    const client =
+                        await pool.connect();
+
+                    try {
+
+                        const oldResult =
+                            await client.query(
+                                `
+                                SELECT *
+                                FROM cars
+                                WHERE id = $1
+                                `,
+                                [id]
+                            );
+
+                        if (
+                            oldResult.rows.length === 0
+                        ) {
+
+                            return sendJson(
+                                res,
+                                404,
+                                {
+                                    error:
+                                        "Uy topilmadi"
+                                }
+                            );
+                        }
+
+                        const oldCar =
+                            oldResult.rows[0];
+
+                        const name =
+                            String(
+                                body.name ||
+                                body.title ||
+                                oldCar.name ||
+                                ''
+                            )
+                            .trim()
+                            .slice(0, 300);
+
+                        const price =
+                            Number(
+                                body.price
+                            );
+
+                        const currency =
+                            String(
+                                body.currency ||
+                                oldCar.currency ||
+                                'UZS'
+                            )
+                            .toUpperCase();
+
+                        const type =
+                            String(
+                                body.type ||
+                                ''
+                            )
+                            .trim()
+                            .slice(0, 100);
+
+                        const types =
+                            Array.isArray(body.types)
+                                ? body.types
+                                    .map(
+                                        x =>
+                                            String(x)
+                                                .trim()
+                                    )
+                                    .filter(Boolean)
+                                    .slice(0, 3)
+                                : (
+                                    type
+                                        ? [type]
+                                        : parseTypes(oldCar)
+                                );
+
+                        const location =
+                            String(
+                                body.location !== undefined
+                                    ? body.location
+                                    : (
+                                        body.address !== undefined
+                                            ? body.address
+                                            : oldCar.location || ''
+                                    )
+                            )
+                            .trim()
+                            .slice(0, 500);
+
+                        const address =
+                            String(
+                                body.address !== undefined
+                                    ? body.address
+                                    : (
+                                        body.location !== undefined
+                                            ? body.location
+                                            : oldCar.address || ''
+                                    )
+                            )
+                            .trim()
+                            .slice(0, 500);
+
+                        const rooms =
+                            body.rooms !== undefined
+                                ? Number(body.rooms) || 0
+                                : Number(oldCar.rooms) || 0;
+
+                        const area =
+                            body.area !== undefined
+                                ? Number(body.area) || 0
+                                : Number(oldCar.area) || 0;
+
+                        const phone =
+                            String(
+                                body.phone !== undefined
+                                    ? body.phone
+                                    : oldCar.phone || ''
+                            )
+                            .trim()
+                            .slice(0, 100);
+
+                        const description =
+                            String(
+                                body.description !== undefined
+                                    ? body.description
+                                    : oldCar.description || ''
+                            )
+                            .trim()
+                            .slice(0, 2000);
+
+                        if (
+                            !name ||
+                            !Number.isInteger(price) ||
+                            price <= 0
+                        ) {
+
+                            return sendJson(
+                                res,
+                                400,
+                                {
+                                    error:
+                                        "Nom va narxni to'g'ri kiriting"
+                                }
+                            );
+                        }
+
+                        if (
+                            currency !== 'UZS' &&
+                            currency !== 'USD'
+                        ) {
+
+                            return sendJson(
+                                res,
+                                400,
+                                {
+                                    error:
+                                        "Valyuta noto'g'ri"
+                                }
+                            );
+                        }
+
+                        if (
+                            rooms < 0 ||
+                            area < 0
+                        ) {
+
+                            return sendJson(
+                                res,
+                                400,
+                                {
+                                    error:
+                                        "Xona yoki maydon noto'g'ri"
+                                }
+                            );
+                        }
+
+                        const incomingImages =
+                            Array.isArray(body.images)
+                                ? body.images
+                                : null;
+
+                        await client.query(
+                            'BEGIN'
+                        );
+
+                        let finalImages =
+                            parseImages(oldCar);
+
+                        // Agar yangi rasmlar yuborilgan bo'lsa
+                        // eskilar o'chiriladi va yangilari saqlanadi
+                        if (
+                            incomingImages !== null
+                        ) {
+
+                            if (
+                                incomingImages.length > 8
+                            ) {
+
+                                throw new Error(
+                                    "Ko'pi bilan 8 ta rasm"
+                                );
+                            }
+
+                            const preparedImages =
+                                incomingImages.map(
+                                    prepareImage
+                                );
+
+                            const savedNames = [];
+
+                            for (
+                                const image
+                                of preparedImages
+                            ) {
+
+                                await client.query(
+                                    `
+                                    INSERT INTO image_files
+                                    (
+                                        name,
+                                        data
+                                    )
+                                    VALUES
+                                    (
+                                        $1,
+                                        $2
+                                    )
+                                    `,
+                                    [
+                                        image.name,
+                                        image.buffer
+                                    ]
+                                );
+
+                                savedNames.push(
+                                    image.name
+                                );
+                            }
+
+                            for (
+                                const oldImage
+                                of finalImages
+                            ) {
+
+                                await client.query(
+                                    `
+                                    DELETE FROM image_files
+                                    WHERE name = $1
+                                    `,
+                                    [oldImage]
+                                );
+                            }
+
+                            finalImages =
+                                savedNames;
+                        }
+
+                        const updated =
+                            await client.query(
+                                `
+                                UPDATE cars
+
+                                SET
+                                    name = $1,
+                                    price = $2,
+                                    description = $3,
+                                    images = $4,
+                                    currency = $5,
+                                    type = $6,
+                                    types = $7,
+                                    location = $8,
+                                    address = $9,
+                                    rooms = $10,
+                                    area = $11,
+                                    phone = $12
+
+                                WHERE id = $13
+
+                                RETURNING *
+                                `,
+                                [
+                                    name,
+                                    price,
+                                    description,
+                                    JSON.stringify(
+                                        finalImages
+                                    ),
+                                    currency,
+                                    types[0] || '',
+                                    JSON.stringify(types),
+                                    location,
+                                    address,
+                                    rooms,
+                                    area,
+                                    phone,
+                                    id
+                                ]
+                            );
+
+                        await client.query(
+                            'COMMIT'
+                        );
+
+                        return sendJson(
+                            res,
+                            200,
+                            {
+                                ok: true,
+                                car:
+                                    carOut(
+                                        updated.rows[0]
+                                    )
+                            }
+                        );
+
+                    } catch (e) {
+
+                        try {
+                            await client.query(
+                                'ROLLBACK'
+                            );
+                        } catch (_) {}
+
+                        console.error(e);
+
+                        return sendJson(
+                            res,
+                            400,
+                            {
+                                error:
+                                    e.message ||
+                                    "Tahrirlashda xatolik"
                             }
                         );
 
@@ -679,9 +1313,7 @@ const server =
                                 whatsapp,
                                 instagram,
                                 address
-
                             FROM site_settings
-
                             WHERE id = 1
                         `);
 
@@ -1099,11 +1731,9 @@ const server =
                     } catch (e) {
 
                         try {
-
                             await client.query(
                                 'ROLLBACK'
                             );
-
                         } catch (_) {}
 
                         console.error(e);
@@ -1274,9 +1904,7 @@ const server =
                             SELECT
                                 views,
                                 calls
-
                             FROM stats
-
                             WHERE id = 1
                             `
                         );
@@ -1496,3 +2124,4 @@ process.on(
         process.exit(0);
     }
 );
+```
