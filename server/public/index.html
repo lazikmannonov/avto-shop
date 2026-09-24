@@ -1,12 +1,17 @@
+```html
 <!DOCTYPE html>
 <html lang="uz">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>pul.zarill</title>
+<title>pul.zarill — Uylar</title>
 
 <style>
-*{margin:0;padding:0;box-sizing:border-box}
+*{
+ margin:0;
+ padding:0;
+ box-sizing:border-box
+}
 
 :root{
  --bg:#f4f5f7;
@@ -39,8 +44,7 @@ body.dark{
 }
 
 /* =========================
-   PREMIUM ICONS
-   YANGILANGAN DIZAYN
+   ICONS
 ========================= */
 
 .icon{
@@ -54,12 +58,7 @@ body.dark{
  stroke-linecap:round;
  stroke-linejoin:round;
  flex:none;
- vector-effect:non-scaling-stroke;
- transition:
-  transform .22s ease,
-  color .22s ease,
-  opacity .22s ease,
-  filter .22s ease
+ transition:.22s
 }
 
 .icon-fill{
@@ -75,46 +74,6 @@ body.dark{
 .icon-sm{
  width:17px;
  height:17px
-}
-
-.icon-btn{
- display:inline-flex;
- align-items:center;
- justify-content:center
-}
-
-.text-icon{
- display:inline-flex;
- align-items:center;
- gap:7px
-}
-
-/* Premium icon interactions */
-
-button:hover .icon,
-a:hover .icon{
- transform:translateY(-1px)
-}
-
-.favorite:hover .icon{
- transform:scale(1.08)
-}
-
-.favorite.active .icon{
- filter:drop-shadow(0 0 5px rgba(255,59,48,.28))
-}
-
-.call-btn:hover .icon,
-.details-call:hover .icon{
- transform:scale(1.06) rotate(-4deg)
-}
-
-.bottom-nav button:hover .icon{
- transform:translateY(-2px)
-}
-
-.bottom-nav button.active .icon{
- filter:drop-shadow(0 0 6px rgba(25,214,107,.35))
 }
 
 /* =========================
@@ -147,7 +106,6 @@ header{
  font-size:34px;
  font-weight:900;
  letter-spacing:-1.5px;
- line-height:1;
  white-space:nowrap
 }
 
@@ -167,33 +125,7 @@ header{
  background:#19d66b;
  filter:blur(48px);
  opacity:.48;
- z-index:-1;
- animation:logoGlow 15s ease-in-out infinite
-}
-
-@keyframes logoGlow{
- 0%,100%{
-  background:#19d66b;
-  transform:translate(-50%,-50%) scale(1);
-  opacity:.45
- }
- 16%{
-  transform:translate(-38%,-50%) scale(1.05)
- }
- 33%{
-  background:#ffd21c;
-  transform:translate(-50%,-50%) scale(1.05)
- }
- 50%{
-  transform:translate(-62%,-48%) scale(1.04)
- }
- 66%{
-  background:#ff3b30;
-  transform:translate(-50%,-50%) scale(1.05)
- }
- 83%{
-  transform:translate(-38%,-50%) scale(1.03)
- }
+ z-index:-1
 }
 
 .header-right{
@@ -263,12 +195,12 @@ header{
 .search-box{
  display:flex;
  gap:10px;
- margin-bottom:20px
+ margin-bottom:14px
 }
 
 .search-box input{
  flex:1;
- height:50px;
+ height:52px;
  border:1px solid var(--border);
  background:var(--card);
  color:var(--text);
@@ -285,7 +217,7 @@ header{
 }
 
 .search-reset{
- width:50px;
+ width:52px;
  border:none;
  border-radius:14px;
  background:#050505;
@@ -296,8 +228,49 @@ header{
  justify-content:center
 }
 
-.search-reset:hover .icon{
- transform:scale(1.08) rotate(-8deg)
+/* =========================
+   PROPERTY CATEGORIES
+========================= */
+
+.categories{
+ display:flex;
+ gap:8px;
+ overflow-x:auto;
+ padding:2px 0 16px;
+ scrollbar-width:none
+}
+
+.categories::-webkit-scrollbar{
+ display:none
+}
+
+.category-btn{
+ border:1px solid var(--border);
+ background:var(--card);
+ color:var(--text);
+ border-radius:12px;
+ padding:10px 15px;
+ white-space:nowrap;
+ cursor:pointer;
+ font-weight:700;
+ font-size:13px;
+ transition:.2s
+}
+
+.category-btn:hover{
+ transform:translateY(-1px)
+}
+
+.category-btn.active{
+ background:#050505;
+ color:#fff;
+ border-color:#050505
+}
+
+body.dark .category-btn.active{
+ background:#fff;
+ color:#111;
+ border-color:#fff
 }
 
 /* =========================
@@ -341,7 +314,7 @@ header{
  border-radius:20px;
  overflow:hidden;
  box-shadow:var(--shadow);
- transition:transform .25s ease,box-shadow .25s ease
+ transition:.25s
 }
 
 .car-card:hover{
@@ -362,7 +335,7 @@ header{
  height:100%;
  object-fit:cover;
  display:block;
- transition:transform .35s ease
+ transition:.35s
 }
 
 .car-card:hover .car-image{
@@ -399,14 +372,9 @@ header{
  background:rgba(0,0,0,.68);
  color:#fff;
  cursor:pointer;
- transition:.2s;
  display:flex;
  align-items:center;
  justify-content:center
-}
-
-.favorite:hover{
- transform:scale(1.08)
 }
 
 .favorite.active{
@@ -441,7 +409,33 @@ header{
 .car-price{
  font-size:20px;
  font-weight:900;
- margin-bottom:8px
+ margin-bottom:9px
+}
+
+.property-meta{
+ display:flex;
+ flex-wrap:wrap;
+ gap:6px;
+ margin-bottom:10px
+}
+
+.meta-item{
+ background:var(--bg);
+ border:1px solid var(--border);
+ color:var(--muted);
+ border-radius:8px;
+ padding:5px 8px;
+ font-size:11px;
+ font-weight:700
+}
+
+.car-address{
+ color:var(--muted);
+ font-size:12px;
+ margin-bottom:8px;
+ display:flex;
+ align-items:center;
+ gap:5px
 }
 
 .car-description{
@@ -549,8 +543,7 @@ body.dark .detail-btn{
  height:14px;
  background:#e5e5e5;
  border-radius:8px;
- margin-bottom:10px;
- animation:skeleton 1.2s infinite
+ margin-bottom:10px
 }
 
 .skeleton-line.big{
@@ -579,10 +572,6 @@ body.dark .detail-btn{
  display:inline-flex;
  align-items:center;
  gap:7px
-}
-
-.back-btn:hover .icon{
- transform:translateX(-2px)
 }
 
 .details-card{
@@ -620,6 +609,27 @@ body.dark .detail-btn{
  margin-bottom:18px
 }
 
+.details-meta{
+ display:grid;
+ grid-template-columns:repeat(2,1fr);
+ gap:10px;
+ margin-bottom:20px
+}
+
+.details-meta-item{
+ background:var(--bg);
+ border:1px solid var(--border);
+ border-radius:12px;
+ padding:12px
+}
+
+.details-meta-item b{
+ display:block;
+ font-size:12px;
+ color:var(--muted);
+ margin-bottom:4px
+}
+
 .details-description{
  color:var(--muted);
  line-height:1.7;
@@ -639,10 +649,6 @@ body.dark .detail-btn{
  font-weight:900;
  text-decoration:none
 }
-
-/* =========================
-   THUMBNAILS
-========================= */
 
 .thumbnails{
  display:flex;
@@ -714,11 +720,6 @@ body.dark .detail-btn{
  gap:6px
 }
 
-.menu-item:hover > .icon{
- color:#19d66b;
- transform:translateX(-2px)
-}
-
 /* =========================
    LIGHTBOX
 ========================= */
@@ -774,13 +775,8 @@ body.dark .detail-btn{
  font-size:30px
 }
 
-.lightbox-prev{
- left:20px
-}
-
-.lightbox-next{
- right:20px
-}
+.lightbox-prev{left:20px}
+.lightbox-next{right:20px}
 
 /* =========================
    BOTTOM NAV
@@ -809,8 +805,7 @@ body.dark .detail-btn{
  display:flex;
  flex-direction:column;
  align-items:center;
- gap:3px;
- transition:color .22s ease
+ gap:3px
 }
 
 .bottom-nav button.active{
@@ -851,14 +846,7 @@ body.dark .detail-btn{
  }
 
  .logo{
-  font-size:28px;
-  letter-spacing:-1px
- }
-
- .logo:before{
-  width:220px;
-  height:95px;
-  filter:blur(40px)
+  font-size:28px
  }
 
  .phone-top{
@@ -894,6 +882,19 @@ body.dark .detail-btn{
 
  .car-price{
   font-size:16px
+ }
+
+ .property-meta{
+  gap:4px
+ }
+
+ .meta-item{
+  font-size:9px;
+  padding:4px 6px
+ }
+
+ .car-address{
+  font-size:10px
  }
 
  .car-description{
@@ -947,6 +948,10 @@ body.dark .detail-btn{
  .details-price{
   font-size:22px
  }
+
+ .details-meta{
+  grid-template-columns:1fr 1fr
+ }
 }
 </style>
 </head>
@@ -954,7 +959,7 @@ body.dark .detail-btn{
 <body>
 
 <!-- =========================
-     SVG ICON SPRITE
+     ICONS
 ========================= -->
 
 <svg width="0" height="0" style="position:absolute">
@@ -984,36 +989,32 @@ body.dark .detail-btn{
  <path d="m16 16 4.4 4.4"/>
 </symbol>
 
-<symbol id="i-car" viewBox="0 0 24 24">
- <path d="M4.2 16.8 5.7 9l2-3.5h8.6l2 3.5 1.5 7.8"/>
- <path d="M5.2 10.2h13.6"/>
- <path d="M8 5.5 9 3.8h6l1 1.7"/>
- <path d="M4.2 16.8h15.6"/>
- <circle cx="7.3" cy="17" r="1.45"/>
- <circle cx="16.7" cy="17" r="1.45"/>
-</symbol>
-
-<symbol id="i-settings" viewBox="0 0 24 24">
- <circle cx="12" cy="12" r="3.2"/>
- <path d="M19.2 13.5a1.8 1.8 0 0 0 0-3l-.8-.5a1.7 1.7 0 0 1-.6-2.1l.3-.8-1.8-1.8-.8.3a1.7 1.7 0 0 1-2.1-.6l-.5-.8h-2.5l-.5.8a1.7 1.7 0 0 1-2.1.6l-.8-.3-1.8 1.8.3.8a1.7 1.7 0 0 1-.6 2.1l-.8.5a1.8 1.8 0 0 0 0 3l.8.5a1.7 1.7 0 0 1 .6 2.1l-.3.8 1.8 1.8.8-.3a1.7 1.7 0 0 1 2.1.6l.5.8h2.5l.5-.8a1.7 1.7 0 0 1 2.1-.6l.8.3 1.8-1.8-.3-.8a1.7 1.7 0 0 1 .6-2.1Z"/>
-</symbol>
-
 <symbol id="i-home" viewBox="0 0 24 24">
  <path d="m3.5 10.5 8.5-7 8.5 7"/>
  <path d="M5.5 9.5v10a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-10"/>
  <path d="M9.5 20.5v-6h5v6"/>
 </symbol>
 
-<symbol id="i-menu" viewBox="0 0 24 24">
- <path d="M4 6.5h16"/>
- <path d="M4 12h16"/>
- <path d="M4 17.5h16"/>
+<symbol id="i-building" viewBox="0 0 24 24">
+ <path d="M5 21V4h10v17"/>
+ <path d="M15 9h4v12"/>
+ <path d="M8 7h3"/>
+ <path d="M8 11h3"/>
+ <path d="M8 15h3"/>
+ <path d="M17 13h1"/>
+ <path d="M17 17h1"/>
+ <path d="M9 21v-3h2v3"/>
+</symbol>
+
+<symbol id="i-land" viewBox="0 0 24 24">
+ <path d="M3 19c4-4 7-5 10-3 3 2 5 1 8-2"/>
+ <path d="M3 15c4-4 7-5 10-3 3 2 5 1 8-2"/>
+ <path d="M3 21h18"/>
 </symbol>
 
 <symbol id="i-camera" viewBox="0 0 24 24">
  <path d="M4 7.5h3.5l1.6-2.2h5.8l1.6 2.2H20v11H4Z"/>
  <circle cx="12" cy="13" r="3.25"/>
- <path d="M8 10h.01"/>
 </symbol>
 
 <symbol id="i-arrow-left" viewBox="0 0 24 24">
@@ -1028,8 +1029,6 @@ body.dark .detail-btn{
  <path d="m17.8 17.8 1.3 1.3"/>
  <path d="M2.5 12h1.8"/>
  <path d="M19.7 12h1.8"/>
- <path d="m4.9 19.1 1.3-1.3"/>
- <path d="m17.8 6.2 1.3-1.3"/>
 </symbol>
 
 <symbol id="i-moon" viewBox="0 0 24 24">
@@ -1039,18 +1038,15 @@ body.dark .detail-btn{
 <symbol id="i-telegram" viewBox="0 0 24 24">
  <path d="m21 3-6.7 17.8-4-6.1L4 12.2 21 3Z"/>
  <path d="m10.3 14.7 5.4-5"/>
- <path d="m4 12.2 6.3 2.5"/>
 </symbol>
 
 <symbol id="i-instagram" viewBox="0 0 24 24">
  <rect x="3.2" y="3.2" width="17.6" height="17.6" rx="5"/>
  <circle cx="12" cy="12" r="4"/>
- <circle cx="17.4" cy="6.7" r=".85" fill="currentColor" stroke="none"/>
 </symbol>
 
 <symbol id="i-whatsapp" viewBox="0 0 24 24">
  <path d="M20.1 11.4a8.1 8.1 0 0 1-11.9 7L4 20l1.6-4A8.1 8.1 0 1 1 20.1 11.4Z"/>
- <path d="M8.9 8.1c.2-.4.5-.4.8-.1l1 .9c.2.2.2.5.1.8l-.5.7c.7 1 1.6 1.8 2.7 2.3l.6-.5c.2-.2.5-.2.8 0l1 .9c.3.3.2.6-.1.8-.5.3-1 .4-1.5.2-2.5-.8-4.5-2.8-5.3-5.3-.2-.5-.1-1 .2-1.5Z"/>
 </symbol>
 
 </svg>
@@ -1074,23 +1070,14 @@ body.dark .detail-btn{
    +998 88 950 00 05
   </a>
 
-  <button class="lang-btn active" onclick="setLang('uz')">
-   UZ
-  </button>
-
-  <button class="lang-btn" onclick="setLang('ru')">
-   RU
-  </button>
-
-  <button class="lang-btn" onclick="setLang('en')">
-   EN
-  </button>
+  <button class="lang-btn active" onclick="setLang('uz')">UZ</button>
+  <button class="lang-btn" onclick="setLang('ru')">RU</button>
+  <button class="lang-btn" onclick="setLang('en')">EN</button>
 
   <button
    class="theme-btn"
    onclick="toggleTheme()"
    id="themeBtn"
-   aria-label="Theme"
   ></button>
 
  </div>
@@ -1101,6 +1088,10 @@ body.dark .detail-btn{
 
 <main class="container">
 
+<!-- =========================
+     HOME
+========================= -->
+
 <section id="homePage" class="page active">
 
  <div class="search-box">
@@ -1108,18 +1099,65 @@ body.dark .detail-btn{
   <input
    id="searchInput"
    type="text"
-   placeholder="Mashina qidirish..."
+   placeholder="Uy qidirish..."
    oninput="searchCars()"
   >
 
   <button
    class="search-reset"
    onclick="resetSearch()"
-   aria-label="Tozalash"
   >
    <svg class="icon">
-    <use href="#i-search"/>
+    <use href="#i-search"></use>
    </svg>
+  </button>
+
+ </div>
+
+ <!-- KATEGORIYALAR -->
+
+ <div class="categories">
+
+  <button
+   class="category-btn active"
+   onclick="filterType('all',this)"
+  >
+   🏠 Barchasi
+  </button>
+
+  <button
+   class="category-btn"
+   onclick="filterType('Uy',this)"
+  >
+   🏠 Uy
+  </button>
+
+  <button
+   class="category-btn"
+   onclick="filterType('Hovli',this)"
+  >
+   🏡 Hovli
+  </button>
+
+  <button
+   class="category-btn"
+   onclick="filterType('Kvartira',this)"
+  >
+   🏢 Kvartira
+  </button>
+
+  <button
+   class="category-btn"
+   onclick="filterType('Yer',this)"
+  >
+   🌳 Yer
+  </button>
+
+  <button
+   class="category-btn"
+   onclick="filterType('Yangi qurilish',this)"
+  >
+   🏗️ Yangi qurilish
   </button>
 
  </div>
@@ -1127,7 +1165,7 @@ body.dark .detail-btn{
  <div class="results-info">
 
   <h2 id="carsTitle">
-   Avtomobillar
+   Uylar
   </h2>
 
   <span
@@ -1175,6 +1213,10 @@ body.dark .detail-btn{
 
 </section>
 
+<!-- =========================
+     DETAILS
+========================= -->
+
 <section id="detailsPage" class="page">
 
  <button
@@ -1183,7 +1225,7 @@ body.dark .detail-btn{
  >
 
   <svg class="icon">
-   <use href="#i-arrow-left"/>
+   <use href="#i-arrow-left"></use>
   </svg>
 
   <span id="backText">
@@ -1199,6 +1241,10 @@ body.dark .detail-btn{
 
 </section>
 
+<!-- =========================
+     MENU
+========================= -->
+
 <section id="menuPage" class="page">
 
 <div class="menu-card">
@@ -1210,10 +1256,10 @@ body.dark .detail-btn{
    <span class="menu-item-title">
 
     <svg class="icon">
-     <use href="#i-car"/>
+     <use href="#i-home"></use>
     </svg>
 
-    <span id="menuBrand">
+    <span>
      pul.zarill
     </span>
 
@@ -1223,13 +1269,13 @@ body.dark .detail-btn{
     class="menu-item-sub"
     id="menuPlatform"
    >
-    Avtomobillar platformasi
+    Uy-joy platformasi
    </span>
 
   </div>
 
   <svg class="icon icon-lg">
-   <use href="#i-car"/>
+   <use href="#i-home"></use>
   </svg>
 
  </div>
@@ -1241,7 +1287,7 @@ body.dark .detail-btn{
    <span class="menu-item-title">
 
     <svg class="icon">
-     <use href="#i-phone"/>
+     <use href="#i-phone"></use>
     </svg>
 
     <span id="menuPhoneTitle">
@@ -1276,7 +1322,7 @@ body.dark .detail-btn{
    <span class="menu-item-title">
 
     <svg class="icon">
-     <use href="#i-telegram"/>
+     <use href="#i-telegram"></use>
     </svg>
 
     <span id="menuTelegramTitle">
@@ -1300,9 +1346,7 @@ body.dark .detail-btn{
    target="_blank"
    rel="noopener"
   >
-   <span id="menuOpenTelegram">
-    Ochish
-   </span>
+   <span id="menuOpenTelegram">Ochish</span>
   </a>
 
  </div>
@@ -1314,7 +1358,7 @@ body.dark .detail-btn{
    <span class="menu-item-title">
 
     <svg class="icon">
-     <use href="#i-whatsapp"/>
+     <use href="#i-whatsapp"></use>
     </svg>
 
     <span id="menuWhatsappTitle">
@@ -1338,9 +1382,7 @@ body.dark .detail-btn{
    target="_blank"
    rel="noopener"
   >
-   <span id="menuOpenWhatsapp">
-    Ochish
-   </span>
+   <span id="menuOpenWhatsapp">Ochish</span>
   </a>
 
  </div>
@@ -1352,7 +1394,7 @@ body.dark .detail-btn{
    <span class="menu-item-title">
 
     <svg class="icon">
-     <use href="#i-instagram"/>
+     <use href="#i-instagram"></use>
     </svg>
 
     <span id="menuInstagramTitle">
@@ -1376,9 +1418,7 @@ body.dark .detail-btn{
    target="_blank"
    rel="noopener"
   >
-   <span id="menuOpenInstagram">
-    Ochish
-   </span>
+   <span id="menuOpenInstagram">Ochish</span>
   </a>
 
  </div>
@@ -1390,7 +1430,7 @@ body.dark .detail-btn{
    <span class="menu-item-title">
 
     <svg class="icon">
-     <use href="#i-location"/>
+     <use href="#i-location"></use>
     </svg>
 
     <span id="menuAddressTitle">
@@ -1403,13 +1443,13 @@ body.dark .detail-btn{
     class="menu-item-sub"
     id="menuAddress"
    >
-    Toshkent, O'zbekiston
+    Toshkent, O‘zbekiston
    </span>
 
   </div>
 
   <svg class="icon icon-lg">
-   <use href="#i-location"/>
+   <use href="#i-location"></use>
   </svg>
 
  </div>
@@ -1421,7 +1461,7 @@ body.dark .detail-btn{
    <span class="menu-item-title">
 
     <svg class="icon">
-     <use href="#i-globe"/>
+     <use href="#i-globe"></use>
     </svg>
 
     <span id="menuLanguageTitle">
@@ -1440,7 +1480,7 @@ body.dark .detail-btn{
   </div>
 
   <svg class="icon icon-lg">
-   <use href="#i-globe"/>
+   <use href="#i-globe"></use>
   </svg>
 
  </div>
@@ -1452,7 +1492,7 @@ body.dark .detail-btn{
    <span class="menu-item-title">
 
     <svg class="icon">
-     <use href="#i-settings"/>
+     <use href="#i-home"></use>
     </svg>
 
     <span id="menuAppearanceTitle">
@@ -1484,6 +1524,10 @@ body.dark .detail-btn{
 
 </main>
 
+<!-- =========================
+     BOTTOM NAV
+========================= -->
+
 <nav class="bottom-nav">
 
 <button
@@ -1493,11 +1537,9 @@ body.dark .detail-btn{
 >
 
  <span class="bottom-icon">
-
   <svg class="icon">
-   <use href="#i-home"/>
+   <use href="#i-home"></use>
   </svg>
-
  </span>
 
  <span id="navHomeText">
@@ -1509,11 +1551,9 @@ body.dark .detail-btn{
 <button onclick="focusSearch()">
 
  <span class="bottom-icon">
-
   <svg class="icon">
-   <use href="#i-search"/>
+   <use href="#i-search"></use>
   </svg>
-
  </span>
 
  <span id="navSearchText">
@@ -1525,11 +1565,9 @@ body.dark .detail-btn{
 <button onclick="showFavorites()">
 
  <span class="bottom-icon">
-
   <svg class="icon">
-   <use href="#i-heart"/>
+   <use href="#i-heart"></use>
   </svg>
-
  </span>
 
  <span id="navFavoritesText">
@@ -1541,11 +1579,9 @@ body.dark .detail-btn{
 <button onclick="showMenu()">
 
  <span class="bottom-icon">
-
   <svg class="icon">
-   <use href="#i-menu"/>
+   <use href="#i-home"></use>
   </svg>
-
  </span>
 
  <span id="navMenuText">
@@ -1555,6 +1591,10 @@ body.dark .detail-btn{
 </button>
 
 </nav>
+
+<!-- =========================
+     LIGHTBOX
+========================= -->
 
 <div
  class="lightbox"
@@ -1594,6 +1634,7 @@ body.dark .detail-btn{
 
 let allCars=[];
 let filteredCars=[];
+let currentType="all";
 
 let favorites=
  JSON.parse(
@@ -1611,7 +1652,7 @@ let siteSettings={
  telegram:"https://t.me/",
  whatsapp:"https://wa.me/",
  instagram:"https://instagram.com/",
- address:"Toshkent, O'zbekiston"
+ address:"Toshkent, O‘zbekiston"
 };
 
 /* =========================
@@ -1621,8 +1662,8 @@ let siteSettings={
 const translations={
 
  uz:{
-  search:"Mashina qidirish...",
-  cars:"Avtomobillar",
+  search:"Uy qidirish...",
+  cars:"Uylar",
   back:"Orqaga",
   call:"Qo‘ng‘iroq qilish",
   callShort:"Qo‘ng‘iroq",
@@ -1636,7 +1677,7 @@ const translations={
   favorites:"Sevimlilar",
   menu:"Menyu",
 
-  platform:"Avtomobillar platformasi",
+  platform:"Uy-joy platformasi",
 
   phone:"Telefon",
   phoneSub:"Biz bilan bog‘lanish",
@@ -1660,19 +1701,24 @@ const translations={
 
   open:"Ochish",
 
-  empty:"Hozircha mashina topilmadi",
-  emptyText:"Boshqa mashina nomini qidirib ko‘ring.",
+  empty:"Hozircha uy topilmadi",
+  emptyText:"Boshqa uy yoki manzilni qidirib ko‘ring.",
 
-  noFavorites:"Sevimli mashinalar yo‘q",
-  noFavoritesText:"Mashina kartasidagi yurak tugmasini bosing.",
+  noFavorites:"Sevimli uylar yo‘q",
+  noFavoritesText:"Uy kartasidagi yurak tugmasini bosing.",
 
   loadingError:"Ma'lumot yuklanmadi",
-  serverError:"Server bilan bog‘lanishda xatolik yuz berdi."
+  serverError:"Server bilan bog‘lanishda xatolik yuz berdi.",
+
+  type:"Turi",
+  rooms:"Xonalar",
+  area:"Maydon",
+  addressLabel:"Manzil"
  },
 
  ru:{
-  search:"Поиск автомобиля...",
-  cars:"Автомобили",
+  search:"Поиск жилья...",
+  cars:"Недвижимость",
   back:"Назад",
   call:"Позвонить",
   callShort:"Позвонить",
@@ -1686,7 +1732,7 @@ const translations={
   favorites:"Избранное",
   menu:"Меню",
 
-  platform:"Автомобильная платформа",
+  platform:"Платформа недвижимости",
 
   phone:"Телефон",
   phoneSub:"Связаться с нами",
@@ -1710,19 +1756,24 @@ const translations={
 
   open:"Открыть",
 
-  empty:"Автомобили не найдены",
-  emptyText:"Попробуйте поискать другой автомобиль.",
+  empty:"Жильё не найдено",
+  emptyText:"Попробуйте поискать другой вариант.",
 
-  noFavorites:"Нет избранных автомобилей",
-  noFavoritesText:"Нажмите на сердечко на карточке автомобиля.",
+  noFavorites:"Нет избранного жилья",
+  noFavoritesText:"Нажмите на сердечко на карточке.",
 
   loadingError:"Не удалось загрузить данные",
-  serverError:"Ошибка соединения с сервером."
+  serverError:"Ошибка соединения с сервером.",
+
+  type:"Тип",
+  rooms:"Комнаты",
+  area:"Площадь",
+  addressLabel:"Адрес"
  },
 
  en:{
-  search:"Search car...",
-  cars:"Cars",
+  search:"Search property...",
+  cars:"Properties",
   back:"Back",
   call:"Call",
   callShort:"Call",
@@ -1736,7 +1787,7 @@ const translations={
   favorites:"Favorites",
   menu:"Menu",
 
-  platform:"Automobile platform",
+  platform:"Real estate platform",
 
   phone:"Phone",
   phoneSub:"Contact us",
@@ -1760,14 +1811,19 @@ const translations={
 
   open:"Open",
 
-  empty:"No cars found",
-  emptyText:"Try searching for another car.",
+  empty:"No property found",
+  emptyText:"Try searching for another property.",
 
-  noFavorites:"No favorite cars",
-  noFavoritesText:"Press the heart button on a car card.",
+  noFavorites:"No favorite properties",
+  noFavoritesText:"Press the heart button on a property card.",
 
   loadingError:"Failed to load data",
-  serverError:"Could not connect to the server."
+  serverError:"Could not connect to the server.",
+
+  type:"Type",
+  rooms:"Rooms",
+  area:"Area",
+  addressLabel:"Address"
  }
 
 };
@@ -1820,19 +1876,12 @@ async function loadSettings(){
 
  }catch(error){
 
-  console.error(
-   "Settings:",
-   error
-  );
+  console.error("Settings:",error);
 
  }
 
  applySettings();
 }
-
-/* =========================
-   APPLY SETTINGS
-========================= */
 
 function applySettings(){
 
@@ -1843,9 +1892,7 @@ function applySettings(){
   phoneHref(phone);
 
  const headerPhone=
-  document.getElementById(
-   "headerPhone"
-  );
+  document.getElementById("headerPhone");
 
  if(headerPhone){
 
@@ -1855,9 +1902,7 @@ function applySettings(){
  }
 
  const menuPhone=
-  document.getElementById(
-   "menuPhone"
-  );
+  document.getElementById("menuPhone");
 
  if(menuPhone){
 
@@ -1867,36 +1912,28 @@ function applySettings(){
  }
 
  const telegram=
-  document.getElementById(
-   "menuTelegram"
-  );
+  document.getElementById("menuTelegram");
 
  if(telegram)
   telegram.href=
    siteSettings.telegram||"#";
 
  const whatsapp=
-  document.getElementById(
-   "menuWhatsapp"
-  );
+  document.getElementById("menuWhatsapp");
 
  if(whatsapp)
   whatsapp.href=
    siteSettings.whatsapp||"#";
 
  const instagram=
-  document.getElementById(
-   "menuInstagram"
-  );
+  document.getElementById("menuInstagram");
 
  if(instagram)
   instagram.href=
    siteSettings.instagram||"#";
 
  const address=
-  document.getElementById(
-   "menuAddress"
-  );
+  document.getElementById("menuAddress");
 
  if(address)
   address.textContent=
@@ -1909,9 +1946,7 @@ function applySettings(){
   });
 
  const detailsCall=
-  document.querySelector(
-   ".details-call"
-  );
+  document.querySelector(".details-call");
 
  if(detailsCall)
   detailsCall.href=href;
@@ -1933,11 +1968,9 @@ function setLang(lang){
   lang
  );
 
- document.documentElement.lang=
-  lang;
+ document.documentElement.lang=lang;
 
  applyLang();
-
  renderFiltered();
 
  if(
@@ -1949,17 +1982,10 @@ function setLang(lang){
   currentDetailsCar
  ){
 
-  openDetails(
-   currentDetailsCar
-  );
+  openDetails(currentDetailsCar);
 
  }
-
 }
-
-/* =========================
-   APPLY ALL LANGUAGE TEXT
-========================= */
 
 function applyLang(){
 
@@ -1967,152 +1993,43 @@ function applyLang(){
   translations[currentLang];
 
  const searchInput=
-  document.getElementById(
-   "searchInput"
-  );
+  document.getElementById("searchInput");
 
  if(searchInput)
-  searchInput.placeholder=
-   t.search;
+  searchInput.placeholder=t.search;
 
- const carsTitle=
-  document.getElementById(
-   "carsTitle"
-  );
+ setText("carsTitle",t.cars);
+ setText("backText",t.back);
 
- if(carsTitle)
-  carsTitle.textContent=
-   t.cars;
+ setText("navHomeText",t.home);
+ setText("navSearchText",t.searchNav);
+ setText("navFavoritesText",t.favorites);
+ setText("navMenuText",t.menu);
 
- const backText=
-  document.getElementById(
-   "backText"
-  );
+ setText("menuPlatform",t.platform);
+ setText("menuPhoneTitle",t.phone);
+ setText("menuPhoneSub",t.phoneSub);
 
- if(backText)
-  backText.textContent=
-   t.back;
+ setText("menuTelegramTitle",t.telegram);
+ setText("menuTelegramSub",t.telegramSub);
 
- const navHomeText=
-  document.getElementById(
-   "navHomeText"
-  );
+ setText("menuWhatsappTitle",t.whatsapp);
+ setText("menuWhatsappSub",t.whatsappSub);
 
- if(navHomeText)
-  navHomeText.textContent=
-   t.home;
+ setText("menuInstagramTitle",t.instagram);
+ setText("menuInstagramSub",t.instagramSub);
 
- const navSearchText=
-  document.getElementById(
-   "navSearchText"
-  );
+ setText("menuAddressTitle",t.address);
 
- if(navSearchText)
-  navSearchText.textContent=
-   t.searchNav;
+ setText("menuLanguageTitle",t.language);
+ setText("menuLanguageSub",t.languageSub);
 
- const navFavoritesText=
-  document.getElementById(
-   "navFavoritesText"
-  );
+ setText("menuAppearanceTitle",t.appearance);
+ setText("menuAppearanceSub",t.appearanceSub);
 
- if(navFavoritesText)
-  navFavoritesText.textContent=
-   t.favorites;
-
- const navMenuText=
-  document.getElementById(
-   "navMenuText"
-  );
-
- if(navMenuText)
-  navMenuText.textContent=
-   t.menu;
-
- setText(
-  "menuPlatform",
-  t.platform
- );
-
- setText(
-  "menuPhoneTitle",
-  t.phone
- );
-
- setText(
-  "menuPhoneSub",
-  t.phoneSub
- );
-
- setText(
-  "menuTelegramTitle",
-  t.telegram
- );
-
- setText(
-  "menuTelegramSub",
-  t.telegramSub
- );
-
- setText(
-  "menuWhatsappTitle",
-  t.whatsapp
- );
-
- setText(
-  "menuWhatsappSub",
-  t.whatsappSub
- );
-
- setText(
-  "menuInstagramTitle",
-  t.instagram
- );
-
- setText(
-  "menuInstagramSub",
-  t.instagramSub
- );
-
- setText(
-  "menuAddressTitle",
-  t.address
- );
-
- setText(
-  "menuLanguageTitle",
-  t.language
- );
-
- setText(
-  "menuLanguageSub",
-  t.languageSub
- );
-
- setText(
-  "menuAppearanceTitle",
-  t.appearance
- );
-
- setText(
-  "menuAppearanceSub",
-  t.appearanceSub
- );
-
- setText(
-  "menuOpenTelegram",
-  t.open
- );
-
- setText(
-  "menuOpenWhatsapp",
-  t.open
- );
-
- setText(
-  "menuOpenInstagram",
-  t.open
- );
+ setText("menuOpenTelegram",t.open);
+ setText("menuOpenWhatsapp",t.open);
+ setText("menuOpenInstagram",t.open);
 
  document
   .querySelectorAll(".lang-btn")
@@ -2120,19 +2037,11 @@ function applyLang(){
 
    button.classList.toggle(
     "active",
-    button.textContent
-     .trim()
-     .toLowerCase()===
-     currentLang
+    button.textContent.trim().toLowerCase()===currentLang
    );
 
   });
-
 }
-
-/* =========================
-   TEXT HELPER
-========================= */
 
 function setText(id,value){
 
@@ -2149,13 +2058,10 @@ function setText(id,value){
 
 function toggleTheme(){
 
- document.body.classList.toggle(
-  "dark"
- );
+ document.body.classList.toggle("dark");
 
  const isDark=
-  document.body.classList
-   .contains("dark");
+  document.body.classList.contains("dark");
 
  localStorage.setItem(
   "darkMode",
@@ -2168,18 +2074,12 @@ function toggleTheme(){
 function updateThemeIcon(){
 
  const isDark=
-  document.body.classList
-   .contains("dark");
+  document.body.classList.contains("dark");
 
  const icon=
-  isDark
-   ?"i-sun"
-   :"i-moon";
+  isDark?"i-sun":"i-moon";
 
- [
-  "themeBtn",
-  "themeBtnMenu"
- ].forEach(id=>{
+ ["themeBtn","themeBtnMenu"].forEach(id=>{
 
   const element=
    document.getElementById(id);
@@ -2195,7 +2095,6 @@ function updateThemeIcon(){
   }
 
  });
-
 }
 
 /* =========================
@@ -2204,10 +2103,7 @@ function updateThemeIcon(){
 
 function parsePrice(value){
 
- if(
-  value===undefined||
-  value===null
- )
+ if(value===undefined||value===null)
   return 0;
 
  if(typeof value==="number")
@@ -2220,25 +2116,26 @@ function parsePrice(value){
    .replace(/,/g,"")
    .replace(/\./g,"");
 
- const num=
-  Number(str);
+ const num=Number(str);
 
- return isNaN(num)
-  ?0
-  :num;
+ return isNaN(num)?0:num;
 }
 
-function formatPrice(value){
+function formatPrice(value,currency){
 
- const number=
-  parsePrice(value);
+ const number=parsePrice(value);
 
  if(!number)
   return String(value||"");
 
- return number
-  .toLocaleString("en-US")
-  .replace(/,/g," ");
+ const formatted=
+  number.toLocaleString("en-US")
+   .replace(/,/g," ");
+
+ if(currency==="USD")
+  return formatted+" $";
+
+ return formatted+" so‘m";
 }
 
 /* =========================
@@ -2249,48 +2146,44 @@ function searchCars(){
 
  const input=
   document
-   .getElementById(
-    "searchInput"
-   )
+   .getElementById("searchInput")
    .value
    .toLowerCase()
    .trim();
 
- if(!input){
+ filteredCars=
+  allCars.filter(car=>{
 
-  filteredCars=[
-   ...allCars
-  ];
+   const type=
+    String(car.type||"").toLowerCase();
 
- }else{
+   const name=
+    String(car.name||"").toLowerCase();
 
-  filteredCars=
-   allCars.filter(car=>{
+   const description=
+    String(car.description||"").toLowerCase();
 
-    const name=
-     String(
-      car.name||""
-     ).toLowerCase();
+   const address=
+    String(car.address||"").toLowerCase();
 
-    const description=
-     String(
-      car.description||""
-     ).toLowerCase();
+   const price=
+    String(car.price||"").toLowerCase();
 
-    const price=
-     String(
-      car.price||""
-     ).toLowerCase();
+   const matchesText=
+    !input||
+    name.includes(input)||
+    description.includes(input)||
+    address.includes(input)||
+    price.includes(input)||
+    type.includes(input);
 
-    return(
-     name.includes(input)||
-     description.includes(input)||
-     price.includes(input)
-    );
+   const matchesType=
+    currentType==="all"||
+    type===currentType.toLowerCase();
 
-   });
+   return matchesText&&matchesType;
 
- }
+  });
 
  renderFiltered();
 }
@@ -2298,20 +2191,39 @@ function searchCars(){
 function resetSearch(){
 
  document
-  .getElementById(
-   "searchInput"
-  )
+  .getElementById("searchInput")
   .value="";
 
- filteredCars=[
-  ...allCars
- ];
+ currentType="all";
+
+ document
+  .querySelectorAll(".category-btn")
+  .forEach((button,index)=>{
+   button.classList.toggle("active",index===0);
+  });
+
+ filteredCars=[...allCars];
 
  renderFiltered();
 }
 
+function filterType(type,button){
+
+ currentType=type;
+
+ document
+  .querySelectorAll(".category-btn")
+  .forEach(item=>{
+   item.classList.remove("active");
+  });
+
+ button.classList.add("active");
+
+ searchCars();
+}
+
 /* =========================
-   LOAD CARS
+   LOAD
 ========================= */
 
 async function load(){
@@ -2321,32 +2233,22 @@ async function load(){
  try{
 
   const response=
-   await fetch(
-    "/api/cars"
-   );
+   await fetch("/api/cars");
 
   if(!response.ok)
-   throw new Error(
-    "API error"
-   );
+   throw new Error("API error");
 
   const data=
    await response.json();
 
   if(Array.isArray(data))
    allCars=data;
-
-  else if(
-   Array.isArray(data.cars)
-  )
+  else if(Array.isArray(data.cars))
    allCars=data.cars;
-
   else
    allCars=[];
 
-  filteredCars=[
-   ...allCars
-  ];
+  filteredCars=[...allCars];
 
   renderFiltered();
 
@@ -2363,21 +2265,13 @@ async function load(){
    t.loadingError,
    t.serverError
   );
-
  }
-
 }
-
-/* =========================
-   SKELETON
-========================= */
 
 function showSkeleton(){
 
  const grid=
-  document.getElementById(
-   "carsGrid"
-  );
+  document.getElementById("carsGrid");
 
  grid.innerHTML="";
 
@@ -2392,9 +2286,7 @@ function showSkeleton(){
     <div class="skeleton-content">
 
      <div class="skeleton-line big"></div>
-
      <div class="skeleton-line"></div>
-
      <div class="skeleton-line"></div>
 
     </div>
@@ -2402,9 +2294,7 @@ function showSkeleton(){
    </div>
 
   `;
-
  }
-
 }
 
 /* =========================
@@ -2416,16 +2306,10 @@ function imageUrl(filename){
  if(!filename)
   return "";
 
- if(
-  String(filename)
-   .startsWith("http")
- )
+ if(String(filename).startsWith("http"))
   return filename;
 
- if(
-  String(filename)
-   .startsWith("/")
- )
+ if(String(filename).startsWith("/"))
   return filename;
 
  return "/uploads/"+filename;
@@ -2436,9 +2320,7 @@ function getImages(car){
  if(Array.isArray(car.images))
   return car.images;
 
- if(
-  typeof car.images==="string"
- ){
+ if(typeof car.images==="string"){
 
   try{
 
@@ -2454,7 +2336,6 @@ function getImages(car){
    .split(",")
    .map(x=>x.trim())
    .filter(Boolean);
-
  }
 
  return [];
@@ -2464,34 +2345,18 @@ function getImages(car){
    RENDER
 ========================= */
 
-function render(){
-
- filteredCars=[
-  ...allCars
- ];
-
- renderFiltered();
-}
-
 function renderFiltered(){
 
  const grid=
-  document.getElementById(
-   "carsGrid"
-  );
+  document.getElementById("carsGrid");
 
  const count=
-  document.getElementById(
-   "resultsCount"
-  );
+  document.getElementById("resultsCount");
 
  count.textContent=
-  filteredCars.length+
-  " ta";
+  filteredCars.length+" ta";
 
- if(
-  filteredCars.length===0
- ){
+ if(filteredCars.length===0){
 
   renderEmpty();
 
@@ -2500,38 +2365,24 @@ function renderFiltered(){
 
  grid.innerHTML="";
 
- filteredCars.forEach(
-  (car,index)=>{
+ filteredCars.forEach((car,index)=>{
 
-   grid.appendChild(
-    createCarCard(
-     car,
-     index
-    )
-   );
+  grid.appendChild(
+   createCarCard(car,index)
+  );
 
-  }
- );
+ });
 
  applySettings();
 }
 
-/* =========================
-   EMPTY
-========================= */
-
-function renderEmpty(
- title,
- text
-){
+function renderEmpty(title,text){
 
  const t=
   translations[currentLang];
 
  const grid=
-  document.getElementById(
-   "carsGrid"
-  );
+  document.getElementById("carsGrid");
 
  grid.innerHTML=`
 
@@ -2541,23 +2392,19 @@ function renderEmpty(
 
     <svg
      class="icon"
-     style="width:45px;height:45px"
+     style="width:55px;height:55px"
     >
-     <use href="#i-car"></use>
+     <use href="#i-home"></use>
     </svg>
 
    </div>
 
    <h3>
-    ${escapeHtml(
-     title||t.empty
-    )}
+    ${escapeHtml(title||t.empty)}
    </h3>
 
    <p>
-    ${escapeHtml(
-     text||t.emptyText
-    )}
+    ${escapeHtml(text||t.emptyText)}
    </p>
 
   </div>
@@ -2565,31 +2412,22 @@ function renderEmpty(
  `;
 
  document
-  .getElementById(
-   "resultsCount"
-  )
+  .getElementById("resultsCount")
   .textContent="0 ta";
 }
 
 /* =========================
-   CREATE CAR CARD
+   PROPERTY CARD
 ========================= */
 
-function createCarCard(
- car,
- index
-){
+function createCarCard(car,index){
 
  const article=
-  document.createElement(
-   "article"
-  );
+  document.createElement("article");
 
- article.className=
-  "car-card";
+ article.className="car-card";
 
- const images=
-  getImages(car);
+ const images=getImages(car);
 
  const firstImage=
   images.length
@@ -2597,9 +2435,7 @@ function createCarCard(
    :"";
 
  const isFavorite=
-  favorites.includes(
-   String(car.id)
-  );
+  favorites.includes(String(car.id));
 
  const t=
   translations[currentLang];
@@ -2630,6 +2466,20 @@ function createCarCard(
    </svg>
   `);
 
+ const type=
+  car.type||"Uy";
+
+ const rooms=
+  car.rooms||"—";
+
+ const area=
+  car.area
+   ?car.area+" m²"
+   :"—";
+
+ const address=
+  car.address||"Manzil ko‘rsatilmagan";
+
  article.innerHTML=`
 
   <div class="car-image-box">
@@ -2637,9 +2487,7 @@ function createCarCard(
    <img
     class="car-image"
     src="${image}"
-    alt="${escapeHtml(
-     car.name||"Car"
-    )}"
+    alt="${escapeHtml(car.name||"Uy")}"
     loading="lazy"
     onerror="this.style.display='none'"
    >
@@ -2657,24 +2505,14 @@ function createCarCard(
    }
 
    <button
-    class="favorite ${
-     isFavorite
-      ?"active"
-      :""
-    }"
+    class="favorite ${isFavorite?"active":""}"
     aria-label="Favorite"
    >
 
     <svg
-     class="icon ${
-      isFavorite
-       ?"icon-fill"
-       :""
-     }"
+     class="icon ${isFavorite?"icon-fill":""}"
     >
-
      <use href="#i-heart"></use>
-
     </svg>
 
    </button>
@@ -2688,8 +2526,7 @@ function createCarCard(
        <use href="#i-camera"></use>
       </svg>
 
-      ${images.length}
-      ${t.photos}
+      ${images.length} ${t.photos}
 
      </span>`
     :""
@@ -2700,34 +2537,52 @@ function createCarCard(
   <div class="car-content">
 
    <div class="car-name">
-    ${escapeHtml(
-     car.name||"Avtomobil"
-    )}
+    ${escapeHtml(car.name||"Uy")}
    </div>
 
    <div class="car-price">
-    ${formatPrice(car.price)}
+    ${formatPrice(car.price,car.currency)}
+   </div>
+
+   <div class="property-meta">
+
+    <span class="meta-item">
+     ${escapeHtml(type)}
+    </span>
+
+    <span class="meta-item">
+     🛏️ ${escapeHtml(rooms)} xona
+    </span>
+
+    <span class="meta-item">
+     📐 ${escapeHtml(area)}
+    </span>
+
+   </div>
+
+   <div class="car-address">
+
+    <svg class="icon icon-sm">
+     <use href="#i-location"></use>
+    </svg>
+
+    ${escapeHtml(address)}
+
    </div>
 
    <div class="car-description">
-    ${escapeHtml(
-     car.description||""
-    )}
+    ${escapeHtml(car.description||"")}
    </div>
 
    <div class="card-bottom">
 
     <button class="detail-btn">
-
      ${t.detail}
-
     </button>
 
     <a
      class="call-btn"
-     href="${phoneHref(
-      siteSettings.phone
-     )}"
+     href="${phoneHref(siteSettings.phone)}"
     >
 
      <svg class="icon">
@@ -2747,107 +2602,61 @@ function createCarCard(
  `;
 
  article
-  .querySelector(
-   ".favorite"
-  )
-  .addEventListener(
-   "click",
-   function(event){
+  .querySelector(".favorite")
+  .addEventListener("click",function(event){
 
-    event.stopPropagation();
+   event.stopPropagation();
 
-    toggleFavorite(
-     car.id
-    );
+   toggleFavorite(car.id);
 
-   }
-  );
+  });
 
  article
-  .querySelector(
-   ".detail-btn"
-  )
-  .addEventListener(
-   "click",
-   function(event){
+  .querySelector(".detail-btn")
+  .addEventListener("click",function(event){
 
-    event.stopPropagation();
+   event.stopPropagation();
 
-    openDetails(car);
+   openDetails(car);
 
-   }
-  );
+  });
 
  article
-  .querySelector(
-   ".call-btn"
-  )
-  .addEventListener(
-   "click",
-   function(event){
+  .querySelector(".call-btn")
+  .addEventListener("click",function(event){
 
-    event.stopPropagation();
+   event.stopPropagation();
 
-    trackCall(event);
+   trackCall(event);
 
-   }
-  );
+  });
 
  article
-  .querySelector(
-   ".car-image-box"
-  )
-  .addEventListener(
-   "click",
-   function(event){
+  .querySelector(".car-image-box")
+  .addEventListener("click",function(event){
 
-    if(
-     event.target.closest(
-      ".favorite"
-     )
-    )
-     return;
+   if(event.target.closest(".favorite"))
+    return;
 
-    openDetails(car);
+   openDetails(car);
 
-   }
-  );
+  });
 
  return article;
 }
 
 /* =========================
-   ESCAPE HTML
+   ESCAPE
 ========================= */
 
 function escapeHtml(value){
 
  return String(value)
-
-  .replace(
-   /&/g,
-   "&amp;"
-  )
-
-  .replace(
-   /</g,
-   "&lt;"
-  )
-
-  .replace(
-   />/g,
-   "&gt;"
-  )
-
-  .replace(
-   /"/g,
-   "&quot;"
-  )
-
-  .replace(
-   /'/g,
-   "&#039;"
-  );
+  .replace(/&/g,"&amp;")
+  .replace(/</g,"&lt;")
+  .replace(/>/g,"&gt;")
+  .replace(/"/g,"&quot;")
+  .replace(/'/g,"&#039;");
 }
 
 /* =========================
@@ -2856,12 +2665,9 @@ function escapeHtml(value){
 
 function toggleFavorite(id){
 
- const key=
-  String(id);
+ const key=String(id);
 
- if(
-  favorites.includes(key)
- ){
+ if(favorites.includes(key)){
 
   favorites=
    favorites.filter(
@@ -2876,9 +2682,7 @@ function toggleFavorite(id){
 
  localStorage.setItem(
   "favorites",
-  JSON.stringify(
-   favorites
-  )
+  JSON.stringify(favorites)
  );
 
  renderFiltered();
@@ -2896,18 +2700,13 @@ function showFavorites(){
     )
   );
 
- filteredCars=
-  favoriteCars;
+ filteredCars=favoriteCars;
 
  document
-  .getElementById(
-   "searchInput"
-  )
+  .getElementById("searchInput")
   .value="";
 
- if(
-  favoriteCars.length===0
- ){
+ if(favoriteCars.length===0){
 
   const t=
    translations[currentLang];
@@ -2921,32 +2720,22 @@ function showFavorites(){
  }
 
  const grid=
-  document.getElementById(
-   "carsGrid"
-  );
+  document.getElementById("carsGrid");
 
  grid.innerHTML="";
 
- favoriteCars.forEach(
-  (car,index)=>{
+ favoriteCars.forEach((car,index)=>{
 
-   grid.appendChild(
-    createCarCard(
-     car,
-     index
-    )
-   );
+  grid.appendChild(
+   createCarCard(car,index)
+  );
 
-  }
- );
+ });
 
  document
-  .getElementById(
-   "resultsCount"
-  )
+  .getElementById("resultsCount")
   .textContent=
-   favoriteCars.length+
-   " ta";
+   favoriteCars.length+" ta";
 
  applySettings();
 }
@@ -2957,15 +2746,11 @@ function showFavorites(){
 
 function openDetails(car){
 
- currentDetailsCar=
-  car;
+ currentDetailsCar=car;
 
- showPage(
-  "details"
- );
+ showPage("details");
 
- const images=
-  getImages(car);
+ const images=getImages(car);
 
  const t=
   translations[currentLang];
@@ -2976,9 +2761,7 @@ function openDetails(car){
    :"";
 
  const details=
-  document.getElementById(
-   "detailsCard"
-  );
+  document.getElementById("detailsCard");
 
  details.innerHTML=`
 
@@ -2993,9 +2776,7 @@ function openDetails(car){
        id="detailsMainImage"
        class="details-image"
        src="${firstImage}"
-       alt="${escapeHtml(
-        car.name||""
-       )}"
+       alt="${escapeHtml(car.name||"")}"
        onclick="openLightbox(0)"
       >`
      :
@@ -3014,7 +2795,7 @@ function openDetails(car){
         class="icon"
         style="width:70px;height:70px"
        >
-        <use href="#i-car"></use>
+        <use href="#i-home"></use>
        </svg>
 
       </div>`
@@ -3027,11 +2808,7 @@ function openDetails(car){
        (img,i)=>`
 
         <img
-         class="thumb ${
-          i===0
-           ?"active"
-           :""
-         }"
+         class="thumb ${i===0?"active":""}"
          src="${imageUrl(img)}"
          onclick="selectDetailImage(${i})"
          alt=""
@@ -3064,28 +2841,44 @@ function openDetails(car){
     }
 
     <h1>
-     ${escapeHtml(
-      car.name||"Avtomobil"
-     )}
+     ${escapeHtml(car.name||"Uy")}
     </h1>
 
     <div class="details-price">
-     ${formatPrice(
-      car.price
-     )}
+     ${formatPrice(car.price,car.currency)}
+    </div>
+
+    <div class="details-meta">
+
+     <div class="details-meta-item">
+      <b>${t.type}</b>
+      ${escapeHtml(car.type||"Uy")}
+     </div>
+
+     <div class="details-meta-item">
+      <b>${t.rooms}</b>
+      ${escapeHtml(car.rooms||"—")}
+     </div>
+
+     <div class="details-meta-item">
+      <b>${t.area}</b>
+      ${escapeHtml(car.area||"—")} m²
+     </div>
+
+     <div class="details-meta-item">
+      <b>${t.addressLabel}</b>
+      ${escapeHtml(car.address||"—")}
+     </div>
+
     </div>
 
     <div class="details-description">
-     ${escapeHtml(
-      car.description||""
-     )}
+     ${escapeHtml(car.description||"")}
     </div>
 
     <a
      class="details-call"
-     href="${phoneHref(
-      siteSettings.phone
-     )}"
+     href="${phoneHref(siteSettings.phone)}"
      onclick="trackCall(event)"
     >
 
@@ -3113,38 +2906,27 @@ function openDetails(car){
 function selectDetailImage(index){
 
  const images=
-  getImages(
-   currentDetailsCar
-  );
+  getImages(currentDetailsCar);
 
  if(!images[index])
   return;
 
  const main=
-  document.getElementById(
-   "detailsMainImage"
-  );
+  document.getElementById("detailsMainImage");
 
  if(main)
-  main.src=
-   imageUrl(
-    images[index]
-   );
+  main.src=imageUrl(images[index]);
 
  document
-  .querySelectorAll(
-   ".thumb"
-  )
-  .forEach(
-   (thumb,i)=>{
+  .querySelectorAll(".thumb")
+  .forEach((thumb,i)=>{
 
-    thumb.classList.toggle(
-     "active",
-     i===index
-    );
+   thumb.classList.toggle(
+    "active",
+    i===index
+   );
 
-   }
-  );
+  });
 }
 
 /* =========================
@@ -3157,31 +2939,22 @@ function openLightbox(index){
   return;
 
  const images=
-  getImages(
-   currentDetailsCar
-  );
+  getImages(currentDetailsCar);
 
  if(!images.length)
   return;
 
- currentLightboxIndex=
-  index;
+ currentLightboxIndex=index;
 
  document
-  .getElementById(
-   "lightboxImage"
-  )
+  .getElementById("lightboxImage")
   .src=
    imageUrl(
-    images[
-     currentLightboxIndex
-    ]
+    images[currentLightboxIndex]
    );
 
  document
-  .getElementById(
-   "lightbox"
-  )
+  .getElementById("lightbox")
   .classList
   .add("active");
 }
@@ -3189,52 +2962,35 @@ function openLightbox(index){
 function closeLightbox(){
 
  document
-  .getElementById(
-   "lightbox"
-  )
+  .getElementById("lightbox")
   .classList
   .remove("active");
 }
 
-function changeLightbox(
- direction
-){
+function changeLightbox(direction){
 
  if(!currentDetailsCar)
   return;
 
  const images=
-  getImages(
-   currentDetailsCar
-  );
+  getImages(currentDetailsCar);
 
  if(!images.length)
   return;
 
- currentLightboxIndex+=
-  direction;
+ currentLightboxIndex+=direction;
 
- if(
-  currentLightboxIndex<0
- )
-  currentLightboxIndex=
-   images.length-1;
+ if(currentLightboxIndex<0)
+  currentLightboxIndex=images.length-1;
 
- if(
-  currentLightboxIndex>=
-  images.length
- )
+ if(currentLightboxIndex>=images.length)
   currentLightboxIndex=0;
 
  document
-  .getElementById(
-   "lightboxImage"
-  )
+  .getElementById("lightboxImage")
   .src=
    imageUrl(
-    images[
-     currentLightboxIndex
-    ]
+    images[currentLightboxIndex]
    );
 }
 
@@ -3245,39 +3001,25 @@ function changeLightbox(
 function showPage(page){
 
  document
-  .querySelectorAll(
-   ".page"
-  )
+  .querySelectorAll(".page")
   .forEach(
-   p=>
-    p.classList.remove(
-     "active"
-    )
+   p=>p.classList.remove("active")
   );
 
  if(page==="home")
   document
-   .getElementById(
-    "homePage"
-   )
-   .classList
-   .add("active");
+   .getElementById("homePage")
+   .classList.add("active");
 
  if(page==="details")
   document
-   .getElementById(
-    "detailsPage"
-   )
-   .classList
-   .add("active");
+   .getElementById("detailsPage")
+   .classList.add("active");
 
  if(page==="menu")
   document
-   .getElementById(
-    "menuPage"
-   )
-   .classList
-   .add("active");
+   .getElementById("menuPage")
+   .classList.add("active");
 
  window.scrollTo({
   top:0,
@@ -3289,35 +3031,34 @@ function goHome(){
 
  showPage("home");
 
- filteredCars=[
-  ...allCars
- ];
+ currentType="all";
+
+ filteredCars=[...allCars];
 
  document
-  .getElementById(
-   "searchInput"
-  )
+  .getElementById("searchInput")
   .value="";
+
+ document
+  .querySelectorAll(".category-btn")
+  .forEach((button,index)=>{
+   button.classList.toggle(
+    "active",
+    index===0
+   );
+  });
 
  renderFiltered();
 
  document
-  .querySelectorAll(
-   ".bottom-nav button"
-  )
-  .forEach(
-   btn=>
-    btn.classList.remove(
-     "active"
-    )
-  );
+  .querySelectorAll(".bottom-nav button")
+  .forEach(btn=>{
+   btn.classList.remove("active");
+  });
 
  document
-  .getElementById(
-   "navHome"
-  )
-  .classList
-  .add("active");
+  .getElementById("navHome")
+  .classList.add("active");
 }
 
 function showMenu(){
@@ -3325,39 +3066,31 @@ function showMenu(){
  showPage("menu");
 
  document
-  .getElementById(
-   "navHome"
-  )
-  .classList
-  .remove("active");
+  .getElementById("navHome")
+  .classList.remove("active");
 }
 
 function focusSearch(){
 
  showPage("home");
 
- setTimeout(
-  ()=>{
-   document
-    .getElementById(
-     "searchInput"
-    )
-    .focus();
-  },
-  200
- );
+ setTimeout(()=>{
+
+  document
+   .getElementById("searchInput")
+   .focus();
+
+ },200);
 }
 
 /* =========================
    CALL TRACKING
-   TUZATILGAN VERSIYA
 ========================= */
 
 function trackCall(event){
 
- if(event){
+ if(event)
   event.stopPropagation();
- }
 
  fetch(
   "/api/stats/call",
@@ -3366,45 +3099,7 @@ function trackCall(event){
    keepalive:true,
    cache:"no-store"
   }
- )
- .then(
-  response=>{
-
-   if(!response.ok){
-
-    throw new Error(
-     "Call statistikasi yuborilmadi"
-    );
-
-   }
-
-   return response.json()
-    .catch(
-     ()=>({})
-    );
-
-  }
- )
- .then(
-  data=>{
-
-   console.log(
-    "Qo‘ng‘iroq statistikasi qayd etildi:",
-    data
-   );
-
-  }
- )
- .catch(
-  error=>{
-
-   console.error(
-    "Call stat error:",
-    error
-   );
-
-  }
- );
+ ).catch(()=>{});
 }
 
 /* =========================
@@ -3420,9 +3115,7 @@ function trackView(){
    keepalive:true,
    cache:"no-store"
   }
- ).catch(
-  ()=>{}
- );
+ ).catch(()=>{});
 }
 
 /* =========================
@@ -3433,43 +3126,25 @@ document.addEventListener(
  "keydown",
  function(event){
 
-  if(
-   event.key==="Escape"
-  )
+  if(event.key==="Escape")
    closeLightbox();
 
-  if(
-   event.key==="ArrowLeft"
-  ){
+  if(event.key==="ArrowLeft"){
 
    const box=
-    document.getElementById(
-     "lightbox"
-    );
+    document.getElementById("lightbox");
 
-   if(
-    box.classList.contains(
-     "active"
-    )
-   )
+   if(box.classList.contains("active"))
     changeLightbox(-1);
 
   }
 
-  if(
-   event.key==="ArrowRight"
-  ){
+  if(event.key==="ArrowRight"){
 
    const box=
-    document.getElementById(
-     "lightbox"
-    );
+    document.getElementById("lightbox");
 
-   if(
-    box.classList.contains(
-     "active"
-    )
-   )
+   if(box.classList.contains("active"))
     changeLightbox(1);
 
   }
@@ -3482,16 +3157,12 @@ document.addEventListener(
 ========================= */
 
 document
- .getElementById(
-  "lightbox"
- )
+ .getElementById("lightbox")
  .addEventListener(
   "click",
   function(event){
 
-   if(
-    event.target===this
-   )
+   if(event.target===this)
     closeLightbox();
 
   }
@@ -3502,9 +3173,7 @@ document
 ========================= */
 
 if(
- localStorage.getItem(
-  "darkMode"
- )==="true"
+ localStorage.getItem("darkMode")==="true"
 ){
 
  document.body
@@ -3530,3 +3199,4 @@ load();
 
 </body>
 </html>
+```
