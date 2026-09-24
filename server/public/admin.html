@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="uz">
 <head>
@@ -62,10 +63,6 @@ a{
   text-decoration:none;
 }
 
-/* =========================
-   SVG ICON SYSTEM
-========================= */
-
 .icon-sprite{
   position:absolute;
   width:0;
@@ -99,10 +96,6 @@ a{
   width:27px;
   height:27px;
 }
-
-/* =========================
-   LAYOUT
-========================= */
 
 .app{
   min-height:100vh;
@@ -274,10 +267,6 @@ a{
   margin:auto;
 }
 
-/* =========================
-   PAGES
-========================= */
-
 .page{
   display:none;
 }
@@ -285,10 +274,6 @@ a{
 .page.active{
   display:block;
 }
-
-/* =========================
-   STATS
-========================= */
 
 .stats-grid{
   display:grid;
@@ -402,10 +387,6 @@ a{
   margin-top:3px;
 }
 
-/* =========================
-   CHART
-========================= */
-
 .chart{
   height:240px;
   display:flex;
@@ -437,10 +418,6 @@ a{
   font-size:10px;
   color:var(--muted);
 }
-
-/* =========================
-   FORMS
-========================= */
 
 .form-grid{
   display:grid;
@@ -509,10 +486,6 @@ label{
   display:grid;
   place-items:center;
 }
-
-/* =========================
-   PROPERTY TYPES
-========================= */
 
 .type-options{
   display:grid;
@@ -612,10 +585,6 @@ body.dark .type-option.selected{
   font-size:12px;
 }
 
-/* =========================
-   CURRENCY
-========================= */
-
 .currency-buttons{
   display:flex;
   gap:8px;
@@ -640,10 +609,6 @@ body.dark .type-option.selected{
   color:var(--bg);
   border-color:var(--text);
 }
-
-/* =========================
-   UPLOAD
-========================= */
 
 .upload-box{
   border:1.5px dashed var(--border);
@@ -700,10 +665,6 @@ body.dark .type-option.selected{
   object-fit:cover;
 }
 
-/* =========================
-   BUTTONS
-========================= */
-
 .main-btn{
   border:0;
   background:var(--text);
@@ -750,10 +711,6 @@ body.dark .type-option.selected{
   margin-top:20px;
 }
 
-/* =========================
-   SETTINGS
-========================= */
-
 .settings-grid{
   display:grid;
   grid-template-columns:repeat(2,1fr);
@@ -792,10 +749,6 @@ body.dark .type-option.selected{
   color:var(--muted);
   margin-top:2px;
 }
-
-/* =========================
-   FILTERS
-========================= */
 
 .filters{
   display:flex;
@@ -850,10 +803,6 @@ body.dark .type-option.selected{
   transform:translateY(-50%);
   color:var(--muted);
 }
-
-/* =========================
-   HOMES GRID
-========================= */
 
 .homes-grid{
   display:grid;
@@ -944,12 +893,12 @@ body.dark .type-option.selected{
 }
 
 .home-actions{
-  display:flex;
+  display:grid;
+  grid-template-columns:1fr 1fr;
   gap:7px;
 }
 
 .action-btn{
-  flex:1;
   border:1px solid var(--border);
   background:var(--soft);
   color:var(--text);
@@ -989,10 +938,6 @@ body.dark .type-option.selected{
   margin-bottom:10px;
 }
 
-/* =========================
-   TOAST
-========================= */
-
 .toast{
   position:fixed;
   right:22px;
@@ -1022,10 +967,6 @@ body.dark .type-option.selected{
   color:#fff;
 }
 
-/* =========================
-   LOADING
-========================= */
-
 .loading{
   display:none;
   position:fixed;
@@ -1053,10 +994,6 @@ body.dark .type-option.selected{
 @keyframes spin{
   to{transform:rotate(360deg)}
 }
-
-/* =========================
-   MOBILE
-========================= */
 
 @media(max-width:1100px){
   .stats-grid{
@@ -1133,15 +1070,15 @@ body.dark .type-option.selected{
   .page-title{
     font-size:17px;
   }
+
+  .home-actions{
+    grid-template-columns:1fr;
+  }
 }
 </style>
 </head>
 
 <body>
-
-<!-- =========================
-     SVG SPRITE
-========================= -->
 
 <svg class="icon-sprite" aria-hidden="true">
 
@@ -1298,13 +1235,18 @@ body.dark .type-option.selected{
     <path d="M8 9h8M8 13h5"/>
   </symbol>
 
+  <symbol id="i-edit" viewBox="0 0 24 24">
+    <path d="M12 20h9"/>
+    <path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L8 18l-4 1 1-4Z"/>
+  </symbol>
+
+  <symbol id="i-x" viewBox="0 0 24 24">
+    <path d="M6 6l12 12M18 6 6 18"/>
+  </symbol>
+
 </svg>
 
 <div class="app">
-
-<!-- =========================
-     SIDEBAR
-========================= -->
 
 <aside class="sidebar" id="sidebar">
 
@@ -1359,51 +1301,43 @@ body.dark .type-option.selected{
 
 </aside>
 
-<!-- =========================
-     MAIN
-========================= -->
-
 <main class="main">
 
-  <header class="topbar">
+<header class="topbar">
 
-    <div class="top-left">
+  <div class="top-left">
 
-      <button class="menu-btn" onclick="toggleSidebar()">
-        <svg class="icon">
-          <use href="#i-menu"></use>
-        </svg>
-      </button>
+    <button class="menu-btn" onclick="toggleSidebar()">
+      <svg class="icon">
+        <use href="#i-menu"></use>
+      </svg>
+    </button>
 
-      <div class="page-title" id="pageTitle">
-        Dashboard
-      </div>
-
+    <div class="page-title" id="pageTitle">
+      Dashboard
     </div>
 
-    <div class="top-actions">
+  </div>
 
-      <button class="top-btn" onclick="loadAll()" title="Yangilash">
-        <svg class="icon">
-          <use href="#i-refresh"></use>
-        </svg>
-      </button>
+  <div class="top-actions">
 
-      <button class="top-btn" onclick="toggleDark()" title="Dark mode">
-        <svg class="icon" id="topThemeIcon">
-          <use href="#i-moon"></use>
-        </svg>
-      </button>
+    <button class="top-btn" onclick="loadAll()" title="Yangilash">
+      <svg class="icon">
+        <use href="#i-refresh"></use>
+      </svg>
+    </button>
 
-    </div>
+    <button class="top-btn" onclick="toggleDark()" title="Dark mode">
+      <svg class="icon" id="topThemeIcon">
+        <use href="#i-moon"></use>
+      </svg>
+    </button>
 
-  </header>
+  </div>
 
-  <div class="content">
+</header>
 
-<!-- =========================
-     DASHBOARD
-========================= -->
+<div class="content">
 
 <section class="page active" id="page-dashboard">
 
@@ -1514,9 +1448,7 @@ body.dark .type-option.selected{
       </div>
 
       <div class="panel-body">
-
         <div class="chart" id="dailyChart"></div>
-
       </div>
 
     </div>
@@ -1525,16 +1457,12 @@ body.dark .type-option.selected{
 
 </section>
 
-<!-- =========================
-     ADD HOME
-========================= -->
-
 <section class="page" id="page-add">
 
   <div class="panel">
 
     <div class="panel-header">
-      <div class="panel-title">Yangi uy qo‘shish</div>
+      <div class="panel-title" id="addPanelTitle">Yangi uy qo‘shish</div>
     </div>
 
     <div class="panel-body">
@@ -1567,17 +1495,11 @@ body.dark .type-option.selected{
                 onclick="toggleHomeType(this)"
               >
                 <div class="type-option-icon">
-                  <svg class="icon">
-                    <use href="#i-villa"></use>
-                  </svg>
+                  <svg class="icon"><use href="#i-villa"></use></svg>
                 </div>
-
                 <span class="type-option-name">Hovli</span>
-
                 <span class="type-option-check">
-                  <svg class="icon">
-                    <use href="#i-check"></use>
-                  </svg>
+                  <svg class="icon"><use href="#i-check"></use></svg>
                 </span>
               </button>
 
@@ -1588,17 +1510,11 @@ body.dark .type-option.selected{
                 onclick="toggleHomeType(this)"
               >
                 <div class="type-option-icon">
-                  <svg class="icon">
-                    <use href="#i-building"></use>
-                  </svg>
+                  <svg class="icon"><use href="#i-building"></use></svg>
                 </div>
-
                 <span class="type-option-name">Kvartira</span>
-
                 <span class="type-option-check">
-                  <svg class="icon">
-                    <use href="#i-check"></use>
-                  </svg>
+                  <svg class="icon"><use href="#i-check"></use></svg>
                 </span>
               </button>
 
@@ -1609,17 +1525,11 @@ body.dark .type-option.selected{
                 onclick="toggleHomeType(this)"
               >
                 <div class="type-option-icon">
-                  <svg class="icon">
-                    <use href="#i-land"></use>
-                  </svg>
+                  <svg class="icon"><use href="#i-land"></use></svg>
                 </div>
-
                 <span class="type-option-name">Yer</span>
-
                 <span class="type-option-check">
-                  <svg class="icon">
-                    <use href="#i-check"></use>
-                  </svg>
+                  <svg class="icon"><use href="#i-check"></use></svg>
                 </span>
               </button>
 
@@ -1630,17 +1540,11 @@ body.dark .type-option.selected{
                 onclick="toggleHomeType(this)"
               >
                 <div class="type-option-icon">
-                  <svg class="icon">
-                    <use href="#i-construction"></use>
-                  </svg>
+                  <svg class="icon"><use href="#i-construction"></use></svg>
                 </div>
-
                 <span class="type-option-name">Yangi qurilish</span>
-
                 <span class="type-option-check">
-                  <svg class="icon">
-                    <use href="#i-check"></use>
-                  </svg>
+                  <svg class="icon"><use href="#i-check"></use></svg>
                 </span>
               </button>
 
@@ -1657,9 +1561,7 @@ body.dark .type-option.selected{
           </div>
 
           <div class="form-group">
-
             <label>Narx</label>
-
             <input
               class="input"
               id="homePrice"
@@ -1668,7 +1570,6 @@ body.dark .type-option.selected{
               placeholder="Masalan: 850000000"
               required
             >
-
           </div>
 
           <div class="form-group">
@@ -1794,7 +1695,9 @@ body.dark .type-option.selected{
               </div>
 
               <strong>Rasm tanlash</strong>
-              <span>Bir nechta rasm tanlashingiz mumkin</span>
+              <span id="imageUploadText">
+                Bir nechta rasm tanlashingiz mumkin
+              </span>
 
             </label>
 
@@ -1836,7 +1739,21 @@ body.dark .type-option.selected{
           <button
             type="button"
             class="secondary-btn"
+            id="cancelEditBtn"
+            onclick="cancelEdit()"
+            style="display:none"
+          >
+            <svg class="icon icon-sm">
+              <use href="#i-x"></use>
+            </svg>
+            Bekor qilish
+          </button>
+
+          <button
+            type="button"
+            class="secondary-btn"
             onclick="resetAddForm()"
+            id="clearHomeBtn"
           >
             <svg class="icon icon-sm">
               <use href="#i-refresh"></use>
@@ -1865,10 +1782,6 @@ body.dark .type-option.selected{
 
 </section>
 
-<!-- =========================
-     HOMES
-========================= -->
-
 <section class="page" id="page-homes">
 
   <div class="panel">
@@ -1876,7 +1789,7 @@ body.dark .type-option.selected{
     <div class="panel-header">
       <div class="panel-title">Uylar</div>
 
-      <button class="main-btn" onclick="showPage('add')">
+      <button class="main-btn" onclick="startNewHome()">
         <svg class="icon icon-sm">
           <use href="#i-plus"></use>
         </svg>
@@ -1983,10 +1896,6 @@ body.dark .type-option.selected{
   </div>
 
 </section>
-
-<!-- =========================
-     SETTINGS
-========================= -->
 
 <section class="page" id="page-settings">
 
@@ -2151,7 +2060,7 @@ body.dark .type-option.selected{
 
 </section>
 
-  </div>
+</div>
 
 </main>
 
@@ -2165,20 +2074,14 @@ body.dark .type-option.selected{
 
 <script>
 
-/* =========================
-   GLOBAL STATE
-========================= */
-
 let cars = [];
 let selectedHomeTypes = [];
 let selectedCurrency = "UZS";
 let currentHomeType = "all";
 let uploadedImages = [];
+let editingExistingImages = [];
+let editingHomeId = null;
 let settings = {};
-
-/* =========================
-   PAGE TITLES
-========================= */
 
 const pageTitles = {
   dashboard:"Dashboard",
@@ -2186,10 +2089,6 @@ const pageTitles = {
   homes:"Uylar",
   settings:"Aloqa sozlamalari"
 };
-
-/* =========================
-   HELPERS
-========================= */
 
 function $(id){
   return document.getElementById(id);
@@ -2204,11 +2103,23 @@ function escapeHtml(value){
     .replace(/'/g,"&#039;");
 }
 
+function escapeJs(value){
+  return String(value ?? "")
+    .replace(/\\/g,"\\\\")
+    .replace(/'/g,"\\'")
+    .replace(/"/g,'\\"');
+}
+
+/* =========================
+   PRICE FORMAT
+========================= */
+
 function formatPrice(price,currency){
+
   const number = Number(price || 0);
 
   if(currency === "USD"){
-    return "$" + number.toLocaleString("en-US");
+    return "$ " + number.toLocaleString("en-US");
   }
 
   return number.toLocaleString("uz-UZ") + " so‘m";
@@ -2233,17 +2144,9 @@ function showToast(message,error=false){
   },3000);
 }
 
-/* =========================
-   SIDEBAR
-========================= */
-
 function toggleSidebar(){
   $("sidebar").classList.toggle("open");
 }
-
-/* =========================
-   PAGE NAVIGATION
-========================= */
 
 function showPage(page){
 
@@ -2275,10 +2178,6 @@ function showPage(page){
     $("sidebar").classList.remove("open");
   }
 }
-
-/* =========================
-   DARK MODE
-========================= */
 
 function updateThemeIcons(){
 
@@ -2314,10 +2213,6 @@ function toggleDark(){
   updateThemeIcons();
 }
 
-/* =========================
-   PASSWORD
-========================= */
-
 function togglePassword(){
 
   const input = $("password");
@@ -2341,7 +2236,7 @@ function togglePassword(){
 }
 
 /* =========================
-   PROPERTY TYPES
+   TYPES
 ========================= */
 
 function toggleHomeType(button){
@@ -2397,10 +2292,13 @@ function updateTypeSummary(){
   }
 
   const names = selectedHomeTypes.map(type=>{
-    return type.replace("🏡 ","")
+
+    return type
+      .replace("🏡 ","")
       .replace("🏢 ","")
       .replace("🌳 ","")
       .replace("🏗️ ","");
+
   });
 
   summary.textContent =
@@ -2438,21 +2336,25 @@ function selectCurrency(currency){
 }
 
 /* =========================
-   IMAGE HANDLING
+   IMAGES
 ========================= */
 
 function handleImages(input){
 
-  uploadedImages = [];
-
   const files = Array.from(input.files || []);
 
+  /*
+    Edit rejimida yangi rasm tanlansa,
+    eski rasmlar almashtiriladi.
+  */
+
   if(!files.length){
-
-    $("imagePreview").innerHTML = "";
-
     return;
   }
+
+  uploadedImages = [];
+
+  editingExistingImages = [];
 
   files.slice(0,10).forEach(file=>{
 
@@ -2469,23 +2371,44 @@ function handleImages(input){
     reader.readAsDataURL(file);
 
   });
+
+  $("imageUploadText").textContent =
+    editingHomeId
+      ? "Yangi rasmlar tanlandi — eski rasmlar almashtiriladi"
+      : "Bir nechta rasm tanlashingiz mumkin";
 }
 
 function renderImagePreview(){
 
-  $("imagePreview").innerHTML =
-    uploadedImages.map(src=>`
+  const preview = $("imagePreview");
+
+  const existingHtml =
+    editingExistingImages.map(src=>`
 
       <div class="preview-item">
-        <img src="${src}" alt="Uy rasmi">
+        <img
+          src="${escapeHtml(src)}"
+          alt="Mavjud uy rasmi"
+        >
       </div>
 
     `).join("");
-}
 
-/* =========================
-   IMAGE RESIZE
-========================= */
+  const newHtml =
+    uploadedImages.map(src=>`
+
+      <div class="preview-item">
+        <img
+          src="${escapeHtml(src)}"
+          alt="Yangi uy rasmi"
+        >
+      </div>
+
+    `).join("");
+
+  preview.innerHTML =
+    existingHtml + newHtml;
+}
 
 function resizeImage(dataUrl,maxWidth=1400){
 
@@ -2562,7 +2485,190 @@ async function optimizeImages(){
 }
 
 /* =========================
-   ADD HOME
+   NEW HOME
+========================= */
+
+function startNewHome(){
+
+  cancelEdit();
+
+  showPage("add");
+
+}
+
+/* =========================
+   EDIT HOME
+========================= */
+
+function startEditHome(id){
+
+  const car =
+    cars.find(item =>
+      String(item.id ?? item._id) === String(id)
+    );
+
+  if(!car){
+
+    showToast(
+      "Uy ma’lumotlari topilmadi.",
+      true
+    );
+
+    return;
+  }
+
+  editingHomeId =
+    car.id ?? car._id;
+
+  const types =
+    getHomeTypes(car);
+
+  selectedHomeTypes =
+    types.slice(0,3);
+
+  selectedCurrency =
+    car.currency === "USD"
+      ? "USD"
+      : "UZS";
+
+  uploadedImages = [];
+
+  const images =
+    Array.isArray(car.images)
+      ? car.images
+      : [];
+
+  editingExistingImages =
+    images.map(image=>{
+
+      const value = String(image || "");
+
+      if(
+        value.startsWith("http://") ||
+        value.startsWith("https://") ||
+        value.startsWith("data:")
+      ){
+        return value;
+      }
+
+      if(value.startsWith("/uploads/")){
+        return value;
+      }
+
+      return "/uploads/" + value;
+
+    });
+
+  $("homeTitle").value =
+    car.title ||
+    car.name ||
+    "";
+
+  $("homePrice").value =
+    Number(car.price || 0);
+
+  $("homeLocation").value =
+    car.location ||
+    car.address ||
+    "";
+
+  $("homeRooms").value =
+    Number(car.rooms || 0) || "";
+
+  $("homeArea").value =
+    Number(car.area || 0) || "";
+
+  $("homePhone").value =
+    car.phone ||
+    "";
+
+  $("homeDescription").value =
+    car.description ||
+    "";
+
+  $("password").value = "";
+
+  $("homeImages").value = "";
+
+  $("addPanelTitle").textContent =
+    "Uyni tahrirlash";
+
+  $("saveHomeBtn").innerHTML = `
+    <svg class="icon icon-sm">
+      <use href="#i-save"></use>
+    </svg>
+    O‘zgarishlarni saqlash
+  `;
+
+  $("cancelEditBtn").style.display =
+    "inline-flex";
+
+  $("clearHomeBtn").style.display =
+    "none";
+
+  $("imageUploadText").textContent =
+    "Yangi rasm tanlasangiz eski rasmlar almashtiriladi";
+
+  updateTypeButtons();
+  updateTypeSummary();
+  selectCurrency(selectedCurrency);
+  renderImagePreview();
+
+  showPage("add");
+
+  window.scrollTo({
+    top:0,
+    behavior:"smooth"
+  });
+
+}
+
+/* =========================
+   CANCEL EDIT
+========================= */
+
+function cancelEdit(){
+
+  editingHomeId = null;
+
+  editingExistingImages = [];
+
+  uploadedImages = [];
+
+  selectedHomeTypes = [];
+
+  selectedCurrency = "UZS";
+
+  $("addHomeForm").reset();
+
+  $("addPanelTitle").textContent =
+    "Yangi uy qo‘shish";
+
+  $("saveHomeBtn").innerHTML = `
+    <svg class="icon icon-sm">
+      <use href="#i-save"></use>
+    </svg>
+    Uy qo‘shish
+  `;
+
+  $("cancelEditBtn").style.display =
+    "none";
+
+  $("clearHomeBtn").style.display =
+    "inline-flex";
+
+  $("imageUploadText").textContent =
+    "Bir nechta rasm tanlashingiz mumkin";
+
+  $("imagePreview").innerHTML = "";
+
+  resetHomeTypes();
+  selectCurrency("UZS");
+
+}
+
+/* =========================
+   ADD / EDIT HOME
 ========================= */
 
 async function addHome(event){
@@ -2615,15 +2721,37 @@ async function addHome(event){
 
   try{
 
-    const images =
-      await optimizeImages();
+    let images = [];
 
     /*
-      `type` eski backend bilan moslik uchun
-      birinchi tanlangan tur sifatida yuboriladi.
+      Yangi uy:
+      faqat yangi tanlangan rasmlar.
 
-      `types` esa barcha tanlangan turlarni saqlaydi.
+      Tahrirlash:
+      - yangi rasm tanlangan bo‘lsa -> yangi rasmlar
+      - yangi rasm tanlanmagan bo‘lsa -> eski rasmlar
     */
+
+    if(editingHomeId){
+
+      if(uploadedImages.length){
+
+        images =
+          await optimizeImages();
+
+      }else{
+
+        images =
+          [...editingExistingImages];
+
+      }
+
+    }else{
+
+      images =
+        await optimizeImages();
+
+    }
 
     const payload = {
 
@@ -2657,24 +2785,47 @@ async function addHome(event){
 
       images:images,
 
-      status:"available",
-
       password:password
 
     };
 
-    const response =
-      await fetch("/api/cars",{
+    let response;
 
-        method:"POST",
+    if(editingHomeId){
 
-        headers:{
-          "Content-Type":"application/json"
-        },
+      response =
+        await fetch(
+          `/api/cars/${encodeURIComponent(editingHomeId)}`,
+          {
+            method:"PUT",
 
-        body:JSON.stringify(payload)
+            headers:{
+              "Content-Type":"application/json"
+            },
 
-      });
+            body:JSON.stringify(payload)
+
+          }
+        );
+
+    }else{
+
+      payload.status = "available";
+
+      response =
+        await fetch("/api/cars",{
+
+          method:"POST",
+
+          headers:{
+            "Content-Type":"application/json"
+          },
+
+          body:JSON.stringify(payload)
+
+        });
+
+    }
 
     const data =
       await response.json()
@@ -2685,16 +2836,22 @@ async function addHome(event){
       throw new Error(
         data.message ||
         data.error ||
-        "Uy qo‘shishda xatolik."
+        (
+          editingHomeId
+            ? "Uyni tahrirlashda xatolik."
+            : "Uy qo‘shishda xatolik."
+        )
       );
 
     }
 
     showToast(
-      "Uy muvaffaqiyatli qo‘shildi."
+      editingHomeId
+        ? "Uy ma’lumotlari saqlandi."
+        : "Uy muvaffaqiyatli qo‘shildi."
     );
 
-    resetAddForm();
+    cancelEdit();
 
     await loadAll();
 
@@ -2723,28 +2880,41 @@ async function addHome(event){
 
 function resetAddForm(){
 
+  if(editingHomeId){
+
+    cancelEdit();
+
+    return;
+  }
+
   $("addHomeForm").reset();
+
+  editingExistingImages = [];
+  uploadedImages = [];
 
   selectedCurrency = "UZS";
 
   document.querySelectorAll(".currency-btn")
     .forEach(button=>{
+
       button.classList.toggle(
         "active",
         button.dataset.currency === "UZS"
       );
+
     });
 
-  uploadedImages = [];
-
   $("imagePreview").innerHTML = "";
+
+  $("imageUploadText").textContent =
+    "Bir nechta rasm tanlashingiz mumkin";
 
   resetHomeTypes();
 
 }
 
 /* =========================
-   API — LOAD CARS
+   LOAD CARS
 ========================= */
 
 async function loadCars(){
@@ -2794,7 +2964,7 @@ async function loadCars(){
 }
 
 /* =========================
-   API — SETTINGS
+   SETTINGS
 ========================= */
 
 async function loadSettings(){
@@ -2834,10 +3004,6 @@ async function loadSettings(){
 
   }
 }
-
-/* =========================
-   SAVE SETTINGS
-========================= */
 
 async function saveSettings(event){
 
@@ -2917,7 +3083,7 @@ async function saveSettings(event){
 }
 
 /* =========================
-   GET TYPES
+   TYPES
 ========================= */
 
 function getHomeTypes(car){
@@ -2950,10 +3116,6 @@ function homeHasType(car,type){
     .some(item=>item === type);
 }
 
-/* =========================
-   TYPE FILTER
-========================= */
-
 function setHomeType(type){
 
   currentHomeType = type;
@@ -2985,10 +3147,6 @@ function setHomeType(type){
 
   renderHomes();
 }
-
-/* =========================
-   STATUS
-========================= */
 
 function isSold(car){
 
@@ -3151,11 +3309,23 @@ function createHomeCard(car){
   const image =
     images[0] || car.image || "";
 
-  const imageHtml = image
+  let imageSrc = image;
+
+  if(
+    imageSrc &&
+    !String(imageSrc).startsWith("/") &&
+    !String(imageSrc).startsWith("http") &&
+    !String(imageSrc).startsWith("data:")
+  ){
+    imageSrc =
+      "/uploads/" + imageSrc;
+  }
+
+  const imageHtml = imageSrc
 
     ? `
       <img
-        src="${escapeHtml(image)}"
+        src="${escapeHtml(imageSrc)}"
         alt="${escapeHtml(title)}"
         loading="lazy"
       >
@@ -3255,28 +3425,32 @@ function createHomeCard(car){
 
           <button
             class="action-btn"
+            onclick="startEditHome('${escapeJs(id)}')"
+          >
+            <svg class="icon icon-sm">
+              <use href="#i-edit"></use>
+            </svg>
+            Tahrirlash
+          </button>
+
+          <button
+            class="action-btn"
             onclick="toggleSold('${escapeJs(id)}',${sold})"
           >
-
             <svg class="icon icon-sm">
               <use href="#i-check"></use>
             </svg>
-
             ${sold ? "Sotuvga qaytarish" : "Sotildi"}
-
           </button>
 
           <button
             class="action-btn danger"
             onclick="deleteHome('${escapeJs(id)}')"
           >
-
             <svg class="icon icon-sm">
               <use href="#i-trash"></use>
             </svg>
-
             O‘chirish
-
           </button>
 
         </div>
@@ -3289,17 +3463,8 @@ function createHomeCard(car){
 
 }
 
-function escapeJs(value){
-
-  return String(value)
-    .replace(/\\/g,"\\\\")
-    .replace(/'/g,"\\'")
-    .replace(/"/g,'\\"');
-
-}
-
 /* =========================
-   SOLD / AVAILABLE
+   SOLD
 ========================= */
 
 async function toggleSold(id,sold){
@@ -3390,7 +3555,7 @@ async function toggleSold(id,sold){
 }
 
 /* =========================
-   DELETE HOME
+   DELETE
 ========================= */
 
 async function deleteHome(id){
@@ -3661,7 +3826,7 @@ function renderEmptyChart(){
 }
 
 /* =========================
-   UPDATE DASHBOARD
+   DASHBOARD
 ========================= */
 
 function updateDashboard(){
@@ -3730,7 +3895,7 @@ function init(){
 }
 
 /* =========================
-   CLOSE SIDEBAR OUTSIDE
+   CLOSE SIDEBAR
 ========================= */
 
 document.addEventListener(
@@ -3760,13 +3925,10 @@ document.addEventListener(
   }
 );
 
-/* =========================
-   START
-========================= */
-
 init();
 
 </script>
 
 </body>
 </html>
+```
