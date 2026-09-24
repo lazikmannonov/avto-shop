@@ -1161,7 +1161,7 @@ body.dark .detail-btn{
    <svg class="icon">
     <use href="#i-grid"></use>
    </svg>
-   Barchasi
+   <span id="catAll">Barchasi</span>
   </button>
 
   <button
@@ -1171,7 +1171,7 @@ body.dark .detail-btn{
    <svg class="icon">
     <use href="#i-house"></use>
    </svg>
-   Hovli
+   <span id="catHovli">Hovli</span>
   </button>
 
   <button
@@ -1181,7 +1181,7 @@ body.dark .detail-btn{
    <svg class="icon">
     <use href="#i-building"></use>
    </svg>
-   Kvartira
+   <span id="catKvartira">Kvartira</span>
   </button>
 
   <button
@@ -1191,7 +1191,7 @@ body.dark .detail-btn{
    <svg class="icon">
     <use href="#i-map"></use>
    </svg>
-   Yer
+   <span id="catYer">Yer</span>
   </button>
 
   <button
@@ -1201,7 +1201,7 @@ body.dark .detail-btn{
    <svg class="icon">
     <use href="#i-construction"></use>
    </svg>
-   Yangi qurilish
+   <span id="catYangi">Yangi qurilish</span>
   </button>
 
  </div>
@@ -1716,6 +1716,14 @@ const translations={
   soldBadge:"SOTILDI",
   photos:"rasm",
 
+  categories:{
+   all:"Barchasi",
+   hovli:"Hovli",
+   kvartira:"Kvartira",
+   yer:"Yer",
+   yangi:"Yangi qurilish"
+  },
+
   home:"Bosh sahifa",
   searchNav:"Qidiruv",
   favorites:"Sevimlilar",
@@ -1771,6 +1779,14 @@ const translations={
   soldBadge:"ПРОДАНО",
   photos:"фото",
 
+  categories:{
+   all:"Все",
+   hovli:"Частный дом",
+   kvartira:"Квартира",
+   yer:"Земля",
+   yangi:"Новостройка"
+  },
+
   home:"Главная",
   searchNav:"Поиск",
   favorites:"Избранное",
@@ -1825,6 +1841,14 @@ const translations={
   new:"NEW",
   soldBadge:"SOLD",
   photos:"photos",
+
+  categories:{
+   all:"All",
+   hovli:"House",
+   kvartira:"Apartment",
+   yer:"Land",
+   yangi:"New building"
+  },
 
   home:"Home",
   searchNav:"Search",
@@ -2029,6 +2053,7 @@ function setLang(lang){
   openDetails(currentDetailsCar);
 
  }
+
 }
 
 function applyLang(){
@@ -2044,6 +2069,20 @@ function applyLang(){
 
  setText("carsTitle",t.cars);
  setText("backText",t.back);
+
+ /* =========================
+    CATEGORY TRANSLATIONS
+ ========================= */
+
+ setText("catAll",t.categories.all);
+ setText("catHovli",t.categories.hovli);
+ setText("catKvartira",t.categories.kvartira);
+ setText("catYer",t.categories.yer);
+ setText("catYangi",t.categories.yangi);
+
+ /* =========================
+    BOTTOM NAV
+ ========================= */
 
  setText("navHomeText",t.home);
  setText("navSearchText",t.searchNav);
@@ -2085,6 +2124,7 @@ function applyLang(){
    );
 
   });
+
 }
 
 function setText(id,value){
@@ -2094,6 +2134,7 @@ function setText(id,value){
 
  if(element)
   element.textContent=value;
+
 }
 
 /* =========================
