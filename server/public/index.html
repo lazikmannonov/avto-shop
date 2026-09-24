@@ -3024,20 +3024,26 @@ function searchFromSearchPage(){
 
    if(searchPageType!=="all"){
 
-     const wantedType =
-      String(searchPageType||"")
+     // Admin panel tur nomini emoji bilan saqlaydi:
+     // "🏡 Hovli", "🏢 Kvartira", "🌳 Yer",
+     // "🏗️ Yangi qurilish".
+     // Qidiruv tugmalarida esa emoji yo'q.
+     // Shuning uchun ikkala qiymatni bir xil ko'rinishga keltiramiz.
+     const normalizeType = value =>
+      String(value||"")
+       .replace(/🏡|🏢|🌳|🏗️|🏗/g,"")
+       .replace(/\\uFE0F/g,"")
        .trim()
        .toLowerCase();
 
+     const wantedType =
+      normalizeType(searchPageType);
+
      matchesType =
       types.some(item=>
-       String(item||"")
-        .trim()
-        .toLowerCase() === wantedType
+       normalizeType(item) === wantedType
       ) ||
-      mainType
-       .trim()
-       .toLowerCase() === wantedType;
+      normalizeType(mainType) === wantedType;
 
     }
 
@@ -4060,13 +4066,21 @@ function focusSearch(){
      const mainType=
       String(car.type||"");
 
+     const normalizeType = value =>
+      String(value||"")
+       .replace(/🏡|🏢|🌳|🏗️|🏗/g,"")
+       .replace(/\\uFE0F/g,"")
+       .trim()
+       .toLowerCase();
+
+     const wantedType =
+      normalizeType(searchPageType);
+
      return types.some(
       item=>
-       String(item).toLowerCase()===
-       searchPageType.toLowerCase()
+       normalizeType(item) === wantedType
      )||
-     mainType.toLowerCase()===
-     searchPageType.toLowerCase();
+     normalizeType(mainType) === wantedType;
 
     })
  );
