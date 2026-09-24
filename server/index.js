@@ -4,6 +4,10 @@ const path = require('path');
 const crypto = require('crypto');
 const { Pool } = require('pg');
 
+// =====================================================
+// ADMIN PASSWORD
+// =====================================================
+
 const ADMIN_PASSWORD = String(
     process.env.ADMIN_PASSWORD || ''
 ).trim();
@@ -18,22 +22,32 @@ if (!ADMIN_PASSWORD) {
     process.exit(1);
 }
 
-const pool = new Pool({
-    connectionString: process.env.DATABASE_URL,
-    max: 10
-});
-
 // =====================================================
 // DATABASE
 // =====================================================
 
+const pool = new Pool({
+    connectionString: process.env.DATABASE_URL,
+    max: 10,
+    idleTimeoutMillis: 30000,
+    connectionTimeoutMillis: 10000
+});
+
+// =====================================================
+// DATABASE INIT
+// =====================================================
+
 async function initDatabase() {
+
+    // -------------------------------------------------
+    // CARS
+    // -------------------------------------------------
 
     await pool.query(`
         CREATE TABLE IF NOT EXISTS cars (
             id SERIAL PRIMARY KEY,
             name TEXT NOT NULL,
-            price INTEGER NOT NULL,
+            price INTEGER NOT NULL DEFAULT 0,
             description TEXT DEFAULT '',
             images TEXT DEFAULT '[]',
             sold BOOLEAN DEFAULT false,
@@ -93,9 +107,9 @@ async function initDatabase() {
         ADD COLUMN IF NOT EXISTS phone TEXT DEFAULT ''
     `);
 
-    // =================================================
+    // -------------------------------------------------
     // IMAGE FILES
-    // =================================================
+    // -------------------------------------------------
 
     await pool.query(`
         CREATE TABLE IF NOT EXISTS image_files (
@@ -105,9 +119,9 @@ async function initDatabase() {
         )
     `);
 
-    // =================================================
+    // -------------------------------------------------
     // TOTAL STATS
-    // =================================================
+    // -------------------------------------------------
 
     await pool.query(`
         CREATE TABLE IF NOT EXISTS stats (
@@ -131,9 +145,9 @@ async function initDatabase() {
         ON CONFLICT (id) DO NOTHING
     `);
 
-    // =================================================
+    // -------------------------------------------------
     // DAILY STATS
-    // =================================================
+    // -------------------------------------------------
 
     await pool.query(`
         CREATE TABLE IF NOT EXISTS daily_stats (
@@ -143,9 +157,9 @@ async function initDatabase() {
         )
     `);
 
-    // =================================================
+    // -------------------------------------------------
     // SITE SETTINGS
-    // =================================================
+    // -------------------------------------------------
 
     await pool.query(`
         CREATE TABLE IF NOT EXISTS site_settings (
@@ -188,11 +202,9 @@ async function initDatabase() {
 function sendJson(res, status, data) {
 
     res.writeHead(status, {
-        'Content-Type':
-            'application/json; charset=utf-8',
-
-        'Cache-Control':
-            'no-store'
+        'Content-Type': 'application/json; charset=utf-8',
+        'Cache-Control': 'no-store',
+        'Access-Control-Allow-Origin': '*'
     });
 
     res.end(
@@ -201,21 +213,24 @@ function sendJson(res, status, data) {
 }
 
 // =====================================================
-// FILE
+// FILE RESPONSE
 // =====================================================
 
 function sendFile(res, name) {
 
-    const file =
-        path.join(
-            __dirname,
-            'public',
-            name
-        );
+    const safeName = path.basename(name);
+
+    const file = path.join(
+        __dirname,
+        'public',
+        safeName
+    );
 
     if (!fs.existsSync(file)) {
 
-        res.writeHead(404);
+        res.writeHead(404, {
+            'Content-Type': 'text/plain; charset=utf-8'
+        });
 
         return res.end(
             'File topilmadi'
@@ -225,25 +240,28 @@ function sendFile(res, name) {
     let contentType =
         'text/html; charset=utf-8';
 
-    if (name.endsWith('.css')) {
+    if (safeName.endsWith('.css')) {
 
         contentType =
             'text/css; charset=utf-8';
     }
 
-    if (name.endsWith('.js')) {
+    if (safeName.endsWith('.js')) {
 
         contentType =
             'application/javascript; charset=utf-8';
     }
 
-    res.writeHead(
-        200,
-        {
-            'Content-Type':
-                contentType
-        }
-    );
+    if (safeName.endsWith('.json')) {
+
+        contentType =
+            'application/json; charset=utf-8';
+    }
+
+    res.writeHead(200, {
+        'Content-Type': contentType,
+        'Cache-Control': 'no-cache'
+    });
 
     res.end(
         fs.readFileSync(file)
@@ -260,29 +278,35 @@ function readBody(req) {
         (resolve, reject) => {
 
             let data = '';
-            let tooBig = false;
+            let totalLength = 0;
+            let finished = false;
 
             req.on(
                 'data',
                 chunk => {
 
-                    if (tooBig) return;
+                    if (finished) {
+                        return;
+                    }
 
-                    data += chunk;
+                    totalLength += chunk.length;
 
-                    if (
-                        data.length >
-                        30000000
-                    ) {
+                    if (totalLength > 30000000) {
 
-                        tooBig = true;
+                        finished = true;
 
                         reject(
                             new Error(
                                 "Ma'lumot juda katta"
                             )
                         );
+
+                        req.destroy();
+
+                        return;
                     }
+
+                    data += chunk.toString();
                 }
             );
 
@@ -290,7 +314,10 @@ function readBody(req) {
                 'end',
                 () => {
 
-                    if (!tooBig) {
+                    if (!finished) {
+
+                        finished = true;
+
                         resolve(data);
                     }
                 }
@@ -298,14 +325,22 @@ function readBody(req) {
 
             req.on(
                 'error',
-                reject
+                error => {
+
+                    if (!finished) {
+
+                        finished = true;
+
+                        reject(error);
+                    }
+                }
             );
         }
     );
 }
 
 // =====================================================
-// ADMIN
+// PASSWORD
 // =====================================================
 
 function normalizePassword(value) {
@@ -320,22 +355,59 @@ function normalizePassword(value) {
     return String(value).trim();
 }
 
-function isAdminHeader(req) {
+// =====================================================
+// SAFE PASSWORD COMPARE
+// =====================================================
 
-    const password =
-        normalizePassword(
-            req.headers['x-admin-password']
-        );
+function passwordMatches(value) {
 
-    if (!password) {
+    const input =
+        normalizePassword(value);
+
+    if (!input) {
         return false;
     }
 
-    return (
-        password ===
-        ADMIN_PASSWORD
+    const a =
+        Buffer.from(input);
+
+    const b =
+        Buffer.from(ADMIN_PASSWORD);
+
+    if (a.length !== b.length) {
+        return false;
+    }
+
+    try {
+
+        return crypto.timingSafeEqual(
+            a,
+            b
+        );
+
+    } catch (e) {
+
+        return false;
+    }
+}
+
+// =====================================================
+// ADMIN HEADER
+// =====================================================
+
+function isAdminHeader(req) {
+
+    const password =
+        req.headers['x-admin-password'];
+
+    return passwordMatches(
+        password
     );
 }
+
+// =====================================================
+// ADMIN BODY
+// =====================================================
 
 function isAdminBody(body) {
 
@@ -346,20 +418,14 @@ function isAdminBody(body) {
         return false;
     }
 
-    const password =
-        normalizePassword(
-            body.password
-        );
-
-    if (!password) {
-        return false;
-    }
-
-    return (
-        password ===
-        ADMIN_PASSWORD
+    return passwordMatches(
+        body.password
     );
 }
+
+// =====================================================
+// ADMIN
+// =====================================================
 
 function isAdmin(req, body = null) {
 
@@ -370,7 +436,48 @@ function isAdmin(req, body = null) {
 }
 
 // =====================================================
-// IMAGE
+// INTEGER
+// =====================================================
+
+function toInteger(value, fallback = 0) {
+
+    const number =
+        Number(value);
+
+    if (
+        !Number.isFinite(number) ||
+        !Number.isInteger(number)
+    ) {
+        return fallback;
+    }
+
+    return number;
+}
+
+// =====================================================
+// CURRENCY
+// =====================================================
+
+function normalizeCurrency(value) {
+
+    const currency =
+        String(
+            value || 'UZS'
+        )
+        .trim()
+        .toUpperCase();
+
+    if (
+        currency === 'USD'
+    ) {
+        return 'USD';
+    }
+
+    return 'UZS';
+}
+
+// =====================================================
+// IMAGE PREPARE
 // =====================================================
 
 function prepareImage(dataUrl) {
@@ -391,15 +498,33 @@ function prepareImage(dataUrl) {
     if (!match) {
 
         throw new Error(
-            "Rasm faqat JPEG formatda bo'lishi kerak"
+            "Rasm JPEG formatda bo'lishi kerak"
         );
     }
 
-    const buffer =
-        Buffer.from(
-            match[1],
-            'base64'
+    let buffer;
+
+    try {
+
+        buffer =
+            Buffer.from(
+                match[1],
+                'base64'
+            );
+
+    } catch (e) {
+
+        throw new Error(
+            "Rasmni o'qib bo'lmadi"
         );
+    }
+
+    if (!buffer.length) {
+
+        throw new Error(
+            "Rasm bo'sh"
+        );
+    }
 
     if (
         buffer.length >
@@ -413,7 +538,7 @@ function prepareImage(dataUrl) {
 
     const imageName =
         crypto
-            .randomBytes(8)
+            .randomBytes(16)
             .toString('hex') +
         '.jpg';
 
@@ -422,6 +547,10 @@ function prepareImage(dataUrl) {
         buffer
     };
 }
+
+// =====================================================
+// PARSE IMAGES
+// =====================================================
 
 function parseImages(row) {
 
@@ -432,6 +561,12 @@ function parseImages(row) {
         return [];
     }
 
+    if (
+        Array.isArray(row.images)
+    ) {
+        return row.images;
+    }
+
     try {
 
         const images =
@@ -439,15 +574,25 @@ function parseImages(row) {
                 row.images
             );
 
-        return Array.isArray(images)
-            ? images
-            : [];
+        if (
+            Array.isArray(images)
+        ) {
 
-    } catch (e) {
+            return images
+                .filter(
+                    x =>
+                        typeof x === 'string'
+                );
+        }
 
-        return [];
-    }
+    } catch (e) {}
+
+    return [];
 }
+
+// =====================================================
+// PARSE TYPES
+// =====================================================
 
 function parseTypes(row) {
 
@@ -455,10 +600,14 @@ function parseTypes(row) {
         return [];
     }
 
-    if (!row.types) {
+    if (
+        row.types === null ||
+        row.types === undefined ||
+        row.types === ''
+    ) {
 
         return row.type
-            ? [row.type]
+            ? [String(row.type)]
             : [];
     }
 
@@ -473,13 +622,19 @@ function parseTypes(row) {
             Array.isArray(types)
         ) {
 
-            return types;
+            return types
+                .map(
+                    x =>
+                        String(x).trim()
+                )
+                .filter(Boolean)
+                .slice(0, 3);
         }
 
     } catch (e) {}
 
     return row.type
-        ? [row.type]
+        ? [String(row.type)]
         : [];
 }
 
@@ -492,10 +647,15 @@ function carOut(row) {
     const types =
         parseTypes(row);
 
+    const currency =
+        normalizeCurrency(
+            row.currency
+        );
+
     return {
 
         id:
-            row.id,
+            Number(row.id),
 
         name:
             row.name || '',
@@ -507,14 +667,17 @@ function carOut(row) {
             Number(row.price) || 0,
 
         currency:
-            row.currency || 'UZS',
+
+            currency,
 
         type:
             row.type ||
             types[0] ||
             '',
 
-        types,
+        types:
+
+            types,
 
         location:
             row.location ||
@@ -552,7 +715,7 @@ function carOut(row) {
 }
 
 // =====================================================
-// SETTINGS
+// SETTINGS OUTPUT
 // =====================================================
 
 function settingsOut(row) {
@@ -577,7 +740,7 @@ function settingsOut(row) {
 }
 
 // =====================================================
-// DAILY STATISTICS
+// DAILY STAT
 // =====================================================
 
 async function recordDailyStat(type) {
@@ -636,6 +799,28 @@ const server =
 
                 const url =
                     req.url.split('?')[0];
+
+                // =================================================
+                // CORS / OPTIONS
+                // =================================================
+
+                if (
+                    req.method === 'OPTIONS'
+                ) {
+
+                    res.writeHead(
+                        204,
+                        {
+                            'Access-Control-Allow-Origin': '*',
+                            'Access-Control-Allow-Methods':
+                                'GET,POST,PUT,DELETE,OPTIONS',
+                            'Access-Control-Allow-Headers':
+                                'Content-Type,X-Admin-Password'
+                        }
+                    );
+
+                    return res.end();
+                }
 
                 // =================================================
                 // GET CARS
@@ -716,8 +901,8 @@ const server =
 
                         const name =
                             String(
-                                body.name ||
-                                body.title ||
+                                body.name ??
+                                body.title ??
                                 ''
                             )
                             .trim()
@@ -727,16 +912,15 @@ const server =
                             );
 
                         const price =
-                            Number(
-                                body.price
+                            toInteger(
+                                body.price,
+                                -1
                             );
 
                         const currency =
-                            String(
-                                body.currency ||
-                                'UZS'
-                            )
-                            .toUpperCase();
+                            normalizeCurrency(
+                                body.currency
+                            );
 
                         const type =
                             String(
@@ -749,11 +933,16 @@ const server =
                                 100
                             );
 
-                        const types =
+                        let types;
+
+                        if (
                             Array.isArray(
                                 body.types
                             )
-                                ? body.types
+                        ) {
+
+                            types =
+                                body.types
                                     .map(
                                         x =>
                                             String(x)
@@ -765,17 +954,20 @@ const server =
                                     .slice(
                                         0,
                                         3
-                                    )
-                                : (
-                                    type
-                                        ? [type]
-                                        : []
-                                );
+                                    );
+
+                        } else {
+
+                            types =
+                                type
+                                    ? [type]
+                                    : [];
+                        }
 
                         const location =
                             String(
-                                body.location ||
-                                body.address ||
+                                body.location ??
+                                body.address ??
                                 ''
                             )
                             .trim()
@@ -786,8 +978,8 @@ const server =
 
                         const address =
                             String(
-                                body.address ||
-                                body.location ||
+                                body.address ??
+                                body.location ??
                                 ''
                             )
                             .trim()
@@ -797,14 +989,16 @@ const server =
                             );
 
                         const rooms =
-                            Number(
-                                body.rooms
-                            ) || 0;
+                            toInteger(
+                                body.rooms,
+                                0
+                            );
 
                         const area =
-                            Number(
-                                body.area
-                            ) || 0;
+                            toInteger(
+                                body.area,
+                                0
+                            );
 
                         const phone =
                             String(
@@ -830,9 +1024,6 @@ const server =
 
                         if (
                             !name ||
-                            !Number.isInteger(
-                                price
-                            ) ||
                             price <= 0
                         ) {
 
@@ -842,21 +1033,6 @@ const server =
                                 {
                                     error:
                                         "Nom va narxni to'g'ri kiriting"
-                                }
-                            );
-                        }
-
-                        if (
-                            currency !== 'UZS' &&
-                            currency !== 'USD'
-                        ) {
-
-                            return sendJson(
-                                res,
-                                400,
-                                {
-                                    error:
-                                        "Valyuta noto'g'ri"
                                 }
                             );
                         }
@@ -1016,7 +1192,10 @@ const server =
                             );
                         } catch (_) {}
 
-                        console.error(e);
+                        console.error(
+                            'ADD CAR ERROR:',
+                            e
+                        );
 
                         return sendJson(
                             res,
@@ -1024,7 +1203,7 @@ const server =
                             {
                                 error:
                                     e.message ||
-                                    "Ma'lumot noto'g'ri yoki juda katta"
+                                    "Mashina qo'shishda xatolik"
                             }
                         );
 
@@ -1087,7 +1266,8 @@ const server =
                         );
 
                     if (
-                        !Number.isInteger(id)
+                        !Number.isInteger(id) ||
+                        id <= 0
                     ) {
 
                         return sendJson(
@@ -1133,6 +1313,10 @@ const server =
                         const oldCar =
                             oldResult.rows[0];
 
+                        // -----------------------------------------
+                        // NAME
+                        // -----------------------------------------
+
                         const name =
                             String(
                                 body.name !== undefined
@@ -1149,30 +1333,46 @@ const server =
                                 300
                             );
 
+                        // -----------------------------------------
+                        // PRICE
+                        // -----------------------------------------
+
                         const price =
                             body.price !== undefined
-                                ? Number(
-                                    body.price
+                                ? toInteger(
+                                    body.price,
+                                    -1
                                 )
-                                : Number(
-                                    oldCar.price
+                                : toInteger(
+                                    oldCar.price,
+                                    -1
                                 );
 
+                        // -----------------------------------------
+                        // CURRENCY
+                        // -----------------------------------------
+
                         const currency =
-                            String(
-                                body.currency !== undefined
-                                    ? body.currency
-                                    : (
-                                        oldCar.currency ||
-                                        'UZS'
-                                    )
-                            )
-                            .toUpperCase();
+                            body.currency !== undefined
+                                ? normalizeCurrency(
+                                    body.currency
+                                )
+                                : normalizeCurrency(
+                                    oldCar.currency
+                                );
+
+                        // -----------------------------------------
+                        // OLD TYPES
+                        // -----------------------------------------
 
                         const oldTypes =
                             parseTypes(
                                 oldCar
                             );
+
+                        // -----------------------------------------
+                        // TYPE
+                        // -----------------------------------------
 
                         const type =
                             String(
@@ -1190,11 +1390,20 @@ const server =
                                 100
                             );
 
-                        const types =
+                        // -----------------------------------------
+                        // TYPES
+                        // -----------------------------------------
+
+                        let types;
+
+                        if (
                             Array.isArray(
                                 body.types
                             )
-                                ? body.types
+                        ) {
+
+                            types =
+                                body.types
                                     .map(
                                         x =>
                                             String(x)
@@ -1206,12 +1415,19 @@ const server =
                                     .slice(
                                         0,
                                         3
-                                    )
-                                : (
-                                    type
-                                        ? [type]
-                                        : oldTypes
-                                );
+                                    );
+
+                        } else {
+
+                            types =
+                                type
+                                    ? [type]
+                                    : oldTypes;
+                        }
+
+                        // -----------------------------------------
+                        // LOCATION
+                        // -----------------------------------------
 
                         const location =
                             String(
@@ -1229,6 +1445,10 @@ const server =
                                 500
                             );
 
+                        // -----------------------------------------
+                        // ADDRESS
+                        // -----------------------------------------
+
                         const address =
                             String(
                                 body.address !== undefined
@@ -1245,29 +1465,48 @@ const server =
                                 500
                             );
 
+                        // -----------------------------------------
+                        // ROOMS
+                        // -----------------------------------------
+
                         const rooms =
                             body.rooms !== undefined
-                                ? Number(
-                                    body.rooms
-                                ) || 0
-                                : Number(
-                                    oldCar.rooms
-                                ) || 0;
+                                ? toInteger(
+                                    body.rooms,
+                                    0
+                                )
+                                : toInteger(
+                                    oldCar.rooms,
+                                    0
+                                );
+
+                        // -----------------------------------------
+                        // AREA
+                        // -----------------------------------------
 
                         const area =
                             body.area !== undefined
-                                ? Number(
-                                    body.area
-                                ) || 0
-                                : Number(
-                                    oldCar.area
-                                ) || 0;
+                                ? toInteger(
+                                    body.area,
+                                    0
+                                )
+                                : toInteger(
+                                    oldCar.area,
+                                    0
+                                );
+
+                        // -----------------------------------------
+                        // PHONE
+                        // -----------------------------------------
 
                         const phone =
                             String(
                                 body.phone !== undefined
                                     ? body.phone
-                                    : oldCar.phone || ''
+                                    : (
+                                        oldCar.phone ||
+                                        ''
+                                    )
                             )
                             .trim()
                             .slice(
@@ -1275,11 +1514,18 @@ const server =
                                 100
                             );
 
+                        // -----------------------------------------
+                        // DESCRIPTION
+                        // -----------------------------------------
+
                         const description =
                             String(
                                 body.description !== undefined
                                     ? body.description
-                                    : oldCar.description || ''
+                                    : (
+                                        oldCar.description ||
+                                        ''
+                                    )
                             )
                             .trim()
                             .slice(
@@ -1287,11 +1533,12 @@ const server =
                                 2000
                             );
 
+                        // -----------------------------------------
+                        // VALIDATION
+                        // -----------------------------------------
+
                         if (
                             !name ||
-                            !Number.isInteger(
-                                price
-                            ) ||
                             price <= 0
                         ) {
 
@@ -1301,21 +1548,6 @@ const server =
                                 {
                                     error:
                                         "Nom va narxni to'g'ri kiriting"
-                                }
-                            );
-                        }
-
-                        if (
-                            currency !== 'UZS' &&
-                            currency !== 'USD'
-                        ) {
-
-                            return sendJson(
-                                res,
-                                400,
-                                {
-                                    error:
-                                        "Valyuta noto'g'ri"
                                 }
                             );
                         }
@@ -1335,6 +1567,10 @@ const server =
                             );
                         }
 
+                        // -----------------------------------------
+                        // IMAGES
+                        // -----------------------------------------
+
                         const incomingImages =
                             Array.isArray(
                                 body.images
@@ -1352,8 +1588,7 @@ const server =
                             );
 
                         if (
-                            incomingImages !==
-                            null
+                            incomingImages !== null
                         ) {
 
                             if (
@@ -1405,6 +1640,13 @@ const server =
                                 of finalImages
                             ) {
 
+                                if (
+                                    typeof oldImage !==
+                                    'string'
+                                ) {
+                                    continue;
+                                }
+
                                 await client.query(
                                     `
                                     DELETE FROM image_files
@@ -1417,6 +1659,10 @@ const server =
                             finalImages =
                                 savedNames;
                         }
+
+                        // -----------------------------------------
+                        // UPDATE
+                        // -----------------------------------------
 
                         const updated =
                             await client.query(
@@ -1484,7 +1730,10 @@ const server =
                             );
                         } catch (_) {}
 
-                        console.error(e);
+                        console.error(
+                            'EDIT CAR ERROR:',
+                            e
+                        );
 
                         return sendJson(
                             res,
@@ -1756,14 +2005,14 @@ const server =
                         );
                     }
 
-                    const parts =
-                        url.split('/');
-
                     const id =
-                        Number(parts[3]);
+                        Number(
+                            url.split('/')[3]
+                        );
 
                     if (
-                        !Number.isInteger(id)
+                        !Number.isInteger(id) ||
+                        id <= 0
                     ) {
 
                         return sendJson(
@@ -1782,7 +2031,7 @@ const server =
                             UPDATE cars
                             SET sold = NOT sold
                             WHERE id = $1
-                            RETURNING sold
+                            RETURNING *
                             `,
                             [id]
                         );
@@ -1808,7 +2057,14 @@ const server =
                             ok: true,
 
                             sold:
-                                result.rows[0].sold
+                                Boolean(
+                                    result.rows[0].sold
+                                ),
+
+                            car:
+                                carOut(
+                                    result.rows[0]
+                                )
                         }
                     );
                 }
@@ -1863,7 +2119,8 @@ const server =
                         );
 
                     if (
-                        !Number.isInteger(id)
+                        !Number.isInteger(id) ||
+                        id <= 0
                     ) {
 
                         return sendJson(
@@ -1896,41 +2153,7 @@ const server =
                             );
 
                         if (
-                            result.rows.length >
-                            0
-                        ) {
-
-                            const images =
-                                parseImages(
-                                    result.rows[0]
-                                );
-
-                            for (
-                                const name
-                                of images
-                            ) {
-
-                                await client.query(
-                                    `
-                                    DELETE FROM image_files
-                                    WHERE name = $1
-                                    `,
-                                    [name]
-                                );
-                            }
-                        }
-
-                        const deleted =
-                            await client.query(
-                                `
-                                DELETE FROM cars
-                                WHERE id = $1
-                                `,
-                                [id]
-                            );
-
-                        if (
-                            deleted.rowCount === 0
+                            result.rows.length === 0
                         ) {
 
                             await client.query(
@@ -1946,6 +2169,33 @@ const server =
                                 }
                             );
                         }
+
+                        const images =
+                            parseImages(
+                                result.rows[0]
+                            );
+
+                        for (
+                            const name
+                            of images
+                        ) {
+
+                            await client.query(
+                                `
+                                DELETE FROM image_files
+                                WHERE name = $1
+                                `,
+                                [name]
+                            );
+                        }
+
+                        await client.query(
+                            `
+                            DELETE FROM cars
+                            WHERE id = $1
+                            `,
+                            [id]
+                        );
 
                         await client.query(
                             'COMMIT'
@@ -1967,7 +2217,10 @@ const server =
                             );
                         } catch (_) {}
 
-                        console.error(e);
+                        console.error(
+                            'DELETE CAR ERROR:',
+                            e
+                        );
 
                         return sendJson(
                             res,
@@ -1999,7 +2252,7 @@ const server =
                         );
 
                     if (
-                        !/^[a-f0-9]+\.jpg$/.test(
+                        !/^[a-f0-9]{32}\.jpg$/.test(
                             name
                         )
                     ) {
@@ -2020,8 +2273,7 @@ const server =
                         );
 
                     if (
-                        result.rows.length ===
-                        0
+                        result.rows.length === 0
                     ) {
 
                         res.writeHead(404);
@@ -2148,7 +2400,6 @@ const server =
                                 FILTER (
                                     WHERE sold = true
                                 )::int AS sold
-
                             FROM cars
                         `);
 
@@ -2251,7 +2502,8 @@ const server =
                 // =================================================
 
                 if (
-                    url === '/admin'
+                    url === '/admin' ||
+                    url === '/admin.html'
                 ) {
 
                     return sendFile(
@@ -2264,14 +2516,60 @@ const server =
                 // MAIN PAGE
                 // =================================================
 
-                return sendFile(
+                if (
+                    url === '/' ||
+                    url === '/index.html'
+                ) {
+
+                    return sendFile(
+                        res,
+                        'index.html'
+                    );
+                }
+
+                // =================================================
+                // OTHER STATIC FILES
+                // =================================================
+
+                if (
+                    req.method === 'GET' &&
+                    (
+                        url.endsWith('.css') ||
+                        url.endsWith('.js')
+                    )
+                ) {
+
+                    const requested =
+                        url.replace(
+                            /^\/+/,
+                            ''
+                        );
+
+                    return sendFile(
+                        res,
+                        requested
+                    );
+                }
+
+                // =================================================
+                // 404
+                // =================================================
+
+                return sendJson(
                     res,
-                    'index.html'
+                    404,
+                    {
+                        error:
+                            'Sahifa topilmadi'
+                    }
                 );
 
             } catch (e) {
 
-                console.error(e);
+                console.error(
+                    'SERVER ERROR:',
+                    e
+                );
 
                 return sendJson(
                     res,
@@ -2296,7 +2594,9 @@ async function start() {
         await initDatabase();
 
         const PORT =
-            process.env.PORT || 3000;
+            Number(
+                process.env.PORT
+            ) || 3000;
 
         server.listen(
             PORT,
@@ -2304,6 +2604,10 @@ async function start() {
 
                 console.log(
                     `Server ${PORT}-portda ishlayapti`
+                );
+
+                console.log(
+                    'Admin password tekshiruvi faol'
                 );
             }
         );
@@ -2322,19 +2626,40 @@ async function start() {
 start();
 
 // =====================================================
-// SHUTDOWN
+// GRACEFUL SHUTDOWN
 // =====================================================
 
-process.on(
-    'SIGTERM',
-    async () => {
+async function shutdown(signal) {
 
-        console.log(
-            "Server to'xtatilmoqda..."
-        );
+    console.log(
+        `${signal}: Server to'xtatilmoqda...`
+    );
+
+    try {
+
+        server.close();
 
         await pool.end();
 
         process.exit(0);
+
+    } catch (e) {
+
+        console.error(
+            'Shutdown xatosi:',
+            e
+        );
+
+        process.exit(1);
     }
+}
+
+process.on(
+    'SIGTERM',
+    () => shutdown('SIGTERM')
+);
+
+process.on(
+    'SIGINT',
+    () => shutdown('SIGINT')
 );
