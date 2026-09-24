@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-<!DOCTYPE html>
 <html lang="uz">
 <head>
 <meta charset="UTF-8">
@@ -254,11 +253,19 @@ header{
  cursor:pointer;
  font-weight:700;
  font-size:13px;
- transition:.2s
+ transition:.2s;
+ display:flex;
+ align-items:center;
+ gap:7px
 }
 
 .category-btn:hover{
  transform:translateY(-1px)
+}
+
+.category-btn .icon{
+ width:18px;
+ height:18px
 }
 
 .category-btn.active{
@@ -964,6 +971,35 @@ body.dark .detail-btn{
 
 <svg width="0" height="0" style="position:absolute">
 
+<symbol id="i-grid" viewBox="0 0 24 24">
+ <rect x="3.5" y="3.5" width="7" height="7" rx="1.5"/>
+ <rect x="13.5" y="3.5" width="7" height="7" rx="1.5"/>
+ <rect x="3.5" y="13.5" width="7" height="7" rx="1.5"/>
+ <rect x="13.5" y="13.5" width="7" height="7" rx="1.5"/>
+</symbol>
+
+<symbol id="i-house" viewBox="0 0 24 24">
+ <path d="m3.5 10.5 8.5-7 8.5 7"/>
+ <path d="M5.5 9.5v10a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-10"/>
+ <path d="M9.5 20.5v-6h5v6"/>
+</symbol>
+
+<symbol id="i-map" viewBox="0 0 24 24">
+ <path d="M9 4 3.5 6.5v13L9 17l6 2.5 5.5-2.5V4L15 6.5 9 4Z"/>
+ <path d="M9 4v13"/>
+ <path d="M15 6.5v13"/>
+</symbol>
+
+<symbol id="i-construction" viewBox="0 0 24 24">
+ <path d="M4 20V9"/>
+ <path d="M20 20V9"/>
+ <path d="M2.5 9h19"/>
+ <path d="M5 9 9 4h6l4 5"/>
+ <path d="M7 13h10"/>
+ <path d="M7 16h10"/>
+ <path d="M7 20h10"/>
+</symbol>
+
 <symbol id="i-location" viewBox="0 0 24 24">
  <path d="M20 10.2c0 5.1-8 11.3-8 11.3S4 15.3 4 10.2a8 8 0 1 1 16 0Z"/>
  <circle cx="12" cy="10" r="2.35"/>
@@ -1114,7 +1150,7 @@ body.dark .detail-btn{
 
  </div>
 
- <!-- KATEGORIYALAR -->
+<!-- KATEGORIYALAR -->
 
  <div class="categories">
 
@@ -1122,42 +1158,50 @@ body.dark .detail-btn{
    class="category-btn active"
    onclick="filterType('all',this)"
   >
-   🏠 Barchasi
-  </button>
-
-  <button
-   class="category-btn"
-   onclick="filterType('Uy',this)"
-  >
-   🏠 Uy
+   <svg class="icon">
+    <use href="#i-grid"></use>
+   </svg>
+   Barchasi
   </button>
 
   <button
    class="category-btn"
    onclick="filterType('Hovli',this)"
   >
-   🏡 Hovli
+   <svg class="icon">
+    <use href="#i-house"></use>
+   </svg>
+   Hovli
   </button>
 
   <button
    class="category-btn"
    onclick="filterType('Kvartira',this)"
   >
-   🏢 Kvartira
+   <svg class="icon">
+    <use href="#i-building"></use>
+   </svg>
+   Kvartira
   </button>
 
   <button
    class="category-btn"
    onclick="filterType('Yer',this)"
   >
-   🌳 Yer
+   <svg class="icon">
+    <use href="#i-map"></use>
+   </svg>
+   Yer
   </button>
 
   <button
    class="category-btn"
    onclick="filterType('Yangi qurilish',this)"
   >
-   🏗️ Yangi qurilish
+   <svg class="icon">
+    <use href="#i-construction"></use>
+   </svg>
+   Yangi qurilish
   </button>
 
  </div>
