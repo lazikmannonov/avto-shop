@@ -2,2493 +2,2207 @@
 <!DOCTYPE html>
 <html lang="uz">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Admin Panel — Uylar</title>
-
-<style>
-*{
-  box-sizing:border-box;
-  margin:0;
-  padding:0;
-}
-
-:root{
-  --bg:#f5f6f8;
-  --card:#ffffff;
-  --soft:#f0f1f3;
-  --text:#111827;
-  --muted:#6b7280;
-  --border:#e5e7eb;
-  --black:#111111;
-  --white:#ffffff;
-  --success:#16a34a;
-  --danger:#dc2626;
-  --warning:#d97706;
-  --shadow:0 10px 30px rgba(0,0,0,.06);
-}
-
-body.dark{
-  --bg:#0b0d10;
-  --card:#14171c;
-  --soft:#1c2027;
-  --text:#f5f5f5;
-  --muted:#9ca3af;
-  --border:#292e36;
-  --black:#ffffff;
-  --white:#111111;
-  --shadow:0 10px 30px rgba(0,0,0,.25);
-}
-
-body{
-  font-family:Inter,Arial,Helvetica,sans-serif;
-  background:var(--bg);
-  color:var(--text);
-  min-height:100vh;
-}
-
-button,
-input,
-select,
-textarea{
-  font:inherit;
-}
-
-button{
-  cursor:pointer;
-}
-
-a{
-  color:inherit;
-  text-decoration:none;
-}
-
-.icon-sprite{
-  position:absolute;
-  width:0;
-  height:0;
-  overflow:hidden;
-}
-
-.icon{
-  width:19px;
-  height:19px;
-  display:inline-block;
-  flex:none;
-  fill:none;
-  stroke:currentColor;
-  stroke-width:1.8;
-  stroke-linecap:round;
-  stroke-linejoin:round;
-}
-
-.icon-sm{
-  width:16px;
-  height:16px;
-}
-
-.icon-lg{
-  width:22px;
-  height:22px;
-}
-
-.icon-xl{
-  width:27px;
-  height:27px;
-}
-
-.app{
-  min-height:100vh;
-  display:flex;
-}
-
-.sidebar{
-  width:255px;
-  background:var(--card);
-  border-right:1px solid var(--border);
-  position:fixed;
-  left:0;
-  top:0;
-  bottom:0;
-  z-index:100;
-  display:flex;
-  flex-direction:column;
-  transition:.25s;
-}
-
-.logo{
-  height:76px;
-  display:flex;
-  align-items:center;
-  gap:11px;
-  padding:0 22px;
-  border-bottom:1px solid var(--border);
-  font-weight:800;
-  font-size:20px;
-}
-
-.logo-mark{
-  width:38px;
-  height:38px;
-  border-radius:12px;
-  background:var(--text);
-  color:var(--bg);
-  display:grid;
-  place-items:center;
-}
-
-.logo-mark .icon{
-  width:22px;
-  height:22px;
-}
-
-.nav{
-  padding:18px 12px;
-  display:flex;
-  flex-direction:column;
-  gap:5px;
-}
-
-.nav button{
-  width:100%;
-  border:0;
-  background:transparent;
-  color:var(--muted);
-  border-radius:12px;
-  padding:12px 13px;
-  display:flex;
-  align-items:center;
-  gap:12px;
-  text-align:left;
-  transition:.2s;
-}
-
-.nav button:hover{
-  background:var(--soft);
-  color:var(--text);
-}
-
-.nav button.active{
-  background:var(--text);
-  color:var(--bg);
-}
-
-.sidebar-bottom{
-  margin-top:auto;
-  padding:12px;
-  border-top:1px solid var(--border);
-  display:flex;
-  flex-direction:column;
-  gap:5px;
-}
-
-.sidebar-bottom button{
-  border:0;
-  background:transparent;
-  color:var(--muted);
-  border-radius:12px;
-  padding:12px 13px;
-  display:flex;
-  align-items:center;
-  gap:12px;
-  text-align:left;
-}
-
-.sidebar-bottom button:hover{
-  background:var(--soft);
-  color:var(--text);
-}
-
-.main{
-  margin-left:255px;
-  width:calc(100% - 255px);
-  min-height:100vh;
-}
-
-.topbar{
-  height:76px;
-  background:var(--card);
-  border-bottom:1px solid var(--border);
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  padding:0 28px;
-  position:sticky;
-  top:0;
-  z-index:50;
-}
-
-.top-left{
-  display:flex;
-  align-items:center;
-  gap:12px;
-}
-
-.menu-btn{
-  display:none;
-  width:40px;
-  height:40px;
-  border:1px solid var(--border);
-  background:var(--card);
-  color:var(--text);
-  border-radius:10px;
-  place-items:center;
-}
-
-.page-title{
-  font-size:20px;
-  font-weight:800;
-}
-
-.top-actions{
-  display:flex;
-  align-items:center;
-  gap:8px;
-}
-
-.top-btn{
-  width:40px;
-  height:40px;
-  border:1px solid var(--border);
-  background:var(--card);
-  color:var(--text);
-  border-radius:11px;
-  display:grid;
-  place-items:center;
-}
-
-.top-btn:hover{
-  background:var(--soft);
-}
-
-.content{
-  padding:28px;
-  max-width:1500px;
-  margin:auto;
-}
-
-.page{
-  display:none;
-}
-
-.page.active{
-  display:block;
-}
-
-.stats-grid{
-  display:grid;
-  grid-template-columns:repeat(4,1fr);
-  gap:16px;
-  margin-bottom:22px;
-}
-
-.stat-card{
-  background:var(--card);
-  border:1px solid var(--border);
-  border-radius:18px;
-  padding:20px;
-  box-shadow:var(--shadow);
-}
-
-.stat-top{
-  display:flex;
-  justify-content:space-between;
-  align-items:flex-start;
-  margin-bottom:20px;
-}
-
-.stat-icon{
-  width:46px;
-  height:46px;
-  border-radius:13px;
-  background:var(--soft);
-  display:grid;
-  place-items:center;
-  color:var(--text);
-}
-
-.stat-value{
-  font-size:29px;
-  font-weight:850;
-  letter-spacing:-1px;
-}
-
-.stat-label{
-  color:var(--muted);
-  font-size:13px;
-  margin-top:5px;
-}
-
-.dashboard-grid{
-  display:grid;
-  grid-template-columns:1.5fr 1fr;
-  gap:18px;
-}
-
-.panel{
-  background:var(--card);
-  border:1px solid var(--border);
-  border-radius:18px;
-  box-shadow:var(--shadow);
-  overflow:hidden;
-}
-
-.panel-header{
-  padding:18px 20px;
-  border-bottom:1px solid var(--border);
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:10px;
-}
-
-.panel-title{
-  font-weight:800;
-}
-
-.panel-body{
-  padding:20px;
-}
-
-.activity-list{
-  display:flex;
-  flex-direction:column;
-  gap:13px;
-}
-
-.activity{
-  display:flex;
-  align-items:center;
-  gap:12px;
-}
-
-.activity-icon{
-  width:38px;
-  height:38px;
-  border-radius:11px;
-  background:var(--soft);
-  display:grid;
-  place-items:center;
-}
-
-.activity-main{
-  flex:1;
-  min-width:0;
-}
-
-.activity-title{
-  font-size:14px;
-  font-weight:650;
-}
-
-.activity-time{
-  font-size:12px;
-  color:var(--muted);
-  margin-top:3px;
-}
-
-.chart{
-  height:240px;
-  display:flex;
-  align-items:flex-end;
-  gap:9px;
-  padding-top:20px;
-}
-
-.chart-bar-wrap{
-  flex:1;
-  height:100%;
-  display:flex;
-  flex-direction:column;
-  justify-content:flex-end;
-  align-items:center;
-  gap:7px;
-}
-
-.chart-bar{
-  width:100%;
-  max-width:42px;
-  min-height:5px;
-  border-radius:8px 8px 3px 3px;
-  background:var(--text);
-  transition:.3s;
-}
-
-.chart-label{
-  font-size:10px;
-  color:var(--muted);
-}
-
-.form-grid{
-  display:grid;
-  grid-template-columns:repeat(2,1fr);
-  gap:16px;
-}
-
-.form-group{
-  display:flex;
-  flex-direction:column;
-  gap:7px;
-}
-
-.form-group.full{
-  grid-column:1/-1;
-}
-
-label{
-  font-size:13px;
-  font-weight:700;
-}
-
-.input,
-.select,
-.textarea{
-  width:100%;
-  border:1px solid var(--border);
-  background:var(--card);
-  color:var(--text);
-  border-radius:12px;
-  padding:12px 13px;
-  outline:none;
-  transition:.2s;
-}
-
-.input:focus,
-.select:focus,
-.textarea:focus{
-  border-color:var(--text);
-  box-shadow:0 0 0 3px rgba(127,127,127,.1);
-}
-
-.textarea{
-  min-height:120px;
-  resize:vertical;
-}
-
-.password-wrap{
-  position:relative;
-}
-
-.password-wrap .input{
-  padding-right:48px;
-}
-
-.password-eye{
-  position:absolute;
-  right:8px;
-  top:50%;
-  transform:translateY(-50%);
-  width:34px;
-  height:34px;
-  border:0;
-  background:transparent;
-  color:var(--muted);
-  display:grid;
-  place-items:center;
-}
-
-.type-options{
-  display:grid;
-  grid-template-columns:repeat(2,1fr);
-  gap:10px;
-}
-
-.type-option{
-  position:relative;
-  min-height:72px;
-  border:1px solid var(--border);
-  background:var(--soft);
-  color:var(--text);
-  border-radius:15px;
-  padding:12px 13px;
-  display:flex;
-  align-items:center;
-  gap:11px;
-  text-align:left;
-  transition:.2s;
-}
-
-.type-option:hover{
-  transform:translateY(-1px);
-  border-color:var(--text);
-}
-
-.type-option.selected{
-  background:var(--text);
-  color:var(--bg);
-  border-color:var(--text);
-  box-shadow:0 8px 20px rgba(0,0,0,.12);
-}
-
-body.dark .type-option.selected{
-  background:#fff;
-  color:#111;
-  border-color:#fff;
-}
-
-.type-option-icon{
-  width:39px;
-  height:39px;
-  border-radius:11px;
-  background:var(--card);
-  display:grid;
-  place-items:center;
-  flex:none;
-}
-
-.type-option.selected .type-option-icon{
-  background:rgba(128,128,128,.16);
-}
-
-.type-option-name{
-  font-size:13px;
-  font-weight:750;
-}
-
-.type-option-check{
-  width:22px;
-  height:22px;
-  border-radius:50%;
-  border:1px solid var(--border);
-  margin-left:auto;
-  display:grid;
-  place-items:center;
-}
-
-.type-option-check .icon{
-  width:13px;
-  height:13px;
-  opacity:0;
-}
-
-.type-option.selected .type-option-check{
-  background:var(--card);
-  color:var(--text);
-}
-
-.type-option.selected .type-option-check .icon{
-  opacity:1;
-}
-
-.type-note{
-  color:var(--muted);
-  font-size:12px;
-  margin-top:8px;
-}
-
-.type-summary{
-  margin-top:9px;
-  padding:9px 11px;
-  border-radius:10px;
-  background:var(--soft);
-  color:var(--muted);
-  font-size:12px;
-}
-
-.currency-buttons{
-  display:flex;
-  gap:8px;
-}
-
-.currency-btn{
-  flex:1;
-  border:1px solid var(--border);
-  background:var(--soft);
-  color:var(--text);
-  border-radius:11px;
-  padding:11px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  gap:7px;
-  font-weight:700;
-}
-
-.currency-btn.active{
-  background:var(--text);
-  color:var(--bg);
-  border-color:var(--text);
-}
-
-.upload-box{
-  border:1.5px dashed var(--border);
-  border-radius:15px;
-  min-height:145px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  flex-direction:column;
-  gap:8px;
-  background:var(--soft);
-  color:var(--muted);
-  transition:.2s;
-  text-align:center;
-  padding:20px;
-}
-
-.upload-box:hover{
-  border-color:var(--text);
-}
-
-.upload-icon{
-  width:45px;
-  height:45px;
-  border-radius:13px;
-  background:var(--card);
-  display:grid;
-  place-items:center;
-  color:var(--text);
-}
-
-.upload-input{
-  display:none;
-}
-
-.preview-grid{
-  display:grid;
-  grid-template-columns:repeat(5,1fr);
-  gap:8px;
-  margin-top:10px;
-}
-
-.preview-item{
-  aspect-ratio:1;
-  border-radius:11px;
-  overflow:hidden;
-  border:1px solid var(--border);
-  background:var(--soft);
-}
-
-.preview-item img{
-  width:100%;
-  height:100%;
-  object-fit:cover;
-}
-
-.main-btn{
-  border:0;
-  background:var(--text);
-  color:var(--bg);
-  border-radius:12px;
-  padding:13px 17px;
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;
-  gap:8px;
-  font-weight:750;
-}
-
-.main-btn:hover{
-  opacity:.88;
-}
-
-.main-btn:disabled{
-  opacity:.5;
-  cursor:not-allowed;
-}
-
-.secondary-btn{
-  border:1px solid var(--border);
-  background:var(--card);
-  color:var(--text);
-  border-radius:12px;
-  padding:12px 15px;
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;
-  gap:8px;
-  font-weight:700;
-}
-
-.secondary-btn:hover{
-  background:var(--soft);
-}
-
-.form-actions{
-  display:flex;
-  gap:9px;
-  justify-content:flex-end;
-  margin-top:20px;
-}
-
-.settings-grid{
-  display:grid;
-  grid-template-columns:repeat(2,1fr);
-  gap:16px;
-}
-
-.settings-item{
-  border:1px solid var(--border);
-  background:var(--card);
-  border-radius:15px;
-  padding:15px;
-}
-
-.settings-head{
-  display:flex;
-  align-items:center;
-  gap:10px;
-  margin-bottom:10px;
-}
-
-.settings-icon{
-  width:40px;
-  height:40px;
-  border-radius:12px;
-  background:var(--soft);
-  display:grid;
-  place-items:center;
-}
-
-.settings-title{
-  font-weight:750;
-}
-
-.settings-sub{
-  font-size:12px;
-  color:var(--muted);
-  margin-top:2px;
-}
-
-.filters{
-  display:flex;
-  flex-wrap:wrap;
-  gap:8px;
-  margin-bottom:18px;
-}
-
-.filter{
-  border:1px solid var(--border);
-  background:var(--card);
-  color:var(--muted);
-  border-radius:11px;
-  padding:10px 12px;
-  display:flex;
-  align-items:center;
-  gap:7px;
-  font-size:12px;
-  font-weight:700;
-}
-
-.filter:hover{
-  background:var(--soft);
-  color:var(--text);
-}
-
-.filter.active{
-  background:var(--text);
-  color:var(--bg);
-  border-color:var(--text);
-}
-
-.search-row{
-  display:flex;
-  gap:10px;
-  margin-bottom:15px;
-}
-
-.search-wrap{
-  position:relative;
-  flex:1;
-}
-
-.search-wrap .input{
-  padding-left:42px;
-}
-
-.search-icon{
-  position:absolute;
-  left:13px;
-  top:50%;
-  transform:translateY(-50%);
-  color:var(--muted);
-}
-
-.homes-grid{
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:16px;
-}
-
-.home-card{
-  background:var(--card);
-  border:1px solid var(--border);
-  border-radius:17px;
-  overflow:hidden;
-  box-shadow:var(--shadow);
-}
-
-.home-image{
-  height:190px;
-  position:relative;
-  background:var(--soft);
-  overflow:hidden;
-}
-
-.home-image img{
-  width:100%;
-  height:100%;
-  object-fit:cover;
-}
-
-.home-image-placeholder{
-  width:100%;
-  height:100%;
-  display:grid;
-  place-items:center;
-  color:var(--muted);
-}
-
-.home-status{
-  position:absolute;
-  left:10px;
-  top:10px;
-  border-radius:9px;
-  padding:6px 8px;
-  background:var(--card);
-  color:var(--text);
-  font-size:10px;
-  font-weight:800;
-}
-
-.home-content{
-  padding:15px;
-}
-
-.home-title{
-  font-size:16px;
-  font-weight:800;
-  margin-bottom:6px;
-  white-space:nowrap;
-  overflow:hidden;
-  text-overflow:ellipsis;
-}
-
-.home-price{
-  font-size:18px;
-  font-weight:850;
-  margin-bottom:10px;
-}
-
-.home-type{
-  color:var(--muted);
-  font-size:12px;
-  margin-bottom:9px;
-  line-height:1.5;
-}
-
-.home-info{
-  display:flex;
-  flex-wrap:wrap;
-  gap:9px;
-  color:var(--muted);
-  font-size:11px;
-  margin-bottom:12px;
-}
-
-.home-info span{
-  display:flex;
-  align-items:center;
-  gap:4px;
-}
-
-.home-actions{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:7px;
-}
-
-.action-btn{
-  border:1px solid var(--border);
-  background:var(--soft);
-  color:var(--text);
-  border-radius:10px;
-  padding:9px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  gap:6px;
-  font-size:11px;
-  font-weight:750;
-}
-
-.action-btn:hover{
-  background:var(--text);
-  color:var(--bg);
-}
-
-.action-btn.danger:hover{
-  background:var(--danger);
-  border-color:var(--danger);
-  color:#fff;
-}
-
-.empty{
-  padding:55px 20px;
-  text-align:center;
-  color:var(--muted);
-  border:1px dashed var(--border);
-  border-radius:16px;
-  grid-column:1/-1;
-}
-
-.empty .icon{
-  width:38px;
-  height:38px;
-  margin-bottom:10px;
-}
-
-.toast{
-  position:fixed;
-  right:22px;
-  bottom:22px;
-  z-index:999;
-  background:var(--text);
-  color:var(--bg);
-  border-radius:12px;
-  padding:13px 16px;
-  max-width:360px;
-  box-shadow:0 15px 35px rgba(0,0,0,.2);
-  transform:translateY(120px);
-  opacity:0;
-  pointer-events:none;
-  transition:.25s;
-  font-size:13px;
-  font-weight:650;
-}
-
-.toast.show{
-  transform:translateY(0);
-  opacity:1;
-}
-
-.toast.error{
-  background:var(--danger);
-  color:#fff;
-}
-
-.loading{
-  display:none;
-  position:fixed;
-  inset:0;
-  z-index:1000;
-  background:rgba(0,0,0,.3);
-  backdrop-filter:blur(3px);
-  align-items:center;
-  justify-content:center;
-}
-
-.loading.show{
-  display:flex;
-}
-
-.loader{
-  width:45px;
-  height:45px;
-  border:3px solid rgba(255,255,255,.35);
-  border-top-color:#fff;
-  border-radius:50%;
-  animation:spin .8s linear infinite;
-}
-
-@keyframes spin{
-  to{transform:rotate(360deg)}
-}
-
-@media(max-width:1100px){
-  .stats-grid{
-    grid-template-columns:repeat(2,1fr);
-  }
-
-  .dashboard-grid{
-    grid-template-columns:1fr;
-  }
-
-  .homes-grid{
-    grid-template-columns:repeat(2,1fr);
-  }
-}
-
-@media(max-width:800px){
-  .sidebar{
-    transform:translateX(-100%);
-  }
-
-  .sidebar.open{
-    transform:translateX(0);
-    box-shadow:20px 0 50px rgba(0,0,0,.2);
-  }
-
-  .main{
-    margin-left:0;
-    width:100%;
-  }
-
-  .menu-btn{
-    display:grid;
-  }
-
-  .content{
-    padding:18px;
-  }
-
-  .topbar{
-    padding:0 16px;
-  }
-
-  .form-grid,
-  .settings-grid{
-    grid-template-columns:1fr;
-  }
-
-  .type-options{
-    grid-template-columns:1fr 1fr;
-  }
-}
-
-@media(max-width:600px){
-  .stats-grid{
-    grid-template-columns:1fr;
-  }
-
-  .homes-grid{
-    grid-template-columns:1fr;
-  }
-
-  .type-options{
-    grid-template-columns:1fr;
-  }
-
-  .preview-grid{
-    grid-template-columns:repeat(3,1fr);
-  }
-
-  .search-row{
-    flex-direction:column;
-  }
-
-  .page-title{
-    font-size:17px;
-  }
-
-  .home-actions{
-    grid-template-columns:1fr;
-  }
-}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel — Uylar</title>
+
+    <style>
+        *{
+            box-sizing:border-box;
+            margin:0;
+            padding:0;
+        }
+
+        :root{
+            --bg:#f5f6f8;
+            --card:#ffffff;
+            --soft:#f0f1f3;
+            --text:#111827;
+            --muted:#6b7280;
+            --border:#e5e7eb;
+            --black:#111111;
+            --white:#ffffff;
+            --success:#16a34a;
+            --danger:#dc2626;
+            --warning:#d97706;
+            --shadow:0 10px 30px rgba(0,0,0,.06);
+        }
+
+        body.dark{
+            --bg:#0b0d10;
+            --card:#14171c;
+            --soft:#1c2027;
+            --text:#f5f5f5;
+            --muted:#9ca3af;
+            --border:#292e36;
+            --black:#ffffff;
+            --white:#111111;
+            --shadow:0 10px 30px rgba(0,0,0,.25);
+        }
+
+        body{
+            font-family:Inter,Arial,Helvetica,sans-serif;
+            background:var(--bg);
+            color:var(--text);
+            min-height:100vh;
+        }
+
+        button,
+        input,
+        select,
+        textarea{
+            font:inherit;
+        }
+
+        button{
+            cursor:pointer;
+        }
+
+        a{
+            color:inherit;
+            text-decoration:none;
+        }
+
+        .icon-sprite{
+            position:absolute;
+            width:0;
+            height:0;
+            overflow:hidden;
+        }
+
+        .icon{
+            width:19px;
+            height:19px;
+            display:inline-block;
+            flex:none;
+            fill:none;
+            stroke:currentColor;
+            stroke-width:1.8;
+            stroke-linecap:round;
+            stroke-linejoin:round;
+        }
+
+        .icon-sm{
+            width:16px;
+            height:16px;
+        }
+
+        .icon-lg{
+            width:22px;
+            height:22px;
+        }
+
+        .icon-xl{
+            width:27px;
+            height:27px;
+        }
+
+        .app{
+            min-height:100vh;
+            display:flex;
+        }
+
+        .sidebar{
+            width:255px;
+            background:var(--card);
+            border-right:1px solid var(--border);
+            position:fixed;
+            left:0;
+            top:0;
+            bottom:0;
+            z-index:100;
+            display:flex;
+            flex-direction:column;
+            transition:.25s;
+        }
+
+        .logo{
+            height:76px;
+            display:flex;
+            align-items:center;
+            gap:11px;
+            padding:0 22px;
+            border-bottom:1px solid var(--border);
+            font-weight:800;
+            font-size:20px;
+        }
+
+        .logo-mark{
+            width:38px;
+            height:38px;
+            border-radius:12px;
+            background:var(--text);
+            color:var(--bg);
+            display:grid;
+            place-items:center;
+        }
+
+        .logo-mark .icon{
+            width:22px;
+            height:22px;
+        }
+
+        .nav{
+            padding:18px 12px;
+            display:flex;
+            flex-direction:column;
+            gap:5px;
+        }
+
+        .nav button{
+            width:100%;
+            border:0;
+            background:transparent;
+            color:var(--muted);
+            border-radius:12px;
+            padding:12px 13px;
+            display:flex;
+            align-items:center;
+            gap:12px;
+            text-align:left;
+            transition:.2s;
+        }
+
+        .nav button:hover{
+            background:var(--soft);
+            color:var(--text);
+        }
+
+        .nav button.active{
+            background:var(--text);
+            color:var(--bg);
+        }
+
+        .sidebar-bottom{
+            margin-top:auto;
+            padding:12px;
+            border-top:1px solid var(--border);
+            display:flex;
+            flex-direction:column;
+            gap:5px;
+        }
+
+        .sidebar-bottom button{
+            border:0;
+            background:transparent;
+            color:var(--muted);
+            border-radius:12px;
+            padding:12px 13px;
+            display:flex;
+            align-items:center;
+            gap:12px;
+            text-align:left;
+        }
+
+        .sidebar-bottom button:hover{
+            background:var(--soft);
+            color:var(--text);
+        }
+
+        .main{
+            margin-left:255px;
+            width:calc(100% - 255px);
+            min-height:100vh;
+        }
+
+        .topbar{
+            height:76px;
+            background:var(--card);
+            border-bottom:1px solid var(--border);
+            display:flex;
+            align-items:center;
+            justify-content:space-between;
+            padding:0 28px;
+            position:sticky;
+            top:0;
+            z-index:50;
+        }
+
+        .top-left{
+            display:flex;
+            align-items:center;
+            gap:12px;
+        }
+
+        .menu-btn{
+            display:none;
+            width:40px;
+            height:40px;
+            border:1px solid var(--border);
+            background:var(--card);
+            color:var(--text);
+            border-radius:10px;
+            place-items:center;
+        }
+
+        .page-title{
+            font-size:20px;
+            font-weight:800;
+        }
+
+        .top-actions{
+            display:flex;
+            align-items:center;
+            gap:8px;
+        }
+
+        .top-btn{
+            width:40px;
+            height:40px;
+            border:1px solid var(--border);
+            background:var(--card);
+            color:var(--text);
+            border-radius:11px;
+            display:grid;
+            place-items:center;
+        }
+
+        .top-btn:hover{
+            background:var(--soft);
+        }
+
+        .content{
+            padding:28px;
+            max-width:1500px;
+            margin:auto;
+        }
+
+        .page{
+            display:none;
+        }
+
+        .page.active{
+            display:block;
+        }
+
+        .stats-grid{
+            display:grid;
+            grid-template-columns:repeat(4,1fr);
+            gap:16px;
+            margin-bottom:22px;
+        }
+
+        .stat-card{
+            background:var(--card);
+            border:1px solid var(--border);
+            border-radius:18px;
+            padding:20px;
+            box-shadow:var(--shadow);
+        }
+
+        .stat-top{
+            display:flex;
+            justify-content:space-between;
+            align-items:flex-start;
+            margin-bottom:20px;
+        }
+
+        .stat-icon{
+            width:46px;
+            height:46px;
+            border-radius:13px;
+            background:var(--soft);
+            display:grid;
+            place-items:center;
+            color:var(--text);
+        }
+
+        .stat-value{
+            font-size:29px;
+            font-weight:850;
+            letter-spacing:-1px;
+        }
+
+        .stat-label{
+            color:var(--muted);
+            font-size:13px;
+            margin-top:5px;
+        }
+
+        .dashboard-grid{
+            display:grid;
+            grid-template-columns:1.5fr 1fr;
+            gap:18px;
+        }
+
+        .panel{
+            background:var(--card);
+            border:1px solid var(--border);
+            border-radius:18px;
+            box-shadow:var(--shadow);
+            overflow:hidden;
+        }
+
+        .panel-header{
+            padding:18px 20px;
+            border-bottom:1px solid var(--border);
+            display:flex;
+            align-items:center;
+            justify-content:space-between;
+            gap:10px;
+        }
+
+        .panel-title{
+            font-weight:800;
+        }
+
+        .panel-body{
+            padding:20px;
+        }
+
+        .activity-list{
+            display:flex;
+            flex-direction:column;
+            gap:13px;
+        }
+
+        .activity{
+            display:flex;
+            align-items:center;
+            gap:12px;
+        }
+
+        .activity-icon{
+            width:38px;
+            height:38px;
+            border-radius:11px;
+            background:var(--soft);
+            display:grid;
+            place-items:center;
+        }
+
+        .activity-main{
+            flex:1;
+            min-width:0;
+        }
+
+        .activity-title{
+            font-size:14px;
+            font-weight:650;
+        }
+
+        .activity-time{
+            font-size:12px;
+            color:var(--muted);
+            margin-top:3px;
+        }
+
+        .chart{
+            height:240px;
+            display:flex;
+            align-items:flex-end;
+            gap:9px;
+            padding-top:20px;
+        }
+
+        .chart-bar-wrap{
+            flex:1;
+            height:100%;
+            display:flex;
+            flex-direction:column;
+            justify-content:flex-end;
+            align-items:center;
+            gap:7px;
+        }
+
+        .chart-bar{
+            width:100%;
+            max-width:42px;
+            min-height:5px;
+            border-radius:8px 8px 3px 3px;
+            background:var(--text);
+            transition:.3s;
+        }
+
+        .chart-label{
+            font-size:10px;
+            color:var(--muted);
+        }
+
+        .form-grid{
+            display:grid;
+            grid-template-columns:repeat(2,1fr);
+            gap:16px;
+        }
+
+        .form-group{
+            display:flex;
+            flex-direction:column;
+            gap:7px;
+        }
+
+        .form-group.full{
+            grid-column:1/-1;
+        }
+
+        label{
+            font-size:13px;
+            font-weight:700;
+        }
+
+        .input,
+        .select,
+        .textarea{
+            width:100%;
+            border:1px solid var(--border);
+            background:var(--card);
+            color:var(--text);
+            border-radius:12px;
+            padding:12px 13px;
+            outline:none;
+            transition:.2s;
+        }
+
+        .input:focus,
+        .select:focus,
+        .textarea:focus{
+            border-color:var(--text);
+            box-shadow:0 0 0 3px rgba(127,127,127,.1);
+        }
+
+        .textarea{
+            min-height:120px;
+            resize:vertical;
+        }
+
+        .password-wrap{
+            position:relative;
+        }
+
+        .password-wrap .input{
+            padding-right:48px;
+        }
+
+        .password-eye{
+            position:absolute;
+            right:8px;
+            top:50%;
+            transform:translateY(-50%);
+            width:34px;
+            height:34px;
+            border:0;
+            background:transparent;
+            color:var(--muted);
+            display:grid;
+            place-items:center;
+        }
+
+        .type-options{
+            display:grid;
+            grid-template-columns:repeat(2,1fr);
+            gap:10px;
+        }
+
+        .type-option{
+            position:relative;
+            min-height:72px;
+            border:1px solid var(--border);
+            background:var(--soft);
+            color:var(--text);
+            border-radius:15px;
+            padding:12px 13px;
+            display:flex;
+            align-items:center;
+            gap:11px;
+            text-align:left;
+            transition:.2s;
+        }
+
+        .type-option:hover{
+            transform:translateY(-1px);
+            border-color:var(--text);
+        }
+
+        .type-option.selected{
+            background:var(--text);
+            color:var(--bg);
+            border-color:var(--text);
+            box-shadow:0 8px 20px rgba(0,0,0,.12);
+        }
+
+        body.dark .type-option.selected{
+            background:#fff;
+            color:#111;
+            border-color:#fff;
+        }
+
+        .type-option-icon{
+            width:39px;
+            height:39px;
+            border-radius:11px;
+            background:var(--card);
+            display:grid;
+            place-items:center;
+            flex:none;
+        }
+
+        .type-option.selected .type-option-icon{
+            background:rgba(128,128,128,.16);
+        }
+
+        .type-option-name{
+            font-size:13px;
+            font-weight:750;
+        }
+
+        .type-option-check{
+            width:22px;
+            height:22px;
+            border-radius:50%;
+            border:1px solid var(--border);
+            margin-left:auto;
+            display:grid;
+            place-items:center;
+        }
+
+        .type-option-check .icon{
+            width:13px;
+            height:13px;
+            opacity:0;
+        }
+
+        .type-option.selected .type-option-check{
+            background:var(--card);
+            color:var(--text);
+        }
+
+        .type-option.selected .type-option-check .icon{
+            opacity:1;
+        }
+
+        .type-note{
+            color:var(--muted);
+            font-size:12px;
+            margin-top:8px;
+        }
+
+        .type-summary{
+            margin-top:9px;
+            padding:9px 11px;
+            border-radius:10px;
+            background:var(--soft);
+            color:var(--muted);
+            font-size:12px;
+        }
+
+        .currency-buttons{
+            display:flex;
+            gap:8px;
+        }
+
+        .currency-btn{
+            flex:1;
+            border:1px solid var(--border);
+            background:var(--soft);
+            color:var(--text);
+            border-radius:11px;
+            padding:11px;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            gap:7px;
+            font-weight:700;
+        }
+
+        .currency-btn.active{
+            background:var(--text);
+            color:var(--bg);
+            border-color:var(--text);
+        }
+
+        .upload-box{
+            border:1.5px dashed var(--border);
+            border-radius:15px;
+            min-height:145px;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            flex-direction:column;
+            gap:8px;
+            background:var(--soft);
+            color:var(--muted);
+            transition:.2s;
+            text-align:center;
+            padding:20px;
+        }
+
+        .upload-box:hover{
+            border-color:var(--text);
+        }
+
+        .upload-icon{
+            width:45px;
+            height:45px;
+            border-radius:13px;
+            background:var(--card);
+            display:grid;
+            place-items:center;
+            color:var(--text);
+        }
+
+        .upload-input{
+            display:none;
+        }
+
+        .preview-grid{
+            display:grid;
+            grid-template-columns:repeat(5,1fr);
+            gap:8px;
+            margin-top:10px;
+        }
+
+        .preview-item{
+            aspect-ratio:1;
+            border-radius:11px;
+            overflow:hidden;
+            border:1px solid var(--border);
+            background:var(--soft);
+        }
+
+        .preview-item img{
+            width:100%;
+            height:100%;
+            object-fit:cover;
+        }
+
+        .main-btn{
+            border:0;
+            background:var(--text);
+            color:var(--bg);
+            border-radius:12px;
+            padding:13px 17px;
+            display:inline-flex;
+            align-items:center;
+            justify-content:center;
+            gap:8px;
+            font-weight:750;
+        }
+
+        .main-btn:hover{
+            opacity:.88;
+        }
+
+        .main-btn:disabled{
+            opacity:.5;
+            cursor:not-allowed;
+        }
+
+        .secondary-btn{
+            border:1px solid var(--border);
+            background:var(--card);
+            color:var(--text);
+            border-radius:12px;
+            padding:12px 15px;
+            display:inline-flex;
+            align-items:center;
+            justify-content:center;
+            gap:8px;
+            font-weight:700;
+        }
+
+        .secondary-btn:hover{
+            background:var(--soft);
+        }
+
+        .form-actions{
+            display:flex;
+            gap:9px;
+            justify-content:flex-end;
+            margin-top:20px;
+        }
+
+        .settings-grid{
+            display:grid;
+            grid-template-columns:repeat(2,1fr);
+            gap:16px;
+        }
+
+        .settings-item{
+            border:1px solid var(--border);
+            background:var(--card);
+            border-radius:15px;
+            padding:15px;
+        }
+
+        .settings-head{
+            display:flex;
+            align-items:center;
+            gap:10px;
+            margin-bottom:10px;
+        }
+
+        .settings-icon{
+            width:40px;
+            height:40px;
+            border-radius:12px;
+            background:var(--soft);
+            display:grid;
+            place-items:center;
+        }
+
+        .settings-title{
+            font-weight:750;
+        }
+
+        .settings-sub{
+            font-size:12px;
+            color:var(--muted);
+            margin-top:2px;
+        }
+
+        .filters{
+            display:flex;
+            flex-wrap:wrap;
+            gap:8px;
+            margin-bottom:18px;
+        }
+
+        .filter{
+            border:1px solid var(--border);
+            background:var(--card);
+            color:var(--muted);
+            border-radius:11px;
+            padding:10px 12px;
+            display:flex;
+            align-items:center;
+            gap:7px;
+            font-size:12px;
+            font-weight:700;
+        }
+
+        .filter:hover{
+            background:var(--soft);
+            color:var(--text);
+        }
+
+        .filter.active{
+            background:var(--text);
+            color:var(--bg);
+            border-color:var(--text);
+        }
+
+        .search-row{
+            display:flex;
+            gap:10px;
+            margin-bottom:15px;
+        }
+
+        .search-wrap{
+            position:relative;
+            flex:1;
+        }
+
+        .search-wrap .input{
+            padding-left:42px;
+        }
+
+        .search-icon{
+            position:absolute;
+            left:13px;
+            top:50%;
+            transform:translateY(-50%);
+            color:var(--muted);
+        }
+
+        .homes-grid{
+            display:grid;
+            grid-template-columns:repeat(3,1fr);
+            gap:16px;
+        }
+
+        .home-card{
+            background:var(--card);
+            border:1px solid var(--border);
+            border-radius:17px;
+            overflow:hidden;
+            box-shadow:var(--shadow);
+        }
+
+        .home-image{
+            height:190px;
+            position:relative;
+            background:var(--soft);
+            overflow:hidden;
+        }
+
+        .home-image img{
+            width:100%;
+            height:100%;
+            object-fit:cover;
+        }
+
+        .home-image-placeholder{
+            width:100%;
+            height:100%;
+            display:grid;
+            place-items:center;
+            color:var(--muted);
+        }
+
+        .home-status{
+            position:absolute;
+            left:10px;
+            top:10px;
+            border-radius:9px;
+            padding:6px 8px;
+            background:var(--card);
+            color:var(--text);
+            font-size:10px;
+            font-weight:800;
+        }
+
+        .home-content{
+            padding:15px;
+        }
+
+        .home-title{
+            font-size:16px;
+            font-weight:800;
+            margin-bottom:6px;
+            white-space:nowrap;
+            overflow:hidden;
+            text-overflow:ellipsis;
+        }
+
+        .home-price{
+            font-size:18px;
+            font-weight:850;
+            margin-bottom:10px;
+        }
+
+        .home-type{
+            color:var(--muted);
+            font-size:12px;
+            margin-bottom:9px;
+            line-height:1.5;
+        }
+
+        .home-info{
+            display:flex;
+            flex-wrap:wrap;
+            gap:9px;
+            color:var(--muted);
+            font-size:11px;
+            margin-bottom:12px;
+        }
+
+        .home-info span{
+            display:flex;
+            align-items:center;
+            gap:4px;
+        }
+
+        .home-actions{
+            display:grid;
+            grid-template-columns:1fr 1fr;
+            gap:7px;
+        }
+
+        .action-btn{
+            border:1px solid var(--border);
+            background:var(--soft);
+            color:var(--text);
+            border-radius:10px;
+            padding:9px;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            gap:6px;
+            font-size:11px;
+            font-weight:750;
+        }
+
+        .action-btn:hover{
+            background:var(--text);
+            color:var(--bg);
+        }
+
+        .action-btn.danger:hover{
+            background:var(--danger);
+            border-color:var(--danger);
+            color:#fff;
+        }
+
+        .empty{
+            padding:55px 20px;
+            text-align:center;
+            color:var(--muted);
+            border:1px dashed var(--border);
+            border-radius:16px;
+            grid-column:1/-1;
+        }
+
+        .empty .icon{
+            width:38px;
+            height:38px;
+            margin-bottom:10px;
+        }
+
+        .toast{
+            position:fixed;
+            right:22px;
+            bottom:22px;
+            z-index:999;
+            background:var(--text);
+            color:var(--bg);
+            border-radius:12px;
+            padding:13px 16px;
+            max-width:360px;
+            box-shadow:0 15px 35px rgba(0,0,0,.2);
+            transform:translateY(120px);
+            opacity:0;
+            pointer-events:none;
+            transition:.25s;
+            font-size:13px;
+            font-weight:650;
+        }
+
+        .toast.show{
+            transform:translateY(0);
+            opacity:1;
+        }
+
+        .toast.error{
+            background:var(--danger);
+            color:#fff;
+        }
+
+        .loading{
+            display:none;
+            position:fixed;
+            inset:0;
+            z-index:1000;
+            background:rgba(0,0,0,.3);
+            backdrop-filter:blur(3px);
+            align-items:center;
+            justify-content:center;
+        }
+
+        .loading.show{
+            display:flex;
+        }
+
+        .loader{
+            width:45px;
+            height:45px;
+            border:3px solid rgba(255,255,255,.35);
+            border-top-color:#fff;
+            border-radius:50%;
+            animation:spin .8s linear infinite;
+        }
+
+        @keyframes spin{
+            to{transform:rotate(360deg)}
+        }
+
+        @media(max-width:1100px){
+            .stats-grid{
+                grid-template-columns:repeat(2,1fr);
+            }
+
+            .dashboard-grid{
+                grid-template-columns:1fr;
+            }
+
+            .homes-grid{
+                grid-template-columns:repeat(2,1fr);
+            }
+        }
+
+        @media(max-width:800px){
+            .sidebar{
+                transform:translateX(-100%);
+            }
+
+            .sidebar.open{
+                transform:translateX(0);
+                box-shadow:20px 0 50px rgba(0,0,0,.2);
+            }
+
+            .main{
+                margin-left:0;
+                width:100%;
+            }
+
+            .menu-btn{
+                display:grid;
+            }
+
+            .content{
+                padding:18px;
+            }
+
+            .topbar{
+                padding:0 16px;
+            }
+
+            .form-grid,
+            .settings-grid{
+                grid-template-columns:1fr;
+            }
+
+            .type-options{
+                grid-template-columns:1fr 1fr;
+            }
+        }
+
+        @media(max-width:600px){
+            .stats-grid{
+                grid-template-columns:1fr;
+            }
+
+            .homes-grid{
+                grid-template-columns:1fr;
+            }
+
+            .type-options{
+                grid-template-columns:1fr;
+            }
+
+            .preview-grid{
+                grid-template-columns:repeat(3,1fr);
+            }
+
+            .search-row{
+                flex-direction:column;
+            }
+
+            .page-title{
+                font-size:17px;
+            }
+
+            .home-actions{
+                grid-template-columns:1fr;
+            }
+        }
+    </style>
 </head>
 
 <body>
 
 <svg class="icon-sprite" aria-hidden="true">
 
-  <symbol id="i-menu" viewBox="0 0 24 24">
-    <path d="M4 6h16M4 12h16M4 18h16"/>
-  </symbol>
+    <symbol id="i-menu" viewBox="0 0 24 24">
+        <path d="M4 6h16M4 12h16M4 18h16"/>
+    </symbol>
 
-  <symbol id="i-dashboard" viewBox="0 0 24 24">
-    <rect x="3" y="3" width="7" height="7" rx="1"/>
-    <rect x="14" y="3" width="7" height="7" rx="1"/>
-    <rect x="3" y="14" width="7" height="7" rx="1"/>
-    <rect x="14" y="14" width="7" height="7" rx="1"/>
-  </symbol>
+    <symbol id="i-dashboard" viewBox="0 0 24 24">
+        <rect x="3" y="3" width="7" height="7" rx="1"/>
+        <rect x="14" y="3" width="7" height="7" rx="1"/>
+        <rect x="3" y="14" width="7" height="7" rx="1"/>
+        <rect x="14" y="14" width="7" height="7" rx="1"/>
+    </symbol>
 
-  <symbol id="i-plus" viewBox="0 0 24 24">
-    <path d="M12 5v14M5 12h14"/>
-  </symbol>
+    <symbol id="i-plus" viewBox="0 0 24 24">
+        <path d="M12 5v14M5 12h14"/>
+    </symbol>
 
-  <symbol id="i-home" viewBox="0 0 24 24">
-    <path d="M3 10.5 12 3l9 7.5"/>
-    <path d="M5 9.5V21h14V9.5"/>
-    <path d="M9 21v-6h6v6"/>
-  </symbol>
+    <symbol id="i-home" viewBox="0 0 24 24">
+        <path d="M3 10.5 12 3l9 7.5"/>
+        <path d="M5 9.5V21h14V9.5"/>
+        <path d="M9 21v-6h6v6"/>
+    </symbol>
 
-  <symbol id="i-villa" viewBox="0 0 24 24">
-    <path d="m3 11 9-7 9 7"/>
-    <path d="M5 10v10h14V10"/>
-    <path d="M8 20v-5h8v5"/>
-    <path d="M9 11h2M13 11h2"/>
-  </symbol>
+    <symbol id="i-villa" viewBox="0 0 24 24">
+        <path d="m3 11 9-7 9 7"/>
+        <path d="M5 10v10h14V10"/>
+        <path d="M8 20v-5h8v5"/>
+        <path d="M9 11h2M13 11h2"/>
+    </symbol>
 
-  <symbol id="i-building" viewBox="0 0 24 24">
-    <path d="M5 21V4h14v17"/>
-    <path d="M9 8h2M13 8h2M9 12h2M13 12h2M9 16h2M13 16h2"/>
-    <path d="M3 21h18"/>
-  </symbol>
+    <symbol id="i-building" viewBox="0 0 24 24">
+        <path d="M5 21V4h14v17"/>
+        <path d="M9 8h2M13 8h2M9 12h2M13 12h2M9 16h2M13 16h2"/>
+        <path d="M3 21h18"/>
+    </symbol>
 
-  <symbol id="i-land" viewBox="0 0 24 24">
-    <path d="M3 19c4-5 7-7 10-7 3 0 5 2 8 0"/>
-    <path d="M4 19h16"/>
-    <path d="M12 12V5"/>
-    <path d="m12 5-3 3M12 5l3 3"/>
-  </symbol>
+    <symbol id="i-land" viewBox="0 0 24 24">
+        <path d="M3 19c4-5 7-7 10-7 3 0 5 2 8 0"/>
+        <path d="M4 19h16"/>
+        <path d="M12 12V5"/>
+        <path d="m12 5-3 3M12 5l3 3"/>
+    </symbol>
 
-  <symbol id="i-construction" viewBox="0 0 24 24">
-    <path d="M4 20h16"/>
-    <path d="M6 20v-7h12v7"/>
-    <path d="M8 13V8h8v5"/>
-    <path d="M4 8h16"/>
-    <path d="M12 4v4"/>
-    <path d="M10 4h4"/>
-  </symbol>
+    <symbol id="i-construction" viewBox="0 0 24 24">
+        <path d="M4 20h16"/>
+        <path d="M6 20v-7h12v7"/>
+        <path d="M8 13V8h8v5"/>
+        <path d="M4 8h16"/>
+        <path d="M12 4v4"/>
+        <path d="M10 4h4"/>
+    </symbol>
 
-  <symbol id="i-settings" viewBox="0 0 24 24">
-    <circle cx="12" cy="12" r="3"/>
-    <path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1-1.8 1.8-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.5V20h-2.6v-.1a1.7 1.7 0 0 0-1-1.5 1.7 1.7 0 0 0-1.9.3l-.1.1-1.8-1.8.1-.1A1.7 1.7 0 0 0 8 15a1.7 1.7 0 0 0-1.5-1H6v-2.6h.5A1.7 1.7 0 0 0 8 10a1.7 1.7 0 0 0-.3-1.9l-.1-.1 1.8-1.8.1.1a1.7 1.7 0 0 0 1.9.3 1.7 1.7 0 0 0 1-1.5V5H15v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.9-.3l.1-.1 1.8 1.8-.1.1a1.7 1.7 0 0 0-.3 1.9 1.7 1.7 0 0 0 1.5 1h.1V14h-.1a1.7 1.7 0 0 0-1.5 1Z"/>
-  </symbol>
+    <symbol id="i-settings" viewBox="0 0 24 24">
+        <circle cx="12" cy="12" r="3"/>
+        <path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1-1.8 1.8-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.5V20h-2.6v-.1a1.7 1.7 0 0 0-1-1.5 1.7 1.7 0 0 0-1.9.3l-.1.1-1.8-1.8.1-.1A1.7 1.7 0 0 0 8 15a1.7 1.7 0 0 0-1.5-1H6v-2.6h.5A1.7 1.7 0 0 0 8 10a1.7 1.7 0 0 0-.3-1.9l-.1-.1 1.8-1.8.1.1a1.7 1.7 0 0 0 1.9.3 1.7 1.7 0 0 0 1-1.5V5H15v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.9-.3l.1-.1 1.8 1.8-.1.1a1.7 1.7 0 0 0-.3 1.9 1.7 1.7 0 0 0 1.5 1h.1V14h-.1a1.7 1.7 0 0 0-1.5 1Z"/>
+    </symbol>
 
-  <symbol id="i-refresh" viewBox="0 0 24 24">
-    <path d="M20 11a8 8 0 0 0-14.7-4L3 10"/>
-    <path d="M3 5v5h5"/>
-    <path d="M4 13a8 8 0 0 0 14.7 4L21 14"/>
-    <path d="M21 19v-5h-5"/>
-  </symbol>
+    <symbol id="i-refresh" viewBox="0 0 24 24">
+        <path d="M20 11a8 8 0 0 0-14.7-4L3 10"/>
+        <path d="M3 5v5h5"/>
+        <path d="M4 13a8 8 0 0 0 14.7 4L21 14"/>
+        <path d="M21 19v-5h-5"/>
+    </symbol>
 
-  <symbol id="i-moon" viewBox="0 0 24 24">
-    <path d="M20 15.5A8.5 8.5 0 0 1 8.5 4 8.5 8.5 0 1 0 20 15.5Z"/>
-  </symbol>
+    <symbol id="i-moon" viewBox="0 0 24 24">
+        <path d="M20 15.5A8.5 8.5 0 0 1 8.5 4 8.5 8.5 0 1 0 20 15.5Z"/>
+    </symbol>
 
-  <symbol id="i-sun" viewBox="0 0 24 24">
-    <circle cx="12" cy="12" r="4"/>
-    <path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>
-  </symbol>
+    <symbol id="i-sun" viewBox="0 0 24 24">
+        <circle cx="12" cy="12" r="4"/>
+        <path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>
+    </symbol>
 
-  <symbol id="i-eye" viewBox="0 0 24 24">
-    <path d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6Z"/>
-    <circle cx="12" cy="12" r="2.5"/>
-  </symbol>
+    <symbol id="i-eye" viewBox="0 0 24 24">
+        <path d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6Z"/>
+        <circle cx="12" cy="12" r="2.5"/>
+    </symbol>
 
-  <symbol id="i-eye-off" viewBox="0 0 24 24">
-    <path d="m3 3 18 18"/>
-    <path d="M10.6 6.2A9.7 9.7 0 0 1 12 6c6 0 9.5 6 9.5 6a17 17 0 0 1-3.2 3.6"/>
-    <path d="M6.2 6.2C3.7 7.8 2.5 12 2.5 12s3.5 6 9.5 6c1 0 2-.2 2.8-.5"/>
-  </symbol>
+    <symbol id="i-eye-off" viewBox="0 0 24 24">
+        <path d="m3 3 18 18"/>
+        <path d="M10.6 6.2A9.7 9.7 0 0 1 12 6c6 0 9.5 6 9.5 6a17 17 0 0 1-3.2 3.6"/>
+        <path d="M6.2 6.2C3.7 7.8 2.5 12 2.5 12s3.5 6 9.5 6c1 0 2-.2 2.8-.5"/>
+    </symbol>
 
-  <symbol id="i-phone" viewBox="0 0 24 24">
-    <path d="M6 3h3l1.5 4-2 1.5a14 14 0 0 0 7 7l1.5-2 4 1.5v3c0 1-1 2-2 2C10 20 4 14 4 5c0-1 1-2 2-2Z"/>
-  </symbol>
+    <symbol id="i-phone" viewBox="0 0 24 24">
+        <path d="M6 3h3l1.5 4-2 1.5a14 14 0 0 0 7 7l1.5-2 4 1.5v3c0 1-1 2-2 2C10 20 4 14 4 5c0-1 1-2 2-2Z"/>
+    </symbol>
 
-  <symbol id="i-chart" viewBox="0 0 24 24">
-    <path d="M4 20V10M10 20V4M16 20v-7M22 20V7"/>
-  </symbol>
+    <symbol id="i-chart" viewBox="0 0 24 24">
+        <path d="M4 20V10M10 20V4M16 20v-7M22 20V7"/>
+    </symbol>
 
-  <symbol id="i-camera" viewBox="0 0 24 24">
-    <path d="M4 7h4l1.5-2h5L16 7h4v13H4V7Z"/>
-    <circle cx="12" cy="13" r="3.5"/>
-  </symbol>
+    <symbol id="i-camera" viewBox="0 0 24 24">
+        <path d="M4 7h4l1.5-2h5L16 7h4v13H4V7Z"/>
+        <circle cx="12" cy="13" r="3.5"/>
+    </symbol>
 
-  <symbol id="i-save" viewBox="0 0 24 24">
-    <path d="M5 3h12l3 3v15H5V3Z"/>
-    <path d="M8 3v6h8V3M8 21v-6h8v6"/>
-  </symbol>
+    <symbol id="i-save" viewBox="0 0 24 24">
+        <path d="M5 3h12l3 3v15H5V3Z"/>
+        <path d="M8 3v6h8V3M8 21v-6h8v6"/>
+    </symbol>
 
-  <symbol id="i-search" viewBox="0 0 24 24">
-    <circle cx="11" cy="11" r="7"/>
-    <path d="m20 20-4-4"/>
-  </symbol>
+    <symbol id="i-search" viewBox="0 0 24 24">
+        <circle cx="11" cy="11" r="7"/>
+        <path d="m20 20-4-4"/>
+    </symbol>
 
-  <symbol id="i-check" viewBox="0 0 24 24">
-    <path d="m5 12 4 4L19 6"/>
-  </symbol>
+    <symbol id="i-check" viewBox="0 0 24 24">
+        <path d="m5 12 4 4L19 6"/>
+    </symbol>
 
-  <symbol id="i-clock" viewBox="0 0 24 24">
-    <circle cx="12" cy="12" r="9"/>
-    <path d="M12 7v5l3 2"/>
-  </symbol>
+    <symbol id="i-clock" viewBox="0 0 24 24">
+        <circle cx="12" cy="12" r="9"/>
+        <path d="M12 7v5l3 2"/>
+    </symbol>
 
-  <symbol id="i-grid" viewBox="0 0 24 24">
-    <rect x="3" y="3" width="7" height="7" rx="1"/>
-    <rect x="14" y="3" width="7" height="7" rx="1"/>
-    <rect x="3" y="14" width="7" height="7" rx="1"/>
-    <rect x="14" y="14" width="7" height="7" rx="1"/>
-  </symbol>
+    <symbol id="i-grid" viewBox="0 0 24 24">
+        <rect x="3" y="3" width="7" height="7" rx="1"/>
+        <rect x="14" y="3" width="7" height="7" rx="1"/>
+        <rect x="3" y="14" width="7" height="7" rx="1"/>
+        <rect x="14" y="14" width="7" height="7" rx="1"/>
+    </symbol>
 
-  <symbol id="i-trash" viewBox="0 0 24 24">
-    <path d="M4 7h16M10 11v6M14 11v6"/>
-    <path d="M9 7V4h6v3M6 7l1 14h10l1-14"/>
-  </symbol>
+    <symbol id="i-trash" viewBox="0 0 24 24">
+        <path d="M4 7h16M10 11v6M14 11v6"/>
+        <path d="M9 7V4h6v3M6 7l1 14h10l1-14"/>
+    </symbol>
 
-  <symbol id="i-location" viewBox="0 0 24 24">
-    <path d="M20 10c0 5-8 11-8 11S4 15 4 10a8 8 0 1 1 16 0Z"/>
-    <circle cx="12" cy="10" r="2.5"/>
-  </symbol>
+    <symbol id="i-location" viewBox="0 0 24 24">
+        <path d="M20 10c0 5-8 11-8 11S4 15 4 10a8 8 0 1 1 16 0Z"/>
+        <circle cx="12" cy="10" r="2.5"/>
+    </symbol>
 
-  <symbol id="i-bed" viewBox="0 0 24 24">
-    <path d="M3 18v-7M3 15h18M21 18v-7"/>
-    <path d="M5 15V9a3 3 0 0 1 3-3h8a3 3 0 0 1 3 3v6"/>
-    <path d="M8 10h3M15 10h3"/>
-  </symbol>
+    <symbol id="i-bed" viewBox="0 0 24 24">
+        <path d="M3 18v-7M3 15h18M21 18v-7"/>
+        <path d="M5 15V9a3 3 0 0 1 3-3h8a3 3 0 0 1 3 3v6"/>
+        <path d="M8 10h3M15 10h3"/>
+    </symbol>
 
-  <symbol id="i-ruler" viewBox="0 0 24 24">
-    <path d="m4 17 13-13 3 3L7 20l-3-3Z"/>
-    <path d="m9 12 2 2M12 9l2 2M15 6l2 2"/>
-  </symbol>
+    <symbol id="i-ruler" viewBox="0 0 24 24">
+        <path d="m4 17 13-13 3 3L7 20l-3-3Z"/>
+        <path d="m9 12 2 2M12 9l2 2M15 6l2 2"/>
+    </symbol>
 
-  <symbol id="i-wallet" viewBox="0 0 24 24">
-    <path d="M4 6h15a2 2 0 0 1 2 2v11H5a2 2 0 0 1-2-2V6a3 3 0 0 1 3-3h13"/>
-    <path d="M16 13h5"/>
-    <circle cx="16" cy="13" r=".5"/>
-  </symbol>
+    <symbol id="i-wallet" viewBox="0 0 24 24">
+        <path d="M4 6h15a2 2 0 0 1 2 2v11H5a2 2 0 0 1-2-2V6a3 3 0 0 1 3-3h13"/>
+        <path d="M16 13h5"/>
+        <circle cx="16" cy="13" r=".5"/>
+    </symbol>
 
-  <symbol id="i-message" viewBox="0 0 24 24">
-    <path d="M4 5h16v12H8l-4 4V5Z"/>
-    <path d="M8 9h8M8 13h5"/>
-  </symbol>
+    <symbol id="i-message" viewBox="0 0 24 24">
+        <path d="M4 5h16v12H8l-4 4V5Z"/>
+        <path d="M8 9h8M8 13h5"/>
+    </symbol>
 
-  <symbol id="i-edit" viewBox="0 0 24 24">
-    <path d="M12 20h9"/>
-    <path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L8 18l-4 1 1-4Z"/>
-  </symbol>
+    <symbol id="i-edit" viewBox="0 0 24 24">
+        <path d="M12 20h9"/>
+        <path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L8 18l-4 1 1-4Z"/>
+    </symbol>
 
-  <symbol id="i-x" viewBox="0 0 24 24">
-    <path d="M6 6l12 12M18 6 6 18"/>
-  </symbol>
+    <symbol id="i-x" viewBox="0 0 24 24">
+        <path d="M6 6l12 12M18 6 6 18"/>
+    </symbol>
 
 </svg>
 
 <div class="app">
 
-<aside class="sidebar" id="sidebar">
+    <aside class="sidebar" id="sidebar">
 
-  <div class="logo">
-    <div class="logo-mark">
-      <svg class="icon">
-        <use href="#i-home"></use>
-      </svg>
-    </div>
-    <span>Uylar Admin</span>
-  </div>
-
-  <nav class="nav">
-
-    <button class="active" data-page="dashboard" onclick="showPage('dashboard')">
-      <svg class="icon"><use href="#i-dashboard"></use></svg>
-      <span>Dashboard</span>
-    </button>
-
-    <button data-page="add" onclick="showPage('add')">
-      <svg class="icon"><use href="#i-plus"></use></svg>
-      <span>Uy qo‘shish</span>
-    </button>
-
-    <button data-page="homes" onclick="showPage('homes')">
-      <svg class="icon"><use href="#i-home"></use></svg>
-      <span>Uylar</span>
-    </button>
-
-    <button data-page="settings" onclick="showPage('settings')">
-      <svg class="icon"><use href="#i-settings"></use></svg>
-      <span>Aloqa sozlamalari</span>
-    </button>
-
-  </nav>
-
-  <div class="sidebar-bottom">
-
-    <button onclick="loadAll()">
-      <svg class="icon"><use href="#i-refresh"></use></svg>
-      <span>Yangilash</span>
-    </button>
-
-    <button onclick="toggleDark()">
-      <svg class="icon" id="sideThemeIcon">
-        <use href="#i-moon"></use>
-      </svg>
-      <span id="sideThemeText">Dark mode</span>
-    </button>
-
-  </div>
-
-</aside>
-
-<main class="main">
-
-<header class="topbar">
-
-  <div class="top-left">
-
-    <button class="menu-btn" onclick="toggleSidebar()">
-      <svg class="icon">
-        <use href="#i-menu"></use>
-      </svg>
-    </button>
-
-    <div class="page-title" id="pageTitle">
-      Dashboard
-    </div>
-
-  </div>
-
-  <div class="top-actions">
-
-    <button class="top-btn" onclick="loadAll()" title="Yangilash">
-      <svg class="icon">
-        <use href="#i-refresh"></use>
-      </svg>
-    </button>
-
-    <button class="top-btn" onclick="toggleDark()" title="Dark mode">
-      <svg class="icon" id="topThemeIcon">
-        <use href="#i-moon"></use>
-      </svg>
-    </button>
-
-  </div>
-
-</header>
-
-<div class="content">
-
-<section class="page active" id="page-dashboard">
-
-  <div class="stats-grid">
-
-    <div class="stat-card">
-      <div class="stat-top">
-        <div>
-          <div class="stat-value" id="statViews">0</div>
-          <div class="stat-label">Ko‘rishlar</div>
-        </div>
-        <div class="stat-icon">
-          <svg class="icon-lg"><use href="#i-eye"></use></svg>
-        </div>
-      </div>
-    </div>
-
-    <div class="stat-card">
-      <div class="stat-top">
-        <div>
-          <div class="stat-value" id="statCalls">0</div>
-          <div class="stat-label">Qo‘ng‘iroqlar</div>
-        </div>
-        <div class="stat-icon">
-          <svg class="icon-lg"><use href="#i-phone"></use></svg>
-        </div>
-      </div>
-    </div>
-
-    <div class="stat-card">
-      <div class="stat-top">
-        <div>
-          <div class="stat-value" id="statHomes">0</div>
-          <div class="stat-label">Jami uylar</div>
-        </div>
-        <div class="stat-icon">
-          <svg class="icon-lg"><use href="#i-home"></use></svg>
-        </div>
-      </div>
-    </div>
-
-    <div class="stat-card">
-      <div class="stat-top">
-        <div>
-          <div class="stat-value" id="statAvailable">0</div>
-          <div class="stat-label">Sotuvda</div>
-        </div>
-        <div class="stat-icon">
-          <svg class="icon-lg"><use href="#i-check"></use></svg>
-        </div>
-      </div>
-    </div>
-
-  </div>
-
-  <div class="dashboard-grid">
-
-    <div class="panel">
-
-      <div class="panel-header">
-        <div class="panel-title">So‘nggi faollik</div>
-      </div>
-
-      <div class="panel-body">
-
-        <div class="activity-list">
-
-          <div class="activity">
-            <div class="activity-icon">
-              <svg class="icon"><use href="#i-home"></use></svg>
-            </div>
-            <div class="activity-main">
-              <div class="activity-title">Uylar ma’lumotlari</div>
-              <div class="activity-time">Jami e’lonlar holati</div>
-            </div>
-          </div>
-
-          <div class="activity">
-            <div class="activity-icon">
-              <svg class="icon"><use href="#i-eye"></use></svg>
-            </div>
-            <div class="activity-main">
-              <div class="activity-title">Sayt ko‘rishlari</div>
-              <div class="activity-time">Statistika avtomatik yangilanadi</div>
-            </div>
-          </div>
-
-          <div class="activity">
-            <div class="activity-icon">
-              <svg class="icon"><use href="#i-phone"></use></svg>
-            </div>
-            <div class="activity-main">
-              <div class="activity-title">Aloqa faolligi</div>
-              <div class="activity-time">Qo‘ng‘iroqlar statistikasi</div>
-            </div>
-          </div>
-
-        </div>
-
-      </div>
-
-    </div>
-
-    <div class="panel">
-
-      <div class="panel-header">
-        <div class="panel-title">7 kunlik statistika</div>
-      </div>
-
-      <div class="panel-body">
-        <div class="chart" id="dailyChart"></div>
-      </div>
-
-    </div>
-
-  </div>
-
-</section>
-
-<section class="page" id="page-add">
-
-  <div class="panel">
-
-    <div class="panel-header">
-      <div class="panel-title" id="addPanelTitle">Yangi uy qo‘shish</div>
-    </div>
-
-    <div class="panel-body">
-
-      <form id="addHomeForm" onsubmit="addHome(event)">
-
-        <div class="form-grid">
-
-          <div class="form-group full">
-            <label>Uy nomi</label>
-            <input
-              class="input"
-              id="homeTitle"
-              type="text"
-              placeholder="Masalan: Zamonaviy hovli"
-              required
-            >
-          </div>
-
-          <div class="form-group">
-
-            <label>Uy turi</label>
-
-            <div class="type-options" id="homeTypeOptions">
-
-              <button
-                type="button"
-                class="type-option"
-                data-type="🏡 Hovli"
-                onclick="toggleHomeType(this)"
-              >
-                <div class="type-option-icon">
-                  <svg class="icon"><use href="#i-villa"></use></svg>
-                </div>
-                <span class="type-option-name">Hovli</span>
-                <span class="type-option-check">
-                  <svg class="icon"><use href="#i-check"></use></svg>
-                </span>
-              </button>
-
-              <button
-                type="button"
-                class="type-option"
-                data-type="🏢 Kvartira"
-                onclick="toggleHomeType(this)"
-              >
-                <div class="type-option-icon">
-                  <svg class="icon"><use href="#i-building"></use></svg>
-                </div>
-                <span class="type-option-name">Kvartira</span>
-                <span class="type-option-check">
-                  <svg class="icon"><use href="#i-check"></use></svg>
-                </span>
-              </button>
-
-              <button
-                type="button"
-                class="type-option"
-                data-type="🌳 Yer"
-                onclick="toggleHomeType(this)"
-              >
-                <div class="type-option-icon">
-                  <svg class="icon"><use href="#i-land"></use></svg>
-                </div>
-                <span class="type-option-name">Yer</span>
-                <span class="type-option-check">
-                  <svg class="icon"><use href="#i-check"></use></svg>
-                </span>
-              </button>
-
-              <button
-                type="button"
-                class="type-option"
-                data-type="🏗️ Yangi qurilish"
-                onclick="toggleHomeType(this)"
-              >
-                <div class="type-option-icon">
-                  <svg class="icon"><use href="#i-construction"></use></svg>
-                </div>
-                <span class="type-option-name">Yangi qurilish</span>
-                <span class="type-option-check">
-                  <svg class="icon"><use href="#i-check"></use></svg>
-                </span>
-              </button>
-
-            </div>
-
-            <div class="type-note">
-              1–3 ta uy turini tanlash mumkin.
-            </div>
-
-            <div class="type-summary" id="homeTypeSummary">
-              Hali tur tanlanmagan
-            </div>
-
-          </div>
-
-          <div class="form-group">
-            <label>Narx</label>
-            <input
-              class="input"
-              id="homePrice"
-              type="number"
-              min="0"
-              placeholder="Masalan: 850000000"
-              required
-            >
-          </div>
-
-          <div class="form-group">
-
-            <label>Valyuta</label>
-
-            <div class="currency-buttons">
-
-              <button
-                type="button"
-                class="currency-btn active"
-                data-currency="UZS"
-                onclick="selectCurrency('UZS')"
-              >
-                <svg class="icon icon-sm">
-                  <use href="#i-wallet"></use>
-                </svg>
-                UZS
-              </button>
-
-              <button
-                type="button"
-                class="currency-btn"
-                data-currency="USD"
-                onclick="selectCurrency('USD')"
-              >
-                <svg class="icon icon-sm">
-                  <use href="#i-wallet"></use>
-                </svg>
-                USD
-              </button>
-
-            </div>
-
-          </div>
-
-          <div class="form-group">
-
-            <label>Manzil</label>
-
-            <input
-              class="input"
-              id="homeLocation"
-              type="text"
-              placeholder="Masalan: Toshkent, Chilonzor"
-              required
-            >
-
-          </div>
-
-          <div class="form-group">
-
-            <label>Xonalar soni</label>
-
-            <input
-              class="input"
-              id="homeRooms"
-              type="number"
-              min="0"
-              placeholder="Masalan: 4"
-            >
-
-          </div>
-
-          <div class="form-group">
-
-            <label>Maydon (m²)</label>
-
-            <input
-              class="input"
-              id="homeArea"
-              type="number"
-              min="0"
-              placeholder="Masalan: 180"
-            >
-
-          </div>
-
-          <div class="form-group">
-
-            <label>Telefon</label>
-
-            <input
-              class="input"
-              id="homePhone"
-              type="tel"
-              placeholder="+998 90 123 45 67"
-            >
-
-          </div>
-
-          <div class="form-group full">
-
-            <label>Tavsif</label>
-
-            <textarea
-              class="textarea"
-              id="homeDescription"
-              placeholder="Uy haqida ma’lumot..."
-            ></textarea>
-
-          </div>
-
-          <div class="form-group full">
-
-            <label>Rasmlar</label>
-
-            <label class="upload-box">
-
-              <input
-                class="upload-input"
-                id="homeImages"
-                type="file"
-                accept="image/*"
-                multiple
-                onchange="handleImages(this)"
-              >
-
-              <div class="upload-icon">
-                <svg class="icon-lg">
-                  <use href="#i-camera"></use>
-                </svg>
-              </div>
-
-              <strong>Rasm tanlash</strong>
-
-              <span id="imageUploadText">
-                Bir nechta rasm tanlashingiz mumkin
-              </span>
-
-            </label>
-
-            <div class="preview-grid" id="imagePreview"></div>
-
-          </div>
-
-          <div class="form-group full">
-
-            <label>Admin paroli</label>
-
-            <div class="password-wrap">
-
-              <input
-                class="input"
-                id="password"
-                type="password"
-                placeholder="Admin parolini kiriting"
-              >
-
-              <button
-                type="button"
-                class="password-eye"
-                onclick="togglePassword()"
-              >
-                <svg class="icon" id="passwordIcon">
-                  <use href="#i-eye"></use>
-                </svg>
-              </button>
-
-            </div>
-
-          </div>
-
-        </div>
-
-        <div class="form-actions">
-
-          <button
-            type="button"
-            class="secondary-btn"
-            id="cancelEditBtn"
-            onclick="cancelEdit()"
-            style="display:none"
-          >
-            <svg class="icon icon-sm">
-              <use href="#i-x"></use>
-            </svg>
-            Bekor qilish
-          </button>
-
-          <button
-            type="button"
-            class="secondary-btn"
-            onclick="resetAddForm()"
-            id="clearHomeBtn"
-          >
-            <svg class="icon icon-sm">
-              <use href="#i-refresh"></use>
-            </svg>
-            Tozalash
-          </button>
-
-          <button
-            type="submit"
-            class="main-btn"
-            id="saveHomeBtn"
-          >
-            <svg class="icon icon-sm">
-              <use href="#i-save"></use>
-            </svg>
-            Uy qo‘shish
-          </button>
-
-        </div>
-
-      </form>
-
-    </div>
-
-  </div>
-
-</section>
-
-<section class="page" id="page-homes">
-
-  <div class="panel">
-
-    <div class="panel-header">
-
-      <div class="panel-title">Uylar</div>
-
-      <button class="main-btn" onclick="startNewHome()">
-        <svg class="icon icon-sm">
-          <use href="#i-plus"></use>
-        </svg>
-        Uy qo‘shish
-      </button>
-
-    </div>
-
-    <div class="panel-body">
-
-      <div class="search-row">
-
-        <div class="search-wrap">
-
-          <svg class="icon search-icon">
-            <use href="#i-search"></use>
-          </svg>
-
-          <input
-            class="input"
-            id="homeSearch"
-            type="text"
-            placeholder="Uy qidirish..."
-            oninput="renderHomes()"
-          >
-
-        </div>
-
-        <select
-          class="select"
-          id="statusFilter"
-          onchange="renderHomes()"
-          style="max-width:180px"
-        >
-          <option value="all">Barchasi</option>
-          <option value="available">Sotuvda</option>
-          <option value="sold">Sotilgan</option>
-        </select>
-
-      </div>
-
-      <div class="filters">
-
-        <button
-          class="filter active"
-          id="typeAll"
-          onclick="setHomeType('all')"
-        >
-          <svg class="icon icon-sm">
-            <use href="#i-grid"></use>
-          </svg>
-          Barchasi
-        </button>
-
-        <button
-          class="filter"
-          id="typeYard"
-          onclick="setHomeType('🏡 Hovli')"
-        >
-          <svg class="icon icon-sm">
-            <use href="#i-villa"></use>
-          </svg>
-          Hovli
-        </button>
-
-        <button
-          class="filter"
-          id="typeApartment"
-          onclick="setHomeType('🏢 Kvartira')"
-        >
-          <svg class="icon icon-sm">
-            <use href="#i-building"></use>
-          </svg>
-          Kvartira
-        </button>
-
-        <button
-          class="filter"
-          id="typeLand"
-          onclick="setHomeType('🌳 Yer')"
-        >
-          <svg class="icon icon-sm">
-            <use href="#i-land"></use>
-          </svg>
-          Yer
-        </button>
-
-        <button
-          class="filter"
-          id="typeNew"
-          onclick="setHomeType('🏗️ Yangi qurilish')"
-        >
-          <svg class="icon icon-sm">
-            <use href="#i-construction"></use>
-          </svg>
-          Yangi qurilish
-        </button>
-
-      </div>
-
-      <div class="homes-grid" id="homesGrid"></div>
-
-    </div>
-
-  </div>
-
-</section>
-
-<section class="page" id="page-settings">
-
-  <div class="panel">
-
-    <div class="panel-header">
-      <div class="panel-title">Aloqa sozlamalari</div>
-    </div>
-
-    <div class="panel-body">
-
-      <form onsubmit="saveSettings(event)">
-
-        <div class="settings-grid">
-
-          <div class="settings-item">
-
-            <div class="settings-head">
-
-              <div class="settings-icon">
+        <div class="logo">
+            <div class="logo-mark">
                 <svg class="icon">
-                  <use href="#i-phone"></use>
+                    <use href="#i-home"></use>
                 </svg>
-              </div>
-
-              <div>
-                <div class="settings-title">Telefon</div>
-                <div class="settings-sub">
-                  Asosiy aloqa raqami
-                </div>
-              </div>
-
             </div>
+            <span>Uylar Admin</span>
+        </div>
 
-            <input
-              class="input"
-              id="settingPhone"
-              placeholder="+998 90 123 45 67"
-            >
+        <nav class="nav">
 
-          </div>
+            <button class="active" data-page="dashboard" onclick="showPage('dashboard')">
+                <svg class="icon"><use href="#i-dashboard"></use></svg>
+                <span>Dashboard</span>
+            </button>
 
-          <div class="settings-item">
+            <button data-page="add" onclick="showPage('add')">
+                <svg class="icon"><use href="#i-plus"></use></svg>
+                <span>Uy qo‘shish</span>
+            </button>
 
-            <div class="settings-head">
+            <button data-page="homes" onclick="showPage('homes')">
+                <svg class="icon"><use href="#i-home"></use></svg>
+                <span>Uylar</span>
+            </button>
 
-              <div class="settings-icon">
-                <svg class="icon">
-                  <use href="#i-message"></use>
+            <button data-page="settings" onclick="showPage('settings')">
+                <svg class="icon"><use href="#i-settings"></use></svg>
+                <span>Aloqa sozlamalari</span>
+            </button>
+
+            <button data-page="password" onclick="showPage('password')">
+                <svg class="icon"><use href="#i-settings"></use></svg>
+                <span>Admin paroli</span>
+            </button>
+
+        </nav>
+
+        <div class="sidebar-bottom">
+
+            <button onclick="loadAll()">
+                <svg class="icon"><use href="#i-refresh"></use></svg>
+                <span>Yangilash</span>
+            </button>
+
+            <button onclick="toggleDark()">
+                <svg class="icon" id="sideThemeIcon">
+                    <use href="#i-moon"></use>
                 </svg>
-              </div>
-
-              <div>
-                <div class="settings-title">Telegram</div>
-                <div class="settings-sub">
-                  Telegram username yoki link
-                </div>
-              </div>
-
-            </div>
-
-            <input
-              class="input"
-              id="settingTelegram"
-              placeholder="@username"
-            >
-
-          </div>
-
-          <div class="settings-item">
-
-            <div class="settings-head">
-
-              <div class="settings-icon">
-                <svg class="icon">
-                  <use href="#i-message"></use>
-                </svg>
-              </div>
-
-              <div>
-                <div class="settings-title">WhatsApp</div>
-                <div class="settings-sub">
-                  WhatsApp raqami
-                </div>
-              </div>
-
-            </div>
-
-            <input
-              class="input"
-              id="settingWhatsapp"
-              placeholder="+998901234567"
-            >
-
-          </div>
-
-          <div class="settings-item">
-
-            <div class="settings-head">
-
-              <div class="settings-icon">
-                <svg class="icon">
-                  <use href="#i-message"></use>
-                </svg>
-              </div>
-
-              <div>
-                <div class="settings-title">Instagram</div>
-                <div class="settings-sub">
-                  Instagram username yoki link
-                </div>
-              </div>
-
-            </div>
-
-            <input
-              class="input"
-              id="settingInstagram"
-              placeholder="@username"
-            >
-
-          </div>
-
-          <div
-            class="settings-item"
-            style="grid-column:1/-1"
-          >
-
-            <div class="settings-head">
-
-              <div class="settings-icon">
-                <svg class="icon">
-                  <use href="#i-location"></use>
-                </svg>
-              </div>
-
-              <div>
-                <div class="settings-title">Manzil</div>
-                <div class="settings-sub">
-                  Ofis yoki aloqa manzili
-                </div>
-              </div>
-
-            </div>
-
-            <input
-              class="input"
-              id="settingAddress"
-              placeholder="Toshkent shahri..."
-            >
-
-          </div>
-
-          <!--
-            MUHIM:
-            Aloqa sozlamalarini saqlash uchun
-            admin paroli shu yerda kiritiladi.
-          -->
-
-          <div
-            class="settings-item"
-            style="grid-column:1/-1"
-          >
-
-            <div class="settings-head">
-
-              <div class="settings-icon">
-                <svg class="icon">
-                  <use href="#i-settings"></use>
-                </svg>
-              </div>
-
-              <div>
-                <div class="settings-title">
-                  Admin paroli
-                </div>
-
-                <div class="settings-sub">
-                  Aloqa sozlamalarini saqlash uchun parolni kiriting
-                </div>
-              </div>
-
-            </div>
-
-            <div class="password-wrap">
-
-              <input
-                class="input"
-                id="settingsPassword"
-                type="password"
-                placeholder="Admin parolini kiriting"
-                autocomplete="current-password"
-              >
-
-              <button
-                type="button"
-                class="password-eye"
-                onclick="toggleSettingsPassword()"
-                title="Parolni ko‘rsatish"
-              >
-
-                <svg
-                  class="icon"
-                  id="settingsPasswordIcon"
-                >
-                  <use href="#i-eye"></use>
-                </svg>
-
-              </button>
-
-            </div>
-
-          </div>
+                <span id="sideThemeText">Dark mode</span>
+            </button>
 
         </div>
 
-        <div class="form-actions">
+    </aside>
 
-          <button
-            class="main-btn"
-            type="submit"
-          >
+    <main class="main">
 
-            <svg class="icon icon-sm">
-              <use href="#i-save"></use>
-            </svg>
+        <header class="topbar">
 
-            Saqlash
+            <div class="top-left">
 
-          </button>
+                <button class="menu-btn" onclick="toggleSidebar()">
+                    <svg class="icon">
+                        <use href="#i-menu"></use>
+                    </svg>
+                </button>
 
-        </div>
+                <div class="page-title" id="pageTitle">
+                    Dashboard
+                </div>
 
-      </form>
+            </div>
 
-    </div>
+            <div class="top-actions">
 
-  </div>
+                <button class="top-btn" onclick="loadAll()" title="Yangilash">
+                    <svg class="icon">
+                        <use href="#i-refresh"></use>
+                    </svg>
+                </button>
 
-</section>
+                <button class="top-btn" onclick="toggleDark()" title="Dark mode">
+                    <svg class="icon" id="topThemeIcon">
+                        <use href="#i-moon"></use>
+                    </svg>
+                </button>
 
+            </div>
+
+        </header>
+
+        <div class="content">
+
+            <section class="page active" id="page-dashboard">
+
+                <div class="stats-grid">
+
+                    <div class="stat-card">
+                        <div class="stat-top">
+                            <div>
+                                <div class="stat-value" id="statViews">0</div>
+                                <div class="stat-label">Ko‘rishlar</div>
+                            </div>
+                            <div class="stat-icon">
+                                <svg class="icon-lg"><use href="#i-eye"></use></svg>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-top">
+                            <div>
+                                <div class="stat-value" id="statCalls">0</div>
+                                <div class="stat-label">Qo‘ng‘iroqlar</div>
+                            </div>
+                            <div class="stat-icon">
+                                <svg class="icon-lg"><use href="#i-phone"></use></svg>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-top">
+                            <div>
+                                <div class="stat-value" id="statHomes">0</div>
+                                <div class="stat-label">Jami uylar</div>
+                            </div>
+                            <div class="stat-icon">
+                                <svg class="icon-lg"><use href="#i-home"></use></svg>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-top">
+                            <div>
+                                <div class="stat-value" id="statAvailable">0</div>
+                                <div class="stat-label">Sotuvda</div>
+                            </div>
+                            <div class="stat-icon">
+                                <svg class="icon-lg"><use href="#i-check"></use></svg>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="dashboard-grid">
+
+                    <div class="panel">
+
+                        <div class="panel-header">
+                            <div class="panel-title">So‘nggi faollik</div>
+                        </div>
+
+                        <div class="panel-body">
+
+                            <div class="activity-list">
+
+                                <div class="activity">
+                                    <div class="activity-icon">
+                                        <svg class="icon"><use href="#i-home"></use></svg>
+                                    </div>
+                                    <div class="activity-main">
+                                        <div class="activity-title">Uylar ma’lumotlari</div>
+                                        <div class="activity-time">Jami e’lonlar holati</div>
+                                    </div>
+                                </div>
+
+                                <div class="activity">
+                                    <div class="activity-icon">
+                                        <svg class="icon"><use href="#i-eye"></use></svg>
+                                    </div>
+                                    <div class="activity-main">
+                                        <div class="activity-title">Sayt ko‘rishlari</div>
+                                        <div class="activity-time">Statistika avtomatik yangilanadi</div>
+                                    </div>
+                                </div>
+
+                                <div class="activity">
+                                    <div class="activity-icon">
+                                        <svg class="icon"><use href="#i-phone"></use></svg>
+                                    </div>
+                                    <div class="activity-main">
+                                        <div class="activity-title">Aloqa faolligi</div>
+                                        <div class="activity-time">Qo‘ng‘iroqlar statistikasi</div>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <div class="panel">
+
+                        <div class="panel-header">
+                            <div class="panel-title">7 kunlik statistika</div>
+                        </div>
+
+                        <div class="panel-body">
+                            <div class="chart" id="dailyChart"></div>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+            <section class="page" id="page-add">
+
+                <div class="panel">
+
+                    <div class="panel-header">
+                        <div class="panel-title" id="addPanelTitle">Yangi uy qo‘shish</div>
+                    </div>
+
+                    <div class="panel-body">
+
+                        <form id="addHomeForm" onsubmit="addHome(event)">
+
+                            <div class="form-grid">
 </div>
 
-</main>
+                            <div class="form-actions">
+
+                                <button
+                                        type="button"
+                                        class="secondary-btn"
+                                        id="cancelEditBtn"
+                                        onclick="cancelEdit()"
+                                        style="display:none"
+                                >
+                                    <svg class="icon icon-sm">
+                                        <use href="#i-x"></use>
+                                    </svg>
+                                    Bekor qilish
+                                </button>
+
+                                <button
+                                        type="button"
+                                        class="secondary-btn"
+                                        onclick="resetAddForm()"
+                                        id="clearHomeBtn"
+                                >
+                                    <svg class="icon icon-sm">
+                                        <use href="#i-refresh"></use>
+                                    </svg>
+                                    Tozalash
+                                </button>
+
+                                <button
+                                        type="submit"
+                                        class="main-btn"
+                                        id="saveHomeBtn"
+                                >
+                                    <svg class="icon icon-sm">
+                                        <use href="#i-save"></use>
+                                    </svg>
+                                    Uy qo‘shish
+                                </button>
+
+                            </div>
+
+                        </form>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+            <section class="page" id="page-homes">
+
+                <div class="panel">
+
+                    <div class="panel-header">
+
+                        <div class="panel-title">Uylar</div>
+
+                        <button class="main-btn" onclick="startNewHome()">
+                            <svg class="icon icon-sm">
+                                <use href="#i-plus"></use>
+                            </svg>
+                            Uy qo‘shish
+                        </button>
+
+                    </div>
+
+                    <div class="panel-body">
+
+                        <div class="search-row">
+
+                            <div class="search-wrap">
+
+                                <svg class="icon search-icon">
+                                    <use href="#i-search"></use>
+                                </svg>
+
+                                <input
+                                        class="input"
+                                        id="homeSearch"
+                                        type="text"
+                                        placeholder="Uy qidirish..."
+                                        oninput="renderHomes()"
+                                >
+
+                            </div>
+
+                            <select
+                                    class="select"
+                                    id="statusFilter"
+                                    onchange="renderHomes()"
+                                    style="max-width:180px"
+                            >
+                                <option value="all">Barchasi</option>
+                                <option value="available">Sotuvda</option>
+                                <option value="sold">Sotilgan</option>
+                            </select>
+
+                        </div>
+
+                        <div class="filters">
+
+                            <button
+                                    class="filter active"
+                                    id="typeAll"
+                                    onclick="setHomeType('all')"
+                            >
+                                <svg class="icon icon-sm">
+                                    <use href="#i-grid"></use>
+                                </svg>
+                                Barchasi
+                            </button>
+
+                            <button
+                                    class="filter"
+                                    id="typeYard"
+                                    onclick="setHomeType('🏡 Hovli')"
+                            >
+                                <svg class="icon icon-sm">
+                                    <use href="#i-villa"></use>
+                                </svg>
+                                Hovli
+                            </button>
+
+                            <button
+                                    class="filter"
+                                    id="typeApartment"
+                                    onclick="setHomeType('🏢 Kvartira')"
+                            >
+                                <svg class="icon icon-sm">
+                                    <use href="#i-building"></use>
+                                </svg>
+                                Kvartira
+                            </button>
+
+                            <button
+                                    class="filter"
+                                    id="typeLand"
+                                    onclick="setHomeType('🌳 Yer')"
+                            >
+                                <svg class="icon icon-sm">
+                                    <use href="#i-land"></use>
+                                </svg>
+                                Yer
+                            </button>
+
+                            <button
+                                    class="filter"
+                                    id="typeNew"
+                                    onclick="setHomeType('🏗️ Yangi qurilish')"
+                            >
+                                <svg class="icon icon-sm">
+                                    <use href="#i-construction"></use>
+                                </svg>
+                                Yangi qurilish
+                            </button>
+
+                        </div>
+
+                        <div class="homes-grid" id="homesGrid"></div>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+            <section class="page" id="page-password">
+                <div class="panel">
+                    <div class="panel-header"><div class="panel-title">Admin paroli</div></div>
+                    <div class="panel-body">
+                        <div class="settings-item">
+                            <div class="settings-head">
+                                <div class="settings-icon"><svg class="icon"><use href="#i-settings"></use></svg></div>
+                                <div><div class="settings-title">Bitta umumiy parol</div><div class="settings-sub">Shu yerda bir marta kiriting. Qolgan barcha admin bo‘limlari shu paroldan foydalanadi.</div></div>
+                            </div>
+                            <div class="password-wrap">
+                                <input class="input" id="adminPanelPassword" type="password" placeholder="Admin parolini kiriting" autocomplete="current-password">
+                                <button type="button" class="password-eye" onclick="toggleAdminPanelPassword()" title="Parolni ko‘rsatish"><svg class="icon" id="adminPanelPasswordIcon"><use href="#i-eye"></use></svg></button>
+                            </div>
+                            <div class="form-actions">
+                                <button class="secondary-btn" type="button" onclick="clearAdminPassword()">Tozalash</button>
+                                <button class="main-btn" type="button" onclick="saveAdminPassword()"><svg class="icon icon-sm"><use href="#i-save"></use></svg>Parolni saqlash</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="page" id="page-settings">
+
+                <div class="panel">
+
+                    <div class="panel-header">
+                        <div class="panel-title">Aloqa sozlamalari</div>
+                    </div>
+
+                    <div class="panel-body">
+
+                        <form onsubmit="saveSettings(event)">
+
+                            <div class="settings-grid">
+
+                                <div class="settings-item">
+
+                                    <div class="settings-head">
+
+                                        <div class="settings-icon">
+                                            <svg class="icon">
+                                                <use href="#i-phone"></use>
+                                            </svg>
+                                        </div>
+
+                                        <div>
+                                            <div class="settings-title">Telefon</div>
+                                            <div class="settings-sub">
+                                                Asosiy aloqa raqami
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+                                    <input
+                                            class="input"
+                                            id="settingPhone"
+                                            placeholder="+998 90 123 45 67"
+                                    >
+
+                                </div>
+
+                                <div class="settings-item">
+
+                                    <div class="settings-head">
+
+                                        <div class="settings-icon">
+                                            <svg class="icon">
+                                                <use href="#i-message"></use>
+                                            </svg>
+                                        </div>
+
+                                        <div>
+                                            <div class="settings-title">Telegram</div>
+                                            <div class="settings-sub">
+                                                Telegram username yoki link
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+                                    <input
+                                            class="input"
+                                            id="settingTelegram"
+                                            placeholder="@username"
+                                    >
+
+                                </div>
+
+                                <div class="settings-item">
+
+                                    <div class="settings-head">
+
+                                        <div class="settings-icon">
+                                            <svg class="icon">
+                                                <use href="#i-message"></use>
+                                            </svg>
+                                        </div>
+
+                                        <div>
+                                            <div class="settings-title">WhatsApp</div>
+                                            <div class="settings-sub">
+                                                WhatsApp raqami
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+                                    <input
+                                            class="input"
+                                            id="settingWhatsapp"
+                                            placeholder="+998901234567"
+                                    >
+
+                                </div>
+
+                                <div class="settings-item">
+
+                                    <div class="settings-head">
+
+                                        <div class="settings-icon">
+                                            <svg class="icon">
+                                                <use href="#i-message"></use>
+                                            </svg>
+                                        </div>
+
+                                        <div>
+                                            <div class="settings-title">Instagram</div>
+                                            <div class="settings-sub">
+                                                Instagram username yoki link
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+                                    <input
+                                            class="input"
+                                            id="settingInstagram"
+                                            placeholder="@username"
+                                    >
+
+                                </div>
+</div>
+
+                            <div class="form-actions">
+
+                                <button
+                                        class="main-btn"
+                                        type="submit"
+                                >
+
+                                    <svg class="icon icon-sm">
+                                        <use href="#i-save"></use>
+                                    </svg>
+
+                                    Saqlash
+
+                                </button>
+
+                            </div>
+
+                        </form>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+        </div>
+
+    </main>
 
 </div>
 
 <div class="toast" id="toast"></div>
 
 <div class="loading" id="loading">
-  <div class="loader"></div>
+    <div class="loader"></div>
 </div>
 
 <script>
 
-let cars = [];
-let selectedHomeTypes = [];
-let selectedCurrency = "UZS";
-let currentHomeType = "all";
-let uploadedImages = [];
-let editingExistingImages = [];
-let editingHomeId = null;
-let settings = {};
+    let cars = [];
+    let selectedHomeTypes = [];
+    let selectedCurrency = "UZS";
+    let currentHomeType = "all";
+    let uploadedImages = [];
+    let editingExistingImages = [];
+    let editingHomeId = null;
+    let settings = {};
+    let adminPassword = sessionStorage.getItem("admin_panel_password") || "";
 
-const pageTitles = {
-  dashboard:"Dashboard",
-  add:"Uy qo‘shish",
-  homes:"Uylar",
-  settings:"Aloqa sozlamalari"
-};
-
-function $(id){
-  return document.getElementById(id);
-}
-
-function escapeHtml(value){
-  return String(value ?? "")
-    .replace(/&/g,"&amp;")
-    .replace(/</g,"&lt;")
-    .replace(/>/g,"&gt;")
-    .replace(/"/g,"&quot;")
-    .replace(/'/g,"&#039;");
-}
-
-function escapeJs(value){
-  return String(value ?? "")
-    .replace(/\\/g,"\\\\")
-    .replace(/'/g,"\\'")
-    .replace(/"/g,'\\"');
-}
-
-/* =========================
-   PRICE FORMAT
-========================= */
-
-function formatPrice(price,currency){
-
-  const number = Number(price || 0);
-
-  if(currency === "USD"){
-    return "$ " + number.toLocaleString("en-US");
-  }
-
-  return number.toLocaleString("uz-UZ") + " so‘m";
-}
-
-function showLoading(show=true){
-  $("loading").classList.toggle("show",show);
-}
-
-function showToast(message,error=false){
-
-  const toast = $("toast");
-
-  toast.textContent = message;
-  toast.classList.toggle("error",error);
-  toast.classList.add("show");
-
-  clearTimeout(window.toastTimer);
-
-  window.toastTimer = setTimeout(()=>{
-    toast.classList.remove("show");
-  },3000);
-}
-
-function toggleSidebar(){
-  $("sidebar").classList.toggle("open");
-}
-
-function showPage(page){
-
-  document.querySelectorAll(".page").forEach(item=>{
-    item.classList.remove("active");
-  });
-
-  const target = $("page-" + page);
-
-  if(target){
-    target.classList.add("active");
-  }
-
-  document.querySelectorAll(".nav button").forEach(button=>{
-    button.classList.toggle(
-      "active",
-      button.dataset.page === page
-    );
-  });
-
-  $("pageTitle").textContent =
-    pageTitles[page] || "Admin";
-
-  if(page === "homes"){
-    renderHomes();
-  }
-
-  if(window.innerWidth <= 800){
-    $("sidebar").classList.remove("open");
-  }
-}
-
-function updateThemeIcons(){
-
-  const dark = document.body.classList.contains("dark");
-
-  const topIcon = $("topThemeIcon");
-  const sideIcon = $("sideThemeIcon");
-
-  if(topIcon){
-    topIcon.innerHTML =
-      `<use href="${dark ? "#i-sun" : "#i-moon"}"></use>`;
-  }
-
-  if(sideIcon){
-    sideIcon.innerHTML =
-      `<use href="${dark ? "#i-sun" : "#i-moon"}"></use>`;
-  }
-
-  $("sideThemeText").textContent =
-    dark ? "Light mode" : "Dark mode";
-}
-
-function toggleDark(){
-
-  const dark =
-    document.body.classList.toggle("dark");
-
-  localStorage.setItem(
-    "admin_dark_mode",
-    dark ? "1" : "0"
-  );
-
-  updateThemeIcons();
-}
-
-function togglePassword(){
-
-  const input = $("password");
-  const icon = $("passwordIcon");
-
-  if(input.type === "password"){
-
-    input.type = "text";
-
-    icon.innerHTML =
-      `<use href="#i-eye-off"></use>`;
-
-  }else{
-
-    input.type = "password";
-
-    icon.innerHTML =
-      `<use href="#i-eye"></use>`;
-
-  }
-}
-
-/* =========================
-   SETTINGS PASSWORD
-========================= */
-
-function toggleSettingsPassword(){
-
-  const input = $("settingsPassword");
-  const icon = $("settingsPasswordIcon");
-
-  if(!input || !icon){
-    return;
-  }
-
-  if(input.type === "password"){
-
-    input.type = "text";
-
-    icon.innerHTML =
-      `<use href="#i-eye-off"></use>`;
-
-  }else{
-
-    input.type = "password";
-
-    icon.innerHTML =
-      `<use href="#i-eye"></use>`;
-
-  }
-}
-
-/* =========================
-   TYPES
-========================= */
-
-function toggleHomeType(button){
-
-  const type = button.dataset.type;
-
-  if(selectedHomeTypes.includes(type)){
-
-    selectedHomeTypes =
-      selectedHomeTypes.filter(item=>item !== type);
-
-  }else{
-
-    if(selectedHomeTypes.length >= 3){
-
-      showToast(
-        "Ko‘pi bilan 3 ta uy turini tanlash mumkin.",
-        true
-      );
-
-      return;
+    function adminHeaders(extra = {}){
+        const headers = { ...extra };
+        if(adminPassword) headers["X-Admin-Password"] = adminPassword;
+        return headers;
     }
 
-    selectedHomeTypes.push(type);
-  }
+    function requireAdminPassword(){
+        if(adminPassword) return true;
+        showPage("password");
+        showToast("Avval Admin paroli bo‘limida parolni kiriting.", true);
+        return false;
+    }
 
-  updateTypeButtons();
-  updateTypeSummary();
-}
+    function toggleAdminPanelPassword(){
+        const input=$("adminPanelPassword"), icon=$("adminPanelPasswordIcon");
+        if(!input || !icon) return;
+        input.type=input.type === "password" ? "text" : "password";
+        icon.innerHTML=`<use href="${input.type === "password" ? "#i-eye" : "#i-eye-off"}"></use>`;
+    }
 
-function updateTypeButtons(){
+    function saveAdminPassword(){
+        const input=$("adminPanelPassword");
+        const value=input ? input.value.trim() : "";
+        if(!value){ showToast("Admin parolini kiriting.",true); return; }
+        adminPassword=value;
+        sessionStorage.setItem("admin_panel_password",adminPassword);
+        if(input) input.value="";
+        showToast("Admin paroli saqlandi. Barcha bo‘limlar shu paroldan foydalanadi.");
+        loadAll();
+        showPage("dashboard");
+    }
 
-  document.querySelectorAll(".type-option").forEach(button=>{
+    function clearAdminPassword(){
+        adminPassword="";
+        sessionStorage.removeItem("admin_panel_password");
+        const input=$("adminPanelPassword");
+        if(input) input.value="";
+        showToast("Admin paroli tozalandi.");
+    }
 
-    const selected =
-      selectedHomeTypes.includes(button.dataset.type);
-
-    button.classList.toggle("selected",selected);
-
-  });
-}
-
-function updateTypeSummary(){
-
-  const summary = $("homeTypeSummary");
-
-  if(!selectedHomeTypes.length){
-
-    summary.textContent =
-      "Hali tur tanlanmagan";
-
-    return;
-  }
-
-  const names = selectedHomeTypes.map(type=>{
-
-    return type
-      .replace("🏡 ","")
-      .replace("🏢 ","")
-      .replace("🌳 ","")
-      .replace("🏗️ ","");
-
-  });
-
-  summary.textContent =
-    names.join(" • ") +
-    "  —  " +
-    selectedHomeTypes.length +
-    "/3 ta tanlandi";
-}
-
-function resetHomeTypes(){
-
-  selectedHomeTypes = [];
-
-  updateTypeButtons();
-  updateTypeSummary();
-}
-
-/* =========================
-   CURRENCY
-========================= */
-
-function selectCurrency(currency){
-
-  selectedCurrency = currency;
-
-  document.querySelectorAll(".currency-btn")
-    .forEach(button=>{
-
-      button.classList.toggle(
-        "active",
-        button.dataset.currency === currency
-      );
-
-    });
-}
-
-/* =========================
-   IMAGES
-========================= */
-
-function handleImages(input){
-
-  const files = Array.from(input.files || []);
-
-  if(!files.length){
-    return;
-  }
-
-  uploadedImages = [];
-
-  editingExistingImages = [];
-
-  files.slice(0,10).forEach(file=>{
-
-    const reader = new FileReader();
-
-    reader.onload = event=>{
-
-      uploadedImages.push(event.target.result);
-
-      renderImagePreview();
-
+    const pageTitles = {
+        dashboard:"Dashboard",
+        add:"Uy qo‘shish",
+        homes:"Uylar",
+        settings:"Aloqa sozlamalari",
+        password:"Admin paroli"
     };
 
-    reader.readAsDataURL(file);
+    function $(id){
+        return document.getElementById(id);
+    }
 
-  });
+    function escapeHtml(value){
+        return String(value ?? "")
+            .replace(/&/g,"&amp;")
+            .replace(/</g,"&lt;")
+            .replace(/>/g,"&gt;")
+            .replace(/"/g,"&quot;")
+            .replace(/'/g,"&#039;");
+    }
 
-  $("imageUploadText").textContent =
-    editingHomeId
-      ? "Yangi rasmlar tanlandi — eski rasmlar almashtiriladi"
-      : "Bir nechta rasm tanlashingiz mumkin";
-}
+    function escapeJs(value){
+        return String(value ?? "")
+            .replace(/\\/g,"\\\\")
+            .replace(/'/g,"\\'")
+            .replace(/"/g,'\\"');
+    }
 
-function renderImagePreview(){
+    /* =========================
+       PRICE FORMAT
+    ========================= */
 
-  const preview = $("imagePreview");
+    function formatPrice(price,currency){
 
-  const existingHtml =
-    editingExistingImages.map(src=>`
+        const number = Number(price || 0);
+
+        if(currency === "USD"){
+            return "$ " + number.toLocaleString("en-US");
+        }
+
+        return number.toLocaleString("uz-UZ") + " so‘m";
+    }
+
+    function showLoading(show=true){
+        $("loading").classList.toggle("show",show);
+    }
+
+    function showToast(message,error=false){
+
+        const toast = $("toast");
+
+        toast.textContent = message;
+        toast.classList.toggle("error",error);
+        toast.classList.add("show");
+
+        clearTimeout(window.toastTimer);
+
+        window.toastTimer = setTimeout(()=>{
+            toast.classList.remove("show");
+        },3000);
+    }
+
+    function toggleSidebar(){
+        $("sidebar").classList.toggle("open");
+    }
+
+    function showPage(page){
+
+        document.querySelectorAll(".page").forEach(item=>{
+            item.classList.remove("active");
+        });
+
+        const target = $("page-" + page);
+
+        if(target){
+            target.classList.add("active");
+        }
+
+        document.querySelectorAll(".nav button").forEach(button=>{
+            button.classList.toggle(
+                "active",
+                button.dataset.page === page
+            );
+        });
+
+        $("pageTitle").textContent =
+            pageTitles[page] || "Admin";
+
+        if(page === "homes"){
+            renderHomes();
+        }
+
+        if(window.innerWidth <= 800){
+            $("sidebar").classList.remove("open");
+        }
+    }
+
+    function updateThemeIcons(){
+
+        const dark = document.body.classList.contains("dark");
+
+        const topIcon = $("topThemeIcon");
+        const sideIcon = $("sideThemeIcon");
+
+        if(topIcon){
+            topIcon.innerHTML =
+                `<use href="${dark ? "#i-sun" : "#i-moon"}"></use>`;
+        }
+
+        if(sideIcon){
+            sideIcon.innerHTML =
+                `<use href="${dark ? "#i-sun" : "#i-moon"}"></use>`;
+        }
+
+        $("sideThemeText").textContent =
+            dark ? "Light mode" : "Dark mode";
+    }
+
+    function toggleDark(){
+
+        const dark =
+            document.body.classList.toggle("dark");
+
+        localStorage.setItem(
+            "admin_dark_mode",
+            dark ? "1" : "0"
+        );
+
+        updateThemeIcons();
+    }
+
+    function togglePassword(){
+
+        const input = $("password");
+        const icon = $("passwordIcon");
+
+        if(input.type === "password"){
+
+            input.type = "text";
+
+            icon.innerHTML =
+                `<use href="#i-eye-off"></use>`;
+
+        }else{
+
+            input.type = "password";
+
+            icon.innerHTML =
+                `<use href="#i-eye"></use>`;
+
+        }
+    }
+
+    /* =========================
+       SETTINGS PASSWORD
+    ========================= */
+
+    function toggleSettingsPassword(){
+
+        const input = $("settingsPassword");
+        const icon = $("settingsPasswordIcon");
+
+        if(!input || !icon){
+            return;
+        }
+
+        if(input.type === "password"){
+
+            input.type = "text";
+
+            icon.innerHTML =
+                `<use href="#i-eye-off"></use>`;
+
+        }else{
+
+            input.type = "password";
+
+            icon.innerHTML =
+                `<use href="#i-eye"></use>`;
+
+        }
+    }
+
+    /* =========================
+       TYPES
+    ========================= */
+
+    function toggleHomeType(button){
+
+        const type = button.dataset.type;
+
+        if(selectedHomeTypes.includes(type)){
+
+            selectedHomeTypes =
+                selectedHomeTypes.filter(item=>item !== type);
+
+        }else{
+
+            if(selectedHomeTypes.length >= 3){
+
+                showToast(
+                    "Ko‘pi bilan 3 ta uy turini tanlash mumkin.",
+                    true
+                );
+
+                return;
+            }
+
+            selectedHomeTypes.push(type);
+        }
+
+        updateTypeButtons();
+        updateTypeSummary();
+    }
+
+    function updateTypeButtons(){
+
+        document.querySelectorAll(".type-option").forEach(button=>{
+
+            const selected =
+                selectedHomeTypes.includes(button.dataset.type);
+
+            button.classList.toggle("selected",selected);
+
+        });
+    }
+
+    function updateTypeSummary(){
+
+        const summary = $("homeTypeSummary");
+
+        if(!selectedHomeTypes.length){
+
+            summary.textContent =
+                "Hali tur tanlanmagan";
+
+            return;
+        }
+
+        const names = selectedHomeTypes.map(type=>{
+
+            return type
+                .replace("🏡 ","")
+                .replace("🏢 ","")
+                .replace("🌳 ","")
+                .replace("🏗️ ","");
+
+        });
+
+        summary.textContent =
+            names.join(" • ") +
+            "  —  " +
+            selectedHomeTypes.length +
+            "/3 ta tanlandi";
+    }
+
+    function resetHomeTypes(){
+
+        selectedHomeTypes = [];
+
+        updateTypeButtons();
+        updateTypeSummary();
+    }
+
+    /* =========================
+       CURRENCY
+    ========================= */
+
+    function selectCurrency(currency){
+
+        selectedCurrency = currency;
+
+        document.querySelectorAll(".currency-btn")
+            .forEach(button=>{
+
+                button.classList.toggle(
+                    "active",
+                    button.dataset.currency === currency
+                );
+
+            });
+    }
+
+    /* =========================
+       IMAGES
+    ========================= */
+
+    function handleImages(input){
+
+        const files = Array.from(input.files || []);
+
+        if(!files.length){
+            return;
+        }
+
+        uploadedImages = [];
+
+        editingExistingImages = [];
+
+        files.slice(0,10).forEach(file=>{
+
+            const reader = new FileReader();
+
+            reader.onload = event=>{
+
+                uploadedImages.push(event.target.result);
+
+                renderImagePreview();
+
+            };
+
+            reader.readAsDataURL(file);
+
+        });
+
+        $("imageUploadText").textContent =
+            editingHomeId
+                ? "Yangi rasmlar tanlandi — eski rasmlar almashtiriladi"
+                : "Bir nechta rasm tanlashingiz mumkin";
+    }
+
+    function renderImagePreview(){
+
+        const preview = $("imagePreview");
+
+        const existingHtml =
+            editingExistingImages.map(src=>`
 
       <div class="preview-item">
         <img
@@ -2499,8 +2213,8 @@ function renderImagePreview(){
 
     `).join("");
 
-  const newHtml =
-    uploadedImages.map(src=>`
+        const newHtml =
+            uploadedImages.map(src=>`
 
       <div class="preview-item">
         <img
@@ -2511,866 +2225,843 @@ function renderImagePreview(){
 
     `).join("");
 
-  preview.innerHTML =
-    existingHtml + newHtml;
-}
+        preview.innerHTML =
+            existingHtml + newHtml;
+    }
 
-function resizeImage(dataUrl,maxWidth=1400){
+    function resizeImage(dataUrl,maxWidth=1400){
 
-  return new Promise(resolve=>{
+        return new Promise(resolve=>{
 
-    const img = new Image();
+            const img = new Image();
 
-    img.onload = ()=>{
+            img.onload = ()=>{
 
-      let width = img.width;
-      let height = img.height;
+                let width = img.width;
+                let height = img.height;
 
-      if(width > maxWidth){
+                if(width > maxWidth){
 
-        const ratio = maxWidth / width;
+                    const ratio = maxWidth / width;
 
-        width = maxWidth;
-        height = Math.round(height * ratio);
+                    width = maxWidth;
+                    height = Math.round(height * ratio);
 
-      }
+                }
 
-      const canvas =
-        document.createElement("canvas");
+                const canvas =
+                    document.createElement("canvas");
 
-      canvas.width = width;
-      canvas.height = height;
+                canvas.width = width;
+                canvas.height = height;
 
-      const ctx =
-        canvas.getContext("2d");
+                const ctx =
+                    canvas.getContext("2d");
 
-      ctx.drawImage(
-        img,
-        0,
-        0,
-        width,
-        height
-      );
+                ctx.drawImage(
+                    img,
+                    0,
+                    0,
+                    width,
+                    height
+                );
 
-      resolve(
-        canvas.toDataURL(
-          "image/jpeg",
-          .82
-        )
-      );
+                resolve(
+                    canvas.toDataURL(
+                        "image/jpeg",
+                        .82
+                    )
+                );
 
-    };
+            };
 
-    img.src = dataUrl;
+            img.src = dataUrl;
 
-  });
-}
+        });
+    }
 
-async function optimizeImages(){
+    async function optimizeImages(){
 
-  const result = [];
+        const result = [];
 
-  for(const image of uploadedImages){
+        for(const image of uploadedImages){
 
-    try{
+            try{
 
-      result.push(
-        await resizeImage(image)
-      );
+                result.push(
+                    await resizeImage(image)
+                );
 
-    }catch{
+            }catch{
 
-      result.push(image);
+                result.push(image);
+
+            }
+
+        }
+
+        return result;
+    }
+
+    /* =========================
+       NEW HOME
+    ========================= */
+
+    function startNewHome(){
+
+        cancelEdit();
+
+        showPage("add");
 
     }
 
-  }
+    /* =========================
+       EDIT HOME
+    ========================= */
 
-  return result;
-}
+    function startEditHome(id){
 
-/* =========================
-   NEW HOME
-========================= */
+        const car =
+            cars.find(item =>
+                String(item.id ?? item._id) === String(id)
+            );
 
-function startNewHome(){
+        if(!car){
 
-  cancelEdit();
+            showToast(
+                "Uy ma’lumotlari topilmadi.",
+                true
+            );
 
-  showPage("add");
+            return;
+        }
 
-}
+        editingHomeId =
+            car.id ?? car._id;
 
-/* =========================
-   EDIT HOME
-========================= */
+        const types =
+            getHomeTypes(car);
 
-function startEditHome(id){
+        selectedHomeTypes =
+            types.slice(0,3);
 
-  const car =
-    cars.find(item =>
-      String(item.id ?? item._id) === String(id)
-    );
+        selectedCurrency =
+            car.currency === "USD"
+                ? "USD"
+                : "UZS";
 
-  if(!car){
+        uploadedImages = [];
 
-    showToast(
-      "Uy ma’lumotlari topilmadi.",
-      true
-    );
+        const images =
+            Array.isArray(car.images)
+                ? car.images
+                : [];
 
-    return;
-  }
+        editingExistingImages =
+            images.map(image=>{
 
-  editingHomeId =
-    car.id ?? car._id;
+                const value = String(image || "");
 
-  const types =
-    getHomeTypes(car);
+                if(
+                    value.startsWith("http://") ||
+                    value.startsWith("https://") ||
+                    value.startsWith("data:")
+                ){
+                    return value;
+                }
 
-  selectedHomeTypes =
-    types.slice(0,3);
+                if(value.startsWith("/uploads/")){
+                    return value;
+                }
 
-  selectedCurrency =
-    car.currency === "USD"
-      ? "USD"
-      : "UZS";
+                return "/uploads/" + value;
 
-  uploadedImages = [];
+            });
 
-  const images =
-    Array.isArray(car.images)
-      ? car.images
-      : [];
+        $("homeTitle").value =
+            car.title ||
+            car.name ||
+            "";
 
-  editingExistingImages =
-    images.map(image=>{
+        $("homePrice").value =
+            Number(car.price || 0);
 
-      const value = String(image || "");
+        $("homeLocation").value =
+            car.location ||
+            car.address ||
+            "";
 
-      if(
-        value.startsWith("http://") ||
-        value.startsWith("https://") ||
-        value.startsWith("data:")
-      ){
-        return value;
-      }
+        $("homeRooms").value =
+            Number(car.rooms || 0) || "";
 
-      if(value.startsWith("/uploads/")){
-        return value;
-      }
+        $("homeArea").value =
+            Number(car.area || 0) || "";
 
-      return "/uploads/" + value;
+        $("homePhone").value =
+            car.phone ||
+            "";
 
-    });
+        $("homeDescription").value =
+            car.description ||
+            "";
 
-  $("homeTitle").value =
-    car.title ||
-    car.name ||
-    "";
 
-  $("homePrice").value =
-    Number(car.price || 0);
+        $("homeImages").value = "";
 
-  $("homeLocation").value =
-    car.location ||
-    car.address ||
-    "";
+        $("addPanelTitle").textContent =
+            "Uyni tahrirlash";
 
-  $("homeRooms").value =
-    Number(car.rooms || 0) || "";
-
-  $("homeArea").value =
-    Number(car.area || 0) || "";
-
-  $("homePhone").value =
-    car.phone ||
-    "";
-
-  $("homeDescription").value =
-    car.description ||
-    "";
-
-  $("password").value = "";
-
-  $("homeImages").value = "";
-
-  $("addPanelTitle").textContent =
-    "Uyni tahrirlash";
-
-  $("saveHomeBtn").innerHTML = `
+        $("saveHomeBtn").innerHTML = `
     <svg class="icon icon-sm">
       <use href="#i-save"></use>
     </svg>
     O‘zgarishlarni saqlash
   `;
 
-  $("cancelEditBtn").style.display =
-    "inline-flex";
+        $("cancelEditBtn").style.display =
+            "inline-flex";
 
-  $("clearHomeBtn").style.display =
-    "none";
+        $("clearHomeBtn").style.display =
+            "none";
 
-  $("imageUploadText").textContent =
-    "Yangi rasm tanlasangiz eski rasmlar almashtiriladi";
+        $("imageUploadText").textContent =
+            "Yangi rasm tanlasangiz eski rasmlar almashtiriladi";
 
-  updateTypeButtons();
-  updateTypeSummary();
-  selectCurrency(selectedCurrency);
-  renderImagePreview();
+        updateTypeButtons();
+        updateTypeSummary();
+        selectCurrency(selectedCurrency);
+        renderImagePreview();
 
-  showPage("add");
+        showPage("add");
 
-  window.scrollTo({
-    top:0,
-    behavior:"smooth"
-  });
+        window.scrollTo({
+            top:0,
+            behavior:"smooth"
+        });
 
-}
+    }
 
-/* =========================
-   CANCEL EDIT
-========================= */
+    /* =========================
+       CANCEL EDIT
+    ========================= */
 
-function cancelEdit(){
+    function cancelEdit(){
 
-  editingHomeId = null;
+        editingHomeId = null;
 
-  editingExistingImages = [];
+        editingExistingImages = [];
 
-  uploadedImages = [];
+        uploadedImages = [];
 
-  selectedHomeTypes = [];
+        selectedHomeTypes = [];
 
-  selectedCurrency = "UZS";
+        selectedCurrency = "UZS";
 
-  $("addHomeForm").reset();
+        $("addHomeForm").reset();
 
-  $("addPanelTitle").textContent =
-    "Yangi uy qo‘shish";
+        $("addPanelTitle").textContent =
+            "Yangi uy qo‘shish";
 
-  $("saveHomeBtn").innerHTML = `
+        $("saveHomeBtn").innerHTML = `
     <svg class="icon icon-sm">
       <use href="#i-save"></use>
     </svg>
     Uy qo‘shish
   `;
 
-  $("cancelEditBtn").style.display =
-    "none";
+        $("cancelEditBtn").style.display =
+            "none";
 
-  $("clearHomeBtn").style.display =
-    "inline-flex";
+        $("clearHomeBtn").style.display =
+            "inline-flex";
 
-  $("imageUploadText").textContent =
-    "Bir nechta rasm tanlashingiz mumkin";
+        $("imageUploadText").textContent =
+            "Bir nechta rasm tanlashingiz mumkin";
 
-  $("imagePreview").innerHTML = "";
+        $("imagePreview").innerHTML = "";
 
-  resetHomeTypes();
-  selectCurrency("UZS");
-
-}
-
-/* =========================
-   ADD / EDIT HOME
-========================= */
-
-async function addHome(event){
-
-  event.preventDefault();
-
-  if(selectedHomeTypes.length < 1){
-
-    showToast(
-      "Kamida 1 ta uy turini tanlang.",
-      true
-    );
-
-    return;
-  }
-
-  const password =
-    $("password").value.trim();
-
-  if(!password){
-
-    showToast(
-      "Admin parolini kiriting.",
-      true
-    );
-
-    return;
-  }
-
-  const title =
-    $("homeTitle").value.trim();
-
-  const price =
-    Number($("homePrice").value);
-
-  const location =
-    $("homeLocation").value.trim();
-
-  if(!title || !price || !location){
-
-    showToast(
-      "Majburiy maydonlarni to‘ldiring.",
-      true
-    );
-
-    return;
-  }
-
-  showLoading(true);
-
-  try{
-
-    let images = [];
-
-    if(editingHomeId){
-
-      if(uploadedImages.length){
-
-        images =
-          await optimizeImages();
-
-      }else{
-
-        images =
-          [...editingExistingImages];
-
-      }
-
-    }else{
-
-      images =
-        await optimizeImages();
+        resetHomeTypes();
+        selectCurrency("UZS");
 
     }
 
-    const payload = {
+    /* =========================
+       ADD / EDIT HOME
+    ========================= */
 
-      title:title,
+    async function addHome(event){
 
-      name:title,
+        event.preventDefault();
 
-      type:selectedHomeTypes[0],
+        if(selectedHomeTypes.length < 1){
 
-      types:[...selectedHomeTypes],
+            showToast(
+                "Kamida 1 ta uy turini tanlang.",
+                true
+            );
 
-      price:price,
+            return;
+        }
+        if(!requireAdminPassword()){
+            return;
+        }
+        const password = adminPassword;
 
-      currency:selectedCurrency,
+        const title =
+            $("homeTitle").value.trim();
 
-      location:location,
+        const price =
+            Number($("homePrice").value);
 
-      address:location,
+        const location =
+            $("homeLocation").value.trim();
 
-      rooms:
-        Number($("homeRooms").value) || 0,
+        if(!title || !price || !location){
 
-      area:
-        Number($("homeArea").value) || 0,
+            showToast(
+                "Majburiy maydonlarni to‘ldiring.",
+                true
+            );
 
-      phone:
-        $("homePhone").value.trim(),
+            return;
+        }
 
-      description:
-        $("homeDescription").value.trim(),
+        showLoading(true);
 
-      images:images,
+        try{
 
-      password:password
+            let images = [];
 
-    };
+            if(editingHomeId){
 
-    let response;
+                if(uploadedImages.length){
 
-    if(editingHomeId){
+                    images =
+                        await optimizeImages();
 
-      response =
-        await fetch(
-          `/api/cars/${encodeURIComponent(editingHomeId)}`,
-          {
-            method:"PUT",
+                }else{
 
-            headers:{
-              "Content-Type":"application/json"
-            },
+                    images =
+                        [...editingExistingImages];
 
-            body:JSON.stringify(payload)
+                }
 
-          }
+            }else{
+
+                images =
+                    await optimizeImages();
+
+            }
+
+            const payload = {
+
+                title:title,
+
+                name:title,
+
+                type:selectedHomeTypes[0],
+
+                types:[...selectedHomeTypes],
+
+                price:price,
+
+                currency:selectedCurrency,
+
+                location:location,
+
+                address:location,
+
+                rooms:
+                    Number($("homeRooms").value) || 0,
+
+                area:
+                    Number($("homeArea").value) || 0,
+
+                phone:
+                    $("homePhone").value.trim(),
+
+                description:
+                    $("homeDescription").value.trim(),
+
+                images:images,
+
+                password:password
+
+            };
+
+            let response;
+
+            if(editingHomeId){
+
+                response =
+                    await fetch(
+                        `/api/cars/${encodeURIComponent(editingHomeId)}`,
+                        {
+                            method:"PUT",
+
+                            headers:adminHeaders({
+                                "Content-Type":"application/json"
+                            }),
+
+                            body:JSON.stringify(payload)
+
+                        }
+                    );
+
+            }else{
+
+                payload.status = "available";
+
+                response =
+                    await fetch("/api/cars",{
+
+                        method:"POST",
+
+                        headers:adminHeaders({
+                                "Content-Type":"application/json"
+                            }),
+
+                        body:JSON.stringify(payload)
+
+                    });
+
+            }
+
+            const data =
+                await response.json()
+                    .catch(()=>({}));
+
+            if(!response.ok){
+
+                throw new Error(
+                    data.message ||
+                    data.error ||
+                    (
+                        editingHomeId
+                            ? "Uyni tahrirlashda xatolik."
+                            : "Uy qo‘shishda xatolik."
+                    )
+                );
+
+            }
+
+            showToast(
+                editingHomeId
+                    ? "Uy ma’lumotlari saqlandi."
+                    : "Uy muvaffaqiyatli qo‘shildi."
+            );
+
+            cancelEdit();
+
+            await loadAll();
+
+            showPage("homes");
+
+        }catch(error){
+
+            console.error(error);
+
+            showToast(
+                error.message ||
+                "Xatolik yuz berdi.",
+                true
+            );
+
+        }finally{
+
+            showLoading(false);
+
+        }
+    }
+
+    /* =========================
+       RESET ADD FORM
+    ========================= */
+
+    function resetAddForm(){
+
+        if(editingHomeId){
+
+            cancelEdit();
+
+            return;
+        }
+
+        $("addHomeForm").reset();
+
+        editingExistingImages = [];
+        uploadedImages = [];
+
+        selectedCurrency = "UZS";
+
+        document.querySelectorAll(".currency-btn")
+            .forEach(button=>{
+
+                button.classList.toggle(
+                    "active",
+                    button.dataset.currency === "UZS"
+                );
+
+            });
+
+        $("imagePreview").innerHTML = "";
+
+        $("imageUploadText").textContent =
+            "Bir nechta rasm tanlashingiz mumkin";
+
+        resetHomeTypes();
+
+    }
+
+    /* =========================
+       LOAD CARS
+    ========================= */
+
+    async function loadCars(){
+
+        try{
+
+            const response =
+                await fetch("/api/cars");
+
+            if(!response.ok){
+
+                throw new Error(
+                    "Uylar ma’lumotini olishda xatolik."
+                );
+
+            }
+
+            const data =
+                await response.json();
+
+            if(Array.isArray(data)){
+
+                cars = data;
+
+            }else if(Array.isArray(data.cars)){
+
+                cars = data.cars;
+
+            }else{
+
+                cars = [];
+
+            }
+
+        }catch(error){
+
+            console.error(error);
+
+            cars = [];
+
+            showToast(
+                "Uylar yuklanmadi.",
+                true
+            );
+
+        }
+    }
+
+    /* =========================
+       SETTINGS
+    ========================= */
+
+    async function loadSettings(){
+
+        try{
+
+            const response =
+                await fetch("/api/settings");
+
+            if(!response.ok){
+                return;
+            }
+
+            const data =
+                await response.json();
+
+            settings = data || {};
+
+            $("settingPhone").value =
+                settings.phone || "";
+
+            $("settingTelegram").value =
+                settings.telegram || "";
+
+            $("settingWhatsapp").value =
+                settings.whatsapp || "";
+
+            $("settingInstagram").value =
+                settings.instagram || "";
+
+            $("settingAddress").value =
+                settings.address || "";
+
+            /*
+              Parol serverdan olinmaydi.
+              Admin parolini foydalanuvchi o‘zi kiritadi.
+            */
+
+    
+        }catch(error){
+
+            console.error(error);
+
+        }
+    }
+
+    async function saveSettings(event){
+
+        event.preventDefault();
+        if(!requireAdminPassword()){
+            return;
+        }
+        const password = adminPassword;
+
+        const payload = {
+
+            phone:
+                $("settingPhone").value.trim(),
+
+            telegram:
+                $("settingTelegram").value.trim(),
+
+            whatsapp:
+                $("settingWhatsapp").value.trim(),
+
+            instagram:
+                $("settingInstagram").value.trim(),
+
+            address:
+                $("settingAddress").value.trim(),
+
+            /*
+              MUHIM:
+              index.js shu password orqali
+              admin parolini tekshiradi.
+            */
+            password:password
+
+        };
+
+        showLoading(true);
+
+        try{
+
+            const response =
+                await fetch("/api/settings",{
+
+                    method:"POST",
+
+                    headers:adminHeaders({
+                                "Content-Type":"application/json"
+                            }),
+
+                    body:JSON.stringify(payload)
+
+                });
+
+            const data =
+                await response.json()
+                    .catch(()=>({}));
+
+            if(!response.ok){
+
+                throw new Error(
+                    data.message ||
+                    data.error ||
+                    "Sozlamalarni saqlab bo‘lmadi."
+                );
+
+            }
+
+            /*
+              Parolni settings ichida saqlamaymiz.
+            */
+
+            settings = {
+                phone:payload.phone,
+                telegram:payload.telegram,
+                whatsapp:payload.whatsapp,
+                instagram:payload.instagram,
+                address:payload.address
+            };
+
+    
+            showToast(
+                "Sozlamalar saqlandi."
+            );
+
+        }catch(error){
+
+            console.error(error);
+
+            showToast(
+                error.message ||
+                "Xatolik yuz berdi.",
+                true
+            );
+
+        }finally{
+
+            showLoading(false);
+
+        }
+    }
+
+    /* =========================
+       TYPES
+    ========================= */
+
+    function getHomeTypes(car){
+
+        if(
+            Array.isArray(car.types) &&
+            car.types.length
+        ){
+
+            return car.types;
+
+        }
+
+        if(car.type){
+
+            return [car.type];
+
+        }
+
+        return [];
+    }
+
+    function homeHasType(car,type){
+
+        if(type === "all"){
+            return true;
+        }
+
+        return getHomeTypes(car)
+            .some(item=>item === type);
+    }
+
+    function setHomeType(type){
+
+        currentHomeType = type;
+
+        document.querySelectorAll(".filter")
+            .forEach(button=>{
+                button.classList.remove("active");
+            });
+
+        const map = {
+
+            all:"typeAll",
+
+            "🏡 Hovli":"typeYard",
+
+            "🏢 Kvartira":"typeApartment",
+
+            "🌳 Yer":"typeLand",
+
+            "🏗️ Yangi qurilish":"typeNew"
+
+        };
+
+        const id = map[type];
+
+        if(id && $(id)){
+            $(id).classList.add("active");
+        }
+
+        renderHomes();
+    }
+
+    function isSold(car){
+
+        return (
+            car.status === "sold" ||
+            car.sold === true
         );
 
-    }else{
-
-      payload.status = "available";
-
-      response =
-        await fetch("/api/cars",{
-
-          method:"POST",
-
-          headers:{
-            "Content-Type":"application/json"
-          },
-
-          body:JSON.stringify(payload)
-
-        });
-
     }
 
-    const data =
-      await response.json()
-        .catch(()=>({}));
-
-    if(!response.ok){
-
-      throw new Error(
-        data.message ||
-        data.error ||
-        (
-          editingHomeId
-            ? "Uyni tahrirlashda xatolik."
-            : "Uy qo‘shishda xatolik."
-        )
-      );
-
-    }
-
-    showToast(
-      editingHomeId
-        ? "Uy ma’lumotlari saqlandi."
-        : "Uy muvaffaqiyatli qo‘shildi."
-    );
-
-    cancelEdit();
-
-    await loadAll();
-
-    showPage("homes");
-
-  }catch(error){
-
-    console.error(error);
-
-    showToast(
-      error.message ||
-      "Xatolik yuz berdi.",
-      true
-    );
-
-  }finally{
-
-    showLoading(false);
-
-  }
-}
-
-/* =========================
-   RESET ADD FORM
-========================= */
-
-function resetAddForm(){
-
-  if(editingHomeId){
-
-    cancelEdit();
-
-    return;
-  }
-
-  $("addHomeForm").reset();
-
-  editingExistingImages = [];
-  uploadedImages = [];
-
-  selectedCurrency = "UZS";
-
-  document.querySelectorAll(".currency-btn")
-    .forEach(button=>{
-
-      button.classList.toggle(
-        "active",
-        button.dataset.currency === "UZS"
-      );
-
-    });
-
-  $("imagePreview").innerHTML = "";
-
-  $("imageUploadText").textContent =
-    "Bir nechta rasm tanlashingiz mumkin";
-
-  resetHomeTypes();
-
-}
-
-/* =========================
-   LOAD CARS
-========================= */
-
-async function loadCars(){
-
-  try{
-
-    const response =
-      await fetch("/api/cars");
-
-    if(!response.ok){
-
-      throw new Error(
-        "Uylar ma’lumotini olishda xatolik."
-      );
-
-    }
-
-    const data =
-      await response.json();
-
-    if(Array.isArray(data)){
-
-      cars = data;
-
-    }else if(Array.isArray(data.cars)){
-
-      cars = data.cars;
-
-    }else{
-
-      cars = [];
-
-    }
-
-  }catch(error){
-
-    console.error(error);
-
-    cars = [];
-
-    showToast(
-      "Uylar yuklanmadi.",
-      true
-    );
-
-  }
-}
-
-/* =========================
-   SETTINGS
-========================= */
-
-async function loadSettings(){
-
-  try{
-
-    const response =
-      await fetch("/api/settings");
-
-    if(!response.ok){
-      return;
-    }
-
-    const data =
-      await response.json();
-
-    settings = data || {};
-
-    $("settingPhone").value =
-      settings.phone || "";
-
-    $("settingTelegram").value =
-      settings.telegram || "";
-
-    $("settingWhatsapp").value =
-      settings.whatsapp || "";
-
-    $("settingInstagram").value =
-      settings.instagram || "";
-
-    $("settingAddress").value =
-      settings.address || "";
-
-    /*
-      Parol serverdan olinmaydi.
-      Admin parolini foydalanuvchi o‘zi kiritadi.
-    */
-
-    $("settingsPassword").value = "";
-
-  }catch(error){
-
-    console.error(error);
-
-  }
-}
-
-async function saveSettings(event){
-
-  event.preventDefault();
-
-  const password =
-    $("settingsPassword").value.trim();
-
-  if(!password){
-
-    showToast(
-      "Aloqa sozlamalarini saqlash uchun admin parolini kiriting.",
-      true
-    );
-
-    $("settingsPassword").focus();
-
-    return;
-  }
-
-  const payload = {
-
-    phone:
-      $("settingPhone").value.trim(),
-
-    telegram:
-      $("settingTelegram").value.trim(),
-
-    whatsapp:
-      $("settingWhatsapp").value.trim(),
-
-    instagram:
-      $("settingInstagram").value.trim(),
-
-    address:
-      $("settingAddress").value.trim(),
-
-    /*
-      MUHIM:
-      index.js shu password orqali
-      admin parolini tekshiradi.
-    */
-    password:password
-
-  };
-
-  showLoading(true);
-
-  try{
-
-    const response =
-      await fetch("/api/settings",{
-
-        method:"POST",
-
-        headers:{
-          "Content-Type":"application/json"
-        },
-
-        body:JSON.stringify(payload)
-
-      });
-
-    const data =
-      await response.json()
-        .catch(()=>({}));
-
-    if(!response.ok){
-
-      throw new Error(
-        data.message ||
-        data.error ||
-        "Sozlamalarni saqlab bo‘lmadi."
-      );
-
-    }
-
-    /*
-      Parolni settings ichida saqlamaymiz.
-    */
-
-    settings = {
-      phone:payload.phone,
-      telegram:payload.telegram,
-      whatsapp:payload.whatsapp,
-      instagram:payload.instagram,
-      address:payload.address
-    };
-
-    $("settingsPassword").value = "";
-
-    showToast(
-      "Sozlamalar saqlandi."
-    );
-
-  }catch(error){
-
-    console.error(error);
-
-    showToast(
-      error.message ||
-      "Xatolik yuz berdi.",
-      true
-    );
-
-  }finally{
-
-    showLoading(false);
-
-  }
-}
-
-/* =========================
-   TYPES
-========================= */
-
-function getHomeTypes(car){
-
-  if(
-    Array.isArray(car.types) &&
-    car.types.length
-  ){
-
-    return car.types;
-
-  }
-
-  if(car.type){
-
-    return [car.type];
-
-  }
-
-  return [];
-}
-
-function homeHasType(car,type){
-
-  if(type === "all"){
-    return true;
-  }
-
-  return getHomeTypes(car)
-    .some(item=>item === type);
-}
-
-function setHomeType(type){
-
-  currentHomeType = type;
-
-  document.querySelectorAll(".filter")
-    .forEach(button=>{
-      button.classList.remove("active");
-    });
-
-  const map = {
-
-    all:"typeAll",
-
-    "🏡 Hovli":"typeYard",
-
-    "🏢 Kvartira":"typeApartment",
-
-    "🌳 Yer":"typeLand",
-
-    "🏗️ Yangi qurilish":"typeNew"
-
-  };
-
-  const id = map[type];
-
-  if(id && $(id)){
-    $(id).classList.add("active");
-  }
-
-  renderHomes();
-}
-
-function isSold(car){
-
-  return (
-    car.status === "sold" ||
-    car.sold === true
-  );
-
-}
-
-/* =========================
-   RENDER HOMES
-========================= */
-
-function renderHomes(){
-
-  const grid =
-    $("homesGrid");
-
-  if(!grid){
-    return;
-  }
-
-  const search =
-    ($("homeSearch")?.value || "")
-      .trim()
-      .toLowerCase();
-
-  const status =
-    $("statusFilter")?.value || "all";
-
-  let filtered =
-    cars.filter(car=>{
-
-      const types =
-        getHomeTypes(car);
-
-      const title =
-        String(
-          car.title ||
-          car.name ||
-          ""
-        ).toLowerCase();
-
-      const location =
-        String(
-          car.location ||
-          car.address ||
-          ""
-        ).toLowerCase();
-
-      const matchesSearch =
-        !search ||
-        title.includes(search) ||
-        location.includes(search) ||
-        types.some(
-          type =>
-            String(type)
-              .toLowerCase()
-              .includes(search)
-        );
-
-      const sold =
-        isSold(car);
-
-      const matchesStatus =
-        status === "all" ||
-        (status === "sold" && sold) ||
-        (status === "available" && !sold);
-
-      const matchesType =
-        homeHasType(
-          car,
-          currentHomeType
-        );
-
-      return (
-        matchesSearch &&
-        matchesStatus &&
-        matchesType
-      );
-
-    });
-
-  if(!filtered.length){
-
-    grid.innerHTML = `
+    /* =========================
+       RENDER HOMES
+    ========================= */
+
+    function renderHomes(){
+
+        const grid =
+            $("homesGrid");
+
+        if(!grid){
+            return;
+        }
+
+        const search =
+            ($("homeSearch")?.value || "")
+                .trim()
+                .toLowerCase();
+
+        const status =
+            $("statusFilter")?.value || "all";
+
+        let filtered =
+            cars.filter(car=>{
+
+                const types =
+                    getHomeTypes(car);
+
+                const title =
+                    String(
+                        car.title ||
+                        car.name ||
+                        ""
+                    ).toLowerCase();
+
+                const location =
+                    String(
+                        car.location ||
+                        car.address ||
+                        ""
+                    ).toLowerCase();
+
+                const matchesSearch =
+                    !search ||
+                    title.includes(search) ||
+                    location.includes(search) ||
+                    types.some(
+                        type =>
+                            String(type)
+                                .toLowerCase()
+                                .includes(search)
+                    );
+
+                const sold =
+                    isSold(car);
+
+                const matchesStatus =
+                    status === "all" ||
+                    (status === "sold" && sold) ||
+                    (status === "available" && !sold);
+
+                const matchesType =
+                    homeHasType(
+                        car,
+                        currentHomeType
+                    );
+
+                return (
+                    matchesSearch &&
+                    matchesStatus &&
+                    matchesType
+                );
+
+            });
+
+        if(!filtered.length){
+
+            grid.innerHTML = `
 
       <div class="empty">
 
@@ -3384,83 +3075,83 @@ function renderHomes(){
 
     `;
 
-    return;
-  }
+            return;
+        }
 
-  grid.innerHTML =
-    filtered.map(createHomeCard).join("");
+        grid.innerHTML =
+            filtered.map(createHomeCard).join("");
 
-}
+    }
 
-/* =========================
-   HOME CARD
-========================= */
+    /* =========================
+       HOME CARD
+    ========================= */
 
-function createHomeCard(car){
+    function createHomeCard(car){
 
-  const id =
-    car.id ??
-    car._id ??
-    "";
+        const id =
+            car.id ??
+            car._id ??
+            "";
 
-  const title =
-    car.title ||
-    car.name ||
-    "Nomsiz uy";
+        const title =
+            car.title ||
+            car.name ||
+            "Nomsiz uy";
 
-  const price =
-    formatPrice(
-      car.price,
-      car.currency || "UZS"
-    );
+        const price =
+            formatPrice(
+                car.price,
+                car.currency || "UZS"
+            );
 
-  const types =
-    getHomeTypes(car);
+        const types =
+            getHomeTypes(car);
 
-  const typeText =
-    types.length
-      ? types.map(type=>{
-          return escapeHtml(type);
-        }).join(" • ")
-      : "Uy turi ko‘rsatilmagan";
+        const typeText =
+            types.length
+                ? types.map(type=>{
+                    return escapeHtml(type);
+                }).join(" • ")
+                : "Uy turi ko‘rsatilmagan";
 
-  const location =
-    car.location ||
-    car.address ||
-    "Manzil ko‘rsatilmagan";
+        const location =
+            car.location ||
+            car.address ||
+            "Manzil ko‘rsatilmagan";
 
-  const rooms =
-    Number(car.rooms || 0);
+        const rooms =
+            Number(car.rooms || 0);
 
-  const area =
-    Number(car.area || 0);
+        const area =
+            Number(car.area || 0);
 
-  const sold =
-    isSold(car);
+        const sold =
+            isSold(car);
 
-  const images =
-    Array.isArray(car.images)
-      ? car.images
-      : [];
+        const images =
+            Array.isArray(car.images)
+                ? car.images
+                : [];
 
-  const image =
-    images[0] || car.image || "";
+        const image =
+            images[0] || car.image || "";
 
-  let imageSrc = image;
+        let imageSrc = image;
 
-  if(
-    imageSrc &&
-    !String(imageSrc).startsWith("/") &&
-    !String(imageSrc).startsWith("http") &&
-    !String(imageSrc).startsWith("data:")
-  ){
-    imageSrc =
-      "/uploads/" + imageSrc;
-  }
+        if(
+            imageSrc &&
+            !String(imageSrc).startsWith("/") &&
+            !String(imageSrc).startsWith("http") &&
+            !String(imageSrc).startsWith("data:")
+        ){
+            imageSrc =
+                "/uploads/" + imageSrc;
+        }
 
-  const imageHtml = imageSrc
+        const imageHtml = imageSrc
 
-    ? `
+            ? `
       <img
         src="${escapeHtml(imageSrc)}"
         alt="${escapeHtml(title)}"
@@ -3468,7 +3159,7 @@ function createHomeCard(car){
       >
     `
 
-    : `
+            : `
       <div class="home-image-placeholder">
         <svg class="icon-xl">
           <use href="#i-home"></use>
@@ -3476,7 +3167,7 @@ function createHomeCard(car){
       </div>
     `;
 
-  return `
+        return `
 
     <article class="home-card">
 
@@ -3487,9 +3178,9 @@ function createHomeCard(car){
         <div class="home-status">
           ${
             sold
-              ? "Sotilgan"
-              : "Sotuvda"
-          }
+                ? "Sotilgan"
+                : "Sotuvda"
+        }
         </div>
 
       </div>
@@ -3519,7 +3210,7 @@ function createHomeCard(car){
 
           ${
             rooms > 0
-            ? `
+                ? `
               <span>
                 <svg class="icon icon-sm">
                   <use href="#i-bed"></use>
@@ -3527,12 +3218,12 @@ function createHomeCard(car){
                 ${rooms} xona
               </span>
             `
-            : ""
-          }
+                : ""
+        }
 
           ${
             area > 0
-            ? `
+                ? `
               <span>
                 <svg class="icon icon-sm">
                   <use href="#i-ruler"></use>
@@ -3540,12 +3231,12 @@ function createHomeCard(car){
                 ${area} m²
               </span>
             `
-            : ""
-          }
+                : ""
+        }
 
           ${
             images.length
-            ? `
+                ? `
               <span>
                 <svg class="icon icon-sm">
                   <use href="#i-camera"></use>
@@ -3553,8 +3244,8 @@ function createHomeCard(car){
                 ${images.length}
               </span>
             `
-            : ""
-          }
+                : ""
+        }
 
         </div>
 
@@ -3598,311 +3289,310 @@ function createHomeCard(car){
 
   `;
 
-}
+    }
 
-/* =========================
-   SOLD
-========================= */
+    /* =========================
+       SOLD
+    ========================= */
 
-async function toggleSold(id,sold){
+    async function toggleSold(id,sold){
 
-  if(!id){
-
-    showToast(
-      "Uy ID topilmadi.",
-      true
-    );
-
-    return;
-  }
-
-  const action =
-    sold ? "available" : "sold";
-
-  if(
-    !confirm(
-      sold
-      ? "Bu uyni yana sotuvga chiqaramizmi?"
-      : "Bu uyni sotilgan deb belgilaysizmi?"
-    )
-  ){
-
-    return;
-
-  }
-
-  showLoading(true);
-
-  try{
-
-    const response =
-      await fetch(
-        `/api/cars/${encodeURIComponent(id)}/sold`,
-        {
-          method:"POST",
-
-          headers:{
-            "Content-Type":"application/json"
-          },
-
-          body:JSON.stringify({
-            sold:!sold,
-            status:action
-          })
+        if(!requireAdminPassword()){
+            return;
         }
-      );
 
-    const data =
-      await response.json()
-        .catch(()=>({}));
+        if(!id){
 
-    if(!response.ok){
+            showToast(
+                "Uy ID topilmadi.",
+                true
+            );
 
-      throw new Error(
-        data.message ||
-        data.error ||
-        "Statusni o‘zgartirib bo‘lmadi."
-      );
-
-    }
-
-    showToast(
-      sold
-      ? "Uy yana sotuvga chiqarildi."
-      : "Uy sotilgan deb belgilandi."
-    );
-
-    await loadAll();
-
-  }catch(error){
-
-    console.error(error);
-
-    showToast(
-      error.message ||
-      "Xatolik yuz berdi.",
-      true
-    );
-
-  }finally{
-
-    showLoading(false);
-
-  }
-}
-
-/* =========================
-   DELETE
-========================= */
-
-async function deleteHome(id){
-
-  if(!id){
-
-    showToast(
-      "Uy ID topilmadi.",
-      true
-    );
-
-    return;
-  }
-
-  if(
-    !confirm(
-      "Bu uyni o‘chirishni tasdiqlaysizmi?"
-    )
-  ){
-
-    return;
-
-  }
-
-  const password =
-    prompt(
-      "O‘chirish uchun admin parolini kiriting:"
-    );
-
-  if(!password){
-    return;
-  }
-
-  showLoading(true);
-
-  try{
-
-    const response =
-      await fetch(
-        `/api/cars/${encodeURIComponent(id)}`,
-        {
-          method:"DELETE",
-
-          headers:{
-            "Content-Type":"application/json"
-          },
-
-          body:JSON.stringify({
-            password:password
-          })
+            return;
         }
-      );
 
-    const data =
-      await response.json()
-        .catch(()=>({}));
+        const action =
+            sold ? "available" : "sold";
 
-    if(!response.ok){
-
-      throw new Error(
-        data.message ||
-        data.error ||
-        "Uyni o‘chirib bo‘lmadi."
-      );
-
-    }
-
-    showToast(
-      "Uy o‘chirildi."
-    );
-
-    await loadAll();
-
-  }catch(error){
-
-    console.error(error);
-
-    showToast(
-      error.message ||
-      "Xatolik yuz berdi.",
-      true
-    );
-
-  }finally{
-
-    showLoading(false);
-
-  }
-}
-
-/* =========================
-   STATS
-========================= */
-
-async function loadStats(){
-
-  try{
-
-    const response =
-      await fetch("/api/stats");
-
-    if(!response.ok){
-      return;
-    }
-
-    const data =
-      await response.json();
-
-    const views =
-      Number(
-        data.views ??
-        data.totalViews ??
-        data.viewCount ??
-        0
-      );
-
-    const calls =
-      Number(
-        data.calls ??
-        data.totalCalls ??
-        data.callCount ??
-        0
-      );
-
-    $("statViews").textContent =
-      views.toLocaleString("uz-UZ");
-
-    $("statCalls").textContent =
-      calls.toLocaleString("uz-UZ");
-
-  }catch(error){
-
-    console.error(error);
-
-  }
-
-}
-
-/* =========================
-   DAILY STATS
-========================= */
-
-async function loadDailyStats(){
-
-  const chart =
-    $("dailyChart");
-
-  try{
-
-    const response =
-      await fetch("/api/stats/daily");
-
-    if(!response.ok){
-      throw new Error();
-    }
-
-    const data =
-      await response.json();
-
-    let rows =
-      Array.isArray(data)
-        ? data
-        : Array.isArray(data.daily)
-          ? data.daily
-          : [];
-
-    if(!rows.length){
-
-      renderEmptyChart();
-
-      return;
-
-    }
-
-    rows =
-      rows.slice(-7);
-
-    const values =
-      rows.map(row=>
-        Number(
-          row.views ??
-          row.count ??
-          row.value ??
-          0
-        )
-      );
-
-    const max =
-      Math.max(...values,1);
-
-    chart.innerHTML =
-      rows.map((row,index)=>{
-
-        const value =
-          values[index];
-
-        const height =
-          Math.max(
-            5,
-            Math.round(
-              (value / max) * 100
+        if(
+            !confirm(
+                sold
+                    ? "Bu uyni yana sotuvga chiqaramizmi?"
+                    : "Bu uyni sotilgan deb belgilaysizmi?"
             )
-          );
+        ){
 
-        const label =
-          row.date ||
-          row.day ||
-          String(index + 1);
+            return;
 
-        return `
+        }
+
+        showLoading(true);
+
+        try{
+
+            const response =
+                await fetch(
+                    `/api/cars/${encodeURIComponent(id)}/sold`,
+                    {
+                        method:"POST",
+
+                        headers:adminHeaders({
+                                "Content-Type":"application/json"
+                            }),
+
+                        body:JSON.stringify({
+                            sold:!sold,
+                            status:action
+                        })
+                    }
+                );
+
+            const data =
+                await response.json()
+                    .catch(()=>({}));
+
+            if(!response.ok){
+
+                throw new Error(
+                    data.message ||
+                    data.error ||
+                    "Statusni o‘zgartirib bo‘lmadi."
+                );
+
+            }
+
+            showToast(
+                sold
+                    ? "Uy yana sotuvga chiqarildi."
+                    : "Uy sotilgan deb belgilandi."
+            );
+
+            await loadAll();
+
+        }catch(error){
+
+            console.error(error);
+
+            showToast(
+                error.message ||
+                "Xatolik yuz berdi.",
+                true
+            );
+
+        }finally{
+
+            showLoading(false);
+
+        }
+    }
+
+    /* =========================
+       DELETE
+    ========================= */
+
+    async function deleteHome(id){
+
+        if(!id){
+
+            showToast(
+                "Uy ID topilmadi.",
+                true
+            );
+
+            return;
+        }
+
+        if(
+            !confirm(
+                "Bu uyni o‘chirishni tasdiqlaysizmi?"
+            )
+        ){
+
+            return;
+
+        }
+        if(!requireAdminPassword()){
+            return;
+        }
+        const password = adminPassword;
+
+        showLoading(true);
+
+        try{
+
+            const response =
+                await fetch(
+                    `/api/cars/${encodeURIComponent(id)}`,
+                    {
+                        method:"DELETE",
+
+                        headers:adminHeaders({
+                                "Content-Type":"application/json"
+                            }),
+
+                        body:JSON.stringify({
+                            password:password
+                        })
+                    }
+                );
+
+            const data =
+                await response.json()
+                    .catch(()=>({}));
+
+            if(!response.ok){
+
+                throw new Error(
+                    data.message ||
+                    data.error ||
+                    "Uyni o‘chirib bo‘lmadi."
+                );
+
+            }
+
+            showToast(
+                "Uy o‘chirildi."
+            );
+
+            await loadAll();
+
+        }catch(error){
+
+            console.error(error);
+
+            showToast(
+                error.message ||
+                "Xatolik yuz berdi.",
+                true
+            );
+
+        }finally{
+
+            showLoading(false);
+
+        }
+    }
+
+    /* =========================
+       STATS
+    ========================= */
+
+    async function loadStats(){
+
+        try{
+
+            const response =
+                await fetch("/api/stats",{headers:adminHeaders()});
+
+            if(!response.ok){
+                return;
+            }
+
+            const data =
+                await response.json();
+
+            const views =
+                Number(
+                    data.views ??
+                    data.totalViews ??
+                    data.viewCount ??
+                    0
+                );
+
+            const calls =
+                Number(
+                    data.calls ??
+                    data.totalCalls ??
+                    data.callCount ??
+                    0
+                );
+
+            $("statViews").textContent =
+                views.toLocaleString("uz-UZ");
+
+            $("statCalls").textContent =
+                calls.toLocaleString("uz-UZ");
+
+        }catch(error){
+
+            console.error(error);
+
+        }
+
+    }
+
+    /* =========================
+       DAILY STATS
+    ========================= */
+
+    async function loadDailyStats(){
+
+        const chart =
+            $("dailyChart");
+
+        try{
+
+            const response =
+                await fetch("/api/stats/daily",{headers:adminHeaders()});
+
+            if(!response.ok){
+                throw new Error();
+            }
+
+            const data =
+                await response.json();
+
+            let rows =
+                Array.isArray(data)
+                    ? data
+                    : Array.isArray(data.daily)
+                        ? data.daily
+                        : [];
+
+            if(!rows.length){
+
+                renderEmptyChart();
+
+                return;
+
+            }
+
+            rows =
+                rows.slice(-7);
+
+            const values =
+                rows.map(row=>
+                    Number(
+                        row.views ??
+                        row.count ??
+                        row.value ??
+                        0
+                    )
+                );
+
+            const max =
+                Math.max(...values,1);
+
+            chart.innerHTML =
+                rows.map((row,index)=>{
+
+                    const value =
+                        values[index];
+
+                    const height =
+                        Math.max(
+                            5,
+                            Math.round(
+                                (value / max) * 100
+                            )
+                        );
+
+                    const label =
+                        row.date ||
+                        row.day ||
+                        String(index + 1);
+
+                    return `
 
           <div class="chart-bar-wrap">
 
@@ -3914,35 +3604,35 @@ async function loadDailyStats(){
 
             <div class="chart-label">
               ${escapeHtml(
-                String(label).slice(-5)
-              )}
+                        String(label).slice(-5)
+                    )}
             </div>
 
           </div>
 
         `;
 
-      }).join("");
+                }).join("");
 
-  }catch(error){
+        }catch(error){
 
-    console.error(error);
+            console.error(error);
 
-    renderEmptyChart();
+            renderEmptyChart();
 
-  }
+        }
 
-}
+    }
 
-function renderEmptyChart(){
+    function renderEmptyChart(){
 
-  const chart =
-    $("dailyChart");
+        const chart =
+            $("dailyChart");
 
-  chart.innerHTML =
-    Array.from(
-      {length:7},
-      (_,index)=>`
+        chart.innerHTML =
+            Array.from(
+                {length:7},
+                (_,index)=>`
 
         <div class="chart-bar-wrap">
 
@@ -3958,111 +3648,111 @@ function renderEmptyChart(){
         </div>
 
       `
-    ).join("");
-
-}
-
-/* =========================
-   DASHBOARD
-========================= */
-
-function updateDashboard(){
-
-  $("statHomes").textContent =
-    cars.length.toLocaleString("uz-UZ");
-
-  $("statAvailable").textContent =
-    cars.filter(
-      car=>!isSold(car)
-    ).length
-      .toLocaleString("uz-UZ");
-
-}
-
-/* =========================
-   LOAD ALL
-========================= */
-
-async function loadAll(){
-
-  showLoading(true);
-
-  try{
-
-    await Promise.all([
-      loadCars(),
-      loadSettings(),
-      loadStats(),
-      loadDailyStats()
-    ]);
-
-    updateDashboard();
-    renderHomes();
-
-  }finally{
-
-    showLoading(false);
-
-  }
-
-}
-
-/* =========================
-   INITIALIZE
-========================= */
-
-function init(){
-
-  if(
-    localStorage.getItem(
-      "admin_dark_mode"
-    ) === "1"
-  ){
-
-    document.body.classList.add("dark");
-
-  }
-
-  updateThemeIcons();
-
-  updateTypeSummary();
-
-  loadAll();
-
-}
-
-/* =========================
-   CLOSE SIDEBAR
-========================= */
-
-document.addEventListener(
-  "click",
-  event=>{
-
-    if(window.innerWidth > 800){
-      return;
-    }
-
-    const sidebar =
-      $("sidebar");
-
-    const menu =
-      document.querySelector(".menu-btn");
-
-    if(
-      sidebar.classList.contains("open") &&
-      !sidebar.contains(event.target) &&
-      !menu.contains(event.target)
-    ){
-
-      sidebar.classList.remove("open");
+            ).join("");
 
     }
 
-  }
-);
+    /* =========================
+       DASHBOARD
+    ========================= */
 
-init();
+    function updateDashboard(){
+
+        $("statHomes").textContent =
+            cars.length.toLocaleString("uz-UZ");
+
+        $("statAvailable").textContent =
+            cars.filter(
+                car=>!isSold(car)
+            ).length
+                .toLocaleString("uz-UZ");
+
+    }
+
+    /* =========================
+       LOAD ALL
+    ========================= */
+
+    async function loadAll(){
+
+        showLoading(true);
+
+        try{
+
+            await Promise.all([
+                loadCars(),
+                loadSettings(),
+                loadStats(),
+                loadDailyStats()
+            ]);
+
+            updateDashboard();
+            renderHomes();
+
+        }finally{
+
+            showLoading(false);
+
+        }
+
+    }
+
+    /* =========================
+       INITIALIZE
+    ========================= */
+
+    function init(){
+
+        if(
+            localStorage.getItem(
+                "admin_dark_mode"
+            ) === "1"
+        ){
+
+            document.body.classList.add("dark");
+
+        }
+
+        updateThemeIcons();
+
+        updateTypeSummary();
+
+        loadAll();
+
+    }
+
+    /* =========================
+       CLOSE SIDEBAR
+    ========================= */
+
+    document.addEventListener(
+        "click",
+        event=>{
+
+            if(window.innerWidth > 800){
+                return;
+            }
+
+            const sidebar =
+                $("sidebar");
+
+            const menu =
+                document.querySelector(".menu-btn");
+
+            if(
+                sidebar.classList.contains("open") &&
+                !sidebar.contains(event.target) &&
+                !menu.contains(event.target)
+            ){
+
+                sidebar.classList.remove("open");
+
+            }
+
+        }
+    );
+
+    init();
 
 </script>
 
