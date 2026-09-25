@@ -1695,6 +1695,7 @@ body.dark .type-option.selected{
               </div>
 
               <strong>Rasm tanlash</strong>
+
               <span id="imageUploadText">
                 Bir nechta rasm tanlashingiz mumkin
               </span>
@@ -1787,6 +1788,7 @@ body.dark .type-option.selected{
   <div class="panel">
 
     <div class="panel-header">
+
       <div class="panel-title">Uylar</div>
 
       <button class="main-btn" onclick="startNewHome()">
@@ -1795,6 +1797,7 @@ body.dark .type-option.selected{
         </svg>
         Uy qo‘shish
       </button>
+
     </div>
 
     <div class="panel-body">
@@ -1923,7 +1926,9 @@ body.dark .type-option.selected{
 
               <div>
                 <div class="settings-title">Telefon</div>
-                <div class="settings-sub">Asosiy aloqa raqami</div>
+                <div class="settings-sub">
+                  Asosiy aloqa raqami
+                </div>
               </div>
 
             </div>
@@ -1948,7 +1953,9 @@ body.dark .type-option.selected{
 
               <div>
                 <div class="settings-title">Telegram</div>
-                <div class="settings-sub">Telegram username yoki link</div>
+                <div class="settings-sub">
+                  Telegram username yoki link
+                </div>
               </div>
 
             </div>
@@ -1973,7 +1980,9 @@ body.dark .type-option.selected{
 
               <div>
                 <div class="settings-title">WhatsApp</div>
-                <div class="settings-sub">WhatsApp raqami</div>
+                <div class="settings-sub">
+                  WhatsApp raqami
+                </div>
               </div>
 
             </div>
@@ -1998,7 +2007,9 @@ body.dark .type-option.selected{
 
               <div>
                 <div class="settings-title">Instagram</div>
-                <div class="settings-sub">Instagram username yoki link</div>
+                <div class="settings-sub">
+                  Instagram username yoki link
+                </div>
               </div>
 
             </div>
@@ -2011,7 +2022,10 @@ body.dark .type-option.selected{
 
           </div>
 
-          <div class="settings-item" style="grid-column:1/-1">
+          <div
+            class="settings-item"
+            style="grid-column:1/-1"
+          >
 
             <div class="settings-head">
 
@@ -2023,7 +2037,9 @@ body.dark .type-option.selected{
 
               <div>
                 <div class="settings-title">Manzil</div>
-                <div class="settings-sub">Ofis yoki aloqa manzili</div>
+                <div class="settings-sub">
+                  Ofis yoki aloqa manzili
+                </div>
               </div>
 
             </div>
@@ -2036,11 +2052,75 @@ body.dark .type-option.selected{
 
           </div>
 
+          <!--
+            MUHIM:
+            Aloqa sozlamalarini saqlash uchun
+            admin paroli shu yerda kiritiladi.
+          -->
+
+          <div
+            class="settings-item"
+            style="grid-column:1/-1"
+          >
+
+            <div class="settings-head">
+
+              <div class="settings-icon">
+                <svg class="icon">
+                  <use href="#i-settings"></use>
+                </svg>
+              </div>
+
+              <div>
+                <div class="settings-title">
+                  Admin paroli
+                </div>
+
+                <div class="settings-sub">
+                  Aloqa sozlamalarini saqlash uchun parolni kiriting
+                </div>
+              </div>
+
+            </div>
+
+            <div class="password-wrap">
+
+              <input
+                class="input"
+                id="settingsPassword"
+                type="password"
+                placeholder="Admin parolini kiriting"
+                autocomplete="current-password"
+              >
+
+              <button
+                type="button"
+                class="password-eye"
+                onclick="toggleSettingsPassword()"
+                title="Parolni ko‘rsatish"
+              >
+
+                <svg
+                  class="icon"
+                  id="settingsPasswordIcon"
+                >
+                  <use href="#i-eye"></use>
+                </svg>
+
+              </button>
+
+            </div>
+
+          </div>
+
         </div>
 
         <div class="form-actions">
 
-          <button class="main-btn" type="submit">
+          <button
+            class="main-btn"
+            type="submit"
+          >
 
             <svg class="icon icon-sm">
               <use href="#i-save"></use>
@@ -2236,6 +2316,36 @@ function togglePassword(){
 }
 
 /* =========================
+   SETTINGS PASSWORD
+========================= */
+
+function toggleSettingsPassword(){
+
+  const input = $("settingsPassword");
+  const icon = $("settingsPasswordIcon");
+
+  if(!input || !icon){
+    return;
+  }
+
+  if(input.type === "password"){
+
+    input.type = "text";
+
+    icon.innerHTML =
+      `<use href="#i-eye-off"></use>`;
+
+  }else{
+
+    input.type = "password";
+
+    icon.innerHTML =
+      `<use href="#i-eye"></use>`;
+
+  }
+}
+
+/* =========================
    TYPES
 ========================= */
 
@@ -2342,11 +2452,6 @@ function selectCurrency(currency){
 function handleImages(input){
 
   const files = Array.from(input.files || []);
-
-  /*
-    Edit rejimida yangi rasm tanlansa,
-    eski rasmlar almashtiriladi.
-  */
 
   if(!files.length){
     return;
@@ -2723,15 +2828,6 @@ async function addHome(event){
 
     let images = [];
 
-    /*
-      Yangi uy:
-      faqat yangi tanlangan rasmlar.
-
-      Tahrirlash:
-      - yangi rasm tanlangan bo‘lsa -> yangi rasmlar
-      - yangi rasm tanlanmagan bo‘lsa -> eski rasmlar
-    */
-
     if(editingHomeId){
 
       if(uploadedImages.length){
@@ -2998,6 +3094,13 @@ async function loadSettings(){
     $("settingAddress").value =
       settings.address || "";
 
+    /*
+      Parol serverdan olinmaydi.
+      Admin parolini foydalanuvchi o‘zi kiritadi.
+    */
+
+    $("settingsPassword").value = "";
+
   }catch(error){
 
     console.error(error);
@@ -3008,6 +3111,21 @@ async function loadSettings(){
 async function saveSettings(event){
 
   event.preventDefault();
+
+  const password =
+    $("settingsPassword").value.trim();
+
+  if(!password){
+
+    showToast(
+      "Aloqa sozlamalarini saqlash uchun admin parolini kiriting.",
+      true
+    );
+
+    $("settingsPassword").focus();
+
+    return;
+  }
 
   const payload = {
 
@@ -3024,7 +3142,14 @@ async function saveSettings(event){
       $("settingInstagram").value.trim(),
 
     address:
-      $("settingAddress").value.trim()
+      $("settingAddress").value.trim(),
+
+    /*
+      MUHIM:
+      index.js shu password orqali
+      admin parolini tekshiradi.
+    */
+    password:password
 
   };
 
@@ -3059,7 +3184,19 @@ async function saveSettings(event){
 
     }
 
-    settings = payload;
+    /*
+      Parolni settings ichida saqlamaymiz.
+    */
+
+    settings = {
+      phone:payload.phone,
+      telegram:payload.telegram,
+      whatsapp:payload.whatsapp,
+      instagram:payload.instagram,
+      address:payload.address
+    };
+
+    $("settingsPassword").value = "";
 
     showToast(
       "Sozlamalar saqlandi."
