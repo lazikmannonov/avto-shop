@@ -3984,6 +3984,28 @@
                 await fetch("/api/stats",{headers:adminHeaders()});
 
             if(!response.ok){
+
+                const data =
+                    await response.json()
+                        .catch(()=>({}));
+
+                if(response.status === 401){
+
+                    showToast(
+                        "Admin paroli noto‘g‘ri yoki hali kiritilmagan. Statistika shu sabab 0 ko‘rsatilmoqda.",
+                        true
+                    );
+
+                }else{
+
+                    showToast(
+                        data.error ||
+                        "Statistikani olishda xatolik.",
+                        true
+                    );
+
+                }
+
                 return;
             }
 
@@ -4064,6 +4086,16 @@
                 await fetch("/api/stats/daily",{headers:adminHeaders()});
 
             if(!response.ok){
+
+                if(response.status === 401){
+
+                    showToast(
+                        "Admin paroli noto‘g‘ri yoki hali kiritilmagan. 7 kunlik statistika shu sabab bo‘sh ko‘rsatilmoqda.",
+                        true
+                    );
+
+                }
+
                 throw new Error();
             }
 
@@ -4075,7 +4107,9 @@
                     ? data
                     : Array.isArray(data.daily)
                         ? data.daily
-                        : [];
+                        : Array.isArray(data.days)
+                            ? data.days
+                            : [];
 
             if(!rows.length){
 
