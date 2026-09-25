@@ -1,4322 +1,4796 @@
 <!DOCTYPE html>
 <html lang="uz">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>pul.zarill — Uylar</title>
-
-    <style>
-        *{
-            margin:0;
-            padding:0;
-            box-sizing:border-box
-        }
-
-        :root{
-            --bg:#f4f5f7;
-            --card:#fff;
-            --text:#111;
-            --muted:#777;
-            --border:#e7e7e7;
-            --black:#050505;
-            --green:#19d66b;
-            --red:#ff3b30;
-            --yellow:#ffd21c;
-            --shadow:0 10px 30px rgba(0,0,0,.08)
-        }
-
-        body{
-            font-family:Arial,Helvetica,sans-serif;
-            background:var(--bg);
-            color:var(--text);
-            transition:.3s;
-            padding-bottom:75px
-        }
-
-        body.dark{
-            --bg:#101010;
-            --card:#181818;
-            --text:#fff;
-            --muted:#aaa;
-            --border:#292929;
-            --shadow:0 10px 30px rgba(0,0,0,.4)
-        }
-
-        /* =========================
-           ICONS
-        ========================= */
-
-        .icon{
-            width:20px;
-            height:20px;
-            display:inline-block;
-            vertical-align:middle;
-            fill:none;
-            stroke:currentColor;
-            stroke-width:1.75;
-            stroke-linecap:round;
-            stroke-linejoin:round;
-            flex:none;
-            transition:.22s
-        }
-
-        .icon-fill{
-            fill:currentColor;
-            stroke:currentColor
-        }
-
-        .icon-lg{
-            width:23px;
-            height:23px
-        }
-
-        .icon-sm{
-            width:17px;
-            height:17px
-        }
-
-        /* =========================
-           HEADER
-        ========================= */
-
-        header{
-            position:sticky;
-            top:0;
-            z-index:1000;
-            background:#050505;
-            color:#fff;
-            box-shadow:0 5px 25px rgba(0,0,0,.35)
-        }
-
-        .header-inner{
-            max-width:1250px;
-            min-height:78px;
-            margin:auto;
-            padding:10px 18px;
-            display:flex;
-            align-items:center;
-            justify-content:space-between;
-            gap:15px
-        }
-
-        .logo{
-            position:relative;
-            z-index:1;
-            font-size:34px;
-            font-weight:900;
-            letter-spacing:-1.5px;
-            white-space:nowrap
-        }
-
-        .logo .green{
-            color:#19d66b
-        }
-
-        .logo:before{
-            content:"";
-            position:absolute;
-            left:50%;
-            top:50%;
-            width:280px;
-            height:120px;
-            transform:translate(-50%,-50%);
-            border-radius:50%;
-            background:#19d66b;
-            filter:blur(48px);
-            opacity:.48;
-            z-index:-1
-        }
-
-        .header-right{
-            display:flex;
-            align-items:center;
-            gap:7px
-        }
-
-        .phone-top{
-            color:#fff;
-            text-decoration:none;
-            font-size:14px;
-            font-weight:bold;
-            margin-right:5px
-        }
-
-        .lang-btn,
-        .theme-btn{
-            border:1px solid #333;
-            background:#151515;
-            color:#fff;
-            border-radius:10px;
-            padding:8px 10px;
-            cursor:pointer;
-            transition:.2s
-        }
-
-        .lang-btn:hover,
-        .theme-btn:hover{
-            border-color:#19d66b
-        }
-
-        .lang-btn.active{
-            background:#19d66b;
-            color:#000;
-            border-color:#19d66b
-        }
-
-        .theme-btn{
-            display:inline-flex;
-            align-items:center;
-            justify-content:center
-        }
-
-        /* =========================
-           MAIN
-        ========================= */
-
-        .container{
-            max-width:1250px;
-            margin:auto;
-            padding:22px 18px 100px
-        }
-
-        .page{
-            display:none
-        }
-
-        .page.active{
-            display:block
-        }
-
-        /* =========================
-           SEARCH
-        ========================= */
-
-        .search-box{
-            display:flex;
-            gap:10px;
-            margin-bottom:14px
-        }
-
-        .search-box input{
-            flex:1;
-            height:52px;
-            border:1px solid var(--border);
-            background:var(--card);
-            color:var(--text);
-            border-radius:14px;
-            padding:0 17px;
-            outline:none;
-            font-size:15px;
-            transition:.2s
-        }
-
-        .search-box input:focus{
-            border-color:#19d66b;
-            box-shadow:0 0 0 3px rgba(25,214,107,.08)
-        }
-
-        .search-reset{
-            width:52px;
-            border:none;
-            border-radius:14px;
-            background:#050505;
-            color:#fff;
-            cursor:pointer;
-            display:flex;
-            align-items:center;
-            justify-content:center
-        }
-
-        /* =========================
-           SEARCH PAGE
-        ========================= */
-
-        .search-page-top{
-            display:flex;
-            align-items:center;
-            gap:10px;
-            margin-bottom:15px
-        }
-
-        .search-page-title{
-            font-size:25px;
-            font-weight:900
-        }
-
-        .search-back{
-            width:43px;
-            height:43px;
-            border:1px solid var(--border);
-            background:var(--card);
-            color:var(--text);
-            border-radius:13px;
-            cursor:pointer;
-            display:flex;
-            align-items:center;
-            justify-content:center;
-            transition:.2s
-        }
-
-        .search-back:hover{
-            transform:translateX(-2px)
-        }
-
-        .search-page-categories{
-            display:grid;
-            grid-template-columns:repeat(5,minmax(0,1fr));
-            gap:9px;
-            margin-bottom:12px
-        }
-
-        .search-category{
-            min-height:58px;
-            border:1px solid var(--border);
-            background:var(--card);
-            color:var(--text);
-            border-radius:15px;
-            padding:9px 8px;
-            cursor:pointer;
-            display:flex;
-            align-items:center;
-            justify-content:center;
-            gap:7px;
-            font-size:12px;
-            font-weight:800;
-            transition:.2s;
-            text-align:center
-        }
-
-        .search-category:hover{
-            transform:translateY(-2px);
-            border-color:#19d66b
-        }
-
-        .search-category.active{
-            background:#050505;
-            color:#fff;
-            border-color:#050505;
-            box-shadow:0 7px 18px rgba(0,0,0,.12)
-        }
-
-        body.dark .search-category.active{
-            background:#fff;
-            color:#111;
-            border-color:#fff
-        }
-
-        .search-category .icon{
-            width:19px;
-            height:19px
-        }
-
-        .filter-toggle{
-            width:100%;
-            height:43px;
-            border:1px solid var(--border);
-            background:var(--card);
-            color:var(--text);
-            border-radius:13px;
-            cursor:pointer;
-            display:flex;
-            align-items:center;
-            justify-content:center;
-            font-size:23px;
-            font-weight:900;
-            margin-bottom:10px;
-            transition:.2s
-        }
-
-        .filter-toggle:hover{
-            border-color:#19d66b
-        }
-
-        .filter-toggle.open{
-            background:#050505;
-            color:#fff
-        }
-
-        body.dark .filter-toggle.open{
-            background:#fff;
-            color:#111
-        }
-
-        .extra-filters{
-            display:none;
-            grid-template-columns:repeat(3,1fr);
-            gap:9px;
-            margin-bottom:14px
-        }
-
-        .extra-filters.open{
-            display:grid
-        }
-
-        .extra-filter{
-            min-height:50px;
-            border:1px solid var(--border);
-            background:var(--card);
-            color:var(--text);
-            border-radius:13px;
-            cursor:pointer;
-            font-size:12px;
-            font-weight:800;
-            transition:.2s
-        }
-
-        .extra-filter:hover{
-            border-color:#19d66b;
-            transform:translateY(-1px)
-        }
-
-        /* =========================
-           PROPERTY CATEGORIES
-        ========================= */
-
-        .categories{
-            display:flex;
-            gap:8px;
-            overflow-x:auto;
-            padding:2px 0 16px;
-            scrollbar-width:none
-        }
-
-        .categories::-webkit-scrollbar{
-            display:none
-        }
-
-        .category-btn{
-            border:1px solid var(--border);
-            background:var(--card);
-            color:var(--text);
-            border-radius:12px;
-            padding:10px 15px;
-            white-space:nowrap;
-            cursor:pointer;
-            font-weight:700;
-            font-size:13px;
-            transition:.2s;
-            display:flex;
-            align-items:center;
-            gap:7px
-        }
-
-        .category-btn:hover{
-            transform:translateY(-1px)
-        }
-
-        .category-btn .icon{
-            width:18px;
-            height:18px
-        }
-
-        .category-btn.active{
-            background:#050505;
-            color:#fff;
-            border-color:#050505
-        }
-
-        body.dark .category-btn.active{
-            background:#fff;
-            color:#111;
-            border-color:#fff
-        }
-
-        /* =========================
-           RESULTS
-        ========================= */
-
-        .results-info{
-            display:flex;
-            justify-content:space-between;
-            align-items:center;
-            margin-bottom:14px
-        }
-
-        .results-info h2{
-            font-size:20px
-        }
-
-        .results-count{
-            color:var(--muted);
-            font-size:13px
-        }
-
-        /* =========================
-           GRID
-        ========================= */
-
-        .cars-grid{
-            display:grid;
-            grid-template-columns:repeat(3,1fr);
-            gap:18px
-        }
-
-        /* =========================
-           CARD
-        ========================= */
-
-        .car-card{
-            position:relative;
-            background:var(--card);
-            border:1px solid var(--border);
-            border-radius:20px;
-            overflow:hidden;
-            box-shadow:var(--shadow);
-            transition:.25s
-        }
-
-        .car-card:hover{
-            transform:translateY(-5px);
-            box-shadow:0 16px 35px rgba(0,0,0,.13)
-        }
-
-        .car-image-box{
-            position:relative;
-            width:100%;
-            height:235px;
-            background:#ddd;
-            overflow:hidden
-        }
-
-        .car-image{
-            width:100%;
-            height:100%;
-            object-fit:cover;
-            display:block;
-            transition:.35s
-        }
-
-        .car-card:hover .car-image{
-            transform:scale(1.045)
-        }
-
-        .badge{
-            position:absolute;
-            top:12px;
-            left:12px;
-            z-index:3;
-            padding:7px 10px;
-            border-radius:9px;
-            font-size:11px;
-            font-weight:900;
-            background:#19d66b;
-            color:#000
-        }
-
-        .sold-badge{
-            background:#ff3b30;
-            color:#fff
-        }
-
-        .favorite{
-            position:absolute;
-            right:12px;
-            top:12px;
-            z-index:4;
-            width:40px;
-            height:40px;
-            border-radius:50%;
-            border:none;
-            background:rgba(0,0,0,.68);
-            color:#fff;
-            cursor:pointer;
-            display:flex;
-            align-items:center;
-            justify-content:center
-        }
-
-        .favorite.active{
-            color:#ff3b30
-        }
-
-        .image-count{
-            position:absolute;
-            right:12px;
-            bottom:12px;
-            z-index:3;
-            background:rgba(0,0,0,.72);
-            color:#fff;
-            padding:6px 9px;
-            border-radius:9px;
-            font-size:12px;
-            display:flex;
-            align-items:center;
-            gap:5px
-        }
-
-        .car-content{
-            padding:16px
-        }
-
-        .car-name{
-            font-size:19px;
-            font-weight:800;
-            margin-bottom:7px
-        }
-
-        .car-price{
-            font-size:20px;
-            font-weight:900;
-            margin-bottom:9px
-        }
-
-        .property-meta{
-            display:flex;
-            flex-wrap:wrap;
-            gap:6px;
-            margin-bottom:10px
-        }
-
-        .meta-item{
-            background:var(--bg);
-            border:1px solid var(--border);
-            color:var(--muted);
-            border-radius:8px;
-            padding:5px 8px;
-            font-size:11px;
-            font-weight:700
-        }
-
-        .car-address{
-            color:var(--muted);
-            font-size:12px;
-            margin-bottom:8px;
-            display:flex;
-            align-items:center;
-            gap:5px
-        }
-
-        .car-description{
-            color:var(--muted);
-            font-size:13px;
-            line-height:1.5;
-            min-height:39px;
-            display:-webkit-box;
-            -webkit-line-clamp:2;
-            -webkit-box-orient:vertical;
-            overflow:hidden
-        }
-
-        .card-bottom{
-            display:flex;
-            gap:8px;
-            margin-top:14px
-        }
-
-        .detail-btn,
-        .call-btn{
-            flex:1;
-            padding:11px 8px;
-            border-radius:11px;
-            border:none;
-            cursor:pointer;
-            font-weight:bold;
-            text-align:center;
-            text-decoration:none;
-            display:flex;
-            align-items:center;
-            justify-content:center;
-            gap:6px
-        }
-
-        .detail-btn{
-            background:#eee;
-            color:#111
-        }
-
-        body.dark .detail-btn{
-            background:#292929;
-            color:#fff
-        }
-
-        .call-btn{
-            background:#19d66b;
-            color:#000
-        }
-
-        /* =========================
-           EMPTY
-        ========================= */
-
-        .empty{
-            grid-column:1/-1;
-            text-align:center;
-            padding:70px 20px;
-            background:var(--card);
-            border-radius:20px;
-            border:1px solid var(--border)
-        }
-
-        .empty-icon{
-            margin-bottom:12px;
-            color:var(--muted)
-        }
-
-        .empty h3{
-            margin-bottom:7px
-        }
-
-        .empty p{
-            color:var(--muted)
-        }
-
-        /* =========================
-           SKELETON
-        ========================= */
-
-        .skeleton{
-            background:var(--card);
-            border-radius:20px;
-            overflow:hidden;
-            border:1px solid var(--border)
-        }
-
-        .skeleton-img{
-            height:235px;
-            background:linear-gradient(
-                    90deg,
-                    #e8e8e8 25%,
-                    #f5f5f5 50%,
-                    #e8e8e8 75%
-            );
-            background-size:200% 100%;
-            animation:skeleton 1.2s infinite
-        }
-
-        .skeleton-content{
-            padding:16px
-        }
-
-        .skeleton-line{
-            height:14px;
-            background:#e5e5e5;
-            border-radius:8px;
-            margin-bottom:10px
-        }
-
-        .skeleton-line.big{
-            width:65%;
-            height:20px
-        }
-
-        @keyframes skeleton{
-            0%{background-position:200% 0}
-            100%{background-position:-200% 0}
-        }
-
-        /* =========================
-           DETAILS
-        ========================= */
-
-        .back-btn{
-            border:none;
-            background:var(--card);
-            color:var(--text);
-            border:1px solid var(--border);
-            padding:10px 15px;
-            border-radius:12px;
-            cursor:pointer;
-            margin-bottom:15px;
-            display:inline-flex;
-            align-items:center;
-            gap:7px
-        }
-
-        .details-card{
-            background:var(--card);
-            border:1px solid var(--border);
-            border-radius:22px;
-            overflow:hidden;
-            box-shadow:var(--shadow)
-        }
-
-        .details-main{
-            display:grid;
-            grid-template-columns:1.2fr 1fr
-        }
-
-        .details-image{
-            width:100%;
-            height:500px;
-            object-fit:cover;
-            cursor:pointer
-        }
-
-        .details-info{
-            padding:28px
-        }
-
-        .details-info h1{
-            font-size:32px;
-            margin-bottom:15px
-        }
-
-        .details-price{
-            font-size:27px;
-            font-weight:900;
-            margin-bottom:18px
-        }
-
-        .details-meta{
-            display:grid;
-            grid-template-columns:repeat(2,1fr);
-            gap:10px;
-            margin-bottom:20px
-        }
-
-        .details-meta-item{
-            background:var(--bg);
-            border:1px solid var(--border);
-            border-radius:12px;
-            padding:12px
-        }
-
-        .details-meta-item b{
-            display:block;
-            font-size:12px;
-            color:var(--muted);
-            margin-bottom:4px
-        }
-
-        .details-description{
-            color:var(--muted);
-            line-height:1.7;
-            white-space:pre-wrap;
-            margin-bottom:25px
-        }
-
-        .details-call{
-            display:flex;
-            align-items:center;
-            justify-content:center;
-            gap:8px;
-            padding:15px;
-            border-radius:13px;
-            background:#19d66b;
-            color:#000;
-            font-weight:900;
-            text-decoration:none
-        }
-
-        .thumbnails{
-            display:flex;
-            gap:8px;
-            padding:12px;
-            overflow-x:auto
-        }
-
-        .thumb{
-            width:80px;
-            height:65px;
-            object-fit:cover;
-            border-radius:9px;
-            cursor:pointer;
-            border:2px solid transparent
-        }
-
-        .thumb.active{
-            border-color:#19d66b
-        }
-
-        /* =========================
-           MENU
-        ========================= */
-
-        .menu-card{
-            background:var(--card);
-            border:1px solid var(--border);
-            border-radius:20px;
-            padding:20px;
-            box-shadow:var(--shadow)
-        }
-
-        .menu-item{
-            display:flex;
-            justify-content:space-between;
-            align-items:center;
-            padding:16px 5px;
-            border-bottom:1px solid var(--border)
-        }
-
-        .social-menu-item{
-            cursor:pointer;
-        }
-
-        .social-menu-item:hover{
-            background:var(--soft);
-        }
-
-        .social-menu-item:focus-visible{
-            outline:2px solid #19d66b;
-            outline-offset:-2px;
-            border-radius:12px;
-        }
-
-
-        .menu-item:last-child{
-            border-bottom:none
-        }
-
-        .menu-item-left{
-            display:flex;
-            flex-direction:column;
-            gap:4px
-        }
-
-        .menu-item-title{
-            font-weight:bold;
-            display:flex;
-            align-items:center;
-            gap:8px
-        }
-
-        .menu-item-sub{
-            color:var(--muted);
-            font-size:13px
-        }
-
-        .menu-item a{
-            color:#19d66b;
-            text-decoration:none;
-            display:flex;
-            align-items:center;
-            gap:6px
-        }
-
-        /* =========================
-           LIGHTBOX
-        ========================= */
-
-        .lightbox{
-            position:fixed;
-            inset:0;
-            z-index:3000;
-            background:rgba(0,0,0,.94);
-            display:none;
-            align-items:center;
-            justify-content:center
-        }
-
-        .lightbox.active{
-            display:flex
-        }
-
-        .lightbox img{
-            max-width:92%;
-            max-height:88%;
-            object-fit:contain
-        }
-
-        .lightbox-close,
-        .lightbox-prev,
-        .lightbox-next{
-            position:absolute;
-            border:none;
-            background:rgba(255,255,255,.12);
-            color:#fff;
-            cursor:pointer;
-            border-radius:50%;
-            display:flex;
-            align-items:center;
-            justify-content:center
-        }
-
-        .lightbox-close{
-            top:20px;
-            right:20px;
-            width:45px;
-            height:45px;
-            font-size:25px
-        }
-
-        .lightbox-prev,
-        .lightbox-next{
-            width:50px;
-            height:50px;
-            top:50%;
-            transform:translateY(-50%);
-            font-size:30px
-        }
-
-        .lightbox-prev{left:20px}
-        .lightbox-next{right:20px}
-
-        /* =========================
-           BOTTOM NAV
-        ========================= */
-
-        .bottom-nav{
-            position:fixed;
-            left:0;
-            right:0;
-            bottom:0;
-            z-index:1500;
-            display:flex;
-            background:rgba(0,0,0,.97);
-            border-top:1px solid #333;
-            padding:8px 5px
-        }
-
-        .bottom-nav button{
-            flex:1;
-            border:none;
-            background:none;
-            color:#aaa;
-            padding:7px 3px;
-            font-size:11px;
-            cursor:pointer;
-            display:flex;
-            flex-direction:column;
-            align-items:center;
-            gap:3px
-        }
-
-        .bottom-nav button.active{
-            color:#19d66b
-        }
-
-        .bottom-icon{
-            height:22px;
-            display:flex;
-            align-items:center;
-            justify-content:center
-        }
-
-        /* =========================
-           RESPONSIVE
-        ========================= */
-
-        @media(max-width:1000px){
-
-            .cars-grid{
-                grid-template-columns:repeat(2,1fr)
-            }
-
-            .details-main{
-                grid-template-columns:1fr
-            }
-
-            .details-image{
-                height:420px
-            }
-
-            .search-page-categories{
-                grid-template-columns:repeat(3,1fr)
-            }
-
-        }
-
-        @media(max-width:650px){
-
-            .header-inner{
-                min-height:68px;
-                padding:10px 12px
-            }
-
-            .logo{
-                font-size:28px
-            }
-
-            .phone-top{
-                display:none
-            }
-
-            .lang-btn,
-            .theme-btn{
-                padding:7px 8px;
-                font-size:12px
-            }
-
-            .container{
-                padding:15px 10px 85px
-            }
-
-            .cars-grid{
-                grid-template-columns:repeat(2,1fr);
-                gap:9px
-            }
-
-            .car-image-box{
-                height:170px
-            }
-
-            .car-content{
-                padding:10px
-            }
-
-            .car-name{
-                font-size:15px
-            }
-
-            .car-price{
-                font-size:16px
-            }
-
-            .property-meta{
-                gap:4px
-            }
-
-            .meta-item{
-                font-size:9px;
-                padding:4px 6px
-            }
-
-            .car-address{
-                font-size:10px
-            }
-
-            .car-description{
-                font-size:11px;
-                min-height:32px
-            }
-
-            .card-bottom{
-                flex-direction:column;
-                gap:5px;
-                margin-top:9px
-            }
-
-            .detail-btn,
-            .call-btn{
-                padding:8px 5px;
-                font-size:11px
-            }
-
-            .favorite{
-                width:34px;
-                height:34px
-            }
-
-            .badge{
-                top:8px;
-                left:8px;
-                padding:5px 7px;
-                font-size:9px
-            }
-
-            .image-count{
-                right:7px;
-                bottom:7px;
-                font-size:10px;
-                padding:5px 7px
-            }
-
-            .details-image{
-                height:300px
-            }
-
-            .details-info{
-                padding:18px
-            }
-
-            .details-info h1{
-                font-size:24px
-            }
-
-            .details-price{
-                font-size:22px
-            }
-
-            .details-meta{
-                grid-template-columns:1fr 1fr
-            }
-
-            .search-page-top{
-                margin-bottom:12px
-            }
-
-            .search-page-title{
-                font-size:22px
-            }
-
-            .search-page-categories{
-                grid-template-columns:repeat(2,1fr);
-                gap:8px
-            }
-
-            .search-category{
-                min-height:52px;
-                font-size:11px;
-                padding:8px 5px
-            }
-
-            .search-category:last-child{
-                grid-column:1/-1
-            }
-
-            .extra-filters{
-                grid-template-columns:1fr;
-                gap:7px
-            }
-
-            .extra-filter{
-                min-height:45px
-            }
-
-        }
-
-        @media(max-width:380px){
-
-            .logo{
-                font-size:24px
-            }
-
-            .lang-btn,
-            .theme-btn{
-                padding:6px
-            }
-
-            .search-page-categories{
-                gap:6px
-            }
-
-            .search-category{
-                font-size:10px
-            }
-
-        }
-
-        /* =====================================================
-           TELEFON EKRANI — TO'LIQ RESPONSIVE TUZATISH
-           ===================================================== */
-
-        html,
-        body{
-            width:100%;
-            max-width:100%;
-            overflow-x:hidden;
-        }
-
-        body{
-            min-width:0;
-        }
-
-        .container{
-            width:100%;
-            max-width:1250px;
-            min-width:0;
-        }
-
-        .details-card,
-        .details-main,
-        .details-info,
-        .details-meta,
-        .details-meta-item{
-            min-width:0;
-            max-width:100%;
-        }
-
-        .details-info h1,
-        .details-price,
-        .details-meta-item,
-        .details-description{
-            overflow-wrap:anywhere;
-            word-break:break-word;
-        }
-
-        .details-call{
-            width:100%;
-            max-width:100%;
-            box-sizing:border-box;
-        }
-
-        @media(max-width:650px){
-
-            .header-inner{
-                width:100%;
-                min-width:0;
-                overflow:hidden;
-            }
-
-            .header-right{
-                min-width:0;
-                flex-shrink:0;
-            }
-
-            .logo{
-                min-width:0;
-                max-width:45vw;
-                overflow:hidden;
-                text-overflow:ellipsis;
-            }
-
-            .container{
-                width:100%;
-                max-width:100%;
-                padding-left:10px;
-                padding-right:10px;
-                overflow-x:hidden;
-            }
-
-            .details-card{
-                width:100%;
-                max-width:100%;
-                border-radius:18px;
-            }
-
-            .details-main{
-                display:block;
-                width:100%;
-                max-width:100%;
-            }
-
-            .details-image{
-                width:100%;
-                max-width:100%;
-                height:300px;
-            }
-
-            .details-info{
-                width:100%;
-                max-width:100%;
-                padding:18px 16px;
-                overflow:hidden;
-            }
-
-            .details-info h1{
-                max-width:100%;
-                font-size:24px;
-                line-height:1.2;
-            }
-
-            .details-price{
-                max-width:100%;
-                font-size:22px;
-                line-height:1.25;
-            }
-
-            .details-meta{
-                width:100%;
-                max-width:100%;
-                display:grid;
-                grid-template-columns:1fr;
-                gap:9px;
-            }
-
-            .details-meta-item{
-                width:100%;
-                min-width:0;
-                max-width:100%;
-                padding:13px;
-            }
-
-            .details-description{
-                width:100%;
-                max-width:100%;
-                font-size:16px;
-                line-height:1.6;
-            }
-
-            .details-call{
-                width:100%;
-                max-width:100%;
-                min-width:0;
-                padding:15px 10px;
-                font-size:16px;
-                white-space:normal;
-                overflow-wrap:anywhere;
-            }
-
-            .thumbnails{
-                width:100%;
-                max-width:100%;
-                overflow-x:auto;
-            }
-
-            .thumb{
-                flex:0 0 80px;
-            }
-
-            .menu-card{
-                width:100%;
-                max-width:100%;
-            }
-
-            .menu-item{
-                min-width:0;
-            }
-
-            .menu-item-left{
-                min-width:0;
-                max-width:calc(100% - 35px);
-            }
-
-            .menu-item-sub{
-                overflow-wrap:anywhere;
-                word-break:break-word;
-            }
-
-            .search-box{
-                width:100%;
-                min-width:0;
-            }
-
-            .search-box input{
-                min-width:0;
-            }
-
-            .cars-grid{
-                width:100%;
-                min-width:0;
-            }
-
-            .car-card{
-                min-width:0;
-            }
-
-            .car-content{
-                min-width:0;
-            }
-
-            .car-name,
-            .car-price,
-            .car-address,
-            .car-description{
-                overflow-wrap:anywhere;
-                word-break:break-word;
-            }
-
-            .bottom-nav{
-                width:100%;
-                max-width:100%;
-            }
-        }
-
-        @media(max-width:380px){
-
-            .header-inner{
-                padding-left:8px;
-                padding-right:8px;
-            }
-
-            .logo{
-                font-size:24px;
-                max-width:42vw;
-            }
-
-            .lang-btn,
-            .theme-btn{
-                padding:6px;
-            }
-
-            .details-info{
-                padding:16px 12px;
-            }
-
-            .details-info h1{
-                font-size:22px;
-            }
-
-            .details-price{
-                font-size:21px;
-            }
-
-            .details-meta-item{
-                padding:11px;
-            }
-
-            .details-description{
-                font-size:15px;
-            }
-
-            .details-call{
-                font-size:15px;
-            }
-        }
-
-
-        /* =====================================================
-           SEARCH CATEGORY — ADMIN TYPE FILTER
-           ===================================================== */
-        .search-category{
-            min-width:0;
-        }
-
-        @media(max-width:650px){
-            .search-page-categories{
-                width:100%;
-                grid-template-columns:repeat(2,minmax(0,1fr));
-            }
-
-            .search-category{
-                width:100%;
-                min-width:0;
-                overflow:hidden;
-            }
-        }
-
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>pul.zarill — Uylar</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+:root{
+    --bg:#f4f7f5;
+    --card:#ffffff;
+    --card2:#f8faf9;
+    --text:#101512;
+    --muted:#78817c;
+    --border:rgba(16,21,18,.08);
+    --black:#07100b;
+    --black2:#101914;
+    --green:#19d66b;
+    --green2:#0fbd59;
+    --green-soft:rgba(25,214,107,.10);
+    --red:#ff4d4f;
+    --yellow:#ffd21c;
+    --shadow-sm:0 5px 18px rgba(9,20,13,.06);
+    --shadow:0 12px 35px rgba(9,20,13,.09);
+    --shadow-lg:0 22px 60px rgba(9,20,13,.14);
+    --radius:22px;
+    --soft:rgba(25,214,107,.07);
+}
+
+body.dark{
+    --bg:#080d0a;
+    --card:#111814;
+    --card2:#151d18;
+    --text:#f5faf7;
+    --muted:#929d96;
+    --border:rgba(255,255,255,.08);
+    --black:#050907;
+    --black2:#0c120f;
+    --green:#20dc70;
+    --green2:#11bd5a;
+    --green-soft:rgba(32,220,112,.11);
+    --shadow-sm:0 5px 18px rgba(0,0,0,.22);
+    --shadow:0 12px 35px rgba(0,0,0,.3);
+    --shadow-lg:0 22px 60px rgba(0,0,0,.42);
+    --soft:rgba(32,220,112,.08);
+}
+
+html,
+body{
+    width:100%;
+    max-width:100%;
+    overflow-x:hidden;
+}
+
+html{
+    scroll-behavior:smooth;
+}
+
+body{
+    min-width:0;
+    font-family:
+        Inter,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        Roboto,
+        Arial,
+        Helvetica,
+        sans-serif;
+    background:
+        radial-gradient(
+            circle at 10% 0%,
+            rgba(25,214,107,.07),
+            transparent 28%
+        ),
+        radial-gradient(
+            circle at 90% 15%,
+            rgba(25,214,107,.045),
+            transparent 25%
+        ),
+        var(--bg);
+    color:var(--text);
+    transition:
+        background .3s ease,
+        color .3s ease;
+    padding-bottom:105px;
+    -webkit-font-smoothing:antialiased;
+}
+
+/* =====================================================
+   ICONS
+===================================================== */
+
+.icon{
+    width:20px;
+    height:20px;
+    display:inline-block;
+    vertical-align:middle;
+    fill:none;
+    stroke:currentColor;
+    stroke-width:1.75;
+    stroke-linecap:round;
+    stroke-linejoin:round;
+    flex:none;
+    transition:
+        transform .22s ease,
+        color .22s ease;
+}
+
+.icon-fill{
+    fill:currentColor;
+    stroke:currentColor;
+}
+
+.icon-lg{
+    width:23px;
+    height:23px;
+}
+
+.icon-sm{
+    width:17px;
+    height:17px;
+}
+
+/* =====================================================
+   HEADER
+===================================================== */
+
+header{
+    position:sticky;
+    top:0;
+    z-index:1000;
+    color:#fff;
+    background:
+        linear-gradient(
+            135deg,
+            #050806 0%,
+            #0a120d 55%,
+            #07130b 100%
+        );
+    border-bottom:1px solid rgba(255,255,255,.07);
+    box-shadow:0 8px 35px rgba(0,0,0,.28);
+    backdrop-filter:blur(20px);
+    -webkit-backdrop-filter:blur(20px);
+}
+
+.header-inner{
+    max-width:1320px;
+    min-height:78px;
+    margin:auto;
+    padding:10px 22px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:18px;
+}
+
+.logo{
+    position:relative;
+    z-index:1;
+    font-size:34px;
+    font-weight:950;
+    letter-spacing:-1.8px;
+    white-space:nowrap;
+    line-height:1;
+}
+
+.logo .green{
+    color:var(--green);
+}
+
+.logo:before{
+    content:"";
+    position:absolute;
+    left:50%;
+    top:50%;
+    width:220px;
+    height:90px;
+    transform:translate(-50%,-50%);
+    border-radius:50%;
+    background:var(--green);
+    filter:blur(55px);
+    opacity:.20;
+    z-index:-1;
+    pointer-events:none;
+}
+
+.header-right{
+    display:flex;
+    align-items:center;
+    justify-content:flex-end;
+    gap:7px;
+    min-width:0;
+}
+
+.phone-top{
+    color:#fff;
+    text-decoration:none;
+    font-size:14px;
+    font-weight:750;
+    margin-right:6px;
+    padding:10px 12px;
+    border-radius:12px;
+    transition:.2s ease;
+}
+
+.phone-top:hover{
+    background:rgba(255,255,255,.06);
+    color:var(--green);
+}
+
+.lang-btn,
+.theme-btn{
+    border:1px solid rgba(255,255,255,.12);
+    background:rgba(255,255,255,.055);
+    color:#fff;
+    border-radius:12px;
+    min-height:38px;
+    padding:8px 10px;
+    cursor:pointer;
+    transition:
+        transform .2s ease,
+        background .2s ease,
+        border-color .2s ease,
+        color .2s ease;
+    backdrop-filter:blur(12px);
+    -webkit-backdrop-filter:blur(12px);
+}
+
+.lang-btn:hover,
+.theme-btn:hover{
+    border-color:rgba(25,214,107,.6);
+    transform:translateY(-1px);
+}
+
+.lang-btn:active,
+.theme-btn:active{
+    transform:scale(.96);
+}
+
+.lang-btn.active{
+    background:var(--green);
+    color:#041009;
+    border-color:var(--green);
+    box-shadow:0 5px 18px rgba(25,214,107,.22);
+}
+
+.theme-btn{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    min-width:40px;
+}
+
+/* =====================================================
+   MAIN
+===================================================== */
+
+.container{
+    width:100%;
+    max-width:1320px;
+    min-width:0;
+    margin:auto;
+    padding:28px 22px 110px;
+}
+
+.page{
+    display:none;
+    animation:pageIn .28s ease;
+}
+
+.page.active{
+    display:block;
+}
+
+@keyframes pageIn{
+    from{
+        opacity:0;
+        transform:translateY(5px);
+    }
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
+}
+
+/* =====================================================
+   SEARCH
+===================================================== */
+
+.search-box{
+    display:flex;
+    gap:8px;
+    width:100%;
+    min-width:0;
+    margin-bottom:18px;
+    padding:5px;
+    border:1px solid var(--border);
+    border-radius:18px;
+    background:var(--card);
+    box-shadow:var(--shadow-sm);
+}
+
+.search-box input{
+    flex:1;
+    min-width:0;
+    height:50px;
+    border:none;
+    outline:none;
+    background:transparent;
+    color:var(--text);
+    border-radius:14px;
+    padding:0 15px;
+    font-size:15px;
+    font-weight:550;
+}
+
+.search-box input::placeholder{
+    color:var(--muted);
+}
+
+.search-box:focus-within{
+    border-color:rgba(25,214,107,.42);
+    box-shadow:
+        0 0 0 4px rgba(25,214,107,.07),
+        var(--shadow-sm);
+}
+
+.search-reset{
+    flex:0 0 50px;
+    width:50px;
+    height:50px;
+    border:none;
+    border-radius:14px;
+    background:var(--black);
+    color:#fff;
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    transition:.2s ease;
+}
+
+.search-reset:hover{
+    background:var(--green);
+    color:#031009;
+    transform:scale(.98);
+}
+
+.search-reset:active{
+    transform:scale(.94);
+}
+
+/* =====================================================
+   SEARCH PAGE
+===================================================== */
+
+.search-page-top{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    margin-bottom:18px;
+}
+
+.search-page-title{
+    font-size:28px;
+    font-weight:900;
+    letter-spacing:-.7px;
+}
+
+.search-back{
+    width:45px;
+    height:45px;
+    flex:0 0 45px;
+    border:1px solid var(--border);
+    background:var(--card);
+    color:var(--text);
+    border-radius:14px;
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    box-shadow:var(--shadow-sm);
+    transition:.2s ease;
+}
+
+.search-back:hover{
+    transform:translateX(-3px);
+    border-color:rgba(25,214,107,.45);
+    color:var(--green2);
+}
+
+.search-page-categories{
+    display:grid;
+    grid-template-columns:repeat(5,minmax(0,1fr));
+    gap:10px;
+    margin-bottom:12px;
+}
+
+.search-category{
+    min-width:0;
+    min-height:62px;
+    border:1px solid var(--border);
+    background:var(--card);
+    color:var(--text);
+    border-radius:16px;
+    padding:10px 9px;
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    font-size:12px;
+    font-weight:800;
+    transition:
+        transform .2s ease,
+        border-color .2s ease,
+        background .2s ease,
+        color .2s ease,
+        box-shadow .2s ease;
+    text-align:center;
+    box-shadow:var(--shadow-sm);
+}
+
+.search-category:hover{
+    transform:translateY(-2px);
+    border-color:rgba(25,214,107,.48);
+}
+
+.search-category.active{
+    background:var(--black);
+    color:#fff;
+    border-color:var(--black);
+    box-shadow:0 10px 25px rgba(0,0,0,.16);
+}
+
+.search-category.active .icon{
+    color:var(--green);
+}
+
+body.dark .search-category.active{
+    background:#f3f7f4;
+    color:#0d120f;
+    border-color:#f3f7f4;
+}
+
+body.dark .search-category.active .icon{
+    color:#0ca94e;
+}
+
+.search-category .icon{
+    width:19px;
+    height:19px;
+}
+
+.filter-toggle{
+    width:100%;
+    height:44px;
+    border:1px solid var(--border);
+    background:var(--card);
+    color:var(--muted);
+    border-radius:14px;
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:21px;
+    font-weight:900;
+    margin-bottom:10px;
+    transition:.2s ease;
+    box-shadow:var(--shadow-sm);
+}
+
+.filter-toggle:hover{
+    border-color:rgba(25,214,107,.45);
+    color:var(--green2);
+}
+
+.filter-toggle.open{
+    background:var(--black);
+    color:#fff;
+}
+
+body.dark .filter-toggle.open{
+    background:#fff;
+    color:#111;
+}
+
+.extra-filters{
+    display:none;
+    grid-template-columns:repeat(3,1fr);
+    gap:10px;
+    margin-bottom:15px;
+}
+
+.extra-filters.open{
+    display:grid;
+    animation:filterIn .2s ease;
+}
+
+@keyframes filterIn{
+    from{
+        opacity:0;
+        transform:translateY(-5px);
+    }
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
+}
+
+.extra-filter{
+    min-height:50px;
+    border:1px solid var(--border);
+    background:var(--card);
+    color:var(--text);
+    border-radius:14px;
+    cursor:pointer;
+    font-size:12px;
+    font-weight:800;
+    transition:.2s ease;
+    box-shadow:var(--shadow-sm);
+}
+
+.extra-filter:hover{
+    border-color:rgba(25,214,107,.5);
+    transform:translateY(-1px);
+}
+
+/* =====================================================
+   PROPERTY CATEGORIES
+===================================================== */
+
+.categories{
+    display:flex;
+    gap:8px;
+    overflow-x:auto;
+    padding:2px 0 16px;
+    scrollbar-width:none;
+}
+
+.categories::-webkit-scrollbar{
+    display:none;
+}
+
+.category-btn{
+    border:1px solid var(--border);
+    background:var(--card);
+    color:var(--text);
+    border-radius:13px;
+    padding:10px 15px;
+    white-space:nowrap;
+    cursor:pointer;
+    font-weight:750;
+    font-size:13px;
+    transition:.2s ease;
+    display:flex;
+    align-items:center;
+    gap:7px;
+}
+
+.category-btn:hover{
+    transform:translateY(-1px);
+    border-color:rgba(25,214,107,.4);
+}
+
+.category-btn .icon{
+    width:18px;
+    height:18px;
+}
+
+.category-btn.active{
+    background:var(--black);
+    color:#fff;
+    border-color:var(--black);
+}
+
+/* =====================================================
+   RESULTS
+===================================================== */
+
+.results-info{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:15px;
+    margin:22px 0 15px;
+}
+
+.results-info h2{
+    font-size:21px;
+    font-weight:900;
+    letter-spacing:-.4px;
+}
+
+.results-count{
+    color:var(--muted);
+    font-size:13px;
+    font-weight:700;
+    white-space:nowrap;
+}
+
+/* =====================================================
+   GRID
+===================================================== */
+
+.cars-grid{
+    width:100%;
+    min-width:0;
+    display:grid;
+    grid-template-columns:repeat(3,minmax(0,1fr));
+    gap:20px;
+}
+
+/* =====================================================
+   CARD
+===================================================== */
+
+.car-card{
+    position:relative;
+    min-width:0;
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:24px;
+    overflow:hidden;
+    box-shadow:var(--shadow);
+    transition:
+        transform .28s ease,
+        box-shadow .28s ease,
+        border-color .28s ease;
+}
+
+.car-card:hover{
+    transform:translateY(-6px);
+    box-shadow:var(--shadow-lg);
+    border-color:rgba(25,214,107,.17);
+}
+
+.car-image-box{
+    position:relative;
+    width:100%;
+    height:255px;
+    background:
+        linear-gradient(
+            135deg,
+            #dfe5e1,
+            #cbd3ce
+        );
+    overflow:hidden;
+    cursor:pointer;
+}
+
+.car-image-box:after{
+    content:"";
+    position:absolute;
+    left:0;
+    right:0;
+    bottom:0;
+    height:34%;
+    background:linear-gradient(
+        to top,
+        rgba(0,0,0,.25),
+        transparent
+    );
+    pointer-events:none;
+    z-index:1;
+}
+
+.car-image{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    display:block;
+    transition:
+        transform .55s cubic-bezier(.2,.7,.2,1),
+        filter .3s ease;
+}
+
+.car-card:hover .car-image{
+    transform:scale(1.055);
+}
+
+.badge{
+    position:absolute;
+    top:13px;
+    left:13px;
+    z-index:4;
+    padding:7px 11px;
+    border-radius:999px;
+    font-size:10px;
+    font-weight:950;
+    letter-spacing:.35px;
+    background:var(--green);
+    color:#031009;
+    box-shadow:0 7px 18px rgba(0,0,0,.15);
+}
+
+.sold-badge{
+    background:var(--red);
+    color:#fff;
+}
+
+.favorite{
+    position:absolute;
+    right:13px;
+    top:13px;
+    z-index:5;
+    width:42px;
+    height:42px;
+    border-radius:50%;
+    border:1px solid rgba(255,255,255,.18);
+    background:rgba(0,0,0,.48);
+    color:#fff;
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    backdrop-filter:blur(12px);
+    -webkit-backdrop-filter:blur(12px);
+    transition:
+        transform .2s ease,
+        background .2s ease,
+        color .2s ease;
+}
+
+.favorite:hover{
+    transform:scale(1.08);
+    background:rgba(0,0,0,.68);
+}
+
+.favorite.active{
+    color:#ff4d4f;
+}
+
+.favorite.active .icon{
+    fill:currentColor;
+}
+
+.image-count{
+    position:absolute;
+    right:13px;
+    bottom:13px;
+    z-index:4;
+    background:rgba(0,0,0,.55);
+    border:1px solid rgba(255,255,255,.14);
+    color:#fff;
+    padding:6px 10px;
+    border-radius:999px;
+    font-size:11px;
+    font-weight:700;
+    display:flex;
+    align-items:center;
+    gap:5px;
+    backdrop-filter:blur(10px);
+    -webkit-backdrop-filter:blur(10px);
+}
+
+.car-content{
+    min-width:0;
+    padding:18px;
+}
+
+.car-name{
+    min-width:0;
+    color:var(--text);
+    font-size:19px;
+    font-weight:850;
+    letter-spacing:-.35px;
+    margin-bottom:7px;
+    overflow-wrap:anywhere;
+    word-break:break-word;
+}
+
+.car-price{
+    font-size:22px;
+    line-height:1.2;
+    font-weight:950;
+    color:var(--text);
+    margin-bottom:12px;
+    letter-spacing:-.45px;
+}
+
+.property-meta{
+    display:flex;
+    flex-wrap:wrap;
+    gap:6px;
+    margin-bottom:11px;
+}
+
+.meta-item{
+    background:var(--card2);
+    border:1px solid var(--border);
+    color:var(--muted);
+    border-radius:9px;
+    padding:6px 8px;
+    font-size:10px;
+    font-weight:750;
+}
+
+.car-address{
+    color:var(--muted);
+    font-size:12px;
+    margin-bottom:8px;
+    display:flex;
+    align-items:flex-start;
+    gap:5px;
+    line-height:1.4;
+    overflow-wrap:anywhere;
+    word-break:break-word;
+}
+
+.car-address .icon{
+    margin-top:1px;
+    color:var(--green2);
+}
+
+.car-description{
+    color:var(--muted);
+    font-size:13px;
+    line-height:1.55;
+    min-height:40px;
+    display:-webkit-box;
+    -webkit-line-clamp:2;
+    -webkit-box-orient:vertical;
+    overflow:hidden;
+    overflow-wrap:anywhere;
+    word-break:break-word;
+}
+
+.card-bottom{
+    display:flex;
+    gap:8px;
+    margin-top:15px;
+}
+
+.detail-btn,
+.call-btn{
+    flex:1;
+    min-width:0;
+    padding:12px 9px;
+    border-radius:13px;
+    border:none;
+    cursor:pointer;
+    font-weight:850;
+    text-align:center;
+    text-decoration:none;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:6px;
+    transition:
+        transform .2s ease,
+        background .2s ease,
+        box-shadow .2s ease;
+}
+
+.detail-btn{
+    background:var(--card2);
+    color:var(--text);
+    border:1px solid var(--border);
+}
+
+.detail-btn:hover{
+    transform:translateY(-1px);
+    border-color:rgba(25,214,107,.35);
+}
+
+.call-btn{
+    background:linear-gradient(
+        135deg,
+        var(--green),
+        var(--green2)
+    );
+    color:#031009;
+    box-shadow:0 7px 18px rgba(25,214,107,.16);
+}
+
+.call-btn:hover{
+    transform:translateY(-2px);
+    box-shadow:0 10px 25px rgba(25,214,107,.23);
+}
+
+/* =====================================================
+   EMPTY
+===================================================== */
+
+.empty{
+    grid-column:1/-1;
+    text-align:center;
+    padding:80px 20px;
+    background:var(--card);
+    border-radius:24px;
+    border:1px solid var(--border);
+    box-shadow:var(--shadow-sm);
+}
+
+.empty-icon{
+    margin-bottom:14px;
+    color:var(--green2);
+    opacity:.75;
+}
+
+.empty h3{
+    margin-bottom:7px;
+    font-size:19px;
+}
+
+.empty p{
+    color:var(--muted);
+    line-height:1.5;
+}
+
+/* =====================================================
+   SKELETON
+===================================================== */
+
+.skeleton{
+    background:var(--card);
+    border-radius:24px;
+    overflow:hidden;
+    border:1px solid var(--border);
+    box-shadow:var(--shadow-sm);
+}
+
+.skeleton-img{
+    height:255px;
+    background:
+        linear-gradient(
+            90deg,
+            rgba(130,140,134,.12) 25%,
+            rgba(130,140,134,.24) 50%,
+            rgba(130,140,134,.12) 75%
+        );
+    background-size:200% 100%;
+    animation:skeleton 1.3s infinite;
+}
+
+.skeleton-content{
+    padding:18px;
+}
+
+.skeleton-line{
+    height:14px;
+    background:rgba(120,130,124,.13);
+    border-radius:8px;
+    margin-bottom:10px;
+}
+
+.skeleton-line.big{
+    width:65%;
+    height:21px;
+}
+
+@keyframes skeleton{
+    0%{
+        background-position:200% 0;
+    }
+    100%{
+        background-position:-200% 0;
+    }
+}
+
+/* =====================================================
+   DETAILS
+===================================================== */
+
+.back-btn{
+    border:1px solid var(--border);
+    background:var(--card);
+    color:var(--text);
+    padding:11px 16px;
+    border-radius:14px;
+    cursor:pointer;
+    margin-bottom:16px;
+    display:inline-flex;
+    align-items:center;
+    gap:7px;
+    font-weight:750;
+    box-shadow:var(--shadow-sm);
+    transition:.2s ease;
+}
+
+.back-btn:hover{
+    transform:translateX(-3px);
+    border-color:rgba(25,214,107,.4);
+    color:var(--green2);
+}
+
+.details-card{
+    width:100%;
+    max-width:100%;
+    min-width:0;
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:28px;
+    overflow:hidden;
+    box-shadow:var(--shadow-lg);
+}
+
+.details-main{
+    width:100%;
+    max-width:100%;
+    min-width:0;
+    display:grid;
+    grid-template-columns:1.15fr .85fr;
+}
+
+.details-image{
+    width:100%;
+    height:560px;
+    object-fit:cover;
+    display:block;
+    cursor:pointer;
+    transition:filter .25s ease;
+}
+
+.details-image:hover{
+    filter:brightness(.94);
+}
+
+.details-info{
+    min-width:0;
+    padding:38px;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+}
+
+.details-info h1{
+    min-width:0;
+    color:var(--text);
+    font-size:36px;
+    line-height:1.12;
+    letter-spacing:-1px;
+    margin-bottom:15px;
+    overflow-wrap:anywhere;
+    word-break:break-word;
+}
+
+.details-price{
+    min-width:0;
+    color:var(--text);
+    font-size:30px;
+    line-height:1.2;
+    font-weight:950;
+    letter-spacing:-.7px;
+    margin-bottom:21px;
+    overflow-wrap:anywhere;
+    word-break:break-word;
+}
+
+.details-meta{
+    display:grid;
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:10px;
+    margin-bottom:22px;
+}
+
+.details-meta-item{
+    min-width:0;
+    background:var(--card2);
+    border:1px solid var(--border);
+    border-radius:15px;
+    padding:14px;
+    color:var(--text);
+    overflow-wrap:anywhere;
+    word-break:break-word;
+}
+
+.details-meta-item b{
+    display:block;
+    font-size:11px;
+    color:var(--muted);
+    margin-bottom:5px;
+    font-weight:800;
+    text-transform:uppercase;
+    letter-spacing:.3px;
+}
+
+.details-description{
+    width:100%;
+    max-width:100%;
+    color:var(--muted);
+    line-height:1.75;
+    white-space:pre-wrap;
+    margin-bottom:26px;
+    overflow-wrap:anywhere;
+    word-break:break-word;
+}
+
+.details-call{
+    width:100%;
+    max-width:100%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    padding:16px;
+    border-radius:15px;
+    background:linear-gradient(
+        135deg,
+        var(--green),
+        var(--green2)
+    );
+    color:#031009;
+    font-weight:950;
+    text-decoration:none;
+    box-shadow:0 10px 25px rgba(25,214,107,.2);
+    transition:
+        transform .2s ease,
+        box-shadow .2s ease;
+}
+
+.details-call:hover{
+    transform:translateY(-2px);
+    box-shadow:0 14px 32px rgba(25,214,107,.27);
+}
+
+.thumbnails{
+    display:flex;
+    gap:9px;
+    padding:13px;
+    overflow-x:auto;
+    background:var(--card);
+    scrollbar-width:none;
+}
+
+.thumbnails::-webkit-scrollbar{
+    display:none;
+}
+
+.thumb{
+    width:82px;
+    height:66px;
+    flex:0 0 82px;
+    object-fit:cover;
+    border-radius:11px;
+    cursor:pointer;
+    border:2px solid transparent;
+    opacity:.72;
+    transition:.2s ease;
+}
+
+.thumb:hover{
+    opacity:1;
+    transform:translateY(-1px);
+}
+
+.thumb.active{
+    border-color:var(--green);
+    opacity:1;
+    box-shadow:0 4px 15px rgba(25,214,107,.18);
+}
+
+/* =====================================================
+   MENU
+===================================================== */
+
+.menu-card{
+    width:100%;
+    max-width:850px;
+    margin:10px auto 0;
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:25px;
+    padding:8px 20px;
+    box-shadow:var(--shadow-lg);
+}
+
+.menu-item{
+    min-width:0;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:15px;
+    padding:18px 5px;
+    border-bottom:1px solid var(--border);
+    transition:.2s ease;
+}
+
+.menu-item:last-child{
+    border-bottom:none;
+}
+
+.social-menu-item{
+    cursor:pointer;
+    border-radius:13px;
+    padding-left:10px;
+    padding-right:10px;
+}
+
+.social-menu-item:hover{
+    background:var(--soft);
+}
+
+.social-menu-item:hover .menu-item-title .icon{
+    color:var(--green2);
+    transform:scale(1.08);
+}
+
+.social-menu-item:focus-visible{
+    outline:2px solid var(--green);
+    outline-offset:-2px;
+    border-radius:13px;
+}
+
+.menu-item-left{
+    min-width:0;
+    display:flex;
+    flex-direction:column;
+    gap:5px;
+}
+
+.menu-item-title{
+    color:var(--text);
+    font-weight:850;
+    display:flex;
+    align-items:center;
+    gap:9px;
+}
+
+.menu-item-title .icon{
+    color:var(--muted);
+}
+
+.menu-item-sub{
+    color:var(--muted);
+    font-size:13px;
+    line-height:1.4;
+    overflow-wrap:anywhere;
+    word-break:break-word;
+}
+
+.menu-item a{
+    flex:0 0 auto;
+    color:var(--green2);
+    font-weight:800;
+    text-decoration:none;
+    display:flex;
+    align-items:center;
+    gap:6px;
+    padding:8px 10px;
+    border-radius:10px;
+    transition:.2s ease;
+}
+
+.menu-item a:hover{
+    background:var(--green-soft);
+}
+
+/* =====================================================
+   LIGHTBOX
+===================================================== */
+
+.lightbox{
+    position:fixed;
+    inset:0;
+    z-index:3000;
+    background:rgba(0,0,0,.91);
+    display:none;
+    align-items:center;
+    justify-content:center;
+    padding:25px;
+    backdrop-filter:blur(12px);
+    -webkit-backdrop-filter:blur(12px);
+}
+
+.lightbox.active{
+    display:flex;
+    animation:lightboxIn .2s ease;
+}
+
+@keyframes lightboxIn{
+    from{
+        opacity:0;
+    }
+    to{
+        opacity:1;
+    }
+}
+
+.lightbox img{
+    max-width:92%;
+    max-height:86%;
+    object-fit:contain;
+    border-radius:10px;
+    box-shadow:0 20px 80px rgba(0,0,0,.5);
+}
+
+.lightbox-close,
+.lightbox-prev,
+.lightbox-next{
+    position:absolute;
+    border:1px solid rgba(255,255,255,.13);
+    background:rgba(255,255,255,.09);
+    color:#fff;
+    cursor:pointer;
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    backdrop-filter:blur(12px);
+    -webkit-backdrop-filter:blur(12px);
+    transition:.2s ease;
+}
+
+.lightbox-close:hover,
+.lightbox-prev:hover,
+.lightbox-next:hover{
+    background:rgba(25,214,107,.85);
+    color:#031009;
+}
+
+.lightbox-close{
+    top:20px;
+    right:20px;
+    width:45px;
+    height:45px;
+    font-size:25px;
+}
+
+.lightbox-prev,
+.lightbox-next{
+    width:52px;
+    height:52px;
+    top:50%;
+    transform:translateY(-50%);
+    font-size:30px;
+}
+
+.lightbox-prev{
+    left:20px;
+}
+
+.lightbox-next{
+    right:20px;
+}
+
+/* =====================================================
+   BOTTOM NAV
+===================================================== */
+
+.bottom-nav{
+    position:fixed;
+    left:50%;
+    right:auto;
+    bottom:12px;
+    z-index:1500;
+    width:min(calc(100% - 24px),650px);
+    transform:translateX(-50%);
+    display:flex;
+    gap:4px;
+    padding:7px;
+    background:rgba(5,9,7,.88);
+    border:1px solid rgba(255,255,255,.10);
+    border-radius:22px;
+    box-shadow:
+        0 16px 45px rgba(0,0,0,.28),
+        0 4px 12px rgba(0,0,0,.12);
+    backdrop-filter:blur(22px);
+    -webkit-backdrop-filter:blur(22px);
+}
+
+.bottom-nav button{
+    position:relative;
+    flex:1;
+    min-width:0;
+    border:none;
+    background:transparent;
+    color:#8f9892;
+    padding:8px 5px;
+    border-radius:16px;
+    font-size:11px;
+    font-weight:700;
+    cursor:pointer;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:4px;
+    transition:.2s ease;
+}
+
+.bottom-nav button:hover{
+    color:#fff;
+    background:rgba(255,255,255,.055);
+}
+
+.bottom-nav button.active{
+    color:var(--green);
+    background:rgba(25,214,107,.10);
+}
+
+.bottom-nav button.active:after{
+    content:"";
+    position:absolute;
+    bottom:4px;
+    width:4px;
+    height:4px;
+    border-radius:50%;
+    background:var(--green);
+    box-shadow:0 0 10px var(--green);
+}
+
+.bottom-icon{
+    height:22px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
+
+.bottom-nav button.active .icon{
+    transform:translateY(-1px);
+}
+
+/* =====================================================
+   FOCUS
+===================================================== */
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible{
+    outline:2px solid var(--green);
+    outline-offset:2px;
+}
+
+/* =====================================================
+   RESPONSIVE 1000
+===================================================== */
+
+@media(max-width:1100px){
+
+    .header-inner{
+        max-width:100%;
+    }
+
+    .container{
+        max-width:100%;
+    }
+
+    .cars-grid{
+        grid-template-columns:repeat(2,minmax(0,1fr));
+    }
+
+    .details-main{
+        grid-template-columns:1fr;
+    }
+
+    .details-image{
+        height:470px;
+    }
+
+    .details-info{
+        padding:30px;
+    }
+
+    .search-page-categories{
+        grid-template-columns:repeat(3,minmax(0,1fr));
+    }
+}
+
+/* =====================================================
+   MOBILE
+===================================================== */
+
+@media(max-width:650px){
+
+    body{
+        padding-bottom:94px;
+    }
+
+    header{
+        position:sticky;
+    }
+
+    .header-inner{
+        width:100%;
+        min-width:0;
+        min-height:66px;
+        padding:9px 11px;
+        gap:8px;
+        overflow:hidden;
+    }
+
+    .logo{
+        min-width:0;
+        max-width:45vw;
+        overflow:hidden;
+        text-overflow:ellipsis;
+        font-size:27px;
+        letter-spacing:-1.4px;
+    }
+
+    .logo:before{
+        width:150px;
+        height:65px;
+        opacity:.17;
+    }
+
+    .phone-top{
+        display:none;
+    }
+
+    .header-right{
+        min-width:0;
+        flex-shrink:0;
+        gap:5px;
+    }
+
+    .lang-btn,
+    .theme-btn{
+        min-height:35px;
+        padding:6px 8px;
+        font-size:11px;
+        border-radius:10px;
+    }
+
+    .theme-btn{
+        min-width:35px;
+    }
+
+    .container{
+        width:100%;
+        max-width:100%;
+        min-width:0;
+        padding:16px 10px 92px;
+        overflow-x:hidden;
+    }
+
+    .search-box{
+        margin-bottom:14px;
+        border-radius:16px;
+    }
+
+    .search-box input{
+        height:46px;
+        font-size:14px;
+        padding:0 11px;
+    }
+
+    .search-reset{
+        flex:0 0 45px;
+        width:45px;
+        height:45px;
+        border-radius:12px;
+    }
+
+    .results-info{
+        margin:18px 0 11px;
+    }
+
+    .results-info h2{
+        font-size:18px;
+    }
+
+    .results-count{
+        font-size:11px;
+    }
+
+    .cars-grid{
+        width:100%;
+        min-width:0;
+        grid-template-columns:repeat(2,minmax(0,1fr));
+        gap:9px;
+    }
+
+    .car-card{
+        min-width:0;
+        border-radius:18px;
+        box-shadow:0 7px 22px rgba(8,18,11,.075);
+    }
+
+    .car-card:hover{
+        transform:none;
+    }
+
+    .car-image-box{
+        height:175px;
+    }
+
+    .car-content{
+        min-width:0;
+        padding:10px;
+    }
+
+    .car-name{
+        font-size:14px;
+        line-height:1.25;
+        margin-bottom:5px;
+    }
+
+    .car-price{
+        font-size:16px;
+        line-height:1.2;
+        margin-bottom:8px;
+    }
+
+    .property-meta{
+        gap:4px;
+        margin-bottom:7px;
+    }
+
+    .meta-item{
+        font-size:8.5px;
+        padding:4px 5px;
+        border-radius:7px;
+    }
+
+    .car-address{
+        font-size:9.5px;
+        line-height:1.35;
+        margin-bottom:6px;
+    }
+
+    .car-address .icon{
+        width:14px;
+        height:14px;
+    }
+
+    .car-description{
+        font-size:10.5px;
+        line-height:1.45;
+        min-height:30px;
+    }
+
+    .card-bottom{
+        flex-direction:column;
+        gap:5px;
+        margin-top:9px;
+    }
+
+    .detail-btn,
+    .call-btn{
+        width:100%;
+        padding:8px 5px;
+        min-height:32px;
+        font-size:10.5px;
+        border-radius:9px;
+    }
+
+    .call-btn .icon{
+        width:15px;
+        height:15px;
+    }
+
+    .favorite{
+        width:34px;
+        height:34px;
+        right:7px;
+        top:7px;
+    }
+
+    .favorite .icon{
+        width:17px;
+        height:17px;
+    }
+
+    .badge{
+        top:7px;
+        left:7px;
+        padding:5px 7px;
+        font-size:8px;
+    }
+
+    .image-count{
+        right:7px;
+        bottom:7px;
+        font-size:9px;
+        padding:5px 7px;
+    }
+
+    .image-count .icon{
+        width:13px;
+        height:13px;
+    }
+
+    .search-page-top{
+        gap:9px;
+        margin-bottom:13px;
+    }
+
+    .search-page-title{
+        font-size:22px;
+    }
+
+    .search-back{
+        width:41px;
+        height:41px;
+        flex-basis:41px;
+    }
+
+    .search-page-categories{
+        width:100%;
+        grid-template-columns:repeat(2,minmax(0,1fr));
+        gap:7px;
+    }
+
+    .search-category{
+        width:100%;
+        min-width:0;
+        min-height:53px;
+        border-radius:13px;
+        padding:7px 5px;
+        font-size:10px;
+        box-shadow:none;
+        overflow:hidden;
+    }
+
+    .search-category .icon{
+        width:17px;
+        height:17px;
+    }
+
+    .search-category:last-child{
+        grid-column:1/-1;
+    }
+
+    .filter-toggle{
+        height:40px;
+        border-radius:12px;
+        font-size:19px;
+    }
+
+    .extra-filters{
+        grid-template-columns:1fr;
+        gap:7px;
+    }
+
+    .extra-filter{
+        min-height:44px;
+        border-radius:12px;
+    }
+
+    .empty{
+        padding:60px 15px;
+        border-radius:18px;
+    }
+
+    .skeleton{
+        border-radius:18px;
+    }
+
+    .skeleton-img{
+        height:175px;
+    }
+
+    .skeleton-content{
+        padding:10px;
+    }
+
+    .skeleton-line.big{
+        height:18px;
+    }
+
+    .details-card{
+        width:100%;
+        max-width:100%;
+        border-radius:19px;
+    }
+
+    .details-main{
+        display:block;
+        width:100%;
+        max-width:100%;
+    }
+
+    .details-image{
+        width:100%;
+        max-width:100%;
+        height:300px;
+    }
+
+    .details-info{
+        width:100%;
+        max-width:100%;
+        padding:20px 16px;
+        overflow:hidden;
+    }
+
+    .details-info h1{
+        max-width:100%;
+        font-size:25px;
+        line-height:1.18;
+        letter-spacing:-.5px;
+        margin-bottom:11px;
+    }
+
+    .details-price{
+        max-width:100%;
+        font-size:22px;
+        line-height:1.25;
+        margin-bottom:16px;
+    }
+
+    .details-meta{
+        width:100%;
+        max-width:100%;
+        grid-template-columns:1fr 1fr;
+        gap:8px;
+        margin-bottom:18px;
+    }
+
+    .details-meta-item{
+        width:100%;
+        min-width:0;
+        max-width:100%;
+        padding:12px;
+        border-radius:12px;
+        font-size:13px;
+    }
+
+    .details-meta-item b{
+        font-size:9px;
+    }
+
+    .details-description{
+        width:100%;
+        max-width:100%;
+        font-size:15px;
+        line-height:1.6;
+        margin-bottom:20px;
+    }
+
+    .details-call{
+        width:100%;
+        max-width:100%;
+        min-width:0;
+        padding:14px 10px;
+        font-size:15px;
+        white-space:normal;
+        overflow-wrap:anywhere;
+        border-radius:13px;
+    }
+
+    .thumbnails{
+        width:100%;
+        max-width:100%;
+        padding:9px;
+        gap:7px;
+    }
+
+    .thumb{
+        flex:0 0 74px;
+        width:74px;
+        height:58px;
+        border-radius:9px;
+    }
+
+    .back-btn{
+        margin-bottom:11px;
+        padding:9px 13px;
+        font-size:13px;
+        border-radius:12px;
+    }
+
+    .menu-card{
+        width:100%;
+        max-width:100%;
+        margin:0;
+        padding:6px 12px;
+        border-radius:20px;
+    }
+
+    .menu-item{
+        min-width:0;
+        gap:8px;
+        padding:15px 3px;
+    }
+
+    .menu-item-left{
+        min-width:0;
+        max-width:calc(100% - 40px);
+    }
+
+    .menu-item-title{
+        font-size:14px;
+    }
+
+    .menu-item-sub{
+        font-size:11px;
+    }
+
+    .menu-item a{
+        max-width:45%;
+        font-size:11px;
+        overflow:hidden;
+        text-overflow:ellipsis;
+    }
+
+    .bottom-nav{
+        width:calc(100% - 18px);
+        bottom:9px;
+        padding:6px;
+        border-radius:19px;
+    }
+
+    .bottom-nav button{
+        padding:7px 2px;
+        font-size:9px;
+        border-radius:14px;
+    }
+
+    .bottom-icon{
+        height:20px;
+    }
+
+    .bottom-icon .icon{
+        width:19px;
+        height:19px;
+    }
+
+    .lightbox{
+        padding:12px;
+    }
+
+    .lightbox img{
+        max-width:96%;
+        max-height:82%;
+        border-radius:8px;
+    }
+
+    .lightbox-close{
+        top:12px;
+        right:12px;
+        width:42px;
+        height:42px;
+    }
+
+    .lightbox-prev,
+    .lightbox-next{
+        width:43px;
+        height:43px;
+    }
+
+    .lightbox-prev{
+        left:9px;
+    }
+
+    .lightbox-next{
+        right:9px;
+    }
+}
+
+/* =====================================================
+   VERY SMALL PHONES
+===================================================== */
+
+@media(max-width:380px){
+
+    .header-inner{
+        padding-left:8px;
+        padding-right:8px;
+    }
+
+    .logo{
+        font-size:23px;
+        max-width:41vw;
+    }
+
+    .lang-btn,
+    .theme-btn{
+        min-height:33px;
+        padding:5px 6px;
+        font-size:10px;
+    }
+
+    .theme-btn{
+        min-width:33px;
+    }
+
+    .container{
+        padding-left:7px;
+        padding-right:7px;
+    }
+
+    .cars-grid{
+        gap:7px;
+    }
+
+    .car-image-box{
+        height:158px;
+    }
+
+    .car-content{
+        padding:8px;
+    }
+
+    .car-name{
+        font-size:13px;
+    }
+
+    .car-price{
+        font-size:14px;
+    }
+
+    .meta-item{
+        font-size:8px;
+        padding:3px 4px;
+    }
+
+    .car-address{
+        font-size:9px;
+    }
+
+    .car-description{
+        font-size:9.5px;
+    }
+
+    .detail-btn,
+    .call-btn{
+        font-size:9.5px;
+        padding:7px 4px;
+    }
+
+    .skeleton-img{
+        height:158px;
+    }
+
+    .details-info{
+        padding:17px 12px;
+    }
+
+    .details-info h1{
+        font-size:22px;
+    }
+
+    .details-price{
+        font-size:20px;
+    }
+
+    .details-meta{
+        grid-template-columns:1fr;
+    }
+
+    .details-description{
+        font-size:14px;
+    }
+
+    .details-call{
+        font-size:14px;
+    }
+
+    .search-category{
+        font-size:9.5px;
+    }
+
+    .menu-card{
+        padding-left:9px;
+        padding-right:9px;
+    }
+
+    .menu-item-title{
+        font-size:13px;
+    }
+
+    .menu-item-sub{
+        font-size:10px;
+    }
+
+    .bottom-nav{
+        width:calc(100% - 12px);
+    }
+}
+
+/* =====================================================
+   ACCESSIBILITY / REDUCED MOTION
+===================================================== */
+
+@media(prefers-reduced-motion:reduce){
+
+    *,
+    *:before,
+    *:after{
+        scroll-behavior:auto!important;
+        animation-duration:.01ms!important;
+        animation-iteration-count:1!important;
+        transition-duration:.01ms!important;
+    }
+}
+</style>
 </head>
 
 <body>
 
-<!-- =========================
-     ICONS
-========================= -->
-
 <svg width="0" height="0" style="position:absolute">
 
-    <symbol id="i-grid" viewBox="0 0 24 24">
-        <rect x="3.5" y="3.5" width="7" height="7" rx="1.5"/>
-        <rect x="13.5" y="3.5" width="7" height="7" rx="1.5"/>
-        <rect x="3.5" y="13.5" width="7" height="7" rx="1.5"/>
-        <rect x="13.5" y="13.5" width="7" height="7" rx="1.5"/>
-    </symbol>
+<symbol id="i-grid" viewBox="0 0 24 24">
+<rect x="3.5" y="3.5" width="7" height="7" rx="1.5"/>
+<rect x="13.5" y="3.5" width="7" height="7" rx="1.5"/>
+<rect x="3.5" y="13.5" width="7" height="7" rx="1.5"/>
+<rect x="13.5" y="13.5" width="7" height="7" rx="1.5"/>
+</symbol>
 
-    <symbol id="i-house" viewBox="0 0 24 24">
-        <path d="m3.5 10.5 8.5-7 8.5 7"/>
-        <path d="M5.5 9.5v10a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-10"/>
-        <path d="M9.5 20.5v-6h5v6"/>
-    </symbol>
+<symbol id="i-house" viewBox="0 0 24 24">
+<path d="m3.5 10.5 8.5-7 8.5 7"/>
+<path d="M5.5 9.5v10a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-10"/>
+<path d="M9.5 20.5v-6h5v6"/>
+</symbol>
 
-    <symbol id="i-map" viewBox="0 0 24 24">
-        <path d="M9 4 3.5 6.5v13L9 17l6 2.5 5.5-2.5V4L15 6.5 9 4Z"/>
-        <path d="M9 4v13"/>
-        <path d="M15 6.5v13"/>
-    </symbol>
+<symbol id="i-map" viewBox="0 0 24 24">
+<path d="M9 4 3.5 6.5v13L9 17l6 2.5 5.5-2.5V4L15 6.5 9 4Z"/>
+<path d="M9 4v13"/>
+<path d="M15 6.5v13"/>
+</symbol>
 
-    <symbol id="i-construction" viewBox="0 0 24 24">
-        <path d="M4 20V9"/>
-        <path d="M20 20V9"/>
-        <path d="M2.5 9h19"/>
-        <path d="M5 9 9 4h6l4 5"/>
-        <path d="M7 13h10"/>
-        <path d="M7 16h10"/>
-        <path d="M7 20h10"/>
-    </symbol>
+<symbol id="i-construction" viewBox="0 0 24 24">
+<path d="M4 20V9"/>
+<path d="M20 20V9"/>
+<path d="M2.5 9h19"/>
+<path d="M5 9 9 4h6l4 5"/>
+<path d="M7 13h10"/>
+<path d="M7 16h10"/>
+<path d="M7 20h10"/>
+</symbol>
 
-    <symbol id="i-location" viewBox="0 0 24 24">
-        <path d="M20 10.2c0 5.1-8 11.3-8 11.3S4 15.3 4 10.2a8 8 0 1 1 16 0Z"/>
-        <circle cx="12" cy="10" r="2.35"/>
-    </symbol>
+<symbol id="i-location" viewBox="0 0 24 24">
+<path d="M20 10.2c0 5.1-8 11.3-8 11.3S4 15.3 4 10.2a8 8 0 1 1 16 0Z"/>
+<circle cx="12" cy="10" r="2.35"/>
+</symbol>
 
-    <symbol id="i-globe" viewBox="0 0 24 24">
-        <circle cx="12" cy="12" r="9"/>
-        <path d="M3 12h18"/>
-        <path d="M12 3c2.65 2.45 4 5.45 4 9s-1.35 6.55-4 9"/>
-        <path d="M12 3c-2.65 2.45-4 5.45-4 9s1.35 6.55 4 9"/>
-    </symbol>
+<symbol id="i-globe" viewBox="0 0 24 24">
+<circle cx="12" cy="12" r="9"/>
+<path d="M3 12h18"/>
+<path d="M12 3c2.65 2.45 4 5.45 4 9s-1.35 6.55-4 9"/>
+<path d="M12 3c-2.65 2.45-4 5.45-4 9s1.35 6.55 4 9"/>
+</symbol>
 
-    <symbol id="i-phone" viewBox="0 0 24 24">
-        <path d="M7.1 3.2 4.7 4.1a2 2 0 0 0-1.2 2.3c1.6 7.1 6.9 12.4 14 14a2 2 0 0 0 2.3-1.2l.9-2.4a2 2 0 0 0-1.1-2.5l-2.5-1.1a2 2 0 0 0-2.3.5l-1 1.2a14.2 14.2 0 0 1-5.2-5.2l1.2-1a2 2 0 0 0 .5-2.3L9.6 4.3a2 2 0 0 0-2.5-1.1Z"/>
-    </symbol>
+<symbol id="i-phone" viewBox="0 0 24 24">
+<path d="M7.1 3.2 4.7 4.1a2 2 0 0 0-1.2 2.3c1.6 7.1 6.9 12.4 14 14a2 2 0 0 0 2.3-1.2l.9-2.4a2 2 0 0 0-1.1-2.5l-2.5-1.1a2 2 0 0 0-2.3.5l-1 1.2a14.2 14.2 0 0 1-5.2-5.2l1.2-1a2 2 0 0 0 .5-2.3L9.6 4.3a2 2 0 0 0-2.5-1.1Z"/>
+</symbol>
 
-    <symbol id="i-heart" viewBox="0 0 24 24">
-        <path d="M20.4 5.1a5.4 5.4 0 0 0-7.7 0L12 5.8l-.7-.7a5.4 5.4 0 0 0-7.7 7.7l.7.7L12 21l7.7-7.5.7-.7a5.4 5.4 0 0 0 0-7.7Z"/>
-    </symbol>
+<symbol id="i-heart" viewBox="0 0 24 24">
+<path d="M20.4 5.1a5.4 5.4 0 0 0-7.7 0L12 5.8l-.7-.7a5.4 5.4 0 0 0-7.7 7.7l.7.7L12 21l7.7-7.5.7-.7a5.4 5.4 0 0 0 0-7.7Z"/>
+</symbol>
 
-    <symbol id="i-search" viewBox="0 0 24 24">
-        <circle cx="10.8" cy="10.8" r="6.8"/>
-        <path d="m16 16 4.4 4.4"/>
-    </symbol>
+<symbol id="i-search" viewBox="0 0 24 24">
+<circle cx="10.8" cy="10.8" r="6.8"/>
+<path d="m16 16 4.4 4.4"/>
+</symbol>
 
-    <symbol id="i-home" viewBox="0 0 24 24">
-        <path d="m3.5 10.5 8.5-7 8.5 7"/>
-        <path d="M5.5 9.5v10a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-10"/>
-        <path d="M9.5 20.5v-6h5v6"/>
-    </symbol>
+<symbol id="i-home" viewBox="0 0 24 24">
+<path d="m3.5 10.5 8.5-7 8.5 7"/>
+<path d="M5.5 9.5v10a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-10"/>
+<path d="M9.5 20.5v-6h5v6"/>
+</symbol>
 
-    <symbol id="i-building" viewBox="0 0 24 24">
-        <path d="M5 21V4h10v17"/>
-        <path d="M15 9h4v12"/>
-        <path d="M8 7h3"/>
-        <path d="M8 11h3"/>
-        <path d="M8 15h3"/>
-        <path d="M17 13h1"/>
-        <path d="M17 17h1"/>
-        <path d="M9 21v-3h2v3"/>
-    </symbol>
+<symbol id="i-building" viewBox="0 0 24 24">
+<path d="M5 21V4h10v17"/>
+<path d="M15 9h4v12"/>
+<path d="M8 7h3"/>
+<path d="M8 11h3"/>
+<path d="M8 15h3"/>
+<path d="M17 13h1"/>
+<path d="M17 17h1"/>
+<path d="M9 21v-3h2v3"/>
+</symbol>
 
-    <symbol id="i-land" viewBox="0 0 24 24">
-        <path d="M3 19c4-4 7-5 10-3 3 2 5 1 8-2"/>
-        <path d="M3 15c4-4 7-5 10-3 3 2 5 1 8-2"/>
-        <path d="M3 21h18"/>
-    </symbol>
+<symbol id="i-land" viewBox="0 0 24 24">
+<path d="M3 19c4-4 7-5 10-3 3 2 5 1 8-2"/>
+<path d="M3 15c4-4 7-5 10-3 3 2 5 1 8-2"/>
+<path d="M3 21h18"/>
+</symbol>
 
-    <symbol id="i-camera" viewBox="0 0 24 24">
-        <path d="M4 7.5h3.5l1.6-2.2h5.8l1.6 2.2H20v11H4Z"/>
-        <circle cx="12" cy="13" r="3.25"/>
-    </symbol>
+<symbol id="i-camera" viewBox="0 0 24 24">
+<path d="M4 7.5h3.5l1.6-2.2h5.8l1.6 2.2H20v11H4Z"/>
+<circle cx="12" cy="13" r="3.25"/>
+</symbol>
 
-    <symbol id="i-arrow-left" viewBox="0 0 24 24">
-        <path d="m15 18-6-6 6-6"/>
-    </symbol>
+<symbol id="i-arrow-left" viewBox="0 0 24 24">
+<path d="m15 18-6-6 6-6"/>
+</symbol>
 
-    <symbol id="i-sun" viewBox="0 0 24 24">
-        <circle cx="12" cy="12" r="4"/>
-        <path d="M12 2.5v1.8"/>
-        <path d="M12 19.7v1.8"/>
-        <path d="m4.9 4.9 1.3 1.3"/>
-        <path d="m17.8 17.8 1.3 1.3"/>
-        <path d="M2.5 12h1.8"/>
-        <path d="M19.7 12h1.8"/>
-    </symbol>
+<symbol id="i-sun" viewBox="0 0 24 24">
+<circle cx="12" cy="12" r="4"/>
+<path d="M12 2.5v1.8"/>
+<path d="M12 19.7v1.8"/>
+<path d="m4.9 4.9 1.3 1.3"/>
+<path d="m17.8 17.8 1.3 1.3"/>
+<path d="M2.5 12h1.8"/>
+<path d="M19.7 12h1.8"/>
+</symbol>
 
-    <symbol id="i-moon" viewBox="0 0 24 24">
-        <path d="M20.2 14.1A8.5 8.5 0 0 1 9.9 3.8a8.5 8.5 0 1 0 10.3 10.3Z"/>
-    </symbol>
+<symbol id="i-moon" viewBox="0 0 24 24">
+<path d="M20.2 14.1A8.5 8.5 0 0 1 9.9 3.8a8.5 8.5 0 1 0 10.3 10.3Z"/>
+</symbol>
 
-    <symbol id="i-telegram" viewBox="0 0 24 24">
-        <path d="m21 3-6.7 17.8-4-6.1L4 12.2 21 3Z"/>
-        <path d="m10.3 14.7 5.4-5"/>
-    </symbol>
+<symbol id="i-telegram" viewBox="0 0 24 24">
+<path d="m21 3-6.7 17.8-4-6.1L4 12.2 21 3Z"/>
+<path d="m10.3 14.7 5.4-5"/>
+</symbol>
 
-    <symbol id="i-instagram" viewBox="0 0 24 24">
-        <rect x="3.2" y="3.2" width="17.6" height="17.6" rx="5"/>
-        <circle cx="12" cy="12" r="4"/>
-    </symbol>
+<symbol id="i-instagram" viewBox="0 0 24 24">
+<rect x="3.2" y="3.2" width="17.6" height="17.6" rx="5"/>
+<circle cx="12" cy="12" r="4"/>
+</symbol>
 
-    <symbol id="i-whatsapp" viewBox="0 0 24 24">
-        <path d="M20.1 11.4a8.1 8.1 0 0 1-11.9 7L4 20l1.6-4A8.1 8.1 0 1 1 20.1 11.4Z"/>
-    </symbol>
+<symbol id="i-whatsapp" viewBox="0 0 24 24">
+<path d="M20.1 11.4a8.1 8.1 0 0 1-11.9 7L4 20l1.6-4A8.1 8.1 0 1 1 20.1 11.4Z"/>
+</symbol>
 
 </svg>
 
 <header>
+<div class="header-inner">
 
-    <div class="header-inner">
+<div class="logo">
+pul<span class="green">.zarill</span>
+</div>
 
-        <div class="logo">
-            pul<span class="green">.zarill</span>
-        </div>
+<div class="header-right">
 
-        <div class="header-right">
+<a
+class="phone-top"
+id="headerPhone"
+href="tel:+998889500005"
+onclick="trackCall(event)"
+>
++998 88 950 00 05
+</a>
 
-            <a
-                    class="phone-top"
-                    id="headerPhone"
-                    href="tel:+998889500005"
-                    onclick="trackCall(event)"
-            >
-                +998 88 950 00 05
-            </a>
+<button class="lang-btn active" onclick="setLang('uz')">UZ</button>
+<button class="lang-btn" onclick="setLang('ru')">RU</button>
+<button class="lang-btn" onclick="setLang('en')">EN</button>
 
-            <button class="lang-btn active" onclick="setLang('uz')">UZ</button>
-            <button class="lang-btn" onclick="setLang('ru')">RU</button>
-            <button class="lang-btn" onclick="setLang('en')">EN</button>
+<button
+class="theme-btn"
+onclick="toggleTheme()"
+id="themeBtn"
+></button>
 
-            <button
-                    class="theme-btn"
-                    onclick="toggleTheme()"
-                    id="themeBtn"
-            ></button>
-
-        </div>
-
-    </div>
-
+</div>
+</div>
 </header>
 
 <main class="container">
 
-    <!-- =========================
-         HOME
-    ========================= -->
-
-    <section id="homePage" class="page active">
-
-        <div class="search-box">
-
-            <input
-                    id="searchInput"
-                    type="text"
-                    placeholder="Uy qidirish..."
-                    oninput="searchCars()"
-            >
-
-            <button
-                    class="search-reset"
-                    onclick="resetSearch()"
-            >
-                <svg class="icon">
-                    <use href="#i-search"></use>
-                </svg>
-            </button>
-
-        </div>
-
-        <div class="results-info">
-
-            <h2 id="carsTitle">
-                Uylar
-            </h2>
-
-            <span
-                    class="results-count"
-                    id="resultsCount"
-            >
-   0 ta
-  </span>
-
-        </div>
-
-        <div
-                class="cars-grid"
-                id="carsGrid"
-        >
-
-            <div class="skeleton">
-                <div class="skeleton-img"></div>
-                <div class="skeleton-content">
-                    <div class="skeleton-line big"></div>
-                    <div class="skeleton-line"></div>
-                    <div class="skeleton-line"></div>
-                </div>
-            </div>
-
-            <div class="skeleton">
-                <div class="skeleton-img"></div>
-                <div class="skeleton-content">
-                    <div class="skeleton-line big"></div>
-                    <div class="skeleton-line"></div>
-                    <div class="skeleton-line"></div>
-                </div>
-            </div>
-
-            <div class="skeleton">
-                <div class="skeleton-img"></div>
-                <div class="skeleton-content">
-                    <div class="skeleton-line big"></div>
-                    <div class="skeleton-line"></div>
-                    <div class="skeleton-line"></div>
-                </div>
-            </div>
-
-        </div>
-
-    </section>
-
-    <!-- =========================
-         SEARCH PAGE
-    ========================= -->
-
-    <section id="searchPage" class="page">
-
-        <div class="search-page-top">
-
-            <button
-                    class="search-back"
-                    onclick="goHome()"
-                    aria-label="Back"
-            >
-                <svg class="icon">
-                    <use href="#i-arrow-left"></use>
-                </svg>
-            </button>
-
-            <div
-                    class="search-page-title"
-                    id="searchPageTitle"
-            >
-                Qidiruv
-            </div>
+<section id="homePage" class="page active">
+
+<div class="search-box">
+
+<input
+id="searchInput"
+type="text"
+placeholder="Uy qidirish..."
+oninput="searchCars()"
+>
+
+<button
+class="search-reset"
+onclick="resetSearch()"
+>
+<svg class="icon">
+<use href="#i-search"></use>
+</svg>
+</button>
+
+</div>
+
+<div class="results-info">
+
+<h2 id="carsTitle">Uylar</h2>
+
+<span
+class="results-count"
+id="resultsCount"
+>0 ta</span>
+
+</div>
+
+<div
+class="cars-grid"
+id="carsGrid"
+>
+
+<div class="skeleton">
+<div class="skeleton-img"></div>
+<div class="skeleton-content">
+<div class="skeleton-line big"></div>
+<div class="skeleton-line"></div>
+<div class="skeleton-line"></div>
+</div>
+</div>
+
+<div class="skeleton">
+<div class="skeleton-img"></div>
+<div class="skeleton-content">
+<div class="skeleton-line big"></div>
+<div class="skeleton-line"></div>
+<div class="skeleton-line"></div>
+</div>
+</div>
+
+<div class="skeleton">
+<div class="skeleton-img"></div>
+<div class="skeleton-content">
+<div class="skeleton-line big"></div>
+<div class="skeleton-line"></div>
+<div class="skeleton-line"></div>
+</div>
+</div>
+
+</div>
+
+</section>
+
+<section id="searchPage" class="page">
+
+<div class="search-page-top">
+
+<button
+class="search-back"
+onclick="goHome()"
+aria-label="Back"
+>
+<svg class="icon">
+<use href="#i-arrow-left"></use>
+</svg>
+</button>
 
-        </div>
+<div
+class="search-page-title"
+id="searchPageTitle"
+>
+Qidiruv
+</div>
+
+</div>
+
+<div class="search-box">
+
+<input
+id="searchPageInput"
+type="text"
+placeholder="Uy qidirish..."
+oninput="searchFromSearchPage()"
+>
+
+<button
+class="search-reset"
+onclick="resetSearchPage()"
+>
+<svg class="icon">
+<use href="#i-search"></use>
+</svg>
+</button>
 
-        <div class="search-box">
+</div>
 
-            <input
-                    id="searchPageInput"
-                    type="text"
-                    placeholder="Uy qidirish..."
-                    oninput="searchFromSearchPage()"
-            >
+<div class="search-page-categories">
 
-            <button
-                    class="search-reset"
-                    onclick="resetSearchPage()"
-            >
-                <svg class="icon">
-                    <use href="#i-search"></use>
-                </svg>
-            </button>
+<button
+class="search-category active"
+onclick="filterSearchPage('all',this)"
+>
 
-        </div>
+<svg class="icon">
+<use href="#i-grid"></use>
+</svg>
 
-        <!-- SEARCH CATEGORIES -->
+<span id="searchCatAll">Barchasi</span>
 
-        <div class="search-page-categories">
+</button>
 
-            <button
-                    class="search-category active"
-                    onclick="filterSearchPage('all',this)"
-            >
+<button
+class="search-category"
+onclick="filterSearchPage('Hovli',this)"
+>
 
-                <svg class="icon">
-                    <use href="#i-grid"></use>
-                </svg>
+<svg class="icon">
+<use href="#i-house"></use>
+</svg>
 
-                <span id="searchCatAll">
-    Barchasi
-   </span>
-
-            </button>
-
-            <button
-                    class="search-category"
-                    onclick="filterSearchPage('Hovli',this)"
-            >
+<span id="searchCatHovli">Hovli</span>
 
-                <svg class="icon">
-                    <use href="#i-house"></use>
-                </svg>
+</button>
 
-                <span id="searchCatHovli">
-    Hovli
-   </span>
-
-            </button>
-
-            <button
-                    class="search-category"
-                    onclick="filterSearchPage('Kvartira',this)"
-            >
-
-                <svg class="icon">
-                    <use href="#i-building"></use>
-                </svg>
+<button
+class="search-category"
+onclick="filterSearchPage('Kvartira',this)"
+>
 
-                <span id="searchCatKvartira">
-    Kvartira
-   </span>
+<svg class="icon">
+<use href="#i-building"></use>
+</svg>
 
-            </button>
+<span id="searchCatKvartira">Kvartira</span>
 
-            <button
-                    class="search-category"
-                    onclick="filterSearchPage('Yer',this)"
-            >
+</button>
 
-                <svg class="icon">
-                    <use href="#i-map"></use>
-                </svg>
+<button
+class="search-category"
+onclick="filterSearchPage('Yer',this)"
+>
 
-                <span id="searchCatYer">
-    Yer
-   </span>
+<svg class="icon">
+<use href="#i-map"></use>
+</svg>
 
-            </button>
+<span id="searchCatYer">Yer</span>
 
-            <button
-                    class="search-category"
-                    onclick="filterSearchPage('Yangi qurilish',this)"
-            >
+</button>
 
-                <svg class="icon">
-                    <use href="#i-construction"></use>
-                </svg>
+<button
+class="search-category"
+onclick="filterSearchPage('Yangi qurilish',this)"
+>
 
-                <span id="searchCatYangi">
-    Yangi qurilish
-   </span>
+<svg class="icon">
+<use href="#i-construction"></use>
+</svg>
 
-            </button>
+<span id="searchCatYangi">Yangi qurilish</span>
 
-        </div>
+</button>
 
-        <!-- EXTRA FILTER TOGGLE -->
+</div>
 
-        <button
-                class="filter-toggle"
-                id="filterToggle"
-                onclick="toggleExtraFilters()"
-        >
-            ^
-        </button>
+<button
+class="filter-toggle"
+id="filterToggle"
+onclick="toggleExtraFilters()"
+>
+^
+</button>
 
-        <div
-                class="extra-filters"
-                id="extraFilters"
-        >
+<div
+class="extra-filters"
+id="extraFilters"
+>
 
-            <button
-                    class="extra-filter"
-                    id="priceFilterText"
-            >
-                💰 Narx bo‘yicha
-            </button>
+<button
+class="extra-filter"
+id="priceFilterText"
+>
+💰 Narx bo‘yicha
+</button>
 
-            <button
-                    class="extra-filter"
-                    id="addressFilterText"
-            >
-                📍 Manzil bo‘yicha
-            </button>
+<button
+class="extra-filter"
+id="addressFilterText"
+>
+📍 Manzil bo‘yicha
+</button>
 
-            <button
-                    class="extra-filter"
-                    id="roomsFilterText"
-            >
-                🛏 Xonalar bo‘yicha
-            </button>
+<button
+class="extra-filter"
+id="roomsFilterText"
+>
+🛏 Xonalar bo‘yicha
+</button>
 
-        </div>
+</div>
 
-        <div class="results-info">
+<div class="results-info">
 
-            <h2 id="searchResultsTitle">
-                Uylar
-            </h2>
+<h2 id="searchResultsTitle">Uylar</h2>
 
-            <span
-                    class="results-count"
-                    id="searchResultsCount"
-            >
-   0 ta
-  </span>
+<span
+class="results-count"
+id="searchResultsCount"
+>0 ta</span>
 
-        </div>
+</div>
 
-        <div
-                class="cars-grid"
-                id="searchCarsGrid"
-        >
-        </div>
+<div
+class="cars-grid"
+id="searchCarsGrid"
+></div>
 
-    </section>
+</section>
 
-    <!-- =========================
-         DETAILS
-    ========================= -->
+<section id="detailsPage" class="page">
 
-    <section id="detailsPage" class="page">
+<button
+class="back-btn"
+onclick="goHome()"
+>
 
-        <button
-                class="back-btn"
-                onclick="goHome()"
-        >
+<svg class="icon">
+<use href="#i-arrow-left"></use>
+</svg>
 
-            <svg class="icon">
-                <use href="#i-arrow-left"></use>
-            </svg>
+<span id="backText">Orqaga</span>
 
-            <span id="backText">
-   Orqaga
-  </span>
+</button>
 
-        </button>
+<div
+class="details-card"
+id="detailsCard"
+></div>
 
-        <div
-                class="details-card"
-                id="detailsCard"
-        ></div>
+</section>
 
-    </section>
+<section id="menuPage" class="page">
 
-    <!-- =========================
-         MENU
-    ========================= -->
+<div class="menu-card">
 
-    <section id="menuPage" class="page">
+<div
+class="menu-item social-menu-item"
+data-social="telegram"
+role="link"
+tabindex="0"
+onclick="openSocialMenu('telegram', event)"
+onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openSocialMenu('telegram',event)}"
+>
 
-        <div class="menu-card">
+<div class="menu-item-left">
 
-            <div class="menu-item social-menu-item" data-social="telegram" role="link" tabindex="0" onclick="openSocialMenu('telegram', event)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openSocialMenu('telegram',event)}">
+<span class="menu-item-title">
 
-                <div class="menu-item-left">
+<svg class="icon">
+<use href="#i-home"></use>
+</svg>
 
-   <span class="menu-item-title">
+<span>pul.zarill</span>
 
-    <svg class="icon">
-     <use href="#i-home"></use>
-    </svg>
+</span>
 
-    <span>
-     pul.zarill
-    </span>
+<span
+class="menu-item-sub"
+id="menuPlatform"
+>
+Uy-joy platformasi
+</span>
 
-   </span>
+</div>
 
-                    <span
-                            class="menu-item-sub"
-                            id="menuPlatform"
-                    >
-    Uy-joy platformasi
-   </span>
+<svg class="icon icon-lg">
+<use href="#i-home"></use>
+</svg>
 
-                </div>
+</div>
 
-                <svg class="icon icon-lg">
-                    <use href="#i-home"></use>
-                </svg>
+<div
+class="menu-item social-menu-item"
+data-social="whatsapp"
+role="link"
+tabindex="0"
+onclick="openSocialMenu('whatsapp', event)"
+onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openSocialMenu('whatsapp',event)}"
+>
 
-            </div>
+<div class="menu-item-left">
 
-            <div class="menu-item social-menu-item" data-social="whatsapp" role="link" tabindex="0" onclick="openSocialMenu('whatsapp', event)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openSocialMenu('whatsapp',event)}">
+<span class="menu-item-title">
 
-                <div class="menu-item-left">
+<svg class="icon">
+<use href="#i-phone"></use>
+</svg>
 
-   <span class="menu-item-title">
+<span id="menuPhoneTitle">Telefon</span>
 
-    <svg class="icon">
-     <use href="#i-phone"></use>
-    </svg>
+</span>
 
-    <span id="menuPhoneTitle">
-     Telefon
-    </span>
+<span
+class="menu-item-sub"
+id="menuPhoneSub"
+>
+Biz bilan bog‘lanish
+</span>
 
-   </span>
+</div>
 
-                    <span
-                            class="menu-item-sub"
-                            id="menuPhoneSub"
-                    >
-    Biz bilan bog‘lanish
-   </span>
+<a
+id="menuPhone"
+href="tel:+998889500005"
+onclick="trackCall(event)"
+>
++998 88 950 00 05
+</a>
 
-                </div>
+</div>
 
-                <a
-                        id="menuPhone"
-                        href="tel:+998889500005"
-                        onclick="trackCall(event)"
-                >
-                    +998 88 950 00 05
-                </a>
+<div
+class="menu-item social-menu-item"
+data-social="telegram"
+role="link"
+tabindex="0"
+onclick="openSocialMenu('telegram', event)"
+onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openSocialMenu('telegram',event)}"
+>
 
-            </div>
+<div class="menu-item-left">
 
-            <div class="menu-item social-menu-item" data-social="telegram" role="link" tabindex="0" onclick="openSocialMenu('telegram', event)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openSocialMenu('telegram',event)}">
+<span class="menu-item-title">
 
-                <div class="menu-item-left">
+<svg class="icon">
+<use href="#i-telegram"></use>
+</svg>
 
-   <span class="menu-item-title">
+<span id="menuTelegramTitle">Telegram</span>
 
-    <svg class="icon">
-     <use href="#i-telegram"></use>
-    </svg>
+</span>
 
-    <span id="menuTelegramTitle">
-     Telegram
-    </span>
+<span
+class="menu-item-sub"
+id="menuTelegramSub"
+>
+Telegram orqali bog‘lanish
+</span>
 
-   </span>
+</div>
 
-                    <span
-                            class="menu-item-sub"
-                            id="menuTelegramSub"
-                    >
-    Telegram orqali bog‘lanish
-   </span>
+<a
+id="menuTelegram"
+href="https://t.me/"
+target="_blank"
+rel="noopener"
+>
+<span id="menuOpenTelegram">Ochish</span>
+</a>
 
-                </div>
+</div>
 
-                <a
-                        id="menuTelegram"
-                        href="https://t.me/"
-                        target="_blank"
-                        rel="noopener"
-                >
-                    <span id="menuOpenTelegram">Ochish</span>
-                </a>
+<div
+class="menu-item social-menu-item"
+data-social="whatsapp"
+role="link"
+tabindex="0"
+onclick="openSocialMenu('whatsapp', event)"
+onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openSocialMenu('whatsapp',event)}"
+>
 
-            </div>
+<div class="menu-item-left">
 
-            <div class="menu-item social-menu-item" data-social="whatsapp" role="link" tabindex="0" onclick="openSocialMenu('whatsapp', event)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openSocialMenu('whatsapp',event)}">
+<span class="menu-item-title">
 
-                <div class="menu-item-left">
+<svg class="icon">
+<use href="#i-whatsapp"></use>
+</svg>
 
-   <span class="menu-item-title">
+<span id="menuWhatsappTitle">WhatsApp</span>
 
-    <svg class="icon">
-     <use href="#i-whatsapp"></use>
-    </svg>
+</span>
 
-    <span id="menuWhatsappTitle">
-     WhatsApp
-    </span>
+<span
+class="menu-item-sub"
+id="menuWhatsappSub"
+>
+WhatsApp orqali bog‘lanish
+</span>
 
-   </span>
+</div>
 
-                    <span
-                            class="menu-item-sub"
-                            id="menuWhatsappSub"
-                    >
-    WhatsApp orqali bog‘lanish
-   </span>
+<a
+id="menuWhatsapp"
+href="https://wa.me/"
+target="_blank"
+rel="noopener"
+>
+<span id="menuOpenWhatsapp">Ochish</span>
+</a>
 
-                </div>
+</div>
 
-                <a
-                        id="menuWhatsapp"
-                        href="https://wa.me/"
-                        target="_blank"
-                        rel="noopener"
-                >
-                    <span id="menuOpenWhatsapp">Ochish</span>
-                </a>
+<div
+class="menu-item social-menu-item"
+data-social="instagram"
+role="link"
+tabindex="0"
+onclick="openSocialMenu('instagram', event)"
+onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openSocialMenu('instagram',event)}"
+>
 
-            </div>
+<div class="menu-item-left">
 
-            <div class="menu-item social-menu-item" data-social="instagram" role="link" tabindex="0" onclick="openSocialMenu('instagram', event)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openSocialMenu('instagram',event)}">
+<span class="menu-item-title">
 
-                <div class="menu-item-left">
+<svg class="icon">
+<use href="#i-instagram"></use>
+</svg>
 
-   <span class="menu-item-title">
+<span id="menuInstagramTitle">Instagram</span>
 
-    <svg class="icon">
-     <use href="#i-instagram"></use>
-    </svg>
+</span>
 
-    <span id="menuInstagramTitle">
-     Instagram
-    </span>
+<span
+class="menu-item-sub"
+id="menuInstagramSub"
+>
+Instagram sahifamiz
+</span>
 
-   </span>
+</div>
 
-                    <span
-                            class="menu-item-sub"
-                            id="menuInstagramSub"
-                    >
-    Instagram sahifamiz
-   </span>
+<a
+id="menuInstagram"
+href="https://instagram.com/"
+target="_blank"
+rel="noopener"
+>
+<span id="menuOpenInstagram">Ochish</span>
+</a>
 
-                </div>
+</div>
 
-                <a
-                        id="menuInstagram"
-                        href="https://instagram.com/"
-                        target="_blank"
-                        rel="noopener"
-                >
-                    <span id="menuOpenInstagram">Ochish</span>
-                </a>
+<div class="menu-item">
 
-            </div>
+<div class="menu-item-left">
 
-            <div class="menu-item">
+<span class="menu-item-title">
 
-                <div class="menu-item-left">
+<svg class="icon">
+<use href="#i-location"></use>
+</svg>
 
-   <span class="menu-item-title">
+<span id="menuAddressTitle">Manzil</span>
 
-    <svg class="icon">
-     <use href="#i-location"></use>
-    </svg>
+</span>
 
-    <span id="menuAddressTitle">
-     Manzil
-    </span>
+<span
+class="menu-item-sub"
+id="menuAddress"
+>
+Toshkent, O‘zbekiston
+</span>
 
-   </span>
+</div>
 
-                    <span
-                            class="menu-item-sub"
-                            id="menuAddress"
-                    >
-    Toshkent, O‘zbekiston
-   </span>
+<svg class="icon icon-lg">
+<use href="#i-location"></use>
+</svg>
 
-                </div>
+</div>
 
-                <svg class="icon icon-lg">
-                    <use href="#i-location"></use>
-                </svg>
+<div class="menu-item">
 
-            </div>
+<div class="menu-item-left">
 
-            <div class="menu-item">
+<span class="menu-item-title">
 
-                <div class="menu-item-left">
+<svg class="icon">
+<use href="#i-globe"></use>
+</svg>
 
-   <span class="menu-item-title">
+<span id="menuLanguageTitle">Til</span>
 
-    <svg class="icon">
-     <use href="#i-globe"></use>
-    </svg>
+</span>
 
-    <span id="menuLanguageTitle">
-     Til
-    </span>
+<span
+class="menu-item-sub"
+id="menuLanguageSub"
+>
+UZ / RU / EN
+</span>
 
-   </span>
+</div>
 
-                    <span
-                            class="menu-item-sub"
-                            id="menuLanguageSub"
-                    >
-    UZ / RU / EN
-   </span>
+<svg class="icon icon-lg">
+<use href="#i-globe"></use>
+</svg>
 
-                </div>
+</div>
 
-                <svg class="icon icon-lg">
-                    <use href="#i-globe"></use>
-                </svg>
+<div class="menu-item">
 
-            </div>
+<div class="menu-item-left">
 
-            <div class="menu-item">
+<span class="menu-item-title">
 
-                <div class="menu-item-left">
+<svg class="icon">
+<use href="#i-home"></use>
+</svg>
 
-   <span class="menu-item-title">
+<span id="menuAppearanceTitle">Ko‘rinish</span>
 
-    <svg class="icon">
-     <use href="#i-home"></use>
-    </svg>
+</span>
 
-    <span id="menuAppearanceTitle">
-     Ko‘rinish
-    </span>
+<span
+class="menu-item-sub"
+id="menuAppearanceSub"
+>
+Light / Dark
+</span>
 
-   </span>
+</div>
 
-                    <span
-                            class="menu-item-sub"
-                            id="menuAppearanceSub"
-                    >
-    Light / Dark
-   </span>
+<button
+class="theme-btn"
+onclick="toggleTheme()"
+id="themeBtnMenu"
+></button>
 
-                </div>
+</div>
 
-                <button
-                        class="theme-btn"
-                        onclick="toggleTheme()"
-                        id="themeBtnMenu"
-                ></button>
+</div>
 
-            </div>
-
-        </div>
-
-    </section>
+</section>
 
 </main>
 
-<!-- =========================
-     BOTTOM NAV
-========================= -->
-
 <nav class="bottom-nav">
 
-    <button
-            id="navHome"
-            class="active"
-            onclick="goHome()"
-    >
+<button
+id="navHome"
+class="active"
+onclick="goHome()"
+>
 
- <span class="bottom-icon">
-  <svg class="icon">
-   <use href="#i-home"></use>
-  </svg>
- </span>
+<span class="bottom-icon">
+<svg class="icon">
+<use href="#i-home"></use>
+</svg>
+</span>
 
-        <span id="navHomeText">
-  Bosh sahifa
- </span>
+<span id="navHomeText">Bosh sahifa</span>
 
-    </button>
+</button>
 
-    <button
-            id="navSearch"
-            onclick="focusSearch()"
-    >
+<button
+id="navSearch"
+onclick="focusSearch()"
+>
 
- <span class="bottom-icon">
-  <svg class="icon">
-   <use href="#i-search"></use>
-  </svg>
- </span>
+<span class="bottom-icon">
+<svg class="icon">
+<use href="#i-search"></use>
+</svg>
+</span>
 
-        <span id="navSearchText">
-  Qidiruv
- </span>
+<span id="navSearchText">Qidiruv</span>
 
-    </button>
+</button>
 
-    <button
-            id="navFavorites"
-            onclick="showFavorites()"
-    >
+<button
+id="navFavorites"
+onclick="showFavorites()"
+>
 
- <span class="bottom-icon">
-  <svg class="icon">
-   <use href="#i-heart"></use>
-  </svg>
- </span>
+<span class="bottom-icon">
+<svg class="icon">
+<use href="#i-heart"></use>
+</svg>
+</span>
 
-        <span id="navFavoritesText">
-  Sevimlilar
- </span>
+<span id="navFavoritesText">Sevimlilar</span>
 
-    </button>
+</button>
 
-    <button
-            id="navMenu"
-            onclick="showMenu()"
-    >
+<button
+id="navMenu"
+onclick="showMenu()"
+>
 
- <span class="bottom-icon">
-  <svg class="icon">
-   <use href="#i-home"></use>
-  </svg>
- </span>
+<span class="bottom-icon">
+<svg class="icon">
+<use href="#i-home"></use>
+</svg>
+</span>
 
-        <span id="navMenuText">
-  Menyu
- </span>
+<span id="navMenuText">Menyu</span>
 
-    </button>
+</button>
 
 </nav>
 
-<!-- =========================
-     LIGHTBOX
-========================= -->
-
 <div
-        class="lightbox"
-        id="lightbox"
+class="lightbox"
+id="lightbox"
 >
 
-    <button
-            class="lightbox-close"
-            onclick="closeLightbox()"
-    >
-        ×
-    </button>
+<button
+class="lightbox-close"
+onclick="closeLightbox()"
+>×</button>
 
-    <button
-            class="lightbox-prev"
-            onclick="changeLightbox(-1)"
-    >
-        ‹
-    </button>
+<button
+class="lightbox-prev"
+onclick="changeLightbox(-1)"
+>‹</button>
 
-    <img
-            id="lightboxImage"
-            src=""
-            alt=""
-    >
+<img
+id="lightboxImage"
+src=""
+alt=""
+>
 
-    <button
-            class="lightbox-next"
-            onclick="changeLightbox(1)"
-    >
-        ›
-    </button>
+<button
+class="lightbox-next"
+onclick="changeLightbox(1)"
+>›</button>
 
 </div>
 
 <script>
 
-    let allCars=[];
-    let filteredCars=[];
-    let currentType="all";
-
-    let searchPageType="all";
-
-    let favorites=
-        JSON.parse(
-            localStorage.getItem("favorites")||"[]"
-        );
-
-    let currentLang=
-        localStorage.getItem("language")||"uz";
-
-    let currentDetailsCar=null;
-    let currentLightboxIndex=0;
-
-    let siteSettings={
-        phone:"+998 88 950 00 05",
-        telegram:"https://t.me/",
-        whatsapp:"https://wa.me/",
-        instagram:"https://instagram.com/",
-        address:"Toshkent, O‘zbekiston"
-    };
-
-    /* =========================
-       TRANSLATIONS
-    ========================= */
-
-    const translations={
-
-        uz:{
-            search:"Uy qidirish...",
-            cars:"Uylar",
-            back:"Orqaga",
-            call:"Qo‘ng‘iroq qilish",
-            callShort:"Qo‘ng‘iroq",
-            detail:"Batafsil",
-            new:"YANGI",
-            soldBadge:"SOTILDI",
-            photos:"rasm",
-
-            categories:{
-                all:"Barchasi",
-                hovli:"Hovli",
-                kvartira:"Kvartira",
-                yer:"Yer",
-                yangi:"Yangi qurilish"
-            },
-
-            searchTitle:"Qidiruv",
-            priceFilter:"💰 Narx bo‘yicha",
-            addressFilter:"📍 Manzil bo‘yicha",
-            roomsFilter:"🛏 Xonalar bo‘yicha",
-
-            home:"Bosh sahifa",
-            searchNav:"Qidiruv",
-            favorites:"Sevimlilar",
-            menu:"Menyu",
+let allCars=[];
+let filteredCars=[];
+let currentType="all";
+let searchPageType="all";
+
+let favorites=
+JSON.parse(
+localStorage.getItem("favorites")||"[]"
+);
+
+let currentLang=
+localStorage.getItem("language")||"uz";
+
+let currentDetailsCar=null;
+let currentLightboxIndex=0;
+
+let siteSettings={
+phone:"+998 88 950 00 05",
+telegram:"https://t.me/",
+whatsapp:"https://wa.me/",
+instagram:"https://instagram.com/",
+address:"Toshkent, O‘zbekiston"
+};
+
+const translations={
+
+uz:{
+search:"Uy qidirish...",
+cars:"Uylar",
+back:"Orqaga",
+call:"Qo‘ng‘iroq qilish",
+callShort:"Qo‘ng‘iroq",
+detail:"Batafsil",
+new:"YANGI",
+soldBadge:"SOTILDI",
+photos:"rasm",
+
+categories:{
+all:"Barchasi",
+hovli:"Hovli",
+kvartira:"Kvartira",
+yer:"Yer",
+yangi:"Yangi qurilish"
+},
+
+searchTitle:"Qidiruv",
+priceFilter:"💰 Narx bo‘yicha",
+addressFilter:"📍 Manzil bo‘yicha",
+roomsFilter:"🛏 Xonalar bo‘yicha",
+
+home:"Bosh sahifa",
+searchNav:"Qidiruv",
+favorites:"Sevimlilar",
+menu:"Menyu",
+
+platform:"Uy-joy platformasi",
 
-            platform:"Uy-joy platformasi",
+phone:"Telefon",
+phoneSub:"Biz bilan bog‘lanish",
+
+telegram:"Telegram",
+telegramSub:"Telegram orqali bog‘lanish",
+
+whatsapp:"WhatsApp",
+whatsappSub:"WhatsApp orqali bog‘lanish",
+
+instagram:"Instagram",
+instagramSub:"Instagram sahifamiz",
+
+address:"Manzil",
+
+language:"Til",
+languageSub:"UZ / RU / EN",
+
+appearance:"Ko‘rinish",
+appearanceSub:"Light / Dark",
+
+open:"Ochish",
+
+empty:"Hozircha uy topilmadi",
+emptyText:"Boshqa uy yoki manzilni qidirib ko‘ring.",
+
+noFavorites:"Sevimli uylar yo‘q",
+noFavoritesText:"Uy kartasidagi yurak tugmasini bosing.",
+
+loadingError:"Ma'lumot yuklanmadi",
+serverError:"Server bilan bog‘lanishda xatolik yuz berdi.",
+
+type:"Turi",
+rooms:"Xonalar",
+area:"Maydon",
+addressLabel:"Manzil"
+},
+
+ru:{
+search:"Поиск жилья...",
+cars:"Недвижимость",
+back:"Назад",
+call:"Позвонить",
+callShort:"Позвонить",
+detail:"Подробнее",
+new:"НОВИНКА",
+soldBadge:"ПРОДАНО",
+photos:"фото",
+
+categories:{
+all:"Все",
+hovli:"Частный дом",
+kvartira:"Квартира",
+yer:"Земля",
+yangi:"Новостройка"
+},
 
-            phone:"Telefon",
-            phoneSub:"Biz bilan bog‘lanish",
+searchTitle:"Поиск",
+priceFilter:"💰 По цене",
+addressFilter:"📍 По адресу",
+roomsFilter:"🛏 По комнатам",
 
-            telegram:"Telegram",
-            telegramSub:"Telegram orqali bog‘lanish",
+home:"Главная",
+searchNav:"Поиск",
+favorites:"Избранное",
+menu:"Меню",
 
-            whatsapp:"WhatsApp",
-            whatsappSub:"WhatsApp orqali bog‘lanish",
-
-            instagram:"Instagram",
-            instagramSub:"Instagram sahifamiz",
-
-            address:"Manzil",
-
-            language:"Til",
-            languageSub:"UZ / RU / EN",
-
-            appearance:"Ko‘rinish",
-            appearanceSub:"Light / Dark",
-
-            open:"Ochish",
-
-            empty:"Hozircha uy topilmadi",
-            emptyText:"Boshqa uy yoki manzilni qidirib ko‘ring.",
-
-            noFavorites:"Sevimli uylar yo‘q",
-            noFavoritesText:"Uy kartasidagi yurak tugmasini bosing.",
-
-            loadingError:"Ma'lumot yuklanmadi",
-            serverError:"Server bilan bog‘lanishda xatolik yuz berdi.",
-
-            type:"Turi",
-            rooms:"Xonalar",
-            area:"Maydon",
-            addressLabel:"Manzil"
-        },
-
-        ru:{
-            search:"Поиск жилья...",
-            cars:"Недвижимость",
-            back:"Назад",
-            call:"Позвонить",
-            callShort:"Позвонить",
-            detail:"Подробнее",
-            new:"НОВИНКА",
-            soldBadge:"ПРОДАНО",
-            photos:"фото",
-
-            categories:{
-                all:"Все",
-                hovli:"Частный дом",
-                kvartira:"Квартира",
-                yer:"Земля",
-                yangi:"Новостройка"
-            },
-
-            searchTitle:"Поиск",
-            priceFilter:"💰 По цене",
-            addressFilter:"📍 По адресу",
-            roomsFilter:"🛏 По комнатам",
-
-            home:"Главная",
-            searchNav:"Поиск",
-            favorites:"Избранное",
-            menu:"Меню",
+platform:"Платформа недвижимости",
 
-            platform:"Платформа недвижимости",
+phone:"Телефон",
+phoneSub:"Связаться с нами",
 
-            phone:"Телефон",
-            phoneSub:"Связаться с нами",
+telegram:"Telegram",
+telegramSub:"Связаться через Telegram",
 
-            telegram:"Telegram",
-            telegramSub:"Связаться через Telegram",
+whatsapp:"WhatsApp",
+whatsappSub:"Связаться через WhatsApp",
 
-            whatsapp:"WhatsApp",
-            whatsappSub:"Связаться через WhatsApp",
+instagram:"Instagram",
+instagramSub:"Наша страница в Instagram",
 
-            instagram:"Instagram",
-            instagramSub:"Наша страница в Instagram",
+address:"Адрес",
 
-            address:"Адрес",
+language:"Язык",
+languageSub:"UZ / RU / EN",
 
-            language:"Язык",
-            languageSub:"UZ / RU / EN",
+appearance:"Внешний вид",
+appearanceSub:"Светлая / Тёмная",
 
-            appearance:"Внешний вид",
-            appearanceSub:"Светлая / Тёмная",
+open:"Открыть",
 
-            open:"Открыть",
+empty:"Жильё не найдено",
+emptyText:"Попробуйте поискать другой вариант.",
 
-            empty:"Жильё не найдено",
-            emptyText:"Попробуйте поискать другой вариант.",
+noFavorites:"Нет избранного жилья",
+noFavoritesText:"Нажмите на сердечко на карточке.",
 
-            noFavorites:"Нет избранного жилья",
-            noFavoritesText:"Нажмите на сердечко на карточке.",
+loadingError:"Не удалось загрузить данные",
+serverError:"Ошибка соединения с сервером.",
 
-            loadingError:"Не удалось загрузить данные",
-            serverError:"Ошибка соединения с сервером.",
+type:"Тип",
+rooms:"Комнаты",
+area:"Площадь",
+addressLabel:"Адрес"
+},
 
-            type:"Тип",
-            rooms:"Комнаты",
-            area:"Площадь",
-            addressLabel:"Адрес"
-        },
+en:{
+search:"Search property...",
+cars:"Properties",
+back:"Back",
+call:"Call",
+callShort:"Call",
+detail:"Details",
+new:"NEW",
+soldBadge:"SOLD",
+photos:"photos",
 
-        en:{
-            search:"Search property...",
-            cars:"Properties",
-            back:"Back",
-            call:"Call",
-            callShort:"Call",
-            detail:"Details",
-            new:"NEW",
-            soldBadge:"SOLD",
-            photos:"photos",
+categories:{
+all:"All",
+hovli:"House",
+kvartira:"Apartment",
+yer:"Land",
+yangi:"New building"
+},
 
-            categories:{
-                all:"All",
-                hovli:"House",
-                kvartira:"Apartment",
-                yer:"Land",
-                yangi:"New building"
-            },
+searchTitle:"Search",
+priceFilter:"💰 By price",
+addressFilter:"📍 By address",
+roomsFilter:"🛏 By rooms",
 
-            searchTitle:"Search",
-            priceFilter:"💰 By price",
-            addressFilter:"📍 By address",
-            roomsFilter:"🛏 By rooms",
+home:"Home",
+searchNav:"Search",
+favorites:"Favorites",
+menu:"Menu",
 
-            home:"Home",
-            searchNav:"Search",
-            favorites:"Favorites",
-            menu:"Menu",
+platform:"Real estate platform",
 
-            platform:"Real estate platform",
-
-            phone:"Phone",
-            phoneSub:"Contact us",
-
-            telegram:"Telegram",
-            telegramSub:"Contact via Telegram",
-
-            whatsapp:"WhatsApp",
-            whatsappSub:"Contact via WhatsApp",
-
-            instagram:"Instagram",
-            instagramSub:"Our Instagram page",
-
-            address:"Address",
-
-            language:"Language",
-            languageSub:"UZ / RU / EN",
+phone:"Phone",
+phoneSub:"Contact us",
 
-            appearance:"Appearance",
-            appearanceSub:"Light / Dark",
-
-            open:"Open",
-
-            empty:"No property found",
-            emptyText:"Try searching for another property.",
-
-            noFavorites:"No favorite properties",
-            noFavoritesText:"Press the heart button on a property card.",
-
-            loadingError:"Failed to load data",
-            serverError:"Could not connect to the server.",
+telegram:"Telegram",
+telegramSub:"Contact via Telegram",
 
-            type:"Type",
-            rooms:"Rooms",
-            area:"Area",
-            addressLabel:"Address"
-        }
+whatsapp:"WhatsApp",
+whatsappSub:"Contact via WhatsApp",
 
-    };
+instagram:"Instagram",
+instagramSub:"Our Instagram page",
 
-    /* =========================
-       PHONE
-    ========================= */
+address:"Address",
 
-    function phoneHref(phone){
+language:"Language",
+languageSub:"UZ / RU / EN",
 
-        const value=
-            String(phone||"").trim();
+appearance:"Appearance",
+appearanceSub:"Light / Dark",
 
-        const cleaned=
-            value.replace(/[^\d+]/g,"");
+open:"Open",
 
-        return cleaned
-            ?"tel:"+cleaned
-            :"#";
-    }
+empty:"No property found",
+emptyText:"Try searching for another property.",
 
-    /* =========================
-       SOCIAL LINK NORMALIZER
-       Admin panelda https:// yozilmasa ham
-       Telegram / WhatsApp / Instagram ishlaydi.
-    ========================= */
-    function socialHref(value,type){
+noFavorites:"No favorite properties",
+noFavoritesText:"Press the heart button on a property card.",
 
-        let link=
-            String(value||"").trim();
+loadingError:"Failed to load data",
+serverError:"Could not connect to the server.",
 
-        if(!link)
-            return "#";
+type:"Type",
+rooms:"Rooms",
+area:"Area",
+addressLabel:"Address"
+}
 
-        // Agar to'liq URL bo'lsa, o'z holicha qoldiramiz.
-        if(/^https?:\/\//i.test(link))
-            return link;
+};
 
-        // //example.com ko'rinishini ham to'g'rilaymiz.
-        if(/^\/\//.test(link))
-            return "https:"+link;
+function phoneHref(phone){
 
-        // @username -> username
-        link=link.replace(/^@/,"");
+const value=
+String(phone||"").trim();
 
-        // telegram.com/t.me kabi noto'g'ri yozilgan variantlarni to'g'rilash.
-        link=link.replace(/^https?:\/\//i,"");
+const cleaned=
+value.replace(/[^\d+]/g,"");
 
-        if(type==="telegram"){
-            link=link.replace(/^t\.me\//i,"");
-            link=link.replace(/^telegram\.me\//i,"");
-            return "https://t.me/"+link;
-        }
+return cleaned
+?"tel:"+cleaned
+:"#";
+}
 
-        if(type==="instagram"){
-            link=link.replace(/^instagram\.com\//i,"");
-            return "https://instagram.com/"+link;
-        }
+function socialHref(value,type){
 
-        if(type==="whatsapp"){
-            // wa.me/998... yoki faqat raqam kiritilsa ham ishlaydi.
-            link=link.replace(/^wa\.me\//i,"");
-            link=link.replace(/^whatsapp\.com\/send\?phone=/i,"");
-            link=link.replace(/[^0-9+]/g,"");
-            link=link.replace(/^\+/,"");
-            return link
-                ? "https://wa.me/"+link
-                : "#";
-        }
+let link=
+String(value||"").trim();
 
-        return link;
-    }
+if(!link)
+return "#";
 
-    /* =========================
-       SETTINGS
-    ========================= */
+if(/^https?:\/\//i.test(link))
+return link;
 
-    async function loadSettings(){
+if(/^\/\//.test(link))
+return "https:"+link;
 
-        try{
+link=link.replace(/^@/,"");
+link=link.replace(/^https?:\/\//i,"");
 
-            const response=
-                await fetch(
-                    "/api/settings",
-                    {cache:"no-store"}
-                );
+if(type==="telegram"){
+link=link.replace(/^t\.me\//i,"");
+link=link.replace(/^telegram\.me\//i,"");
+return "https://t.me/"+link;
+}
 
-            if(!response.ok)
-                throw new Error("Settings API error");
+if(type==="instagram"){
+link=link.replace(/^instagram\.com\//i,"");
+return "https://instagram.com/"+link;
+}
 
-            const data=
-                await response.json();
+if(type==="whatsapp"){
+link=link.replace(/^wa\.me\//i,"");
+link=link.replace(/^whatsapp\.com\/send\?phone=/i,"");
+link=link.replace(/[^0-9+]/g,"");
+link=link.replace(/^\+/,"");
+return link
+?"https://wa.me/"+link
+:"#";
+}
 
-            if(data&&data.settings){
+return link;
+}
 
-                siteSettings={
-                    ...siteSettings,
-                    ...data.settings
-                };
+async function loadSettings(){
 
-            }
+try{
 
-        }catch(error){
+const response=
+await fetch(
+"/api/settings",
+{cache:"no-store"}
+);
 
-            console.error("Settings:",error);
+if(!response.ok)
+throw new Error("Settings API error");
 
-        }
+const data=
+await response.json();
 
-        applySettings();
-    }
+if(data&&data.settings){
 
-    function openSocialMenu(type,event){
+siteSettings={
+...siteSettings,
+...data.settings
+};
 
-        if(event && event.target && event.target.closest && event.target.closest('a')){
-            return;
-        }
+}
 
-        const ids={
-            telegram:"menuTelegram",
-            whatsapp:"menuWhatsapp",
-            instagram:"menuInstagram"
-        };
+}catch(error){
 
-        const link=document.getElementById(ids[type]);
+console.error("Settings:",error);
 
-        if(!link || !link.href || link.getAttribute('href')==='#'){
-            return;
-        }
+}
 
-        link.target="_blank";
-        link.rel="noopener noreferrer";
-        link.click();
-    }
+applySettings();
+}
 
-    function applySettings(){
+function openSocialMenu(type,event){
 
-        const phone=
-            siteSettings.phone||"";
+if(
+event &&
+event.target &&
+event.target.closest &&
+event.target.closest('a')
+){
+return;
+}
 
-        const href=
-            phoneHref(phone);
+const ids={
+telegram:"menuTelegram",
+whatsapp:"menuWhatsapp",
+instagram:"menuInstagram"
+};
 
-        const headerPhone=
-            document.getElementById("headerPhone");
+const link=document.getElementById(ids[type]);
 
-        if(headerPhone){
+if(
+!link ||
+!link.href ||
+link.getAttribute('href')==='#'
+){
+return;
+}
 
-            headerPhone.textContent=phone;
-            headerPhone.href=href;
+link.target="_blank";
+link.rel="noopener noreferrer";
+link.click();
+}
 
-        }
+function applySettings(){
 
-        const menuPhone=
-            document.getElementById("menuPhone");
+const phone=
+siteSettings.phone||"";
 
-        if(menuPhone){
+const href=
+phoneHref(phone);
 
-            menuPhone.textContent=phone;
-            menuPhone.href=href;
+const headerPhone=
+document.getElementById("headerPhone");
 
-        }
+if(headerPhone){
+headerPhone.textContent=phone;
+headerPhone.href=href;
+}
 
-        const telegram=
-            document.getElementById("menuTelegram");
+const menuPhone=
+document.getElementById("menuPhone");
 
-        if(telegram){
-            telegram.href=
-                socialHref(
-                    siteSettings.telegram,
-                    "telegram"
-                );
-        }
+if(menuPhone){
+menuPhone.textContent=phone;
+menuPhone.href=href;
+}
 
-        const whatsapp=
-            document.getElementById("menuWhatsapp");
+const telegram=
+document.getElementById("menuTelegram");
 
-        if(whatsapp){
-            whatsapp.href=
-                socialHref(
-                    siteSettings.whatsapp,
-                    "whatsapp"
-                );
-        }
+if(telegram){
+telegram.href=
+socialHref(
+siteSettings.telegram,
+"telegram"
+);
+}
 
-        const instagram=
-            document.getElementById("menuInstagram");
+const whatsapp=
+document.getElementById("menuWhatsapp");
 
-        if(instagram){
-            instagram.href=
-                socialHref(
-                    siteSettings.instagram,
-                    "instagram"
-                );
-        }
+if(whatsapp){
+whatsapp.href=
+socialHref(
+siteSettings.whatsapp,
+"whatsapp"
+);
+}
 
-        // Linklar tayyor bo'lgach, target=_blank orqali ochiladi.
-        [telegram,whatsapp,instagram]
-            .filter(Boolean)
-            .forEach(link=>{
-                link.target="_blank";
-                link.rel="noopener noreferrer";
-            });
+const instagram=
+document.getElementById("menuInstagram");
 
-        const address=
-            document.getElementById("menuAddress");
+if(instagram){
+instagram.href=
+socialHref(
+siteSettings.instagram,
+"instagram"
+);
+}
 
-        if(address)
-            address.textContent=
-                siteSettings.address||"";
+[telegram,whatsapp,instagram]
+.filter(Boolean)
+.forEach(link=>{
+link.target="_blank";
+link.rel="noopener noreferrer";
+});
 
-        document
-            .querySelectorAll(".call-btn")
-            .forEach(button=>{
-                button.href=href;
-            });
+const address=
+document.getElementById("menuAddress");
 
-        const detailsCall=
-            document.querySelector(".details-call");
+if(address)
+address.textContent=
+siteSettings.address||"";
 
-        if(detailsCall)
-            detailsCall.href=href;
-    }
+document
+.querySelectorAll(".call-btn")
+.forEach(button=>{
+button.href=href;
+});
 
-    /* =========================
-       LANGUAGE
-    ========================= */
+const detailsCall=
+document.querySelector(".details-call");
 
-    function setLang(lang){
+if(detailsCall)
+detailsCall.href=href;
+}
 
-        if(!translations[lang])
-            lang="uz";
+function setLang(lang){
 
-        currentLang=lang;
+if(!translations[lang])
+lang="uz";
 
-        localStorage.setItem(
-            "language",
-            lang
-        );
+currentLang=lang;
 
-        document.documentElement.lang=lang;
+localStorage.setItem(
+"language",
+lang
+);
 
-        applyLang();
-        renderFiltered();
-        renderSearchPage();
+document.documentElement.lang=lang;
 
-        if(
-            document
-                .getElementById("detailsPage")
-                .classList
-                .contains("active")
-            &&
-            currentDetailsCar
-        ){
+applyLang();
+renderFiltered();
+renderSearchPage();
 
-            openDetails(currentDetailsCar);
+if(
+document
+.getElementById("detailsPage")
+.classList
+.contains("active")
+&&
+currentDetailsCar
+){
 
-        }
+openDetails(currentDetailsCar);
 
-    }
+}
 
-    function applyLang(){
+}
 
-        const t=
-            translations[currentLang];
+function applyLang(){
 
-        const searchInput=
-            document.getElementById("searchInput");
+const t=
+translations[currentLang];
 
-        if(searchInput)
-            searchInput.placeholder=t.search;
+const searchInput=
+document.getElementById("searchInput");
 
-        const searchPageInput=
-            document.getElementById("searchPageInput");
+if(searchInput)
+searchInput.placeholder=t.search;
 
-        if(searchPageInput)
-            searchPageInput.placeholder=t.search;
+const searchPageInput=
+document.getElementById("searchPageInput");
 
-        setText("carsTitle",t.cars);
-        setText("searchResultsTitle",t.cars);
-        setText("backText",t.back);
-        setText("searchPageTitle",t.searchTitle);
+if(searchPageInput)
+searchPageInput.placeholder=t.search;
 
-        /* =========================
-           SEARCH CATEGORY TRANSLATIONS
-        ========================= */
+setText("carsTitle",t.cars);
+setText("searchResultsTitle",t.cars);
+setText("backText",t.back);
+setText("searchPageTitle",t.searchTitle);
 
-        setText("searchCatAll",t.categories.all);
-        setText("searchCatHovli",t.categories.hovli);
-        setText("searchCatKvartira",t.categories.kvartira);
-        setText("searchCatYer",t.categories.yer);
-        setText("searchCatYangi",t.categories.yangi);
+setText("searchCatAll",t.categories.all);
+setText("searchCatHovli",t.categories.hovli);
+setText("searchCatKvartira",t.categories.kvartira);
+setText("searchCatYer",t.categories.yer);
+setText("searchCatYangi",t.categories.yangi);
 
-        /* =========================
-           EXTRA FILTERS
-        ========================= */
+setText("priceFilterText",t.priceFilter);
+setText("addressFilterText",t.addressFilter);
+setText("roomsFilterText",t.roomsFilter);
 
-        setText("priceFilterText",t.priceFilter);
-        setText("addressFilterText",t.addressFilter);
-        setText("roomsFilterText",t.roomsFilter);
+setText("navHomeText",t.home);
+setText("navSearchText",t.searchNav);
+setText("navFavoritesText",t.favorites);
+setText("navMenuText",t.menu);
 
-        /* =========================
-           BOTTOM NAV
-        ========================= */
+setText("menuPlatform",t.platform);
+setText("menuPhoneTitle",t.phone);
+setText("menuPhoneSub",t.phoneSub);
 
-        setText("navHomeText",t.home);
-        setText("navSearchText",t.searchNav);
-        setText("navFavoritesText",t.favorites);
-        setText("navMenuText",t.menu);
+setText("menuTelegramTitle",t.telegram);
+setText("menuTelegramSub",t.telegramSub);
 
-        setText("menuPlatform",t.platform);
-        setText("menuPhoneTitle",t.phone);
-        setText("menuPhoneSub",t.phoneSub);
+setText("menuWhatsappTitle",t.whatsapp);
+setText("menuWhatsappSub",t.whatsappSub);
 
-        setText("menuTelegramTitle",t.telegram);
-        setText("menuTelegramSub",t.telegramSub);
+setText("menuInstagramTitle",t.instagram);
+setText("menuInstagramSub",t.instagramSub);
 
-        setText("menuWhatsappTitle",t.whatsapp);
-        setText("menuWhatsappSub",t.whatsappSub);
+setText("menuAddressTitle",t.address);
 
-        setText("menuInstagramTitle",t.instagram);
-        setText("menuInstagramSub",t.instagramSub);
+setText("menuLanguageTitle",t.language);
+setText("menuLanguageSub",t.languageSub);
 
-        setText("menuAddressTitle",t.address);
+setText("menuAppearanceTitle",t.appearance);
+setText("menuAppearanceSub",t.appearanceSub);
 
-        setText("menuLanguageTitle",t.language);
-        setText("menuLanguageSub",t.languageSub);
+setText("menuOpenTelegram",t.open);
+setText("menuOpenWhatsapp",t.open);
+setText("menuOpenInstagram",t.open);
 
-        setText("menuAppearanceTitle",t.appearance);
-        setText("menuAppearanceSub",t.appearanceSub);
+document
+.querySelectorAll(".lang-btn")
+.forEach(button=>{
 
-        setText("menuOpenTelegram",t.open);
-        setText("menuOpenWhatsapp",t.open);
-        setText("menuOpenInstagram",t.open);
+button.classList.toggle(
+"active",
+button.textContent.trim().toLowerCase()===currentLang
+);
 
-        document
-            .querySelectorAll(".lang-btn")
-            .forEach(button=>{
+});
 
-                button.classList.toggle(
-                    "active",
-                    button.textContent.trim().toLowerCase()===currentLang
-                );
+}
 
-            });
+function setText(id,value){
 
-    }
+const element=
+document.getElementById(id);
 
-    function setText(id,value){
+if(element)
+element.textContent=value;
 
-        const element=
-            document.getElementById(id);
+}
 
-        if(element)
-            element.textContent=value;
+function toggleTheme(){
 
-    }
+document.body.classList.toggle("dark");
 
-    /* =========================
-       THEME
-    ========================= */
+const isDark=
+document.body.classList.contains("dark");
 
-    function toggleTheme(){
+localStorage.setItem(
+"darkMode",
+isDark
+);
 
-        document.body.classList.toggle("dark");
+updateThemeIcon();
+}
 
-        const isDark=
-            document.body.classList.contains("dark");
+function updateThemeIcon(){
 
-        localStorage.setItem(
-            "darkMode",
-            isDark
-        );
+const isDark=
+document.body.classList.contains("dark");
 
-        updateThemeIcon();
-    }
+const icon=
+isDark?"i-sun":"i-moon";
 
-    function updateThemeIcon(){
+["themeBtn","themeBtnMenu"].forEach(id=>{
 
-        const isDark=
-            document.body.classList.contains("dark");
+const element=
+document.getElementById(id);
 
-        const icon=
-            isDark?"i-sun":"i-moon";
+if(element){
 
-        ["themeBtn","themeBtnMenu"].forEach(id=>{
+element.innerHTML=`
+<svg class="icon">
+<use href="#${icon}"></use>
+</svg>
+`;
 
-            const element=
-                document.getElementById(id);
+}
 
-            if(element){
+});
 
-                element.innerHTML=`
-    <svg class="icon">
-     <use href="#${icon}"></use>
-    </svg>
-   `;
+}
 
-            }
+function parsePrice(value){
 
-        });
-    }
+if(value===undefined||value===null)
+return 0;
 
-    /* =========================
-       PRICE
-    ========================= */
+if(typeof value==="number")
+return value;
 
-    function parsePrice(value){
+const str=
+String(value)
+.replace(/\s/g,"")
+.replace(/\$/g,"")
+.replace(/,/g,"")
+.replace(/\./g,"");
 
-        if(value===undefined||value===null)
-            return 0;
+const num=Number(str);
 
-        if(typeof value==="number")
-            return value;
+return isNaN(num)?0:num;
+}
 
-        const str=
-            String(value)
-                .replace(/\s/g,"")
-                .replace(/\$/g,"")
-                .replace(/,/g,"")
-                .replace(/\./g,"");
+function formatPrice(value,currency){
 
-        const num=Number(str);
+const number=parsePrice(value);
 
-        return isNaN(num)?0:num;
-    }
+if(!number)
+return String(value||"");
 
-    function formatPrice(value,currency){
+const formatted=
+number.toLocaleString("en-US")
+.replace(/,/g," ");
 
-        const number=parsePrice(value);
+if(currency==="USD")
+return formatted+" $";
 
-        if(!number)
-            return String(value||"");
+return formatted+" so‘m";
+}
 
-        const formatted=
-            number.toLocaleString("en-US")
-                .replace(/,/g," ");
+function searchCars(){
 
-        if(currency==="USD")
-            return formatted+" $";
+const input=
+document
+.getElementById("searchInput")
+.value
+.toLowerCase()
+.trim();
 
-        return formatted+" so‘m";
-    }
+filteredCars=
+allCars.filter(car=>{
 
-    /* =========================
-       HOME SEARCH
-    ========================= */
+const type=
+String(car.type||"").toLowerCase();
 
-    function searchCars(){
+const name=
+String(car.name||"").toLowerCase();
 
-        const input=
-            document
-                .getElementById("searchInput")
-                .value
-                .toLowerCase()
-                .trim();
+const description=
+String(car.description||"").toLowerCase();
 
-        filteredCars=
-            allCars.filter(car=>{
+const address=
+String(car.address||"").toLowerCase();
 
-                const type=
-                    String(car.type||"").toLowerCase();
+const price=
+String(car.price||"").toLowerCase();
 
-                const name=
-                    String(car.name||"").toLowerCase();
+const matchesText=
+!input||
+name.includes(input)||
+description.includes(input)||
+address.includes(input)||
+price.includes(input)||
+type.includes(input);
 
-                const description=
-                    String(car.description||"").toLowerCase();
+const matchesType=
+currentType==="all"||
+type===currentType.toLowerCase();
 
-                const address=
-                    String(car.address||"").toLowerCase();
+return matchesText&&matchesType;
 
-                const price=
-                    String(car.price||"").toLowerCase();
+});
 
-                const matchesText=
-                    !input||
-                    name.includes(input)||
-                    description.includes(input)||
-                    address.includes(input)||
-                    price.includes(input)||
-                    type.includes(input);
+renderFiltered();
+}
 
-                const matchesType=
-                    currentType==="all"||
-                    type===currentType.toLowerCase();
+function resetSearch(){
 
-                return matchesText&&matchesType;
+const input=
+document.getElementById("searchInput");
 
-            });
+if(input)
+input.value="";
 
-        renderFiltered();
-    }
+currentType="all";
 
-    function resetSearch(){
+filteredCars=[...allCars];
 
-        const input=
-            document.getElementById("searchInput");
+renderFiltered();
+}
 
-        if(input)
-            input.value="";
+function toggleExtraFilters(){
 
-        currentType="all";
+const filters=
+document.getElementById("extraFilters");
 
-        filteredCars=[...allCars];
+const button=
+document.getElementById("filterToggle");
 
-        renderFiltered();
-    }
+if(!filters||!button)
+return;
 
-    /* =========================
-       SEARCH PAGE
-    ========================= */
+const isOpen=
+filters.classList.toggle("open");
 
-    function toggleExtraFilters(){
+button.classList.toggle(
+"open",
+isOpen
+);
+}
 
-        const filters=
-            document.getElementById("extraFilters");
+function filterSearchPage(type,button){
 
-        const button=
-            document.getElementById("filterToggle");
+searchPageType=type;
 
-        if(!filters||!button)
-            return;
+document
+.querySelectorAll(".search-category")
+.forEach(item=>{
+item.classList.remove("active");
+});
 
-        const isOpen=
-            filters.classList.toggle("open");
+if(button)
+button.classList.add("active");
 
-        button.classList.toggle(
-            "open",
-            isOpen
-        );
-    }
+searchFromSearchPage();
+}
 
-    function filterSearchPage(type,button){
+function searchFromSearchPage(){
 
-        searchPageType=type;
+const inputElement=
+document.getElementById("searchPageInput");
 
-        document
-            .querySelectorAll(".search-category")
-            .forEach(item=>{
-                item.classList.remove("active");
-            });
+const input=
+inputElement
+?inputElement.value.toLowerCase().trim()
+:"";
 
-        if(button)
-            button.classList.add("active");
+const result=
+allCars.filter(car=>{
 
-        searchFromSearchPage();
-    }
+const types=
+Array.isArray(car.types)
+?car.types
+:[];
 
-    function searchFromSearchPage(){
+const mainType=
+String(car.type||"");
 
-        const inputElement=
-            document.getElementById("searchPageInput");
+const name=
+String(car.name||"").toLowerCase();
 
-        const input=
-            inputElement
-                ?inputElement.value.toLowerCase().trim()
-                :"";
+const description=
+String(car.description||"").toLowerCase();
 
-        const result=
-            allCars.filter(car=>{
+const address=
+String(car.address||"").toLowerCase();
 
-                const types=
-                    Array.isArray(car.types)
-                        ?car.types
-                        :[];
+const price=
+String(car.price||"").toLowerCase();
 
-                const mainType=
-                    String(car.type||"");
+const typeText=
+types.join(" ").toLowerCase()+
+" "+
+mainType.toLowerCase();
 
-                const name=
-                    String(car.name||"").toLowerCase();
+const matchesText=
+!input||
+name.includes(input)||
+description.includes(input)||
+address.includes(input)||
+price.includes(input)||
+typeText.includes(input);
 
-                const description=
-                    String(car.description||"").toLowerCase();
+let matchesType=true;
 
-                const address=
-                    String(car.address||"").toLowerCase();
+if(searchPageType!=="all"){
 
-                const price=
-                    String(car.price||"").toLowerCase();
+const normalizeType=value=>
+String(value||"")
+.replace(/🏡|🏢|🌳|🏗️|🏗/g,"")
+.replace(/\\uFE0F/g,"")
+.trim()
+.toLowerCase();
 
-                const typeText=
-                    types.join(" ").toLowerCase()+
-                    " "+
-                    mainType.toLowerCase();
+const wantedType=
+normalizeType(searchPageType);
 
-                const matchesText=
-                    !input||
-                    name.includes(input)||
-                    description.includes(input)||
-                    address.includes(input)||
-                    price.includes(input)||
-                    typeText.includes(input);
+matchesType=
+types.some(item=>
+normalizeType(item)===wantedType
+)||
+normalizeType(mainType)===wantedType;
 
-                let matchesType=true;
+}
 
-                if(searchPageType!=="all"){
+return matchesText&&matchesType;
 
-                    // Admin panel tur nomini emoji bilan saqlaydi:
-                    // "🏡 Hovli", "🏢 Kvartira", "🌳 Yer",
-                    // "🏗️ Yangi qurilish".
-                    // Qidiruv tugmalarida esa emoji yo'q.
-                    // Shuning uchun ikkala qiymatni bir xil ko'rinishga keltiramiz.
-                    const normalizeType = value =>
-                        String(value||"")
-                            .replace(/🏡|🏢|🌳|🏗️|🏗/g,"")
-                            .replace(/\\uFE0F/g,"")
-                            .trim()
-                            .toLowerCase();
+});
 
-                    const wantedType =
-                        normalizeType(searchPageType);
+renderSearchPage(result);
+}
 
-                    matchesType =
-                        types.some(item=>
-                            normalizeType(item) === wantedType
-                        ) ||
-                        normalizeType(mainType) === wantedType;
+function resetSearchPage(){
 
-                }
+const input=
+document.getElementById("searchPageInput");
 
-                return matchesText&&matchesType;
+if(input)
+input.value="";
 
-            });
+searchPageType="all";
 
-        renderSearchPage(result);
-    }
+document
+.querySelectorAll(".search-category")
+.forEach((button,index)=>{
+button.classList.toggle(
+"active",
+index===0
+);
+});
 
-    function resetSearchPage(){
+renderSearchPage([...allCars]);
+}
 
-        const input=
-            document.getElementById("searchPageInput");
+function renderSearchPage(cars){
 
-        if(input)
-            input.value="";
+const grid=
+document.getElementById("searchCarsGrid");
 
-        searchPageType="all";
+const count=
+document.getElementById("searchResultsCount");
 
-        document
-            .querySelectorAll(".search-category")
-            .forEach((button,index)=>{
-                button.classList.toggle(
-                    "active",
-                    index===0
-                );
-            });
+if(!grid||!count)
+return;
 
-        renderSearchPage([...allCars]);
-    }
+count.textContent=
+cars.length+" ta";
 
-    function renderSearchPage(cars){
+if(cars.length===0){
 
-        const grid=
-            document.getElementById("searchCarsGrid");
+const t=
+translations[currentLang];
 
-        const count=
-            document.getElementById("searchResultsCount");
+grid.innerHTML=`
 
-        if(!grid||!count)
-            return;
+<div class="empty">
 
-        count.textContent=
-            cars.length+" ta";
+<div class="empty-icon">
 
-        if(cars.length===0){
+<svg
+class="icon"
+style="width:55px;height:55px"
+>
+<use href="#i-home"></use>
+</svg>
 
-            const t=
-                translations[currentLang];
+</div>
 
-            grid.innerHTML=`
+<h3>
+${escapeHtml(t.empty)}
+</h3>
 
-   <div class="empty">
+<p>
+${escapeHtml(t.emptyText)}
+</p>
 
-    <div class="empty-icon">
+</div>
 
-     <svg
-      class="icon"
-      style="width:55px;height:55px"
-     >
-      <use href="#i-home"></use>
-     </svg>
+`;
 
-    </div>
+return;
+}
 
-    <h3>
-     ${escapeHtml(t.empty)}
-    </h3>
+grid.innerHTML="";
 
-    <p>
-     ${escapeHtml(t.emptyText)}
-    </p>
+cars.forEach((car,index)=>{
 
-   </div>
+grid.appendChild(
+createCarCard(car,index)
+);
 
-  `;
+});
 
-            return;
-        }
+applySettings();
+}
 
-        grid.innerHTML="";
+function filterType(type){
 
-        cars.forEach((car,index)=>{
+currentType=type;
+searchCars();
+}
 
-            grid.appendChild(
-                createCarCard(car,index)
-            );
+async function load(){
 
-        });
+showSkeleton();
 
-        applySettings();
-    }
+try{
 
-    /* =========================
-       FILTER TYPE
-    ========================= */
+const response=
+await fetch("/api/cars");
 
-    function filterType(type){
+if(!response.ok)
+throw new Error("API error");
 
-        currentType=type;
-        searchCars();
-    }
+const data=
+await response.json();
 
-    /* =========================
-       LOAD
-    ========================= */
+if(Array.isArray(data))
+allCars=data;
+else if(Array.isArray(data.cars))
+allCars=data.cars;
+else
+allCars=[];
 
-    async function load(){
+filteredCars=[...allCars];
 
-        showSkeleton();
+renderFiltered();
+renderSearchPage([...allCars]);
 
-        try{
+}catch(error){
 
-            const response=
-                await fetch("/api/cars");
+console.error(error);
 
-            if(!response.ok)
-                throw new Error("API error");
+allCars=[];
 
-            const data=
-                await response.json();
+const t=
+translations[currentLang];
 
-            if(Array.isArray(data))
-                allCars=data;
-            else if(Array.isArray(data.cars))
-                allCars=data.cars;
-            else
-                allCars=[];
+renderEmpty(
+t.loadingError,
+t.serverError
+);
 
-            filteredCars=[...allCars];
+renderSearchPage([]);
 
-            renderFiltered();
-            renderSearchPage([...allCars]);
+}
+}
 
-        }catch(error){
+function showSkeleton(){
 
-            console.error(error);
+const grid=
+document.getElementById("carsGrid");
 
-            allCars=[];
+if(!grid)
+return;
 
-            const t=
-                translations[currentLang];
+grid.innerHTML="";
 
-            renderEmpty(
-                t.loadingError,
-                t.serverError
-            );
+for(let i=0;i<6;i++){
 
-            renderSearchPage([]);
+grid.innerHTML+=`
 
-        }
-    }
+<div class="skeleton">
 
-    function showSkeleton(){
+<div class="skeleton-img"></div>
 
-        const grid=
-            document.getElementById("carsGrid");
+<div class="skeleton-content">
 
-        if(!grid)
-            return;
+<div class="skeleton-line big"></div>
+<div class="skeleton-line"></div>
+<div class="skeleton-line"></div>
 
-        grid.innerHTML="";
+</div>
 
-        for(let i=0;i<6;i++){
+</div>
 
-            grid.innerHTML+=`
+`;
+}
+}
 
-   <div class="skeleton">
+function imageUrl(filename){
 
-    <div class="skeleton-img"></div>
+if(!filename)
+return "";
 
-    <div class="skeleton-content">
+if(String(filename).startsWith("http"))
+return filename;
 
-     <div class="skeleton-line big"></div>
-     <div class="skeleton-line"></div>
-     <div class="skeleton-line"></div>
+if(String(filename).startsWith("/"))
+return filename;
 
-    </div>
+return "/uploads/"+filename;
+}
 
-   </div>
+function getImages(car){
 
-  `;
-        }
-    }
+if(Array.isArray(car.images))
+return car.images;
 
-    /* =========================
-       IMAGES
-    ========================= */
+if(typeof car.images==="string"){
 
-    function imageUrl(filename){
+try{
 
-        if(!filename)
-            return "";
+const parsed=
+JSON.parse(car.images);
 
-        if(String(filename).startsWith("http"))
-            return filename;
+if(Array.isArray(parsed))
+return parsed;
 
-        if(String(filename).startsWith("/"))
-            return filename;
+}catch(e){}
 
-        return "/uploads/"+filename;
-    }
+return car.images
+.split(",")
+.map(x=>x.trim())
+.filter(Boolean);
+}
 
-    function getImages(car){
+return [];
+}
 
-        if(Array.isArray(car.images))
-            return car.images;
+function renderFiltered(){
 
-        if(typeof car.images==="string"){
+const grid=
+document.getElementById("carsGrid");
 
-            try{
+const count=
+document.getElementById("resultsCount");
 
-                const parsed=
-                    JSON.parse(car.images);
+if(!grid||!count)
+return;
 
-                if(Array.isArray(parsed))
-                    return parsed;
+count.textContent=
+filteredCars.length+" ta";
 
-            }catch(e){}
+if(filteredCars.length===0){
 
-            return car.images
-                .split(",")
-                .map(x=>x.trim())
-                .filter(Boolean);
-        }
+renderEmpty();
 
-        return [];
-    }
+return;
+}
 
-    /* =========================
-       RENDER
-    ========================= */
+grid.innerHTML="";
 
-    function renderFiltered(){
+filteredCars.forEach((car,index)=>{
 
-        const grid=
-            document.getElementById("carsGrid");
+grid.appendChild(
+createCarCard(car,index)
+);
 
-        const count=
-            document.getElementById("resultsCount");
+});
 
-        if(!grid||!count)
-            return;
+applySettings();
+}
 
-        count.textContent=
-            filteredCars.length+" ta";
+function renderEmpty(title,text){
 
-        if(filteredCars.length===0){
+const t=
+translations[currentLang];
 
-            renderEmpty();
+const grid=
+document.getElementById("carsGrid");
 
-            return;
-        }
+if(!grid)
+return;
 
-        grid.innerHTML="";
+grid.innerHTML=`
 
-        filteredCars.forEach((car,index)=>{
+<div class="empty">
 
-            grid.appendChild(
-                createCarCard(car,index)
-            );
+<div class="empty-icon">
 
-        });
+<svg
+class="icon"
+style="width:55px;height:55px"
+>
+<use href="#i-home"></use>
+</svg>
 
-        applySettings();
-    }
+</div>
 
-    function renderEmpty(title,text){
+<h3>
+${escapeHtml(title||t.empty)}
+</h3>
 
-        const t=
-            translations[currentLang];
+<p>
+${escapeHtml(text||t.emptyText)}
+</p>
 
-        const grid=
-            document.getElementById("carsGrid");
+</div>
 
-        if(!grid)
-            return;
+`;
 
-        grid.innerHTML=`
+const count=
+document.getElementById("resultsCount");
 
-  <div class="empty">
+if(count)
+count.textContent="0 ta";
+}
 
-   <div class="empty-icon">
+function createCarCard(car,index){
 
-    <svg
-     class="icon"
-     style="width:55px;height:55px"
-    >
-     <use href="#i-home"></use>
-    </svg>
+const article=
+document.createElement("article");
 
-   </div>
+article.className="car-card";
 
-   <h3>
-    ${escapeHtml(title||t.empty)}
-   </h3>
+const images=getImages(car);
 
-   <p>
-    ${escapeHtml(text||t.emptyText)}
-   </p>
+const firstImage=
+images.length
+?imageUrl(images[0])
+:"";
 
-  </div>
+const isFavorite=
+favorites.includes(String(car.id));
 
- `;
+const t=
+translations[currentLang];
 
-        const count=
-            document.getElementById("resultsCount");
+const image=
+firstImage||
+"data:image/svg+xml;charset=UTF-8,"+
+encodeURIComponent(`
+<svg
+xmlns="http://www.w3.org/2000/svg"
+width="800"
+height="500"
+>
+<rect
+width="100%"
+height="100%"
+fill="#111"
+ />
+<text
+x="50%"
+y="50%"
+fill="#19d66b"
+text-anchor="middle"
+font-size="30"
+font-family="Arial"
+>
+pul.zarill
+</text>
+</svg>
+`);
 
-        if(count)
-            count.textContent="0 ta";
-    }
+const type=
+car.type||
+(
+Array.isArray(car.types)&&car.types.length
+?car.types.join(", ")
+:"Uy"
+);
 
-    /* =========================
-       PROPERTY CARD
-    ========================= */
+const rooms=
+car.rooms||"—";
 
-    function createCarCard(car,index){
+const area=
+car.area
+?car.area+" m²"
+:"—";
 
-        const article=
-            document.createElement("article");
+const address=
+car.address||
+"Manzil ko‘rsatilmagan";
 
-        article.className="car-card";
+article.innerHTML=`
 
-        const images=getImages(car);
+<div class="car-image-box">
 
-        const firstImage=
-            images.length
-                ?imageUrl(images[0])
-                :"";
+<img
+class="car-image"
+src="${image}"
+alt="${escapeHtml(car.name||"Uy")}"
+loading="lazy"
+onerror="this.style.display='none'"
+>
 
-        const isFavorite=
-            favorites.includes(String(car.id));
+${
+car.sold
+?
+`<span class="badge sold-badge">
+${t.soldBadge}
+</span>`
+:
+`<span class="badge">
+${t.new}
+</span>`
+}
 
-        const t=
-            translations[currentLang];
+<button
+class="favorite ${isFavorite?"active":""}"
+aria-label="Favorite"
+>
 
-        const image=
-            firstImage||
-            "data:image/svg+xml;charset=UTF-8,"+
-            encodeURIComponent(`
-   <svg
-    xmlns="http://www.w3.org/2000/svg"
-    width="800"
-    height="500"
-   >
-    <rect
-     width="100%"
-     height="100%"
-     fill="#222"
-    />
-    <text
-     x="50%"
-     y="50%"
-     fill="white"
-     text-anchor="middle"
-     font-size="30"
-    >
-     pul.zarill
-    </text>
-   </svg>
-  `);
+<svg
+class="icon ${isFavorite?"icon-fill":""}"
+>
+<use href="#i-heart"></use>
+</svg>
 
-        const type=
-            car.type||
-            (
-                Array.isArray(car.types)&&car.types.length
-                    ?car.types.join(", ")
-                    :"Uy"
-            );
+</button>
 
-        const rooms=
-            car.rooms||"—";
+${
+images.length
+?
+`<span class="image-count">
 
-        const area=
-            car.area
-                ?car.area+" m²"
-                :"—";
+<svg class="icon icon-sm">
+<use href="#i-camera"></use>
+</svg>
 
-        const address=
-            car.address||
-            "Manzil ko‘rsatilmagan";
+${images.length} ${t.photos}
 
-        article.innerHTML=`
+</span>`
+:""
+}
 
-  <div class="car-image-box">
+</div>
 
-   <img
-    class="car-image"
-    src="${image}"
-    alt="${escapeHtml(car.name||"Uy")}"
-    loading="lazy"
-    onerror="this.style.display='none'"
-   >
+<div class="car-content">
 
-   ${
-            car.sold
-                ?
-                `<span class="badge sold-badge">
-      ${t.soldBadge}
-     </span>`
-                :
-                `<span class="badge">
-      ${t.new}
-     </span>`
-        }
+<div class="car-name">
+${escapeHtml(car.name||"Uy")}
+</div>
 
-   <button
-    class="favorite ${isFavorite?"active":""}"
-    aria-label="Favorite"
-   >
+<div class="car-price">
+${formatPrice(car.price,car.currency)}
+</div>
 
-    <svg
-     class="icon ${isFavorite?"icon-fill":""}"
-    >
-     <use href="#i-heart"></use>
-    </svg>
+<div class="property-meta">
 
-   </button>
+<span class="meta-item">
+${escapeHtml(type)}
+</span>
 
-   ${
-            images.length
-                ?
-                `<span class="image-count">
+<span class="meta-item">
+🛏️ ${escapeHtml(rooms)} ${t.rooms.toLowerCase()}
+</span>
 
-      <svg class="icon icon-sm">
-       <use href="#i-camera"></use>
-      </svg>
+<span class="meta-item">
+📐 ${escapeHtml(area)}
+</span>
 
-      ${images.length} ${t.photos}
+</div>
 
-     </span>`
-                :""
-        }
+<div class="car-address">
 
-  </div>
+<svg class="icon icon-sm">
+<use href="#i-location"></use>
+</svg>
 
-  <div class="car-content">
+${escapeHtml(address)}
 
-   <div class="car-name">
-    ${escapeHtml(car.name||"Uy")}
-   </div>
+</div>
 
-   <div class="car-price">
-    ${formatPrice(car.price,car.currency)}
-   </div>
+<div class="car-description">
+${escapeHtml(car.description||"")}
+</div>
 
-   <div class="property-meta">
+<div class="card-bottom">
 
-    <span class="meta-item">
-     ${escapeHtml(type)}
-    </span>
+<button class="detail-btn">
+${t.detail}
+</button>
 
-    <span class="meta-item">
-     🛏️ ${escapeHtml(rooms)} ${t.rooms.toLowerCase()}
-    </span>
+<a
+class="call-btn"
+href="${phoneHref(siteSettings.phone)}"
+>
 
-    <span class="meta-item">
-     📐 ${escapeHtml(area)}
-    </span>
+<svg class="icon">
+<use href="#i-phone"></use>
+</svg>
 
-   </div>
+<span>
+${t.callShort}
+</span>
 
-   <div class="car-address">
+</a>
 
-    <svg class="icon icon-sm">
-     <use href="#i-location"></use>
-    </svg>
+</div>
 
-    ${escapeHtml(address)}
+</div>
 
-   </div>
+`;
 
-   <div class="car-description">
-    ${escapeHtml(car.description||"")}
-   </div>
+article
+.querySelector(".favorite")
+.addEventListener("click",function(event){
 
-   <div class="card-bottom">
+event.stopPropagation();
 
-    <button class="detail-btn">
-     ${t.detail}
-    </button>
+toggleFavorite(car.id);
 
-    <a
-     class="call-btn"
-     href="${phoneHref(siteSettings.phone)}"
-    >
+});
 
-     <svg class="icon">
-      <use href="#i-phone"></use>
-     </svg>
+article
+.querySelector(".detail-btn")
+.addEventListener("click",function(event){
 
-     <span>
-      ${t.callShort}
-     </span>
+event.stopPropagation();
 
-    </a>
+openDetails(car);
 
-   </div>
+});
 
-  </div>
+article
+.querySelector(".call-btn")
+.addEventListener("click",function(event){
 
- `;
+event.stopPropagation();
 
-        article
-            .querySelector(".favorite")
-            .addEventListener("click",function(event){
+trackCall(event);
 
-                event.stopPropagation();
+});
 
-                toggleFavorite(car.id);
+article
+.querySelector(".car-image-box")
+.addEventListener("click",function(event){
 
-            });
+if(event.target.closest(".favorite"))
+return;
 
-        article
-            .querySelector(".detail-btn")
-            .addEventListener("click",function(event){
+openDetails(car);
 
-                event.stopPropagation();
+});
 
-                openDetails(car);
+return article;
+}
 
-            });
+function escapeHtml(value){
 
-        article
-            .querySelector(".call-btn")
-            .addEventListener("click",function(event){
+return String(value)
+.replace(/&/g,"&amp;")
+.replace(/</g,"&lt;")
+.replace(/>/g,"&gt;")
+.replace(/"/g,"&quot;")
+.replace(/'/g,"&#039;");
+}
 
-                event.stopPropagation();
+function toggleFavorite(id){
 
-                trackCall(event);
+const key=String(id);
 
-            });
+if(favorites.includes(key)){
 
-        article
-            .querySelector(".car-image-box")
-            .addEventListener("click",function(event){
+favorites=
+favorites.filter(
+x=>x!==key
+);
 
-                if(event.target.closest(".favorite"))
-                    return;
+}else{
 
-                openDetails(car);
+favorites.push(key);
 
-            });
+}
 
-        return article;
-    }
+localStorage.setItem(
+"favorites",
+JSON.stringify(favorites)
+);
 
-    /* =========================
-       ESCAPE
-    ========================= */
+const activePage=
+document
+.querySelector(".page.active");
 
-    function escapeHtml(value){
+if(
+activePage &&
+activePage.id==="searchPage"
+){
 
-        return String(value)
-            .replace(/&/g,"&amp;")
-            .replace(/</g,"&lt;")
-            .replace(/>/g,"&gt;")
-            .replace(/"/g,"&quot;")
-            .replace(/'/g,"&#039;");
-    }
+searchFromSearchPage();
 
-    /* =========================
-       FAVORITES
-    ========================= */
+}else{
 
-    function toggleFavorite(id){
+renderFiltered();
 
-        const key=String(id);
+}
+}
 
-        if(favorites.includes(key)){
+function showFavorites(){
 
-            favorites=
-                favorites.filter(
-                    x=>x!==key
-                );
+showPage("home");
 
-        }else{
+const favoriteCars=
+allCars.filter(
+car=>
+favorites.includes(
+String(car.id)
+)
+);
 
-            favorites.push(key);
+filteredCars=favoriteCars;
 
-        }
+const input=
+document.getElementById("searchInput");
 
-        localStorage.setItem(
-            "favorites",
-            JSON.stringify(favorites)
-        );
+if(input)
+input.value="";
 
-        const activePage=
-            document
-                .querySelector(".page.active");
+if(favoriteCars.length===0){
 
-        if(
-            activePage &&
-            activePage.id==="searchPage"
-        ){
+const t=
+translations[currentLang];
 
-            searchFromSearchPage();
+renderEmpty(
+t.noFavorites,
+t.noFavoritesText
+);
 
-        }else{
+}else{
 
-            renderFiltered();
+const grid=
+document.getElementById("carsGrid");
 
-        }
-    }
+grid.innerHTML="";
 
-    function showFavorites(){
+favoriteCars.forEach((car,index)=>{
 
-        showPage("home");
+grid.appendChild(
+createCarCard(car,index)
+);
 
-        const favoriteCars=
-            allCars.filter(
-                car=>
-                    favorites.includes(
-                        String(car.id)
-                    )
-            );
+});
 
-        filteredCars=favoriteCars;
+document
+.getElementById("resultsCount")
+.textContent=
+favoriteCars.length+" ta";
 
-        const input=
-            document.getElementById("searchInput");
+applySettings();
 
-        if(input)
-            input.value="";
+}
 
-        if(favoriteCars.length===0){
+setActiveNav("navFavorites");
+}
 
-            const t=
-                translations[currentLang];
+function openDetails(car){
 
-            renderEmpty(
-                t.noFavorites,
-                t.noFavoritesText
-            );
+currentDetailsCar=car;
 
-        }else{
+showPage("details");
 
-            const grid=
-                document.getElementById("carsGrid");
+const images=getImages(car);
 
-            grid.innerHTML="";
+const t=
+translations[currentLang];
 
-            favoriteCars.forEach((car,index)=>{
+const firstImage=
+images.length
+?imageUrl(images[0])
+:"";
 
-                grid.appendChild(
-                    createCarCard(car,index)
-                );
+const details=
+document.getElementById("detailsCard");
 
-            });
+details.innerHTML=`
 
-            document
-                .getElementById("resultsCount")
-                .textContent=
-                favoriteCars.length+" ta";
+<div class="details-main">
 
-            applySettings();
+<div>
 
-        }
+${
+firstImage
+?
+`<img
+id="detailsMainImage"
+class="details-image"
+src="${firstImage}"
+alt="${escapeHtml(car.name||"")}"
+onclick="openLightbox(0)"
+>`
+:
+`<div
+class="details-image"
+style="
+background:#111;
+display:flex;
+align-items:center;
+justify-content:center;
+color:#19d66b
+"
+>
 
-        setActiveNav("navFavorites");
-    }
+<svg
+class="icon"
+style="width:70px;height:70px"
+>
+<use href="#i-home"></use>
+</svg>
 
-    /* =========================
-       DETAILS
-    ========================= */
+</div>`
+}
 
-    function openDetails(car){
+<div class="thumbnails">
 
-        currentDetailsCar=car;
+${
+images.map(
+(img,i)=>`
 
-        showPage("details");
+<img
+class="thumb ${i===0?"active":""}"
+src="${imageUrl(img)}"
+onclick="selectDetailImage(${i})"
+alt=""
+>
 
-        const images=getImages(car);
+`
+).join("")
+}
 
-        const t=
-            translations[currentLang];
+</div>
 
-        const firstImage=
-            images.length
-                ?imageUrl(images[0])
-                :"";
+</div>
 
-        const details=
-            document.getElementById("detailsCard");
+<div class="details-info">
 
-        details.innerHTML=`
+${
+car.sold
+?
+`<span
+class="badge sold-badge"
+style="
+position:static;
+display:inline-block;
+width:max-content;
+margin-bottom:15px
+"
+>
+${t.soldBadge}
+</span>`
+:""
+}
 
-  <div class="details-main">
+<h1>
+${escapeHtml(car.name||"Uy")}
+</h1>
 
-   <div>
+<div class="details-price">
+${formatPrice(car.price,car.currency)}
+</div>
 
-    ${
-            firstImage
-                ?
-                `<img
-       id="detailsMainImage"
-       class="details-image"
-       src="${firstImage}"
-       alt="${escapeHtml(car.name||"")}"
-       onclick="openLightbox(0)"
-      >`
-                :
-                `<div
-       class="details-image"
-       style="
-        background:#222;
-        display:flex;
-        align-items:center;
-        justify-content:center;
-        color:#fff
-       "
-      >
+<div class="details-meta">
 
-       <svg
-        class="icon"
-        style="width:70px;height:70px"
-       >
-        <use href="#i-home"></use>
-       </svg>
+<div class="details-meta-item">
+<b>${t.type}</b>
+${escapeHtml(
+car.type||
+(
+Array.isArray(car.types)&&car.types.length
+?car.types.join(", ")
+:"Uy"
+)
+)}
+</div>
 
-      </div>`
-        }
+<div class="details-meta-item">
+<b>${t.rooms}</b>
+${escapeHtml(car.rooms||"—")}
+</div>
 
-    <div class="thumbnails">
+<div class="details-meta-item">
+<b>${t.area}</b>
+${escapeHtml(car.area||"—")} m²
+</div>
 
-     ${
-            images.map(
-                (img,i)=>`
+<div class="details-meta-item">
+<b>${t.addressLabel}</b>
+${escapeHtml(car.address||"—")}
+</div>
 
-        <img
-         class="thumb ${i===0?"active":""}"
-         src="${imageUrl(img)}"
-         onclick="selectDetailImage(${i})"
-         alt=""
-        >
+</div>
 
-       `
-            ).join("")
-        }
+<div class="details-description">
+${escapeHtml(car.description||"")}
+</div>
 
-    </div>
+<a
+class="details-call"
+href="${phoneHref(siteSettings.phone)}"
+onclick="trackCall(event)"
+>
 
-   </div>
+<svg class="icon">
+<use href="#i-phone"></use>
+</svg>
 
-   <div class="details-info">
+${t.call}
 
-    ${
-            car.sold
-                ?
-                `<span
-       class="badge sold-badge"
-       style="
-        position:static;
-        display:inline-block;
-        margin-bottom:15px
-       "
-      >
-       ${t.soldBadge}
-      </span>`
-                :""
-        }
+</a>
 
-    <h1>
-     ${escapeHtml(car.name||"Uy")}
-    </h1>
+</div>
 
-    <div class="details-price">
-     ${formatPrice(car.price,car.currency)}
-    </div>
+</div>
 
-    <div class="details-meta">
+`;
 
-     <div class="details-meta-item">
-      <b>${t.type}</b>
-      ${escapeHtml(
-            car.type||
-            (
-                Array.isArray(car.types)&&car.types.length
-                    ?car.types.join(", ")
-                    :"Uy"
-            )
-        )}
-     </div>
+applySettings();
+}
 
-     <div class="details-meta-item">
-      <b>${t.rooms}</b>
-      ${escapeHtml(car.rooms||"—")}
-     </div>
+function selectDetailImage(index){
 
-     <div class="details-meta-item">
-      <b>${t.area}</b>
-      ${escapeHtml(car.area||"—")} m²
-     </div>
+const images=
+getImages(currentDetailsCar);
 
-     <div class="details-meta-item">
-      <b>${t.addressLabel}</b>
-      ${escapeHtml(car.address||"—")}
-     </div>
+if(!images[index])
+return;
 
-    </div>
+const main=
+document.getElementById("detailsMainImage");
 
-    <div class="details-description">
-     ${escapeHtml(car.description||"")}
-    </div>
+if(main)
+main.src=imageUrl(images[index]);
 
-    <a
-     class="details-call"
-     href="${phoneHref(siteSettings.phone)}"
-     onclick="trackCall(event)"
-    >
+document
+.querySelectorAll(".thumb")
+.forEach((thumb,i)=>{
 
-     <svg class="icon">
-      <use href="#i-phone"></use>
-     </svg>
+thumb.classList.toggle(
+"active",
+i===index
+);
 
-     ${t.call}
+});
 
-    </a>
+}
 
-   </div>
+function openLightbox(index){
 
-  </div>
+if(!currentDetailsCar)
+return;
 
- `;
+const images=
+getImages(currentDetailsCar);
 
-        applySettings();
-    }
+if(!images.length)
+return;
 
-    /* =========================
-       DETAIL IMAGE
-    ========================= */
+currentLightboxIndex=index;
 
-    function selectDetailImage(index){
+document
+.getElementById("lightboxImage")
+.src=
+imageUrl(
+images[currentLightboxIndex]
+);
 
-        const images=
-            getImages(currentDetailsCar);
+document
+.getElementById("lightbox")
+.classList
+.add("active");
 
-        if(!images[index])
-            return;
+document.body.style.overflow="hidden";
+}
 
-        const main=
-            document.getElementById("detailsMainImage");
+function closeLightbox(){
 
-        if(main)
-            main.src=imageUrl(images[index]);
+document
+.getElementById("lightbox")
+.classList
+.remove("active");
 
-        document
-            .querySelectorAll(".thumb")
-            .forEach((thumb,i)=>{
+document.body.style.overflow="";
+}
 
-                thumb.classList.toggle(
-                    "active",
-                    i===index
-                );
+function changeLightbox(direction){
 
-            });
-    }
+if(!currentDetailsCar)
+return;
 
-    /* =========================
-       LIGHTBOX
-    ========================= */
+const images=
+getImages(currentDetailsCar);
 
-    function openLightbox(index){
+if(!images.length)
+return;
 
-        if(!currentDetailsCar)
-            return;
+currentLightboxIndex+=direction;
 
-        const images=
-            getImages(currentDetailsCar);
+if(currentLightboxIndex<0)
+currentLightboxIndex=images.length-1;
 
-        if(!images.length)
-            return;
+if(currentLightboxIndex>=images.length)
+currentLightboxIndex=0;
 
-        currentLightboxIndex=index;
+document
+.getElementById("lightboxImage")
+.src=
+imageUrl(
+images[currentLightboxIndex]
+);
+}
 
-        document
-            .getElementById("lightboxImage")
-            .src=
-            imageUrl(
-                images[currentLightboxIndex]
-            );
+function showPage(page){
 
-        document
-            .getElementById("lightbox")
-            .classList
-            .add("active");
-    }
+document
+.querySelectorAll(".page")
+.forEach(
+p=>p.classList.remove("active")
+);
 
-    function closeLightbox(){
+if(page==="home")
+document
+.getElementById("homePage")
+.classList.add("active");
 
-        document
-            .getElementById("lightbox")
-            .classList
-            .remove("active");
-    }
+if(page==="search")
+document
+.getElementById("searchPage")
+.classList.add("active");
 
-    function changeLightbox(direction){
+if(page==="details")
+document
+.getElementById("detailsPage")
+.classList.add("active");
 
-        if(!currentDetailsCar)
-            return;
+if(page==="menu")
+document
+.getElementById("menuPage")
+.classList.add("active");
 
-        const images=
-            getImages(currentDetailsCar);
+window.scrollTo({
+top:0,
+behavior:"smooth"
+});
+}
 
-        if(!images.length)
-            return;
+function setActiveNav(id){
 
-        currentLightboxIndex+=direction;
+document
+.querySelectorAll(".bottom-nav button")
+.forEach(btn=>{
+btn.classList.remove("active");
+});
 
-        if(currentLightboxIndex<0)
-            currentLightboxIndex=images.length-1;
+const button=
+document.getElementById(id);
 
-        if(currentLightboxIndex>=images.length)
-            currentLightboxIndex=0;
+if(button)
+button.classList.add("active");
+}
 
-        document
-            .getElementById("lightboxImage")
-            .src=
-            imageUrl(
-                images[currentLightboxIndex]
-            );
-    }
+function goHome(){
 
-    /* =========================
-       PAGE NAVIGATION
-    ========================= */
+showPage("home");
 
-    function showPage(page){
+currentType="all";
 
-        document
-            .querySelectorAll(".page")
-            .forEach(
-                p=>p.classList.remove("active")
-            );
+filteredCars=[...allCars];
 
-        if(page==="home")
-            document
-                .getElementById("homePage")
-                .classList.add("active");
+const input=
+document.getElementById("searchInput");
 
-        if(page==="search")
-            document
-                .getElementById("searchPage")
-                .classList.add("active");
+if(input)
+input.value="";
 
-        if(page==="details")
-            document
-                .getElementById("detailsPage")
-                .classList.add("active");
+renderFiltered();
 
-        if(page==="menu")
-            document
-                .getElementById("menuPage")
-                .classList.add("active");
+setActiveNav("navHome");
+}
 
-        window.scrollTo({
-            top:0,
-            behavior:"smooth"
-        });
-    }
+function showMenu(){
 
-    function setActiveNav(id){
+showPage("menu");
 
-        document
-            .querySelectorAll(".bottom-nav button")
-            .forEach(btn=>{
-                btn.classList.remove("active");
-            });
+setActiveNav("navMenu");
+}
 
-        const button=
-            document.getElementById(id);
+function focusSearch(){
 
-        if(button)
-            button.classList.add("active");
-    }
+showPage("search");
 
-    function goHome(){
+setActiveNav("navSearch");
 
-        showPage("home");
+renderSearchPage(
+searchPageType==="all"
+?[...allCars]
+:allCars.filter(car=>{
 
-        currentType="all";
+const types=
+Array.isArray(car.types)
+?car.types
+:[];
 
-        filteredCars=[...allCars];
+const mainType=
+String(car.type||"");
 
-        const input=
-            document.getElementById("searchInput");
+const normalizeType=value=>
+String(value||"")
+.replace(/🏡|🏢|🌳|🏗️|🏗/g,"")
+.replace(/\\uFE0F/g,"")
+.trim()
+.toLowerCase();
 
-        if(input)
-            input.value="";
+const wantedType=
+normalizeType(searchPageType);
 
-        renderFiltered();
+return types.some(
+item=>
+normalizeType(item)===wantedType
+)||
+normalizeType(mainType)===wantedType;
 
-        setActiveNav("navHome");
-    }
+})
+);
 
-    function showMenu(){
+setTimeout(()=>{
 
-        showPage("menu");
+const input=
+document.getElementById("searchPageInput");
 
-        setActiveNav("navMenu");
-    }
+if(input)
+input.focus();
 
-    function focusSearch(){
+},200);
+}
 
-        showPage("search");
+function trackCall(event){
 
-        setActiveNav("navSearch");
+if(event)
+event.stopPropagation();
 
-        renderSearchPage(
-            searchPageType==="all"
-                ?[...allCars]
-                :allCars.filter(car=>{
+fetch(
+"/api/stats/call",
+{
+method:"POST",
+keepalive:true,
+cache:"no-store"
+}
+).catch(()=>{});
+}
 
-                    const types=
-                        Array.isArray(car.types)
-                            ?car.types
-                            :[];
+function trackView(){
 
-                    const mainType=
-                        String(car.type||"");
+fetch(
+"/api/stats/view",
+{
+method:"POST",
+keepalive:true,
+cache:"no-store"
+}
+).catch(()=>{});
+}
 
-                    const normalizeType = value =>
-                        String(value||"")
-                            .replace(/🏡|🏢|🌳|🏗️|🏗/g,"")
-                            .replace(/\\uFE0F/g,"")
-                            .trim()
-                            .toLowerCase();
+document.addEventListener(
+"keydown",
+function(event){
 
-                    const wantedType =
-                        normalizeType(searchPageType);
+if(event.key==="Escape")
+closeLightbox();
 
-                    return types.some(
-                            item=>
-                                normalizeType(item) === wantedType
-                        )||
-                        normalizeType(mainType) === wantedType;
+if(event.key==="ArrowLeft"){
 
-                })
-        );
+const box=
+document.getElementById("lightbox");
 
-        setTimeout(()=>{
+if(box.classList.contains("active"))
+changeLightbox(-1);
 
-            const input=
-                document.getElementById("searchPageInput");
+}
 
-            if(input)
-                input.focus();
+if(event.key==="ArrowRight"){
 
-        },200);
-    }
+const box=
+document.getElementById("lightbox");
 
-    /* =========================
-       CALL TRACKING
-    ========================= */
+if(box.classList.contains("active"))
+changeLightbox(1);
 
-    function trackCall(event){
+}
 
-        if(event)
-            event.stopPropagation();
+}
+);
 
-        fetch(
-            "/api/stats/call",
-            {
-                method:"POST",
-                keepalive:true,
-                cache:"no-store"
-            }
-        ).catch(()=>{});
-    }
+document
+.getElementById("lightbox")
+.addEventListener(
+"click",
+function(event){
 
-    /* =========================
-       VIEW TRACKING
-    ========================= */
+if(event.target===this)
+closeLightbox();
 
-    function trackView(){
+}
+);
 
-        fetch(
-            "/api/stats/view",
-            {
-                method:"POST",
-                keepalive:true,
-                cache:"no-store"
-            }
-        ).catch(()=>{});
-    }
+if(
+localStorage.getItem("darkMode")==="true"
+){
 
-    /* =========================
-       KEYBOARD
-    ========================= */
+document.body
+.classList
+.add("dark");
 
-    document.addEventListener(
-        "keydown",
-        function(event){
+}
 
-            if(event.key==="Escape")
-                closeLightbox();
+document.documentElement.lang=
+currentLang;
 
-            if(event.key==="ArrowLeft"){
+applyLang();
 
-                const box=
-                    document.getElementById("lightbox");
+updateThemeIcon();
 
-                if(box.classList.contains("active"))
-                    changeLightbox(-1);
+trackView();
 
-            }
+loadSettings();
 
-            if(event.key==="ArrowRight"){
-
-                const box=
-                    document.getElementById("lightbox");
-
-                if(box.classList.contains("active"))
-                    changeLightbox(1);
-
-            }
-
-        }
-    );
-
-    /* =========================
-       LIGHTBOX CLICK
-    ========================= */
-
-    document
-        .getElementById("lightbox")
-        .addEventListener(
-            "click",
-            function(event){
-
-                if(event.target===this)
-                    closeLightbox();
-
-            }
-        );
-
-    /* =========================
-       START
-    ========================= */
-
-    if(
-        localStorage.getItem("darkMode")==="true"
-    ){
-
-        document.body
-            .classList
-            .add("dark");
-
-    }
-
-    document.documentElement.lang=
-        currentLang;
-
-    applyLang();
-
-    updateThemeIcon();
-
-    trackView();
-
-    loadSettings();
-
-    load();
+load();
 
 </script>
 
