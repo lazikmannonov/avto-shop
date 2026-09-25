@@ -1337,7 +1337,183 @@
             }
         }
 
-    </style>
+    
+/* ===== FINAL PHONE FIX ===== */
+@media screen and (max-width: 800px){
+    *{box-sizing:border-box}
+
+    html,body{
+        width:100%;
+        max-width:100%;
+        margin:0;
+        padding:0;
+        overflow-x:hidden !important;
+    }
+
+    .app{
+        display:block !important;
+        width:100% !important;
+        min-width:0 !important;
+    }
+
+    .sidebar{
+        width:280px !important;
+        max-width:85vw !important;
+        transform:translateX(-105%) !important;
+        transition:transform .25s ease !important;
+    }
+
+    .sidebar.open{
+        transform:translateX(0) !important;
+    }
+
+    .main{
+        display:block !important;
+        width:100% !important;
+        min-width:0 !important;
+        margin-left:0 !important;
+    }
+
+    .topbar{
+        width:100% !important;
+        min-width:0 !important;
+        padding:0 10px !important;
+    }
+
+    .content{
+        width:100% !important;
+        max-width:none !important;
+        min-width:0 !important;
+        padding:10px !important;
+        overflow:visible !important;
+    }
+
+    .page,
+    .page.active{
+        width:100% !important;
+        min-width:0 !important;
+        max-width:100% !important;
+    }
+
+    .panel{
+        width:100% !important;
+        max-width:100% !important;
+        min-width:0 !important;
+    }
+
+    .panel-body{
+        width:100% !important;
+        min-width:0 !important;
+        overflow:visible !important;
+    }
+
+    .homes-grid{
+        display:grid !important;
+        width:100% !important;
+        max-width:100% !important;
+        min-width:0 !important;
+        grid-template-columns:minmax(0,1fr) !important;
+        gap:10px !important;
+    }
+
+    .home-card{
+        display:block !important;
+        width:100% !important;
+        max-width:100% !important;
+        min-width:0 !important;
+        overflow:hidden !important;
+    }
+
+    .home-image{
+        width:100% !important;
+        height:190px !important;
+        max-width:100% !important;
+    }
+
+    .home-image img{
+        width:100% !important;
+        height:100% !important;
+        object-fit:cover !important;
+    }
+
+    .home-content{
+        width:100% !important;
+        min-width:0 !important;
+        padding:12px !important;
+    }
+
+    .home-title{
+        width:100% !important;
+        max-width:100% !important;
+        overflow:hidden !important;
+        text-overflow:ellipsis !important;
+    }
+
+    .home-info{
+        width:100% !important;
+        min-width:0 !important;
+    }
+
+    .home-info span{
+        max-width:100% !important;
+        overflow:hidden !important;
+        text-overflow:ellipsis !important;
+    }
+
+    .home-actions{
+        display:grid !important;
+        width:100% !important;
+        grid-template-columns:repeat(2,minmax(0,1fr)) !important;
+        gap:7px !important;
+    }
+
+    .action-btn{
+        width:100% !important;
+        min-width:0 !important;
+        min-height:44px !important;
+        touch-action:manipulation !important;
+    }
+
+    .search-row{
+        display:flex !important;
+        flex-direction:column !important;
+        width:100% !important;
+        min-width:0 !important;
+    }
+
+    .search-wrap,
+    .search-row .input,
+    .search-row .select,
+    .search-row button{
+        width:100% !important;
+        max-width:100% !important;
+        min-width:0 !important;
+    }
+
+    .nav button{
+        min-height:48px;
+        touch-action:manipulation;
+    }
+
+    .menu-btn{
+        display:grid !important;
+        place-items:center !important;
+        touch-action:manipulation !important;
+    }
+
+    .input,.select,textarea,button{
+        max-width:100%;
+    }
+}
+
+@media screen and (max-width:480px){
+    .content{padding:8px !important}
+    .panel-header,.panel-body{padding:11px !important}
+    .home-image{height:170px !important}
+    .home-actions{grid-template-columns:1fr 1fr !important}
+}
+
+</style>
 </head>
 
 <body>
