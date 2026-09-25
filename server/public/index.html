@@ -838,6 +838,21 @@
             border-bottom:1px solid var(--border)
         }
 
+        .social-menu-item{
+            cursor:pointer;
+        }
+
+        .social-menu-item:hover{
+            background:var(--soft);
+        }
+
+        .social-menu-item:focus-visible{
+            outline:2px solid #19d66b;
+            outline-offset:-2px;
+            border-radius:12px;
+        }
+
+
         .menu-item:last-child{
             border-bottom:none
         }
@@ -1896,7 +1911,7 @@
 
         <div class="menu-card">
 
-            <div class="menu-item">
+            <div class="menu-item social-menu-item" data-social="telegram" role="link" tabindex="0" onclick="openSocialMenu('telegram', event)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openSocialMenu('telegram',event)}">
 
                 <div class="menu-item-left">
 
@@ -1927,7 +1942,7 @@
 
             </div>
 
-            <div class="menu-item">
+            <div class="menu-item social-menu-item" data-social="whatsapp" role="link" tabindex="0" onclick="openSocialMenu('whatsapp', event)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openSocialMenu('whatsapp',event)}">
 
                 <div class="menu-item-left">
 
@@ -1962,7 +1977,7 @@
 
             </div>
 
-            <div class="menu-item">
+            <div class="menu-item social-menu-item" data-social="telegram" role="link" tabindex="0" onclick="openSocialMenu('telegram', event)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openSocialMenu('telegram',event)}">
 
                 <div class="menu-item-left">
 
@@ -1998,7 +2013,7 @@
 
             </div>
 
-            <div class="menu-item">
+            <div class="menu-item social-menu-item" data-social="whatsapp" role="link" tabindex="0" onclick="openSocialMenu('whatsapp', event)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openSocialMenu('whatsapp',event)}">
 
                 <div class="menu-item-left">
 
@@ -2034,7 +2049,7 @@
 
             </div>
 
-            <div class="menu-item">
+            <div class="menu-item social-menu-item" data-social="instagram" role="link" tabindex="0" onclick="openSocialMenu('instagram', event)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openSocialMenu('instagram',event)}">
 
                 <div class="menu-item-left">
 
@@ -2630,6 +2645,29 @@
         }
 
         applySettings();
+    }
+
+    function openSocialMenu(type,event){
+
+        if(event && event.target && event.target.closest && event.target.closest('a')){
+            return;
+        }
+
+        const ids={
+            telegram:"menuTelegram",
+            whatsapp:"menuWhatsapp",
+            instagram:"menuInstagram"
+        };
+
+        const link=document.getElementById(ids[type]);
+
+        if(!link || !link.href || link.getAttribute('href')==='#'){
+            return;
+        }
+
+        link.target="_blank";
+        link.rel="noopener noreferrer";
+        link.click();
     }
 
     function applySettings(){
