@@ -1,1436 +1,1436 @@
 <!DOCTYPE html>
 <html lang="uz">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>pul.zarill — Uylar</title>
-
-<style>
-*{
- margin:0;
- padding:0;
- box-sizing:border-box
-}
-
-:root{
- --bg:#f4f5f7;
- --card:#fff;
- --text:#111;
- --muted:#777;
- --border:#e7e7e7;
- --black:#050505;
- --green:#19d66b;
- --red:#ff3b30;
- --yellow:#ffd21c;
- --shadow:0 10px 30px rgba(0,0,0,.08)
-}
-
-body{
- font-family:Arial,Helvetica,sans-serif;
- background:var(--bg);
- color:var(--text);
- transition:.3s;
- padding-bottom:75px
-}
-
-body.dark{
- --bg:#101010;
- --card:#181818;
- --text:#fff;
- --muted:#aaa;
- --border:#292929;
- --shadow:0 10px 30px rgba(0,0,0,.4)
-}
-
-/* =========================
-   ICONS
-========================= */
-
-.icon{
- width:20px;
- height:20px;
- display:inline-block;
- vertical-align:middle;
- fill:none;
- stroke:currentColor;
- stroke-width:1.75;
- stroke-linecap:round;
- stroke-linejoin:round;
- flex:none;
- transition:.22s
-}
-
-.icon-fill{
- fill:currentColor;
- stroke:currentColor
-}
-
-.icon-lg{
- width:23px;
- height:23px
-}
-
-.icon-sm{
- width:17px;
- height:17px
-}
-
-/* =========================
-   HEADER
-========================= */
-
-header{
- position:sticky;
- top:0;
- z-index:1000;
- background:#050505;
- color:#fff;
- box-shadow:0 5px 25px rgba(0,0,0,.35)
-}
-
-.header-inner{
- max-width:1250px;
- min-height:78px;
- margin:auto;
- padding:10px 18px;
- display:flex;
- align-items:center;
- justify-content:space-between;
- gap:15px
-}
-
-.logo{
- position:relative;
- z-index:1;
- font-size:34px;
- font-weight:900;
- letter-spacing:-1.5px;
- white-space:nowrap
-}
-
-.logo .green{
- color:#19d66b
-}
-
-.logo:before{
- content:"";
- position:absolute;
- left:50%;
- top:50%;
- width:280px;
- height:120px;
- transform:translate(-50%,-50%);
- border-radius:50%;
- background:#19d66b;
- filter:blur(48px);
- opacity:.48;
- z-index:-1
-}
-
-.header-right{
- display:flex;
- align-items:center;
- gap:7px
-}
-
-.phone-top{
- color:#fff;
- text-decoration:none;
- font-size:14px;
- font-weight:bold;
- margin-right:5px
-}
-
-.lang-btn,
-.theme-btn{
- border:1px solid #333;
- background:#151515;
- color:#fff;
- border-radius:10px;
- padding:8px 10px;
- cursor:pointer;
- transition:.2s
-}
-
-.lang-btn:hover,
-.theme-btn:hover{
- border-color:#19d66b
-}
-
-.lang-btn.active{
- background:#19d66b;
- color:#000;
- border-color:#19d66b
-}
-
-.theme-btn{
- display:inline-flex;
- align-items:center;
- justify-content:center
-}
-
-/* =========================
-   MAIN
-========================= */
-
-.container{
- max-width:1250px;
- margin:auto;
- padding:22px 18px 100px
-}
-
-.page{
- display:none
-}
-
-.page.active{
- display:block
-}
-
-/* =========================
-   SEARCH
-========================= */
-
-.search-box{
- display:flex;
- gap:10px;
- margin-bottom:14px
-}
-
-.search-box input{
- flex:1;
- height:52px;
- border:1px solid var(--border);
- background:var(--card);
- color:var(--text);
- border-radius:14px;
- padding:0 17px;
- outline:none;
- font-size:15px;
- transition:.2s
-}
-
-.search-box input:focus{
- border-color:#19d66b;
- box-shadow:0 0 0 3px rgba(25,214,107,.08)
-}
-
-.search-reset{
- width:52px;
- border:none;
- border-radius:14px;
- background:#050505;
- color:#fff;
- cursor:pointer;
- display:flex;
- align-items:center;
- justify-content:center
-}
-
-/* =========================
-   SEARCH PAGE
-========================= */
-
-.search-page-top{
- display:flex;
- align-items:center;
- gap:10px;
- margin-bottom:15px
-}
-
-.search-page-title{
- font-size:25px;
- font-weight:900
-}
-
-.search-back{
- width:43px;
- height:43px;
- border:1px solid var(--border);
- background:var(--card);
- color:var(--text);
- border-radius:13px;
- cursor:pointer;
- display:flex;
- align-items:center;
- justify-content:center;
- transition:.2s
-}
-
-.search-back:hover{
- transform:translateX(-2px)
-}
-
-.search-page-categories{
- display:grid;
- grid-template-columns:repeat(5,minmax(0,1fr));
- gap:9px;
- margin-bottom:12px
-}
-
-.search-category{
- min-height:58px;
- border:1px solid var(--border);
- background:var(--card);
- color:var(--text);
- border-radius:15px;
- padding:9px 8px;
- cursor:pointer;
- display:flex;
- align-items:center;
- justify-content:center;
- gap:7px;
- font-size:12px;
- font-weight:800;
- transition:.2s;
- text-align:center
-}
-
-.search-category:hover{
- transform:translateY(-2px);
- border-color:#19d66b
-}
-
-.search-category.active{
- background:#050505;
- color:#fff;
- border-color:#050505;
- box-shadow:0 7px 18px rgba(0,0,0,.12)
-}
-
-body.dark .search-category.active{
- background:#fff;
- color:#111;
- border-color:#fff
-}
-
-.search-category .icon{
- width:19px;
- height:19px
-}
-
-.filter-toggle{
- width:100%;
- height:43px;
- border:1px solid var(--border);
- background:var(--card);
- color:var(--text);
- border-radius:13px;
- cursor:pointer;
- display:flex;
- align-items:center;
- justify-content:center;
- font-size:23px;
- font-weight:900;
- margin-bottom:10px;
- transition:.2s
-}
-
-.filter-toggle:hover{
- border-color:#19d66b
-}
-
-.filter-toggle.open{
- background:#050505;
- color:#fff
-}
-
-body.dark .filter-toggle.open{
- background:#fff;
- color:#111
-}
-
-.extra-filters{
- display:none;
- grid-template-columns:repeat(3,1fr);
- gap:9px;
- margin-bottom:14px
-}
-
-.extra-filters.open{
- display:grid
-}
-
-.extra-filter{
- min-height:50px;
- border:1px solid var(--border);
- background:var(--card);
- color:var(--text);
- border-radius:13px;
- cursor:pointer;
- font-size:12px;
- font-weight:800;
- transition:.2s
-}
-
-.extra-filter:hover{
- border-color:#19d66b;
- transform:translateY(-1px)
-}
-
-/* =========================
-   PROPERTY CATEGORIES
-========================= */
-
-.categories{
- display:flex;
- gap:8px;
- overflow-x:auto;
- padding:2px 0 16px;
- scrollbar-width:none
-}
-
-.categories::-webkit-scrollbar{
- display:none
-}
-
-.category-btn{
- border:1px solid var(--border);
- background:var(--card);
- color:var(--text);
- border-radius:12px;
- padding:10px 15px;
- white-space:nowrap;
- cursor:pointer;
- font-weight:700;
- font-size:13px;
- transition:.2s;
- display:flex;
- align-items:center;
- gap:7px
-}
-
-.category-btn:hover{
- transform:translateY(-1px)
-}
-
-.category-btn .icon{
- width:18px;
- height:18px
-}
-
-.category-btn.active{
- background:#050505;
- color:#fff;
- border-color:#050505
-}
-
-body.dark .category-btn.active{
- background:#fff;
- color:#111;
- border-color:#fff
-}
-
-/* =========================
-   RESULTS
-========================= */
-
-.results-info{
- display:flex;
- justify-content:space-between;
- align-items:center;
- margin-bottom:14px
-}
-
-.results-info h2{
- font-size:20px
-}
-
-.results-count{
- color:var(--muted);
- font-size:13px
-}
-
-/* =========================
-   GRID
-========================= */
-
-.cars-grid{
- display:grid;
- grid-template-columns:repeat(3,1fr);
- gap:18px
-}
-
-/* =========================
-   CARD
-========================= */
-
-.car-card{
- position:relative;
- background:var(--card);
- border:1px solid var(--border);
- border-radius:20px;
- overflow:hidden;
- box-shadow:var(--shadow);
- transition:.25s
-}
-
-.car-card:hover{
- transform:translateY(-5px);
- box-shadow:0 16px 35px rgba(0,0,0,.13)
-}
-
-.car-image-box{
- position:relative;
- width:100%;
- height:235px;
- background:#ddd;
- overflow:hidden
-}
-
-.car-image{
- width:100%;
- height:100%;
- object-fit:cover;
- display:block;
- transition:.35s
-}
-
-.car-card:hover .car-image{
- transform:scale(1.045)
-}
-
-.badge{
- position:absolute;
- top:12px;
- left:12px;
- z-index:3;
- padding:7px 10px;
- border-radius:9px;
- font-size:11px;
- font-weight:900;
- background:#19d66b;
- color:#000
-}
-
-.sold-badge{
- background:#ff3b30;
- color:#fff
-}
-
-.favorite{
- position:absolute;
- right:12px;
- top:12px;
- z-index:4;
- width:40px;
- height:40px;
- border-radius:50%;
- border:none;
- background:rgba(0,0,0,.68);
- color:#fff;
- cursor:pointer;
- display:flex;
- align-items:center;
- justify-content:center
-}
-
-.favorite.active{
- color:#ff3b30
-}
-
-.image-count{
- position:absolute;
- right:12px;
- bottom:12px;
- z-index:3;
- background:rgba(0,0,0,.72);
- color:#fff;
- padding:6px 9px;
- border-radius:9px;
- font-size:12px;
- display:flex;
- align-items:center;
- gap:5px
-}
-
-.car-content{
- padding:16px
-}
-
-.car-name{
- font-size:19px;
- font-weight:800;
- margin-bottom:7px
-}
-
-.car-price{
- font-size:20px;
- font-weight:900;
- margin-bottom:9px
-}
-
-.property-meta{
- display:flex;
- flex-wrap:wrap;
- gap:6px;
- margin-bottom:10px
-}
-
-.meta-item{
- background:var(--bg);
- border:1px solid var(--border);
- color:var(--muted);
- border-radius:8px;
- padding:5px 8px;
- font-size:11px;
- font-weight:700
-}
-
-.car-address{
- color:var(--muted);
- font-size:12px;
- margin-bottom:8px;
- display:flex;
- align-items:center;
- gap:5px
-}
-
-.car-description{
- color:var(--muted);
- font-size:13px;
- line-height:1.5;
- min-height:39px;
- display:-webkit-box;
- -webkit-line-clamp:2;
- -webkit-box-orient:vertical;
- overflow:hidden
-}
-
-.card-bottom{
- display:flex;
- gap:8px;
- margin-top:14px
-}
-
-.detail-btn,
-.call-btn{
- flex:1;
- padding:11px 8px;
- border-radius:11px;
- border:none;
- cursor:pointer;
- font-weight:bold;
- text-align:center;
- text-decoration:none;
- display:flex;
- align-items:center;
- justify-content:center;
- gap:6px
-}
-
-.detail-btn{
- background:#eee;
- color:#111
-}
-
-body.dark .detail-btn{
- background:#292929;
- color:#fff
-}
-
-.call-btn{
- background:#19d66b;
- color:#000
-}
-
-/* =========================
-   EMPTY
-========================= */
-
-.empty{
- grid-column:1/-1;
- text-align:center;
- padding:70px 20px;
- background:var(--card);
- border-radius:20px;
- border:1px solid var(--border)
-}
-
-.empty-icon{
- margin-bottom:12px;
- color:var(--muted)
-}
-
-.empty h3{
- margin-bottom:7px
-}
-
-.empty p{
- color:var(--muted)
-}
-
-/* =========================
-   SKELETON
-========================= */
-
-.skeleton{
- background:var(--card);
- border-radius:20px;
- overflow:hidden;
- border:1px solid var(--border)
-}
-
-.skeleton-img{
- height:235px;
- background:linear-gradient(
-  90deg,
-  #e8e8e8 25%,
-  #f5f5f5 50%,
-  #e8e8e8 75%
- );
- background-size:200% 100%;
- animation:skeleton 1.2s infinite
-}
-
-.skeleton-content{
- padding:16px
-}
-
-.skeleton-line{
- height:14px;
- background:#e5e5e5;
- border-radius:8px;
- margin-bottom:10px
-}
-
-.skeleton-line.big{
- width:65%;
- height:20px
-}
-
-@keyframes skeleton{
- 0%{background-position:200% 0}
- 100%{background-position:-200% 0}
-}
-
-/* =========================
-   DETAILS
-========================= */
-
-.back-btn{
- border:none;
- background:var(--card);
- color:var(--text);
- border:1px solid var(--border);
- padding:10px 15px;
- border-radius:12px;
- cursor:pointer;
- margin-bottom:15px;
- display:inline-flex;
- align-items:center;
- gap:7px
-}
-
-.details-card{
- background:var(--card);
- border:1px solid var(--border);
- border-radius:22px;
- overflow:hidden;
- box-shadow:var(--shadow)
-}
-
-.details-main{
- display:grid;
- grid-template-columns:1.2fr 1fr
-}
-
-.details-image{
- width:100%;
- height:500px;
- object-fit:cover;
- cursor:pointer
-}
-
-.details-info{
- padding:28px
-}
-
-.details-info h1{
- font-size:32px;
- margin-bottom:15px
-}
-
-.details-price{
- font-size:27px;
- font-weight:900;
- margin-bottom:18px
-}
-
-.details-meta{
- display:grid;
- grid-template-columns:repeat(2,1fr);
- gap:10px;
- margin-bottom:20px
-}
-
-.details-meta-item{
- background:var(--bg);
- border:1px solid var(--border);
- border-radius:12px;
- padding:12px
-}
-
-.details-meta-item b{
- display:block;
- font-size:12px;
- color:var(--muted);
- margin-bottom:4px
-}
-
-.details-description{
- color:var(--muted);
- line-height:1.7;
- white-space:pre-wrap;
- margin-bottom:25px
-}
-
-.details-call{
- display:flex;
- align-items:center;
- justify-content:center;
- gap:8px;
- padding:15px;
- border-radius:13px;
- background:#19d66b;
- color:#000;
- font-weight:900;
- text-decoration:none
-}
-
-.thumbnails{
- display:flex;
- gap:8px;
- padding:12px;
- overflow-x:auto
-}
-
-.thumb{
- width:80px;
- height:65px;
- object-fit:cover;
- border-radius:9px;
- cursor:pointer;
- border:2px solid transparent
-}
-
-.thumb.active{
- border-color:#19d66b
-}
-
-/* =========================
-   MENU
-========================= */
-
-.menu-card{
- background:var(--card);
- border:1px solid var(--border);
- border-radius:20px;
- padding:20px;
- box-shadow:var(--shadow)
-}
-
-.menu-item{
- display:flex;
- justify-content:space-between;
- align-items:center;
- padding:16px 5px;
- border-bottom:1px solid var(--border)
-}
-
-.menu-item:last-child{
- border-bottom:none
-}
-
-.menu-item-left{
- display:flex;
- flex-direction:column;
- gap:4px
-}
-
-.menu-item-title{
- font-weight:bold;
- display:flex;
- align-items:center;
- gap:8px
-}
-
-.menu-item-sub{
- color:var(--muted);
- font-size:13px
-}
-
-.menu-item a{
- color:#19d66b;
- text-decoration:none;
- display:flex;
- align-items:center;
- gap:6px
-}
-
-/* =========================
-   LIGHTBOX
-========================= */
-
-.lightbox{
- position:fixed;
- inset:0;
- z-index:3000;
- background:rgba(0,0,0,.94);
- display:none;
- align-items:center;
- justify-content:center
-}
-
-.lightbox.active{
- display:flex
-}
-
-.lightbox img{
- max-width:92%;
- max-height:88%;
- object-fit:contain
-}
-
-.lightbox-close,
-.lightbox-prev,
-.lightbox-next{
- position:absolute;
- border:none;
- background:rgba(255,255,255,.12);
- color:#fff;
- cursor:pointer;
- border-radius:50%;
- display:flex;
- align-items:center;
- justify-content:center
-}
-
-.lightbox-close{
- top:20px;
- right:20px;
- width:45px;
- height:45px;
- font-size:25px
-}
-
-.lightbox-prev,
-.lightbox-next{
- width:50px;
- height:50px;
- top:50%;
- transform:translateY(-50%);
- font-size:30px
-}
-
-.lightbox-prev{left:20px}
-.lightbox-next{right:20px}
-
-/* =========================
-   BOTTOM NAV
-========================= */
-
-.bottom-nav{
- position:fixed;
- left:0;
- right:0;
- bottom:0;
- z-index:1500;
- display:flex;
- background:rgba(0,0,0,.97);
- border-top:1px solid #333;
- padding:8px 5px
-}
-
-.bottom-nav button{
- flex:1;
- border:none;
- background:none;
- color:#aaa;
- padding:7px 3px;
- font-size:11px;
- cursor:pointer;
- display:flex;
- flex-direction:column;
- align-items:center;
- gap:3px
-}
-
-.bottom-nav button.active{
- color:#19d66b
-}
-
-.bottom-icon{
- height:22px;
- display:flex;
- align-items:center;
- justify-content:center
-}
-
-/* =========================
-   RESPONSIVE
-========================= */
-
-@media(max-width:1000px){
-
- .cars-grid{
-  grid-template-columns:repeat(2,1fr)
- }
-
- .details-main{
-  grid-template-columns:1fr
- }
-
- .details-image{
-  height:420px
- }
-
- .search-page-categories{
-  grid-template-columns:repeat(3,1fr)
- }
-
-}
-
-@media(max-width:650px){
-
- .header-inner{
-  min-height:68px;
-  padding:10px 12px
- }
-
- .logo{
-  font-size:28px
- }
-
- .phone-top{
-  display:none
- }
-
- .lang-btn,
- .theme-btn{
-  padding:7px 8px;
-  font-size:12px
- }
-
- .container{
-  padding:15px 10px 85px
- }
-
- .cars-grid{
-  grid-template-columns:repeat(2,1fr);
-  gap:9px
- }
-
- .car-image-box{
-  height:170px
- }
-
- .car-content{
-  padding:10px
- }
-
- .car-name{
-  font-size:15px
- }
-
- .car-price{
-  font-size:16px
- }
-
- .property-meta{
-  gap:4px
- }
-
- .meta-item{
-  font-size:9px;
-  padding:4px 6px
- }
-
- .car-address{
-  font-size:10px
- }
-
- .car-description{
-  font-size:11px;
-  min-height:32px
- }
-
- .card-bottom{
-  flex-direction:column;
-  gap:5px;
-  margin-top:9px
- }
-
- .detail-btn,
- .call-btn{
-  padding:8px 5px;
-  font-size:11px
- }
-
- .favorite{
-  width:34px;
-  height:34px
- }
-
- .badge{
-  top:8px;
-  left:8px;
-  padding:5px 7px;
-  font-size:9px
- }
-
- .image-count{
-  right:7px;
-  bottom:7px;
-  font-size:10px;
-  padding:5px 7px
- }
-
- .details-image{
-  height:300px
- }
-
- .details-info{
-  padding:18px
- }
-
- .details-info h1{
-  font-size:24px
- }
-
- .details-price{
-  font-size:22px
- }
-
- .details-meta{
-  grid-template-columns:1fr 1fr
- }
-
- .search-page-top{
-  margin-bottom:12px
- }
-
- .search-page-title{
-  font-size:22px
- }
-
- .search-page-categories{
-  grid-template-columns:repeat(2,1fr);
-  gap:8px
- }
-
- .search-category{
-  min-height:52px;
-  font-size:11px;
-  padding:8px 5px
- }
-
- .search-category:last-child{
-  grid-column:1/-1
- }
-
- .extra-filters{
-  grid-template-columns:1fr;
-  gap:7px
- }
-
- .extra-filter{
-  min-height:45px
- }
-
-}
-
-@media(max-width:380px){
-
- .logo{
-  font-size:24px
- }
-
- .lang-btn,
- .theme-btn{
-  padding:6px
- }
-
- .search-page-categories{
-  gap:6px
- }
-
- .search-category{
-  font-size:10px
- }
-
-}
-
-/* =====================================================
-   TELEFON EKRANI — TO'LIQ RESPONSIVE TUZATISH
-   ===================================================== */
-
-html,
-body{
-  width:100%;
-  max-width:100%;
-  overflow-x:hidden;
-}
-
-body{
-  min-width:0;
-}
-
-.container{
-  width:100%;
-  max-width:1250px;
-  min-width:0;
-}
-
-.details-card,
-.details-main,
-.details-info,
-.details-meta,
-.details-meta-item{
-  min-width:0;
-  max-width:100%;
-}
-
-.details-info h1,
-.details-price,
-.details-meta-item,
-.details-description{
-  overflow-wrap:anywhere;
-  word-break:break-word;
-}
-
-.details-call{
-  width:100%;
-  max-width:100%;
-  box-sizing:border-box;
-}
-
-@media(max-width:650px){
-
-  .header-inner{
-    width:100%;
-    min-width:0;
-    overflow:hidden;
-  }
-
-  .header-right{
-    min-width:0;
-    flex-shrink:0;
-  }
-
-  .logo{
-    min-width:0;
-    max-width:45vw;
-    overflow:hidden;
-    text-overflow:ellipsis;
-  }
-
-  .container{
-    width:100%;
-    max-width:100%;
-    padding-left:10px;
-    padding-right:10px;
-    overflow-x:hidden;
-  }
-
-  .details-card{
-    width:100%;
-    max-width:100%;
-    border-radius:18px;
-  }
-
-  .details-main{
-    display:block;
-    width:100%;
-    max-width:100%;
-  }
-
-  .details-image{
-    width:100%;
-    max-width:100%;
-    height:300px;
-  }
-
-  .details-info{
-    width:100%;
-    max-width:100%;
-    padding:18px 16px;
-    overflow:hidden;
-  }
-
-  .details-info h1{
-    max-width:100%;
-    font-size:24px;
-    line-height:1.2;
-  }
-
-  .details-price{
-    max-width:100%;
-    font-size:22px;
-    line-height:1.25;
-  }
-
-  .details-meta{
-    width:100%;
-    max-width:100%;
-    display:grid;
-    grid-template-columns:1fr;
-    gap:9px;
-  }
-
-  .details-meta-item{
-    width:100%;
-    min-width:0;
-    max-width:100%;
-    padding:13px;
-  }
-
-  .details-description{
-    width:100%;
-    max-width:100%;
-    font-size:16px;
-    line-height:1.6;
-  }
-
-  .details-call{
-    width:100%;
-    max-width:100%;
-    min-width:0;
-    padding:15px 10px;
-    font-size:16px;
-    white-space:normal;
-    overflow-wrap:anywhere;
-  }
-
-  .thumbnails{
-    width:100%;
-    max-width:100%;
-    overflow-x:auto;
-  }
-
-  .thumb{
-    flex:0 0 80px;
-  }
-
-  .menu-card{
-    width:100%;
-    max-width:100%;
-  }
-
-  .menu-item{
-    min-width:0;
-  }
-
-  .menu-item-left{
-    min-width:0;
-    max-width:calc(100% - 35px);
-  }
-
-  .menu-item-sub{
-    overflow-wrap:anywhere;
-    word-break:break-word;
-  }
-
-  .search-box{
-    width:100%;
-    min-width:0;
-  }
-
-  .search-box input{
-    min-width:0;
-  }
-
-  .cars-grid{
-    width:100%;
-    min-width:0;
-  }
-
-  .car-card{
-    min-width:0;
-  }
-
-  .car-content{
-    min-width:0;
-  }
-
-  .car-name,
-  .car-price,
-  .car-address,
-  .car-description{
-    overflow-wrap:anywhere;
-    word-break:break-word;
-  }
-
-  .bottom-nav{
-    width:100%;
-    max-width:100%;
-  }
-}
-
-@media(max-width:380px){
-
-  .header-inner{
-    padding-left:8px;
-    padding-right:8px;
-  }
-
-  .logo{
-    font-size:24px;
-    max-width:42vw;
-  }
-
-  .lang-btn,
-  .theme-btn{
-    padding:6px;
-  }
-
-  .details-info{
-    padding:16px 12px;
-  }
-
-  .details-info h1{
-    font-size:22px;
-  }
-
-  .details-price{
-    font-size:21px;
-  }
-
-  .details-meta-item{
-    padding:11px;
-  }
-
-  .details-description{
-    font-size:15px;
-  }
-
-  .details-call{
-    font-size:15px;
-  }
-}
-
-
-/* =====================================================
-   SEARCH CATEGORY — ADMIN TYPE FILTER
-   ===================================================== */
-.search-category{
-  min-width:0;
-}
-
-@media(max-width:650px){
-  .search-page-categories{
-    width:100%;
-    grid-template-columns:repeat(2,minmax(0,1fr));
-  }
-
-  .search-category{
-    width:100%;
-    min-width:0;
-    overflow:hidden;
-  }
-}
-
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>pul.zarill — Uylar</title>
+
+    <style>
+        *{
+            margin:0;
+            padding:0;
+            box-sizing:border-box
+        }
+
+        :root{
+            --bg:#f4f5f7;
+            --card:#fff;
+            --text:#111;
+            --muted:#777;
+            --border:#e7e7e7;
+            --black:#050505;
+            --green:#19d66b;
+            --red:#ff3b30;
+            --yellow:#ffd21c;
+            --shadow:0 10px 30px rgba(0,0,0,.08)
+        }
+
+        body{
+            font-family:Arial,Helvetica,sans-serif;
+            background:var(--bg);
+            color:var(--text);
+            transition:.3s;
+            padding-bottom:75px
+        }
+
+        body.dark{
+            --bg:#101010;
+            --card:#181818;
+            --text:#fff;
+            --muted:#aaa;
+            --border:#292929;
+            --shadow:0 10px 30px rgba(0,0,0,.4)
+        }
+
+        /* =========================
+           ICONS
+        ========================= */
+
+        .icon{
+            width:20px;
+            height:20px;
+            display:inline-block;
+            vertical-align:middle;
+            fill:none;
+            stroke:currentColor;
+            stroke-width:1.75;
+            stroke-linecap:round;
+            stroke-linejoin:round;
+            flex:none;
+            transition:.22s
+        }
+
+        .icon-fill{
+            fill:currentColor;
+            stroke:currentColor
+        }
+
+        .icon-lg{
+            width:23px;
+            height:23px
+        }
+
+        .icon-sm{
+            width:17px;
+            height:17px
+        }
+
+        /* =========================
+           HEADER
+        ========================= */
+
+        header{
+            position:sticky;
+            top:0;
+            z-index:1000;
+            background:#050505;
+            color:#fff;
+            box-shadow:0 5px 25px rgba(0,0,0,.35)
+        }
+
+        .header-inner{
+            max-width:1250px;
+            min-height:78px;
+            margin:auto;
+            padding:10px 18px;
+            display:flex;
+            align-items:center;
+            justify-content:space-between;
+            gap:15px
+        }
+
+        .logo{
+            position:relative;
+            z-index:1;
+            font-size:34px;
+            font-weight:900;
+            letter-spacing:-1.5px;
+            white-space:nowrap
+        }
+
+        .logo .green{
+            color:#19d66b
+        }
+
+        .logo:before{
+            content:"";
+            position:absolute;
+            left:50%;
+            top:50%;
+            width:280px;
+            height:120px;
+            transform:translate(-50%,-50%);
+            border-radius:50%;
+            background:#19d66b;
+            filter:blur(48px);
+            opacity:.48;
+            z-index:-1
+        }
+
+        .header-right{
+            display:flex;
+            align-items:center;
+            gap:7px
+        }
+
+        .phone-top{
+            color:#fff;
+            text-decoration:none;
+            font-size:14px;
+            font-weight:bold;
+            margin-right:5px
+        }
+
+        .lang-btn,
+        .theme-btn{
+            border:1px solid #333;
+            background:#151515;
+            color:#fff;
+            border-radius:10px;
+            padding:8px 10px;
+            cursor:pointer;
+            transition:.2s
+        }
+
+        .lang-btn:hover,
+        .theme-btn:hover{
+            border-color:#19d66b
+        }
+
+        .lang-btn.active{
+            background:#19d66b;
+            color:#000;
+            border-color:#19d66b
+        }
+
+        .theme-btn{
+            display:inline-flex;
+            align-items:center;
+            justify-content:center
+        }
+
+        /* =========================
+           MAIN
+        ========================= */
+
+        .container{
+            max-width:1250px;
+            margin:auto;
+            padding:22px 18px 100px
+        }
+
+        .page{
+            display:none
+        }
+
+        .page.active{
+            display:block
+        }
+
+        /* =========================
+           SEARCH
+        ========================= */
+
+        .search-box{
+            display:flex;
+            gap:10px;
+            margin-bottom:14px
+        }
+
+        .search-box input{
+            flex:1;
+            height:52px;
+            border:1px solid var(--border);
+            background:var(--card);
+            color:var(--text);
+            border-radius:14px;
+            padding:0 17px;
+            outline:none;
+            font-size:15px;
+            transition:.2s
+        }
+
+        .search-box input:focus{
+            border-color:#19d66b;
+            box-shadow:0 0 0 3px rgba(25,214,107,.08)
+        }
+
+        .search-reset{
+            width:52px;
+            border:none;
+            border-radius:14px;
+            background:#050505;
+            color:#fff;
+            cursor:pointer;
+            display:flex;
+            align-items:center;
+            justify-content:center
+        }
+
+        /* =========================
+           SEARCH PAGE
+        ========================= */
+
+        .search-page-top{
+            display:flex;
+            align-items:center;
+            gap:10px;
+            margin-bottom:15px
+        }
+
+        .search-page-title{
+            font-size:25px;
+            font-weight:900
+        }
+
+        .search-back{
+            width:43px;
+            height:43px;
+            border:1px solid var(--border);
+            background:var(--card);
+            color:var(--text);
+            border-radius:13px;
+            cursor:pointer;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            transition:.2s
+        }
+
+        .search-back:hover{
+            transform:translateX(-2px)
+        }
+
+        .search-page-categories{
+            display:grid;
+            grid-template-columns:repeat(5,minmax(0,1fr));
+            gap:9px;
+            margin-bottom:12px
+        }
+
+        .search-category{
+            min-height:58px;
+            border:1px solid var(--border);
+            background:var(--card);
+            color:var(--text);
+            border-radius:15px;
+            padding:9px 8px;
+            cursor:pointer;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            gap:7px;
+            font-size:12px;
+            font-weight:800;
+            transition:.2s;
+            text-align:center
+        }
+
+        .search-category:hover{
+            transform:translateY(-2px);
+            border-color:#19d66b
+        }
+
+        .search-category.active{
+            background:#050505;
+            color:#fff;
+            border-color:#050505;
+            box-shadow:0 7px 18px rgba(0,0,0,.12)
+        }
+
+        body.dark .search-category.active{
+            background:#fff;
+            color:#111;
+            border-color:#fff
+        }
+
+        .search-category .icon{
+            width:19px;
+            height:19px
+        }
+
+        .filter-toggle{
+            width:100%;
+            height:43px;
+            border:1px solid var(--border);
+            background:var(--card);
+            color:var(--text);
+            border-radius:13px;
+            cursor:pointer;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            font-size:23px;
+            font-weight:900;
+            margin-bottom:10px;
+            transition:.2s
+        }
+
+        .filter-toggle:hover{
+            border-color:#19d66b
+        }
+
+        .filter-toggle.open{
+            background:#050505;
+            color:#fff
+        }
+
+        body.dark .filter-toggle.open{
+            background:#fff;
+            color:#111
+        }
+
+        .extra-filters{
+            display:none;
+            grid-template-columns:repeat(3,1fr);
+            gap:9px;
+            margin-bottom:14px
+        }
+
+        .extra-filters.open{
+            display:grid
+        }
+
+        .extra-filter{
+            min-height:50px;
+            border:1px solid var(--border);
+            background:var(--card);
+            color:var(--text);
+            border-radius:13px;
+            cursor:pointer;
+            font-size:12px;
+            font-weight:800;
+            transition:.2s
+        }
+
+        .extra-filter:hover{
+            border-color:#19d66b;
+            transform:translateY(-1px)
+        }
+
+        /* =========================
+           PROPERTY CATEGORIES
+        ========================= */
+
+        .categories{
+            display:flex;
+            gap:8px;
+            overflow-x:auto;
+            padding:2px 0 16px;
+            scrollbar-width:none
+        }
+
+        .categories::-webkit-scrollbar{
+            display:none
+        }
+
+        .category-btn{
+            border:1px solid var(--border);
+            background:var(--card);
+            color:var(--text);
+            border-radius:12px;
+            padding:10px 15px;
+            white-space:nowrap;
+            cursor:pointer;
+            font-weight:700;
+            font-size:13px;
+            transition:.2s;
+            display:flex;
+            align-items:center;
+            gap:7px
+        }
+
+        .category-btn:hover{
+            transform:translateY(-1px)
+        }
+
+        .category-btn .icon{
+            width:18px;
+            height:18px
+        }
+
+        .category-btn.active{
+            background:#050505;
+            color:#fff;
+            border-color:#050505
+        }
+
+        body.dark .category-btn.active{
+            background:#fff;
+            color:#111;
+            border-color:#fff
+        }
+
+        /* =========================
+           RESULTS
+        ========================= */
+
+        .results-info{
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            margin-bottom:14px
+        }
+
+        .results-info h2{
+            font-size:20px
+        }
+
+        .results-count{
+            color:var(--muted);
+            font-size:13px
+        }
+
+        /* =========================
+           GRID
+        ========================= */
+
+        .cars-grid{
+            display:grid;
+            grid-template-columns:repeat(3,1fr);
+            gap:18px
+        }
+
+        /* =========================
+           CARD
+        ========================= */
+
+        .car-card{
+            position:relative;
+            background:var(--card);
+            border:1px solid var(--border);
+            border-radius:20px;
+            overflow:hidden;
+            box-shadow:var(--shadow);
+            transition:.25s
+        }
+
+        .car-card:hover{
+            transform:translateY(-5px);
+            box-shadow:0 16px 35px rgba(0,0,0,.13)
+        }
+
+        .car-image-box{
+            position:relative;
+            width:100%;
+            height:235px;
+            background:#ddd;
+            overflow:hidden
+        }
+
+        .car-image{
+            width:100%;
+            height:100%;
+            object-fit:cover;
+            display:block;
+            transition:.35s
+        }
+
+        .car-card:hover .car-image{
+            transform:scale(1.045)
+        }
+
+        .badge{
+            position:absolute;
+            top:12px;
+            left:12px;
+            z-index:3;
+            padding:7px 10px;
+            border-radius:9px;
+            font-size:11px;
+            font-weight:900;
+            background:#19d66b;
+            color:#000
+        }
+
+        .sold-badge{
+            background:#ff3b30;
+            color:#fff
+        }
+
+        .favorite{
+            position:absolute;
+            right:12px;
+            top:12px;
+            z-index:4;
+            width:40px;
+            height:40px;
+            border-radius:50%;
+            border:none;
+            background:rgba(0,0,0,.68);
+            color:#fff;
+            cursor:pointer;
+            display:flex;
+            align-items:center;
+            justify-content:center
+        }
+
+        .favorite.active{
+            color:#ff3b30
+        }
+
+        .image-count{
+            position:absolute;
+            right:12px;
+            bottom:12px;
+            z-index:3;
+            background:rgba(0,0,0,.72);
+            color:#fff;
+            padding:6px 9px;
+            border-radius:9px;
+            font-size:12px;
+            display:flex;
+            align-items:center;
+            gap:5px
+        }
+
+        .car-content{
+            padding:16px
+        }
+
+        .car-name{
+            font-size:19px;
+            font-weight:800;
+            margin-bottom:7px
+        }
+
+        .car-price{
+            font-size:20px;
+            font-weight:900;
+            margin-bottom:9px
+        }
+
+        .property-meta{
+            display:flex;
+            flex-wrap:wrap;
+            gap:6px;
+            margin-bottom:10px
+        }
+
+        .meta-item{
+            background:var(--bg);
+            border:1px solid var(--border);
+            color:var(--muted);
+            border-radius:8px;
+            padding:5px 8px;
+            font-size:11px;
+            font-weight:700
+        }
+
+        .car-address{
+            color:var(--muted);
+            font-size:12px;
+            margin-bottom:8px;
+            display:flex;
+            align-items:center;
+            gap:5px
+        }
+
+        .car-description{
+            color:var(--muted);
+            font-size:13px;
+            line-height:1.5;
+            min-height:39px;
+            display:-webkit-box;
+            -webkit-line-clamp:2;
+            -webkit-box-orient:vertical;
+            overflow:hidden
+        }
+
+        .card-bottom{
+            display:flex;
+            gap:8px;
+            margin-top:14px
+        }
+
+        .detail-btn,
+        .call-btn{
+            flex:1;
+            padding:11px 8px;
+            border-radius:11px;
+            border:none;
+            cursor:pointer;
+            font-weight:bold;
+            text-align:center;
+            text-decoration:none;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            gap:6px
+        }
+
+        .detail-btn{
+            background:#eee;
+            color:#111
+        }
+
+        body.dark .detail-btn{
+            background:#292929;
+            color:#fff
+        }
+
+        .call-btn{
+            background:#19d66b;
+            color:#000
+        }
+
+        /* =========================
+           EMPTY
+        ========================= */
+
+        .empty{
+            grid-column:1/-1;
+            text-align:center;
+            padding:70px 20px;
+            background:var(--card);
+            border-radius:20px;
+            border:1px solid var(--border)
+        }
+
+        .empty-icon{
+            margin-bottom:12px;
+            color:var(--muted)
+        }
+
+        .empty h3{
+            margin-bottom:7px
+        }
+
+        .empty p{
+            color:var(--muted)
+        }
+
+        /* =========================
+           SKELETON
+        ========================= */
+
+        .skeleton{
+            background:var(--card);
+            border-radius:20px;
+            overflow:hidden;
+            border:1px solid var(--border)
+        }
+
+        .skeleton-img{
+            height:235px;
+            background:linear-gradient(
+                    90deg,
+                    #e8e8e8 25%,
+                    #f5f5f5 50%,
+                    #e8e8e8 75%
+            );
+            background-size:200% 100%;
+            animation:skeleton 1.2s infinite
+        }
+
+        .skeleton-content{
+            padding:16px
+        }
+
+        .skeleton-line{
+            height:14px;
+            background:#e5e5e5;
+            border-radius:8px;
+            margin-bottom:10px
+        }
+
+        .skeleton-line.big{
+            width:65%;
+            height:20px
+        }
+
+        @keyframes skeleton{
+            0%{background-position:200% 0}
+            100%{background-position:-200% 0}
+        }
+
+        /* =========================
+           DETAILS
+        ========================= */
+
+        .back-btn{
+            border:none;
+            background:var(--card);
+            color:var(--text);
+            border:1px solid var(--border);
+            padding:10px 15px;
+            border-radius:12px;
+            cursor:pointer;
+            margin-bottom:15px;
+            display:inline-flex;
+            align-items:center;
+            gap:7px
+        }
+
+        .details-card{
+            background:var(--card);
+            border:1px solid var(--border);
+            border-radius:22px;
+            overflow:hidden;
+            box-shadow:var(--shadow)
+        }
+
+        .details-main{
+            display:grid;
+            grid-template-columns:1.2fr 1fr
+        }
+
+        .details-image{
+            width:100%;
+            height:500px;
+            object-fit:cover;
+            cursor:pointer
+        }
+
+        .details-info{
+            padding:28px
+        }
+
+        .details-info h1{
+            font-size:32px;
+            margin-bottom:15px
+        }
+
+        .details-price{
+            font-size:27px;
+            font-weight:900;
+            margin-bottom:18px
+        }
+
+        .details-meta{
+            display:grid;
+            grid-template-columns:repeat(2,1fr);
+            gap:10px;
+            margin-bottom:20px
+        }
+
+        .details-meta-item{
+            background:var(--bg);
+            border:1px solid var(--border);
+            border-radius:12px;
+            padding:12px
+        }
+
+        .details-meta-item b{
+            display:block;
+            font-size:12px;
+            color:var(--muted);
+            margin-bottom:4px
+        }
+
+        .details-description{
+            color:var(--muted);
+            line-height:1.7;
+            white-space:pre-wrap;
+            margin-bottom:25px
+        }
+
+        .details-call{
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            gap:8px;
+            padding:15px;
+            border-radius:13px;
+            background:#19d66b;
+            color:#000;
+            font-weight:900;
+            text-decoration:none
+        }
+
+        .thumbnails{
+            display:flex;
+            gap:8px;
+            padding:12px;
+            overflow-x:auto
+        }
+
+        .thumb{
+            width:80px;
+            height:65px;
+            object-fit:cover;
+            border-radius:9px;
+            cursor:pointer;
+            border:2px solid transparent
+        }
+
+        .thumb.active{
+            border-color:#19d66b
+        }
+
+        /* =========================
+           MENU
+        ========================= */
+
+        .menu-card{
+            background:var(--card);
+            border:1px solid var(--border);
+            border-radius:20px;
+            padding:20px;
+            box-shadow:var(--shadow)
+        }
+
+        .menu-item{
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            padding:16px 5px;
+            border-bottom:1px solid var(--border)
+        }
+
+        .menu-item:last-child{
+            border-bottom:none
+        }
+
+        .menu-item-left{
+            display:flex;
+            flex-direction:column;
+            gap:4px
+        }
+
+        .menu-item-title{
+            font-weight:bold;
+            display:flex;
+            align-items:center;
+            gap:8px
+        }
+
+        .menu-item-sub{
+            color:var(--muted);
+            font-size:13px
+        }
+
+        .menu-item a{
+            color:#19d66b;
+            text-decoration:none;
+            display:flex;
+            align-items:center;
+            gap:6px
+        }
+
+        /* =========================
+           LIGHTBOX
+        ========================= */
+
+        .lightbox{
+            position:fixed;
+            inset:0;
+            z-index:3000;
+            background:rgba(0,0,0,.94);
+            display:none;
+            align-items:center;
+            justify-content:center
+        }
+
+        .lightbox.active{
+            display:flex
+        }
+
+        .lightbox img{
+            max-width:92%;
+            max-height:88%;
+            object-fit:contain
+        }
+
+        .lightbox-close,
+        .lightbox-prev,
+        .lightbox-next{
+            position:absolute;
+            border:none;
+            background:rgba(255,255,255,.12);
+            color:#fff;
+            cursor:pointer;
+            border-radius:50%;
+            display:flex;
+            align-items:center;
+            justify-content:center
+        }
+
+        .lightbox-close{
+            top:20px;
+            right:20px;
+            width:45px;
+            height:45px;
+            font-size:25px
+        }
+
+        .lightbox-prev,
+        .lightbox-next{
+            width:50px;
+            height:50px;
+            top:50%;
+            transform:translateY(-50%);
+            font-size:30px
+        }
+
+        .lightbox-prev{left:20px}
+        .lightbox-next{right:20px}
+
+        /* =========================
+           BOTTOM NAV
+        ========================= */
+
+        .bottom-nav{
+            position:fixed;
+            left:0;
+            right:0;
+            bottom:0;
+            z-index:1500;
+            display:flex;
+            background:rgba(0,0,0,.97);
+            border-top:1px solid #333;
+            padding:8px 5px
+        }
+
+        .bottom-nav button{
+            flex:1;
+            border:none;
+            background:none;
+            color:#aaa;
+            padding:7px 3px;
+            font-size:11px;
+            cursor:pointer;
+            display:flex;
+            flex-direction:column;
+            align-items:center;
+            gap:3px
+        }
+
+        .bottom-nav button.active{
+            color:#19d66b
+        }
+
+        .bottom-icon{
+            height:22px;
+            display:flex;
+            align-items:center;
+            justify-content:center
+        }
+
+        /* =========================
+           RESPONSIVE
+        ========================= */
+
+        @media(max-width:1000px){
+
+            .cars-grid{
+                grid-template-columns:repeat(2,1fr)
+            }
+
+            .details-main{
+                grid-template-columns:1fr
+            }
+
+            .details-image{
+                height:420px
+            }
+
+            .search-page-categories{
+                grid-template-columns:repeat(3,1fr)
+            }
+
+        }
+
+        @media(max-width:650px){
+
+            .header-inner{
+                min-height:68px;
+                padding:10px 12px
+            }
+
+            .logo{
+                font-size:28px
+            }
+
+            .phone-top{
+                display:none
+            }
+
+            .lang-btn,
+            .theme-btn{
+                padding:7px 8px;
+                font-size:12px
+            }
+
+            .container{
+                padding:15px 10px 85px
+            }
+
+            .cars-grid{
+                grid-template-columns:repeat(2,1fr);
+                gap:9px
+            }
+
+            .car-image-box{
+                height:170px
+            }
+
+            .car-content{
+                padding:10px
+            }
+
+            .car-name{
+                font-size:15px
+            }
+
+            .car-price{
+                font-size:16px
+            }
+
+            .property-meta{
+                gap:4px
+            }
+
+            .meta-item{
+                font-size:9px;
+                padding:4px 6px
+            }
+
+            .car-address{
+                font-size:10px
+            }
+
+            .car-description{
+                font-size:11px;
+                min-height:32px
+            }
+
+            .card-bottom{
+                flex-direction:column;
+                gap:5px;
+                margin-top:9px
+            }
+
+            .detail-btn,
+            .call-btn{
+                padding:8px 5px;
+                font-size:11px
+            }
+
+            .favorite{
+                width:34px;
+                height:34px
+            }
+
+            .badge{
+                top:8px;
+                left:8px;
+                padding:5px 7px;
+                font-size:9px
+            }
+
+            .image-count{
+                right:7px;
+                bottom:7px;
+                font-size:10px;
+                padding:5px 7px
+            }
+
+            .details-image{
+                height:300px
+            }
+
+            .details-info{
+                padding:18px
+            }
+
+            .details-info h1{
+                font-size:24px
+            }
+
+            .details-price{
+                font-size:22px
+            }
+
+            .details-meta{
+                grid-template-columns:1fr 1fr
+            }
+
+            .search-page-top{
+                margin-bottom:12px
+            }
+
+            .search-page-title{
+                font-size:22px
+            }
+
+            .search-page-categories{
+                grid-template-columns:repeat(2,1fr);
+                gap:8px
+            }
+
+            .search-category{
+                min-height:52px;
+                font-size:11px;
+                padding:8px 5px
+            }
+
+            .search-category:last-child{
+                grid-column:1/-1
+            }
+
+            .extra-filters{
+                grid-template-columns:1fr;
+                gap:7px
+            }
+
+            .extra-filter{
+                min-height:45px
+            }
+
+        }
+
+        @media(max-width:380px){
+
+            .logo{
+                font-size:24px
+            }
+
+            .lang-btn,
+            .theme-btn{
+                padding:6px
+            }
+
+            .search-page-categories{
+                gap:6px
+            }
+
+            .search-category{
+                font-size:10px
+            }
+
+        }
+
+        /* =====================================================
+           TELEFON EKRANI — TO'LIQ RESPONSIVE TUZATISH
+           ===================================================== */
+
+        html,
+        body{
+            width:100%;
+            max-width:100%;
+            overflow-x:hidden;
+        }
+
+        body{
+            min-width:0;
+        }
+
+        .container{
+            width:100%;
+            max-width:1250px;
+            min-width:0;
+        }
+
+        .details-card,
+        .details-main,
+        .details-info,
+        .details-meta,
+        .details-meta-item{
+            min-width:0;
+            max-width:100%;
+        }
+
+        .details-info h1,
+        .details-price,
+        .details-meta-item,
+        .details-description{
+            overflow-wrap:anywhere;
+            word-break:break-word;
+        }
+
+        .details-call{
+            width:100%;
+            max-width:100%;
+            box-sizing:border-box;
+        }
+
+        @media(max-width:650px){
+
+            .header-inner{
+                width:100%;
+                min-width:0;
+                overflow:hidden;
+            }
+
+            .header-right{
+                min-width:0;
+                flex-shrink:0;
+            }
+
+            .logo{
+                min-width:0;
+                max-width:45vw;
+                overflow:hidden;
+                text-overflow:ellipsis;
+            }
+
+            .container{
+                width:100%;
+                max-width:100%;
+                padding-left:10px;
+                padding-right:10px;
+                overflow-x:hidden;
+            }
+
+            .details-card{
+                width:100%;
+                max-width:100%;
+                border-radius:18px;
+            }
+
+            .details-main{
+                display:block;
+                width:100%;
+                max-width:100%;
+            }
+
+            .details-image{
+                width:100%;
+                max-width:100%;
+                height:300px;
+            }
+
+            .details-info{
+                width:100%;
+                max-width:100%;
+                padding:18px 16px;
+                overflow:hidden;
+            }
+
+            .details-info h1{
+                max-width:100%;
+                font-size:24px;
+                line-height:1.2;
+            }
+
+            .details-price{
+                max-width:100%;
+                font-size:22px;
+                line-height:1.25;
+            }
+
+            .details-meta{
+                width:100%;
+                max-width:100%;
+                display:grid;
+                grid-template-columns:1fr;
+                gap:9px;
+            }
+
+            .details-meta-item{
+                width:100%;
+                min-width:0;
+                max-width:100%;
+                padding:13px;
+            }
+
+            .details-description{
+                width:100%;
+                max-width:100%;
+                font-size:16px;
+                line-height:1.6;
+            }
+
+            .details-call{
+                width:100%;
+                max-width:100%;
+                min-width:0;
+                padding:15px 10px;
+                font-size:16px;
+                white-space:normal;
+                overflow-wrap:anywhere;
+            }
+
+            .thumbnails{
+                width:100%;
+                max-width:100%;
+                overflow-x:auto;
+            }
+
+            .thumb{
+                flex:0 0 80px;
+            }
+
+            .menu-card{
+                width:100%;
+                max-width:100%;
+            }
+
+            .menu-item{
+                min-width:0;
+            }
+
+            .menu-item-left{
+                min-width:0;
+                max-width:calc(100% - 35px);
+            }
+
+            .menu-item-sub{
+                overflow-wrap:anywhere;
+                word-break:break-word;
+            }
+
+            .search-box{
+                width:100%;
+                min-width:0;
+            }
+
+            .search-box input{
+                min-width:0;
+            }
+
+            .cars-grid{
+                width:100%;
+                min-width:0;
+            }
+
+            .car-card{
+                min-width:0;
+            }
+
+            .car-content{
+                min-width:0;
+            }
+
+            .car-name,
+            .car-price,
+            .car-address,
+            .car-description{
+                overflow-wrap:anywhere;
+                word-break:break-word;
+            }
+
+            .bottom-nav{
+                width:100%;
+                max-width:100%;
+            }
+        }
+
+        @media(max-width:380px){
+
+            .header-inner{
+                padding-left:8px;
+                padding-right:8px;
+            }
+
+            .logo{
+                font-size:24px;
+                max-width:42vw;
+            }
+
+            .lang-btn,
+            .theme-btn{
+                padding:6px;
+            }
+
+            .details-info{
+                padding:16px 12px;
+            }
+
+            .details-info h1{
+                font-size:22px;
+            }
+
+            .details-price{
+                font-size:21px;
+            }
+
+            .details-meta-item{
+                padding:11px;
+            }
+
+            .details-description{
+                font-size:15px;
+            }
+
+            .details-call{
+                font-size:15px;
+            }
+        }
+
+
+        /* =====================================================
+           SEARCH CATEGORY — ADMIN TYPE FILTER
+           ===================================================== */
+        .search-category{
+            min-width:0;
+        }
+
+        @media(max-width:650px){
+            .search-page-categories{
+                width:100%;
+                grid-template-columns:repeat(2,minmax(0,1fr));
+            }
+
+            .search-category{
+                width:100%;
+                min-width:0;
+                overflow:hidden;
+            }
+        }
+
+    </style>
 </head>
 
 <body>
@@ -1441,464 +1441,464 @@ body{
 
 <svg width="0" height="0" style="position:absolute">
 
-<symbol id="i-grid" viewBox="0 0 24 24">
- <rect x="3.5" y="3.5" width="7" height="7" rx="1.5"/>
- <rect x="13.5" y="3.5" width="7" height="7" rx="1.5"/>
- <rect x="3.5" y="13.5" width="7" height="7" rx="1.5"/>
- <rect x="13.5" y="13.5" width="7" height="7" rx="1.5"/>
-</symbol>
+    <symbol id="i-grid" viewBox="0 0 24 24">
+        <rect x="3.5" y="3.5" width="7" height="7" rx="1.5"/>
+        <rect x="13.5" y="3.5" width="7" height="7" rx="1.5"/>
+        <rect x="3.5" y="13.5" width="7" height="7" rx="1.5"/>
+        <rect x="13.5" y="13.5" width="7" height="7" rx="1.5"/>
+    </symbol>
 
-<symbol id="i-house" viewBox="0 0 24 24">
- <path d="m3.5 10.5 8.5-7 8.5 7"/>
- <path d="M5.5 9.5v10a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-10"/>
- <path d="M9.5 20.5v-6h5v6"/>
-</symbol>
+    <symbol id="i-house" viewBox="0 0 24 24">
+        <path d="m3.5 10.5 8.5-7 8.5 7"/>
+        <path d="M5.5 9.5v10a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-10"/>
+        <path d="M9.5 20.5v-6h5v6"/>
+    </symbol>
 
-<symbol id="i-map" viewBox="0 0 24 24">
- <path d="M9 4 3.5 6.5v13L9 17l6 2.5 5.5-2.5V4L15 6.5 9 4Z"/>
- <path d="M9 4v13"/>
- <path d="M15 6.5v13"/>
-</symbol>
+    <symbol id="i-map" viewBox="0 0 24 24">
+        <path d="M9 4 3.5 6.5v13L9 17l6 2.5 5.5-2.5V4L15 6.5 9 4Z"/>
+        <path d="M9 4v13"/>
+        <path d="M15 6.5v13"/>
+    </symbol>
 
-<symbol id="i-construction" viewBox="0 0 24 24">
- <path d="M4 20V9"/>
- <path d="M20 20V9"/>
- <path d="M2.5 9h19"/>
- <path d="M5 9 9 4h6l4 5"/>
- <path d="M7 13h10"/>
- <path d="M7 16h10"/>
- <path d="M7 20h10"/>
-</symbol>
+    <symbol id="i-construction" viewBox="0 0 24 24">
+        <path d="M4 20V9"/>
+        <path d="M20 20V9"/>
+        <path d="M2.5 9h19"/>
+        <path d="M5 9 9 4h6l4 5"/>
+        <path d="M7 13h10"/>
+        <path d="M7 16h10"/>
+        <path d="M7 20h10"/>
+    </symbol>
 
-<symbol id="i-location" viewBox="0 0 24 24">
- <path d="M20 10.2c0 5.1-8 11.3-8 11.3S4 15.3 4 10.2a8 8 0 1 1 16 0Z"/>
- <circle cx="12" cy="10" r="2.35"/>
-</symbol>
+    <symbol id="i-location" viewBox="0 0 24 24">
+        <path d="M20 10.2c0 5.1-8 11.3-8 11.3S4 15.3 4 10.2a8 8 0 1 1 16 0Z"/>
+        <circle cx="12" cy="10" r="2.35"/>
+    </symbol>
 
-<symbol id="i-globe" viewBox="0 0 24 24">
- <circle cx="12" cy="12" r="9"/>
- <path d="M3 12h18"/>
- <path d="M12 3c2.65 2.45 4 5.45 4 9s-1.35 6.55-4 9"/>
- <path d="M12 3c-2.65 2.45-4 5.45-4 9s1.35 6.55 4 9"/>
-</symbol>
+    <symbol id="i-globe" viewBox="0 0 24 24">
+        <circle cx="12" cy="12" r="9"/>
+        <path d="M3 12h18"/>
+        <path d="M12 3c2.65 2.45 4 5.45 4 9s-1.35 6.55-4 9"/>
+        <path d="M12 3c-2.65 2.45-4 5.45-4 9s1.35 6.55 4 9"/>
+    </symbol>
 
-<symbol id="i-phone" viewBox="0 0 24 24">
- <path d="M7.1 3.2 4.7 4.1a2 2 0 0 0-1.2 2.3c1.6 7.1 6.9 12.4 14 14a2 2 0 0 0 2.3-1.2l.9-2.4a2 2 0 0 0-1.1-2.5l-2.5-1.1a2 2 0 0 0-2.3.5l-1 1.2a14.2 14.2 0 0 1-5.2-5.2l1.2-1a2 2 0 0 0 .5-2.3L9.6 4.3a2 2 0 0 0-2.5-1.1Z"/>
-</symbol>
+    <symbol id="i-phone" viewBox="0 0 24 24">
+        <path d="M7.1 3.2 4.7 4.1a2 2 0 0 0-1.2 2.3c1.6 7.1 6.9 12.4 14 14a2 2 0 0 0 2.3-1.2l.9-2.4a2 2 0 0 0-1.1-2.5l-2.5-1.1a2 2 0 0 0-2.3.5l-1 1.2a14.2 14.2 0 0 1-5.2-5.2l1.2-1a2 2 0 0 0 .5-2.3L9.6 4.3a2 2 0 0 0-2.5-1.1Z"/>
+    </symbol>
 
-<symbol id="i-heart" viewBox="0 0 24 24">
- <path d="M20.4 5.1a5.4 5.4 0 0 0-7.7 0L12 5.8l-.7-.7a5.4 5.4 0 0 0-7.7 7.7l.7.7L12 21l7.7-7.5.7-.7a5.4 5.4 0 0 0 0-7.7Z"/>
-</symbol>
+    <symbol id="i-heart" viewBox="0 0 24 24">
+        <path d="M20.4 5.1a5.4 5.4 0 0 0-7.7 0L12 5.8l-.7-.7a5.4 5.4 0 0 0-7.7 7.7l.7.7L12 21l7.7-7.5.7-.7a5.4 5.4 0 0 0 0-7.7Z"/>
+    </symbol>
 
-<symbol id="i-search" viewBox="0 0 24 24">
- <circle cx="10.8" cy="10.8" r="6.8"/>
- <path d="m16 16 4.4 4.4"/>
-</symbol>
+    <symbol id="i-search" viewBox="0 0 24 24">
+        <circle cx="10.8" cy="10.8" r="6.8"/>
+        <path d="m16 16 4.4 4.4"/>
+    </symbol>
 
-<symbol id="i-home" viewBox="0 0 24 24">
- <path d="m3.5 10.5 8.5-7 8.5 7"/>
- <path d="M5.5 9.5v10a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-10"/>
- <path d="M9.5 20.5v-6h5v6"/>
-</symbol>
+    <symbol id="i-home" viewBox="0 0 24 24">
+        <path d="m3.5 10.5 8.5-7 8.5 7"/>
+        <path d="M5.5 9.5v10a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-10"/>
+        <path d="M9.5 20.5v-6h5v6"/>
+    </symbol>
 
-<symbol id="i-building" viewBox="0 0 24 24">
- <path d="M5 21V4h10v17"/>
- <path d="M15 9h4v12"/>
- <path d="M8 7h3"/>
- <path d="M8 11h3"/>
- <path d="M8 15h3"/>
- <path d="M17 13h1"/>
- <path d="M17 17h1"/>
- <path d="M9 21v-3h2v3"/>
-</symbol>
+    <symbol id="i-building" viewBox="0 0 24 24">
+        <path d="M5 21V4h10v17"/>
+        <path d="M15 9h4v12"/>
+        <path d="M8 7h3"/>
+        <path d="M8 11h3"/>
+        <path d="M8 15h3"/>
+        <path d="M17 13h1"/>
+        <path d="M17 17h1"/>
+        <path d="M9 21v-3h2v3"/>
+    </symbol>
 
-<symbol id="i-land" viewBox="0 0 24 24">
- <path d="M3 19c4-4 7-5 10-3 3 2 5 1 8-2"/>
- <path d="M3 15c4-4 7-5 10-3 3 2 5 1 8-2"/>
- <path d="M3 21h18"/>
-</symbol>
+    <symbol id="i-land" viewBox="0 0 24 24">
+        <path d="M3 19c4-4 7-5 10-3 3 2 5 1 8-2"/>
+        <path d="M3 15c4-4 7-5 10-3 3 2 5 1 8-2"/>
+        <path d="M3 21h18"/>
+    </symbol>
 
-<symbol id="i-camera" viewBox="0 0 24 24">
- <path d="M4 7.5h3.5l1.6-2.2h5.8l1.6 2.2H20v11H4Z"/>
- <circle cx="12" cy="13" r="3.25"/>
-</symbol>
+    <symbol id="i-camera" viewBox="0 0 24 24">
+        <path d="M4 7.5h3.5l1.6-2.2h5.8l1.6 2.2H20v11H4Z"/>
+        <circle cx="12" cy="13" r="3.25"/>
+    </symbol>
 
-<symbol id="i-arrow-left" viewBox="0 0 24 24">
- <path d="m15 18-6-6 6-6"/>
-</symbol>
+    <symbol id="i-arrow-left" viewBox="0 0 24 24">
+        <path d="m15 18-6-6 6-6"/>
+    </symbol>
 
-<symbol id="i-sun" viewBox="0 0 24 24">
- <circle cx="12" cy="12" r="4"/>
- <path d="M12 2.5v1.8"/>
- <path d="M12 19.7v1.8"/>
- <path d="m4.9 4.9 1.3 1.3"/>
- <path d="m17.8 17.8 1.3 1.3"/>
- <path d="M2.5 12h1.8"/>
- <path d="M19.7 12h1.8"/>
-</symbol>
+    <symbol id="i-sun" viewBox="0 0 24 24">
+        <circle cx="12" cy="12" r="4"/>
+        <path d="M12 2.5v1.8"/>
+        <path d="M12 19.7v1.8"/>
+        <path d="m4.9 4.9 1.3 1.3"/>
+        <path d="m17.8 17.8 1.3 1.3"/>
+        <path d="M2.5 12h1.8"/>
+        <path d="M19.7 12h1.8"/>
+    </symbol>
 
-<symbol id="i-moon" viewBox="0 0 24 24">
- <path d="M20.2 14.1A8.5 8.5 0 0 1 9.9 3.8a8.5 8.5 0 1 0 10.3 10.3Z"/>
-</symbol>
+    <symbol id="i-moon" viewBox="0 0 24 24">
+        <path d="M20.2 14.1A8.5 8.5 0 0 1 9.9 3.8a8.5 8.5 0 1 0 10.3 10.3Z"/>
+    </symbol>
 
-<symbol id="i-telegram" viewBox="0 0 24 24">
- <path d="m21 3-6.7 17.8-4-6.1L4 12.2 21 3Z"/>
- <path d="m10.3 14.7 5.4-5"/>
-</symbol>
+    <symbol id="i-telegram" viewBox="0 0 24 24">
+        <path d="m21 3-6.7 17.8-4-6.1L4 12.2 21 3Z"/>
+        <path d="m10.3 14.7 5.4-5"/>
+    </symbol>
 
-<symbol id="i-instagram" viewBox="0 0 24 24">
- <rect x="3.2" y="3.2" width="17.6" height="17.6" rx="5"/>
- <circle cx="12" cy="12" r="4"/>
-</symbol>
+    <symbol id="i-instagram" viewBox="0 0 24 24">
+        <rect x="3.2" y="3.2" width="17.6" height="17.6" rx="5"/>
+        <circle cx="12" cy="12" r="4"/>
+    </symbol>
 
-<symbol id="i-whatsapp" viewBox="0 0 24 24">
- <path d="M20.1 11.4a8.1 8.1 0 0 1-11.9 7L4 20l1.6-4A8.1 8.1 0 1 1 20.1 11.4Z"/>
-</symbol>
+    <symbol id="i-whatsapp" viewBox="0 0 24 24">
+        <path d="M20.1 11.4a8.1 8.1 0 0 1-11.9 7L4 20l1.6-4A8.1 8.1 0 1 1 20.1 11.4Z"/>
+    </symbol>
 
 </svg>
 
 <header>
 
-<div class="header-inner">
+    <div class="header-inner">
 
- <div class="logo">
-  pul<span class="green">.zarill</span>
- </div>
+        <div class="logo">
+            pul<span class="green">.zarill</span>
+        </div>
 
- <div class="header-right">
+        <div class="header-right">
 
-  <a
-   class="phone-top"
-   id="headerPhone"
-   href="tel:+998889500005"
-   onclick="trackCall(event)"
-  >
-   +998 88 950 00 05
-  </a>
+            <a
+                    class="phone-top"
+                    id="headerPhone"
+                    href="tel:+998889500005"
+                    onclick="trackCall(event)"
+            >
+                +998 88 950 00 05
+            </a>
 
-  <button class="lang-btn active" onclick="setLang('uz')">UZ</button>
-  <button class="lang-btn" onclick="setLang('ru')">RU</button>
-  <button class="lang-btn" onclick="setLang('en')">EN</button>
+            <button class="lang-btn active" onclick="setLang('uz')">UZ</button>
+            <button class="lang-btn" onclick="setLang('ru')">RU</button>
+            <button class="lang-btn" onclick="setLang('en')">EN</button>
 
-  <button
-   class="theme-btn"
-   onclick="toggleTheme()"
-   id="themeBtn"
-  ></button>
+            <button
+                    class="theme-btn"
+                    onclick="toggleTheme()"
+                    id="themeBtn"
+            ></button>
 
- </div>
+        </div>
 
-</div>
+    </div>
 
 </header>
 
 <main class="container">
 
-<!-- =========================
-     HOME
-========================= -->
+    <!-- =========================
+         HOME
+    ========================= -->
 
-<section id="homePage" class="page active">
+    <section id="homePage" class="page active">
 
- <div class="search-box">
+        <div class="search-box">
 
-  <input
-   id="searchInput"
-   type="text"
-   placeholder="Uy qidirish..."
-   oninput="searchCars()"
-  >
+            <input
+                    id="searchInput"
+                    type="text"
+                    placeholder="Uy qidirish..."
+                    oninput="searchCars()"
+            >
 
-  <button
-   class="search-reset"
-   onclick="resetSearch()"
-  >
-   <svg class="icon">
-    <use href="#i-search"></use>
-   </svg>
-  </button>
+            <button
+                    class="search-reset"
+                    onclick="resetSearch()"
+            >
+                <svg class="icon">
+                    <use href="#i-search"></use>
+                </svg>
+            </button>
 
- </div>
+        </div>
 
- <div class="results-info">
+        <div class="results-info">
 
-  <h2 id="carsTitle">
-   Uylar
-  </h2>
+            <h2 id="carsTitle">
+                Uylar
+            </h2>
 
-  <span
-   class="results-count"
-   id="resultsCount"
-  >
+            <span
+                    class="results-count"
+                    id="resultsCount"
+            >
    0 ta
   </span>
 
- </div>
+        </div>
 
- <div
-  class="cars-grid"
-  id="carsGrid"
- >
+        <div
+                class="cars-grid"
+                id="carsGrid"
+        >
 
-  <div class="skeleton">
-   <div class="skeleton-img"></div>
-   <div class="skeleton-content">
-    <div class="skeleton-line big"></div>
-    <div class="skeleton-line"></div>
-    <div class="skeleton-line"></div>
-   </div>
-  </div>
+            <div class="skeleton">
+                <div class="skeleton-img"></div>
+                <div class="skeleton-content">
+                    <div class="skeleton-line big"></div>
+                    <div class="skeleton-line"></div>
+                    <div class="skeleton-line"></div>
+                </div>
+            </div>
 
-  <div class="skeleton">
-   <div class="skeleton-img"></div>
-   <div class="skeleton-content">
-    <div class="skeleton-line big"></div>
-    <div class="skeleton-line"></div>
-    <div class="skeleton-line"></div>
-   </div>
-  </div>
+            <div class="skeleton">
+                <div class="skeleton-img"></div>
+                <div class="skeleton-content">
+                    <div class="skeleton-line big"></div>
+                    <div class="skeleton-line"></div>
+                    <div class="skeleton-line"></div>
+                </div>
+            </div>
 
-  <div class="skeleton">
-   <div class="skeleton-img"></div>
-   <div class="skeleton-content">
-    <div class="skeleton-line big"></div>
-    <div class="skeleton-line"></div>
-    <div class="skeleton-line"></div>
-   </div>
-  </div>
+            <div class="skeleton">
+                <div class="skeleton-img"></div>
+                <div class="skeleton-content">
+                    <div class="skeleton-line big"></div>
+                    <div class="skeleton-line"></div>
+                    <div class="skeleton-line"></div>
+                </div>
+            </div>
 
- </div>
+        </div>
 
-</section>
+    </section>
 
-<!-- =========================
-     SEARCH PAGE
-========================= -->
+    <!-- =========================
+         SEARCH PAGE
+    ========================= -->
 
-<section id="searchPage" class="page">
+    <section id="searchPage" class="page">
 
- <div class="search-page-top">
+        <div class="search-page-top">
 
-  <button
-   class="search-back"
-   onclick="goHome()"
-   aria-label="Back"
-  >
-   <svg class="icon">
-    <use href="#i-arrow-left"></use>
-   </svg>
-  </button>
+            <button
+                    class="search-back"
+                    onclick="goHome()"
+                    aria-label="Back"
+            >
+                <svg class="icon">
+                    <use href="#i-arrow-left"></use>
+                </svg>
+            </button>
 
-  <div
-   class="search-page-title"
-   id="searchPageTitle"
-  >
-   Qidiruv
-  </div>
+            <div
+                    class="search-page-title"
+                    id="searchPageTitle"
+            >
+                Qidiruv
+            </div>
 
- </div>
+        </div>
 
- <div class="search-box">
+        <div class="search-box">
 
-  <input
-   id="searchPageInput"
-   type="text"
-   placeholder="Uy qidirish..."
-   oninput="searchFromSearchPage()"
-  >
+            <input
+                    id="searchPageInput"
+                    type="text"
+                    placeholder="Uy qidirish..."
+                    oninput="searchFromSearchPage()"
+            >
 
-  <button
-   class="search-reset"
-   onclick="resetSearchPage()"
-  >
-   <svg class="icon">
-    <use href="#i-search"></use>
-   </svg>
-  </button>
+            <button
+                    class="search-reset"
+                    onclick="resetSearchPage()"
+            >
+                <svg class="icon">
+                    <use href="#i-search"></use>
+                </svg>
+            </button>
 
- </div>
+        </div>
 
- <!-- SEARCH CATEGORIES -->
+        <!-- SEARCH CATEGORIES -->
 
- <div class="search-page-categories">
+        <div class="search-page-categories">
 
-  <button
-   class="search-category active"
-   onclick="filterSearchPage('all',this)"
-  >
+            <button
+                    class="search-category active"
+                    onclick="filterSearchPage('all',this)"
+            >
 
-   <svg class="icon">
-    <use href="#i-grid"></use>
-   </svg>
+                <svg class="icon">
+                    <use href="#i-grid"></use>
+                </svg>
 
-   <span id="searchCatAll">
+                <span id="searchCatAll">
     Barchasi
    </span>
 
-  </button>
+            </button>
 
-  <button
-   class="search-category"
-   onclick="filterSearchPage('Hovli',this)"
-  >
+            <button
+                    class="search-category"
+                    onclick="filterSearchPage('Hovli',this)"
+            >
 
-   <svg class="icon">
-    <use href="#i-house"></use>
-   </svg>
+                <svg class="icon">
+                    <use href="#i-house"></use>
+                </svg>
 
-   <span id="searchCatHovli">
+                <span id="searchCatHovli">
     Hovli
    </span>
 
-  </button>
+            </button>
 
-  <button
-   class="search-category"
-   onclick="filterSearchPage('Kvartira',this)"
-  >
+            <button
+                    class="search-category"
+                    onclick="filterSearchPage('Kvartira',this)"
+            >
 
-   <svg class="icon">
-    <use href="#i-building"></use>
-   </svg>
+                <svg class="icon">
+                    <use href="#i-building"></use>
+                </svg>
 
-   <span id="searchCatKvartira">
+                <span id="searchCatKvartira">
     Kvartira
    </span>
 
-  </button>
+            </button>
 
-  <button
-   class="search-category"
-   onclick="filterSearchPage('Yer',this)"
-  >
+            <button
+                    class="search-category"
+                    onclick="filterSearchPage('Yer',this)"
+            >
 
-   <svg class="icon">
-    <use href="#i-map"></use>
-   </svg>
+                <svg class="icon">
+                    <use href="#i-map"></use>
+                </svg>
 
-   <span id="searchCatYer">
+                <span id="searchCatYer">
     Yer
    </span>
 
-  </button>
+            </button>
 
-  <button
-   class="search-category"
-   onclick="filterSearchPage('Yangi qurilish',this)"
-  >
+            <button
+                    class="search-category"
+                    onclick="filterSearchPage('Yangi qurilish',this)"
+            >
 
-   <svg class="icon">
-    <use href="#i-construction"></use>
-   </svg>
+                <svg class="icon">
+                    <use href="#i-construction"></use>
+                </svg>
 
-   <span id="searchCatYangi">
+                <span id="searchCatYangi">
     Yangi qurilish
    </span>
 
-  </button>
+            </button>
 
- </div>
+        </div>
 
- <!-- EXTRA FILTER TOGGLE -->
+        <!-- EXTRA FILTER TOGGLE -->
 
- <button
-  class="filter-toggle"
-  id="filterToggle"
-  onclick="toggleExtraFilters()"
- >
-  ^
- </button>
+        <button
+                class="filter-toggle"
+                id="filterToggle"
+                onclick="toggleExtraFilters()"
+        >
+            ^
+        </button>
 
- <div
-  class="extra-filters"
-  id="extraFilters"
- >
+        <div
+                class="extra-filters"
+                id="extraFilters"
+        >
 
-  <button
-   class="extra-filter"
-   id="priceFilterText"
-  >
-   💰 Narx bo‘yicha
-  </button>
+            <button
+                    class="extra-filter"
+                    id="priceFilterText"
+            >
+                💰 Narx bo‘yicha
+            </button>
 
-  <button
-   class="extra-filter"
-   id="addressFilterText"
-  >
-   📍 Manzil bo‘yicha
-  </button>
+            <button
+                    class="extra-filter"
+                    id="addressFilterText"
+            >
+                📍 Manzil bo‘yicha
+            </button>
 
-  <button
-   class="extra-filter"
-   id="roomsFilterText"
-  >
-   🛏 Xonalar bo‘yicha
-  </button>
+            <button
+                    class="extra-filter"
+                    id="roomsFilterText"
+            >
+                🛏 Xonalar bo‘yicha
+            </button>
 
- </div>
+        </div>
 
- <div class="results-info">
+        <div class="results-info">
 
-  <h2 id="searchResultsTitle">
-   Uylar
-  </h2>
+            <h2 id="searchResultsTitle">
+                Uylar
+            </h2>
 
-  <span
-   class="results-count"
-   id="searchResultsCount"
-  >
+            <span
+                    class="results-count"
+                    id="searchResultsCount"
+            >
    0 ta
   </span>
 
- </div>
+        </div>
 
- <div
-  class="cars-grid"
-  id="searchCarsGrid"
- >
- </div>
+        <div
+                class="cars-grid"
+                id="searchCarsGrid"
+        >
+        </div>
 
-</section>
+    </section>
 
-<!-- =========================
-     DETAILS
-========================= -->
+    <!-- =========================
+         DETAILS
+    ========================= -->
 
-<section id="detailsPage" class="page">
+    <section id="detailsPage" class="page">
 
- <button
-  class="back-btn"
-  onclick="goHome()"
- >
+        <button
+                class="back-btn"
+                onclick="goHome()"
+        >
 
-  <svg class="icon">
-   <use href="#i-arrow-left"></use>
-  </svg>
+            <svg class="icon">
+                <use href="#i-arrow-left"></use>
+            </svg>
 
-  <span id="backText">
+            <span id="backText">
    Orqaga
   </span>
 
- </button>
+        </button>
 
- <div
-  class="details-card"
-  id="detailsCard"
- ></div>
+        <div
+                class="details-card"
+                id="detailsCard"
+        ></div>
 
-</section>
+    </section>
 
-<!-- =========================
-     MENU
-========================= -->
+    <!-- =========================
+         MENU
+    ========================= -->
 
-<section id="menuPage" class="page">
+    <section id="menuPage" class="page">
 
-<div class="menu-card">
+        <div class="menu-card">
 
- <div class="menu-item">
+            <div class="menu-item">
 
-  <div class="menu-item-left">
+                <div class="menu-item-left">
 
    <span class="menu-item-title">
 
@@ -1912,24 +1912,24 @@ body{
 
    </span>
 
-   <span
-    class="menu-item-sub"
-    id="menuPlatform"
-   >
+                    <span
+                            class="menu-item-sub"
+                            id="menuPlatform"
+                    >
     Uy-joy platformasi
    </span>
 
-  </div>
+                </div>
 
-  <svg class="icon icon-lg">
-   <use href="#i-home"></use>
-  </svg>
+                <svg class="icon icon-lg">
+                    <use href="#i-home"></use>
+                </svg>
 
- </div>
+            </div>
 
- <div class="menu-item">
+            <div class="menu-item">
 
-  <div class="menu-item-left">
+                <div class="menu-item-left">
 
    <span class="menu-item-title">
 
@@ -1943,28 +1943,28 @@ body{
 
    </span>
 
-   <span
-    class="menu-item-sub"
-    id="menuPhoneSub"
-   >
+                    <span
+                            class="menu-item-sub"
+                            id="menuPhoneSub"
+                    >
     Biz bilan bog‘lanish
    </span>
 
-  </div>
+                </div>
 
-  <a
-   id="menuPhone"
-   href="tel:+998889500005"
-   onclick="trackCall(event)"
-  >
-   +998 88 950 00 05
-  </a>
+                <a
+                        id="menuPhone"
+                        href="tel:+998889500005"
+                        onclick="trackCall(event)"
+                >
+                    +998 88 950 00 05
+                </a>
 
- </div>
+            </div>
 
- <div class="menu-item">
+            <div class="menu-item">
 
-  <div class="menu-item-left">
+                <div class="menu-item-left">
 
    <span class="menu-item-title">
 
@@ -1978,29 +1978,29 @@ body{
 
    </span>
 
-   <span
-    class="menu-item-sub"
-    id="menuTelegramSub"
-   >
+                    <span
+                            class="menu-item-sub"
+                            id="menuTelegramSub"
+                    >
     Telegram orqali bog‘lanish
    </span>
 
-  </div>
+                </div>
 
-  <a
-   id="menuTelegram"
-   href="https://t.me/"
-   target="_blank"
-   rel="noopener"
-  >
-   <span id="menuOpenTelegram">Ochish</span>
-  </a>
+                <a
+                        id="menuTelegram"
+                        href="https://t.me/"
+                        target="_blank"
+                        rel="noopener"
+                >
+                    <span id="menuOpenTelegram">Ochish</span>
+                </a>
 
- </div>
+            </div>
 
- <div class="menu-item">
+            <div class="menu-item">
 
-  <div class="menu-item-left">
+                <div class="menu-item-left">
 
    <span class="menu-item-title">
 
@@ -2014,29 +2014,29 @@ body{
 
    </span>
 
-   <span
-    class="menu-item-sub"
-    id="menuWhatsappSub"
-   >
+                    <span
+                            class="menu-item-sub"
+                            id="menuWhatsappSub"
+                    >
     WhatsApp orqali bog‘lanish
    </span>
 
-  </div>
+                </div>
 
-  <a
-   id="menuWhatsapp"
-   href="https://wa.me/"
-   target="_blank"
-   rel="noopener"
-  >
-   <span id="menuOpenWhatsapp">Ochish</span>
-  </a>
+                <a
+                        id="menuWhatsapp"
+                        href="https://wa.me/"
+                        target="_blank"
+                        rel="noopener"
+                >
+                    <span id="menuOpenWhatsapp">Ochish</span>
+                </a>
 
- </div>
+            </div>
 
- <div class="menu-item">
+            <div class="menu-item">
 
-  <div class="menu-item-left">
+                <div class="menu-item-left">
 
    <span class="menu-item-title">
 
@@ -2050,29 +2050,29 @@ body{
 
    </span>
 
-   <span
-    class="menu-item-sub"
-    id="menuInstagramSub"
-   >
+                    <span
+                            class="menu-item-sub"
+                            id="menuInstagramSub"
+                    >
     Instagram sahifamiz
    </span>
 
-  </div>
+                </div>
 
-  <a
-   id="menuInstagram"
-   href="https://instagram.com/"
-   target="_blank"
-   rel="noopener"
-  >
-   <span id="menuOpenInstagram">Ochish</span>
-  </a>
+                <a
+                        id="menuInstagram"
+                        href="https://instagram.com/"
+                        target="_blank"
+                        rel="noopener"
+                >
+                    <span id="menuOpenInstagram">Ochish</span>
+                </a>
 
- </div>
+            </div>
 
- <div class="menu-item">
+            <div class="menu-item">
 
-  <div class="menu-item-left">
+                <div class="menu-item-left">
 
    <span class="menu-item-title">
 
@@ -2086,24 +2086,24 @@ body{
 
    </span>
 
-   <span
-    class="menu-item-sub"
-    id="menuAddress"
-   >
+                    <span
+                            class="menu-item-sub"
+                            id="menuAddress"
+                    >
     Toshkent, O‘zbekiston
    </span>
 
-  </div>
+                </div>
 
-  <svg class="icon icon-lg">
-   <use href="#i-location"></use>
-  </svg>
+                <svg class="icon icon-lg">
+                    <use href="#i-location"></use>
+                </svg>
 
- </div>
+            </div>
 
- <div class="menu-item">
+            <div class="menu-item">
 
-  <div class="menu-item-left">
+                <div class="menu-item-left">
 
    <span class="menu-item-title">
 
@@ -2117,24 +2117,24 @@ body{
 
    </span>
 
-   <span
-    class="menu-item-sub"
-    id="menuLanguageSub"
-   >
+                    <span
+                            class="menu-item-sub"
+                            id="menuLanguageSub"
+                    >
     UZ / RU / EN
    </span>
 
-  </div>
+                </div>
 
-  <svg class="icon icon-lg">
-   <use href="#i-globe"></use>
-  </svg>
+                <svg class="icon icon-lg">
+                    <use href="#i-globe"></use>
+                </svg>
 
- </div>
+            </div>
 
- <div class="menu-item">
+            <div class="menu-item">
 
-  <div class="menu-item-left">
+                <div class="menu-item-left">
 
    <span class="menu-item-title">
 
@@ -2148,26 +2148,26 @@ body{
 
    </span>
 
-   <span
-    class="menu-item-sub"
-    id="menuAppearanceSub"
-   >
+                    <span
+                            class="menu-item-sub"
+                            id="menuAppearanceSub"
+                    >
     Light / Dark
    </span>
 
-  </div>
+                </div>
 
-  <button
-   class="theme-btn"
-   onclick="toggleTheme()"
-   id="themeBtnMenu"
-  ></button>
+                <button
+                        class="theme-btn"
+                        onclick="toggleTheme()"
+                        id="themeBtnMenu"
+                ></button>
 
- </div>
+            </div>
 
-</div>
+        </div>
 
-</section>
+    </section>
 
 </main>
 
@@ -2177,11 +2177,11 @@ body{
 
 <nav class="bottom-nav">
 
-<button
- id="navHome"
- class="active"
- onclick="goHome()"
->
+    <button
+            id="navHome"
+            class="active"
+            onclick="goHome()"
+    >
 
  <span class="bottom-icon">
   <svg class="icon">
@@ -2189,16 +2189,16 @@ body{
   </svg>
  </span>
 
- <span id="navHomeText">
+        <span id="navHomeText">
   Bosh sahifa
  </span>
 
-</button>
+    </button>
 
-<button
- id="navSearch"
- onclick="focusSearch()"
->
+    <button
+            id="navSearch"
+            onclick="focusSearch()"
+    >
 
  <span class="bottom-icon">
   <svg class="icon">
@@ -2206,16 +2206,16 @@ body{
   </svg>
  </span>
 
- <span id="navSearchText">
+        <span id="navSearchText">
   Qidiruv
  </span>
 
-</button>
+    </button>
 
-<button
- id="navFavorites"
- onclick="showFavorites()"
->
+    <button
+            id="navFavorites"
+            onclick="showFavorites()"
+    >
 
  <span class="bottom-icon">
   <svg class="icon">
@@ -2223,16 +2223,16 @@ body{
   </svg>
  </span>
 
- <span id="navFavoritesText">
+        <span id="navFavoritesText">
   Sevimlilar
  </span>
 
-</button>
+    </button>
 
-<button
- id="navMenu"
- onclick="showMenu()"
->
+    <button
+            id="navMenu"
+            onclick="showMenu()"
+    >
 
  <span class="bottom-icon">
   <svg class="icon">
@@ -2240,11 +2240,11 @@ body{
   </svg>
  </span>
 
- <span id="navMenuText">
+        <span id="navMenuText">
   Menyu
  </span>
 
-</button>
+    </button>
 
 </nav>
 
@@ -2253,849 +2253,921 @@ body{
 ========================= -->
 
 <div
- class="lightbox"
- id="lightbox"
+        class="lightbox"
+        id="lightbox"
 >
 
-<button
- class="lightbox-close"
- onclick="closeLightbox()"
->
- ×
-</button>
+    <button
+            class="lightbox-close"
+            onclick="closeLightbox()"
+    >
+        ×
+    </button>
 
-<button
- class="lightbox-prev"
- onclick="changeLightbox(-1)"
->
- ‹
-</button>
+    <button
+            class="lightbox-prev"
+            onclick="changeLightbox(-1)"
+    >
+        ‹
+    </button>
 
-<img
- id="lightboxImage"
- src=""
- alt=""
->
+    <img
+            id="lightboxImage"
+            src=""
+            alt=""
+    >
 
-<button
- class="lightbox-next"
- onclick="changeLightbox(1)"
->
- ›
-</button>
+    <button
+            class="lightbox-next"
+            onclick="changeLightbox(1)"
+    >
+        ›
+    </button>
 
 </div>
 
 <script>
 
-let allCars=[];
-let filteredCars=[];
-let currentType="all";
-
-let searchPageType="all";
-
-let favorites=
- JSON.parse(
-  localStorage.getItem("favorites")||"[]"
- );
-
-let currentLang=
- localStorage.getItem("language")||"uz";
-
-let currentDetailsCar=null;
-let currentLightboxIndex=0;
-
-let siteSettings={
- phone:"+998 88 950 00 05",
- telegram:"https://t.me/",
- whatsapp:"https://wa.me/",
- instagram:"https://instagram.com/",
- address:"Toshkent, O‘zbekiston"
-};
-
-/* =========================
-   TRANSLATIONS
-========================= */
-
-const translations={
-
- uz:{
-  search:"Uy qidirish...",
-  cars:"Uylar",
-  back:"Orqaga",
-  call:"Qo‘ng‘iroq qilish",
-  callShort:"Qo‘ng‘iroq",
-  detail:"Batafsil",
-  new:"YANGI",
-  soldBadge:"SOTILDI",
-  photos:"rasm",
-
-  categories:{
-   all:"Barchasi",
-   hovli:"Hovli",
-   kvartira:"Kvartira",
-   yer:"Yer",
-   yangi:"Yangi qurilish"
-  },
-
-  searchTitle:"Qidiruv",
-  priceFilter:"💰 Narx bo‘yicha",
-  addressFilter:"📍 Manzil bo‘yicha",
-  roomsFilter:"🛏 Xonalar bo‘yicha",
-
-  home:"Bosh sahifa",
-  searchNav:"Qidiruv",
-  favorites:"Sevimlilar",
-  menu:"Menyu",
+    let allCars=[];
+    let filteredCars=[];
+    let currentType="all";
+
+    let searchPageType="all";
+
+    let favorites=
+        JSON.parse(
+            localStorage.getItem("favorites")||"[]"
+        );
+
+    let currentLang=
+        localStorage.getItem("language")||"uz";
+
+    let currentDetailsCar=null;
+    let currentLightboxIndex=0;
+
+    let siteSettings={
+        phone:"+998 88 950 00 05",
+        telegram:"https://t.me/",
+        whatsapp:"https://wa.me/",
+        instagram:"https://instagram.com/",
+        address:"Toshkent, O‘zbekiston"
+    };
+
+    /* =========================
+       TRANSLATIONS
+    ========================= */
+
+    const translations={
+
+        uz:{
+            search:"Uy qidirish...",
+            cars:"Uylar",
+            back:"Orqaga",
+            call:"Qo‘ng‘iroq qilish",
+            callShort:"Qo‘ng‘iroq",
+            detail:"Batafsil",
+            new:"YANGI",
+            soldBadge:"SOTILDI",
+            photos:"rasm",
+
+            categories:{
+                all:"Barchasi",
+                hovli:"Hovli",
+                kvartira:"Kvartira",
+                yer:"Yer",
+                yangi:"Yangi qurilish"
+            },
+
+            searchTitle:"Qidiruv",
+            priceFilter:"💰 Narx bo‘yicha",
+            addressFilter:"📍 Manzil bo‘yicha",
+            roomsFilter:"🛏 Xonalar bo‘yicha",
+
+            home:"Bosh sahifa",
+            searchNav:"Qidiruv",
+            favorites:"Sevimlilar",
+            menu:"Menyu",
 
-  platform:"Uy-joy platformasi",
+            platform:"Uy-joy platformasi",
 
-  phone:"Telefon",
-  phoneSub:"Biz bilan bog‘lanish",
+            phone:"Telefon",
+            phoneSub:"Biz bilan bog‘lanish",
 
-  telegram:"Telegram",
-  telegramSub:"Telegram orqali bog‘lanish",
+            telegram:"Telegram",
+            telegramSub:"Telegram orqali bog‘lanish",
 
-  whatsapp:"WhatsApp",
-  whatsappSub:"WhatsApp orqali bog‘lanish",
-
-  instagram:"Instagram",
-  instagramSub:"Instagram sahifamiz",
-
-  address:"Manzil",
-
-  language:"Til",
-  languageSub:"UZ / RU / EN",
-
-  appearance:"Ko‘rinish",
-  appearanceSub:"Light / Dark",
-
-  open:"Ochish",
-
-  empty:"Hozircha uy topilmadi",
-  emptyText:"Boshqa uy yoki manzilni qidirib ko‘ring.",
-
-  noFavorites:"Sevimli uylar yo‘q",
-  noFavoritesText:"Uy kartasidagi yurak tugmasini bosing.",
-
-  loadingError:"Ma'lumot yuklanmadi",
-  serverError:"Server bilan bog‘lanishda xatolik yuz berdi.",
-
-  type:"Turi",
-  rooms:"Xonalar",
-  area:"Maydon",
-  addressLabel:"Manzil"
- },
-
- ru:{
-  search:"Поиск жилья...",
-  cars:"Недвижимость",
-  back:"Назад",
-  call:"Позвонить",
-  callShort:"Позвонить",
-  detail:"Подробнее",
-  new:"НОВИНКА",
-  soldBadge:"ПРОДАНО",
-  photos:"фото",
-
-  categories:{
-   all:"Все",
-   hovli:"Частный дом",
-   kvartira:"Квартира",
-   yer:"Земля",
-   yangi:"Новостройка"
-  },
-
-  searchTitle:"Поиск",
-  priceFilter:"💰 По цене",
-  addressFilter:"📍 По адресу",
-  roomsFilter:"🛏 По комнатам",
-
-  home:"Главная",
-  searchNav:"Поиск",
-  favorites:"Избранное",
-  menu:"Меню",
+            whatsapp:"WhatsApp",
+            whatsappSub:"WhatsApp orqali bog‘lanish",
+
+            instagram:"Instagram",
+            instagramSub:"Instagram sahifamiz",
+
+            address:"Manzil",
+
+            language:"Til",
+            languageSub:"UZ / RU / EN",
+
+            appearance:"Ko‘rinish",
+            appearanceSub:"Light / Dark",
+
+            open:"Ochish",
+
+            empty:"Hozircha uy topilmadi",
+            emptyText:"Boshqa uy yoki manzilni qidirib ko‘ring.",
+
+            noFavorites:"Sevimli uylar yo‘q",
+            noFavoritesText:"Uy kartasidagi yurak tugmasini bosing.",
+
+            loadingError:"Ma'lumot yuklanmadi",
+            serverError:"Server bilan bog‘lanishda xatolik yuz berdi.",
+
+            type:"Turi",
+            rooms:"Xonalar",
+            area:"Maydon",
+            addressLabel:"Manzil"
+        },
+
+        ru:{
+            search:"Поиск жилья...",
+            cars:"Недвижимость",
+            back:"Назад",
+            call:"Позвонить",
+            callShort:"Позвонить",
+            detail:"Подробнее",
+            new:"НОВИНКА",
+            soldBadge:"ПРОДАНО",
+            photos:"фото",
+
+            categories:{
+                all:"Все",
+                hovli:"Частный дом",
+                kvartira:"Квартира",
+                yer:"Земля",
+                yangi:"Новостройка"
+            },
+
+            searchTitle:"Поиск",
+            priceFilter:"💰 По цене",
+            addressFilter:"📍 По адресу",
+            roomsFilter:"🛏 По комнатам",
+
+            home:"Главная",
+            searchNav:"Поиск",
+            favorites:"Избранное",
+            menu:"Меню",
 
-  platform:"Платформа недвижимости",
+            platform:"Платформа недвижимости",
 
-  phone:"Телефон",
-  phoneSub:"Связаться с нами",
+            phone:"Телефон",
+            phoneSub:"Связаться с нами",
 
-  telegram:"Telegram",
-  telegramSub:"Связаться через Telegram",
+            telegram:"Telegram",
+            telegramSub:"Связаться через Telegram",
 
-  whatsapp:"WhatsApp",
-  whatsappSub:"Связаться через WhatsApp",
+            whatsapp:"WhatsApp",
+            whatsappSub:"Связаться через WhatsApp",
 
-  instagram:"Instagram",
-  instagramSub:"Наша страница в Instagram",
+            instagram:"Instagram",
+            instagramSub:"Наша страница в Instagram",
 
-  address:"Адрес",
+            address:"Адрес",
 
-  language:"Язык",
-  languageSub:"UZ / RU / EN",
+            language:"Язык",
+            languageSub:"UZ / RU / EN",
 
-  appearance:"Внешний вид",
-  appearanceSub:"Светлая / Тёмная",
+            appearance:"Внешний вид",
+            appearanceSub:"Светлая / Тёмная",
 
-  open:"Открыть",
+            open:"Открыть",
 
-  empty:"Жильё не найдено",
-  emptyText:"Попробуйте поискать другой вариант.",
+            empty:"Жильё не найдено",
+            emptyText:"Попробуйте поискать другой вариант.",
 
-  noFavorites:"Нет избранного жилья",
-  noFavoritesText:"Нажмите на сердечко на карточке.",
+            noFavorites:"Нет избранного жилья",
+            noFavoritesText:"Нажмите на сердечко на карточке.",
 
-  loadingError:"Не удалось загрузить данные",
-  serverError:"Ошибка соединения с сервером.",
+            loadingError:"Не удалось загрузить данные",
+            serverError:"Ошибка соединения с сервером.",
 
-  type:"Тип",
-  rooms:"Комнаты",
-  area:"Площадь",
-  addressLabel:"Адрес"
- },
+            type:"Тип",
+            rooms:"Комнаты",
+            area:"Площадь",
+            addressLabel:"Адрес"
+        },
 
- en:{
-  search:"Search property...",
-  cars:"Properties",
-  back:"Back",
-  call:"Call",
-  callShort:"Call",
-  detail:"Details",
-  new:"NEW",
-  soldBadge:"SOLD",
-  photos:"photos",
+        en:{
+            search:"Search property...",
+            cars:"Properties",
+            back:"Back",
+            call:"Call",
+            callShort:"Call",
+            detail:"Details",
+            new:"NEW",
+            soldBadge:"SOLD",
+            photos:"photos",
 
-  categories:{
-   all:"All",
-   hovli:"House",
-   kvartira:"Apartment",
-   yer:"Land",
-   yangi:"New building"
-  },
+            categories:{
+                all:"All",
+                hovli:"House",
+                kvartira:"Apartment",
+                yer:"Land",
+                yangi:"New building"
+            },
 
-  searchTitle:"Search",
-  priceFilter:"💰 By price",
-  addressFilter:"📍 By address",
-  roomsFilter:"🛏 By rooms",
+            searchTitle:"Search",
+            priceFilter:"💰 By price",
+            addressFilter:"📍 By address",
+            roomsFilter:"🛏 By rooms",
 
-  home:"Home",
-  searchNav:"Search",
-  favorites:"Favorites",
-  menu:"Menu",
+            home:"Home",
+            searchNav:"Search",
+            favorites:"Favorites",
+            menu:"Menu",
 
-  platform:"Real estate platform",
+            platform:"Real estate platform",
+
+            phone:"Phone",
+            phoneSub:"Contact us",
+
+            telegram:"Telegram",
+            telegramSub:"Contact via Telegram",
+
+            whatsapp:"WhatsApp",
+            whatsappSub:"Contact via WhatsApp",
+
+            instagram:"Instagram",
+            instagramSub:"Our Instagram page",
+
+            address:"Address",
+
+            language:"Language",
+            languageSub:"UZ / RU / EN",
 
-  phone:"Phone",
-  phoneSub:"Contact us",
+            appearance:"Appearance",
+            appearanceSub:"Light / Dark",
+
+            open:"Open",
+
+            empty:"No property found",
+            emptyText:"Try searching for another property.",
+
+            noFavorites:"No favorite properties",
+            noFavoritesText:"Press the heart button on a property card.",
+
+            loadingError:"Failed to load data",
+            serverError:"Could not connect to the server.",
 
-  telegram:"Telegram",
-  telegramSub:"Contact via Telegram",
+            type:"Type",
+            rooms:"Rooms",
+            area:"Area",
+            addressLabel:"Address"
+        }
 
-  whatsapp:"WhatsApp",
-  whatsappSub:"Contact via WhatsApp",
+    };
 
-  instagram:"Instagram",
-  instagramSub:"Our Instagram page",
+    /* =========================
+       PHONE
+    ========================= */
 
-  address:"Address",
+    function phoneHref(phone){
 
-  language:"Language",
-  languageSub:"UZ / RU / EN",
+        const value=
+            String(phone||"").trim();
 
-  appearance:"Appearance",
-  appearanceSub:"Light / Dark",
+        const cleaned=
+            value.replace(/[^\d+]/g,"");
 
-  open:"Open",
+        return cleaned
+            ?"tel:"+cleaned
+            :"#";
+    }
 
-  empty:"No property found",
-  emptyText:"Try searching for another property.",
+    /* =========================
+       SOCIAL LINK NORMALIZER
+       Admin panelda https:// yozilmasa ham
+       Telegram / WhatsApp / Instagram ishlaydi.
+    ========================= */
+    function socialHref(value,type){
 
-  noFavorites:"No favorite properties",
-  noFavoritesText:"Press the heart button on a property card.",
+        let link=
+            String(value||"").trim();
 
-  loadingError:"Failed to load data",
-  serverError:"Could not connect to the server.",
+        if(!link)
+            return "#";
 
-  type:"Type",
-  rooms:"Rooms",
-  area:"Area",
-  addressLabel:"Address"
- }
+        // Agar to'liq URL bo'lsa, o'z holicha qoldiramiz.
+        if(/^https?:\/\//i.test(link))
+            return link;
 
-};
+        // //example.com ko'rinishini ham to'g'rilaymiz.
+        if(/^\/\//.test(link))
+            return "https:"+link;
 
-/* =========================
-   PHONE
-========================= */
+        // @username -> username
+        link=link.replace(/^@/,"");
 
-function phoneHref(phone){
+        // telegram.com/t.me kabi noto'g'ri yozilgan variantlarni to'g'rilash.
+        link=link.replace(/^https?:\/\//i,"");
 
- const value=
-  String(phone||"").trim();
+        if(type==="telegram"){
+            link=link.replace(/^t\.me\//i,"");
+            link=link.replace(/^telegram\.me\//i,"");
+            return "https://t.me/"+link;
+        }
 
- const cleaned=
-  value.replace(/[^\d+]/g,"");
+        if(type==="instagram"){
+            link=link.replace(/^instagram\.com\//i,"");
+            return "https://instagram.com/"+link;
+        }
 
- return cleaned
-  ?"tel:"+cleaned
-  :"#";
-}
+        if(type==="whatsapp"){
+            // wa.me/998... yoki faqat raqam kiritilsa ham ishlaydi.
+            link=link.replace(/^wa\.me\//i,"");
+            link=link.replace(/^whatsapp\.com\/send\?phone=/i,"");
+            link=link.replace(/[^0-9+]/g,"");
+            link=link.replace(/^\+/,"");
+            return link
+                ? "https://wa.me/"+link
+                : "#";
+        }
 
-/* =========================
-   SETTINGS
-========================= */
+        return link;
+    }
 
-async function loadSettings(){
+    /* =========================
+       SETTINGS
+    ========================= */
 
- try{
+    async function loadSettings(){
 
-  const response=
-   await fetch(
-    "/api/settings",
-    {cache:"no-store"}
-   );
+        try{
 
-  if(!response.ok)
-   throw new Error("Settings API error");
+            const response=
+                await fetch(
+                    "/api/settings",
+                    {cache:"no-store"}
+                );
 
-  const data=
-   await response.json();
+            if(!response.ok)
+                throw new Error("Settings API error");
 
-  if(data&&data.settings){
+            const data=
+                await response.json();
 
-   siteSettings={
-    ...siteSettings,
-    ...data.settings
-   };
+            if(data&&data.settings){
 
-  }
+                siteSettings={
+                    ...siteSettings,
+                    ...data.settings
+                };
 
- }catch(error){
+            }
 
-  console.error("Settings:",error);
+        }catch(error){
 
- }
+            console.error("Settings:",error);
 
- applySettings();
-}
+        }
 
-function applySettings(){
+        applySettings();
+    }
 
- const phone=
-  siteSettings.phone||"";
+    function applySettings(){
 
- const href=
-  phoneHref(phone);
+        const phone=
+            siteSettings.phone||"";
 
- const headerPhone=
-  document.getElementById("headerPhone");
+        const href=
+            phoneHref(phone);
 
- if(headerPhone){
+        const headerPhone=
+            document.getElementById("headerPhone");
 
-  headerPhone.textContent=phone;
-  headerPhone.href=href;
+        if(headerPhone){
 
- }
+            headerPhone.textContent=phone;
+            headerPhone.href=href;
 
- const menuPhone=
-  document.getElementById("menuPhone");
+        }
 
- if(menuPhone){
+        const menuPhone=
+            document.getElementById("menuPhone");
 
-  menuPhone.textContent=phone;
-  menuPhone.href=href;
+        if(menuPhone){
 
- }
+            menuPhone.textContent=phone;
+            menuPhone.href=href;
 
- const telegram=
-  document.getElementById("menuTelegram");
+        }
 
- if(telegram)
-  telegram.href=
-   siteSettings.telegram||"#";
+        const telegram=
+            document.getElementById("menuTelegram");
 
- const whatsapp=
-  document.getElementById("menuWhatsapp");
+        if(telegram){
+            telegram.href=
+                socialHref(
+                    siteSettings.telegram,
+                    "telegram"
+                );
+        }
 
- if(whatsapp)
-  whatsapp.href=
-   siteSettings.whatsapp||"#";
+        const whatsapp=
+            document.getElementById("menuWhatsapp");
 
- const instagram=
-  document.getElementById("menuInstagram");
+        if(whatsapp){
+            whatsapp.href=
+                socialHref(
+                    siteSettings.whatsapp,
+                    "whatsapp"
+                );
+        }
 
- if(instagram)
-  instagram.href=
-   siteSettings.instagram||"#";
+        const instagram=
+            document.getElementById("menuInstagram");
 
- const address=
-  document.getElementById("menuAddress");
+        if(instagram){
+            instagram.href=
+                socialHref(
+                    siteSettings.instagram,
+                    "instagram"
+                );
+        }
 
- if(address)
-  address.textContent=
-   siteSettings.address||"";
+        // Linklar tayyor bo'lgach, target=_blank orqali ochiladi.
+        [telegram,whatsapp,instagram]
+            .filter(Boolean)
+            .forEach(link=>{
+                link.target="_blank";
+                link.rel="noopener noreferrer";
+            });
 
- document
-  .querySelectorAll(".call-btn")
-  .forEach(button=>{
-   button.href=href;
-  });
+        const address=
+            document.getElementById("menuAddress");
 
- const detailsCall=
-  document.querySelector(".details-call");
+        if(address)
+            address.textContent=
+                siteSettings.address||"";
 
- if(detailsCall)
-  detailsCall.href=href;
-}
+        document
+            .querySelectorAll(".call-btn")
+            .forEach(button=>{
+                button.href=href;
+            });
 
-/* =========================
-   LANGUAGE
-========================= */
+        const detailsCall=
+            document.querySelector(".details-call");
 
-function setLang(lang){
+        if(detailsCall)
+            detailsCall.href=href;
+    }
 
- if(!translations[lang])
-  lang="uz";
+    /* =========================
+       LANGUAGE
+    ========================= */
 
- currentLang=lang;
+    function setLang(lang){
 
- localStorage.setItem(
-  "language",
-  lang
- );
+        if(!translations[lang])
+            lang="uz";
 
- document.documentElement.lang=lang;
+        currentLang=lang;
 
- applyLang();
- renderFiltered();
- renderSearchPage();
+        localStorage.setItem(
+            "language",
+            lang
+        );
 
- if(
-  document
-   .getElementById("detailsPage")
-   .classList
-   .contains("active")
-  &&
-  currentDetailsCar
- ){
+        document.documentElement.lang=lang;
 
-  openDetails(currentDetailsCar);
+        applyLang();
+        renderFiltered();
+        renderSearchPage();
 
- }
+        if(
+            document
+                .getElementById("detailsPage")
+                .classList
+                .contains("active")
+            &&
+            currentDetailsCar
+        ){
 
-}
+            openDetails(currentDetailsCar);
 
-function applyLang(){
+        }
 
- const t=
-  translations[currentLang];
+    }
 
- const searchInput=
-  document.getElementById("searchInput");
+    function applyLang(){
 
- if(searchInput)
-  searchInput.placeholder=t.search;
+        const t=
+            translations[currentLang];
 
- const searchPageInput=
-  document.getElementById("searchPageInput");
+        const searchInput=
+            document.getElementById("searchInput");
 
- if(searchPageInput)
-  searchPageInput.placeholder=t.search;
+        if(searchInput)
+            searchInput.placeholder=t.search;
 
- setText("carsTitle",t.cars);
- setText("searchResultsTitle",t.cars);
- setText("backText",t.back);
- setText("searchPageTitle",t.searchTitle);
+        const searchPageInput=
+            document.getElementById("searchPageInput");
 
- /* =========================
-    SEARCH CATEGORY TRANSLATIONS
- ========================= */
+        if(searchPageInput)
+            searchPageInput.placeholder=t.search;
 
- setText("searchCatAll",t.categories.all);
- setText("searchCatHovli",t.categories.hovli);
- setText("searchCatKvartira",t.categories.kvartira);
- setText("searchCatYer",t.categories.yer);
- setText("searchCatYangi",t.categories.yangi);
+        setText("carsTitle",t.cars);
+        setText("searchResultsTitle",t.cars);
+        setText("backText",t.back);
+        setText("searchPageTitle",t.searchTitle);
 
- /* =========================
-    EXTRA FILTERS
- ========================= */
+        /* =========================
+           SEARCH CATEGORY TRANSLATIONS
+        ========================= */
 
- setText("priceFilterText",t.priceFilter);
- setText("addressFilterText",t.addressFilter);
- setText("roomsFilterText",t.roomsFilter);
+        setText("searchCatAll",t.categories.all);
+        setText("searchCatHovli",t.categories.hovli);
+        setText("searchCatKvartira",t.categories.kvartira);
+        setText("searchCatYer",t.categories.yer);
+        setText("searchCatYangi",t.categories.yangi);
 
- /* =========================
-    BOTTOM NAV
- ========================= */
+        /* =========================
+           EXTRA FILTERS
+        ========================= */
 
- setText("navHomeText",t.home);
- setText("navSearchText",t.searchNav);
- setText("navFavoritesText",t.favorites);
- setText("navMenuText",t.menu);
+        setText("priceFilterText",t.priceFilter);
+        setText("addressFilterText",t.addressFilter);
+        setText("roomsFilterText",t.roomsFilter);
 
- setText("menuPlatform",t.platform);
- setText("menuPhoneTitle",t.phone);
- setText("menuPhoneSub",t.phoneSub);
+        /* =========================
+           BOTTOM NAV
+        ========================= */
 
- setText("menuTelegramTitle",t.telegram);
- setText("menuTelegramSub",t.telegramSub);
+        setText("navHomeText",t.home);
+        setText("navSearchText",t.searchNav);
+        setText("navFavoritesText",t.favorites);
+        setText("navMenuText",t.menu);
 
- setText("menuWhatsappTitle",t.whatsapp);
- setText("menuWhatsappSub",t.whatsappSub);
+        setText("menuPlatform",t.platform);
+        setText("menuPhoneTitle",t.phone);
+        setText("menuPhoneSub",t.phoneSub);
 
- setText("menuInstagramTitle",t.instagram);
- setText("menuInstagramSub",t.instagramSub);
+        setText("menuTelegramTitle",t.telegram);
+        setText("menuTelegramSub",t.telegramSub);
 
- setText("menuAddressTitle",t.address);
+        setText("menuWhatsappTitle",t.whatsapp);
+        setText("menuWhatsappSub",t.whatsappSub);
 
- setText("menuLanguageTitle",t.language);
- setText("menuLanguageSub",t.languageSub);
+        setText("menuInstagramTitle",t.instagram);
+        setText("menuInstagramSub",t.instagramSub);
 
- setText("menuAppearanceTitle",t.appearance);
- setText("menuAppearanceSub",t.appearanceSub);
+        setText("menuAddressTitle",t.address);
 
- setText("menuOpenTelegram",t.open);
- setText("menuOpenWhatsapp",t.open);
- setText("menuOpenInstagram",t.open);
+        setText("menuLanguageTitle",t.language);
+        setText("menuLanguageSub",t.languageSub);
 
- document
-  .querySelectorAll(".lang-btn")
-  .forEach(button=>{
+        setText("menuAppearanceTitle",t.appearance);
+        setText("menuAppearanceSub",t.appearanceSub);
 
-   button.classList.toggle(
-    "active",
-    button.textContent.trim().toLowerCase()===currentLang
-   );
+        setText("menuOpenTelegram",t.open);
+        setText("menuOpenWhatsapp",t.open);
+        setText("menuOpenInstagram",t.open);
 
-  });
+        document
+            .querySelectorAll(".lang-btn")
+            .forEach(button=>{
 
-}
+                button.classList.toggle(
+                    "active",
+                    button.textContent.trim().toLowerCase()===currentLang
+                );
 
-function setText(id,value){
+            });
 
- const element=
-  document.getElementById(id);
+    }
 
- if(element)
-  element.textContent=value;
+    function setText(id,value){
 
-}
+        const element=
+            document.getElementById(id);
 
-/* =========================
-   THEME
-========================= */
+        if(element)
+            element.textContent=value;
 
-function toggleTheme(){
+    }
 
- document.body.classList.toggle("dark");
+    /* =========================
+       THEME
+    ========================= */
 
- const isDark=
-  document.body.classList.contains("dark");
+    function toggleTheme(){
 
- localStorage.setItem(
-  "darkMode",
-  isDark
- );
+        document.body.classList.toggle("dark");
 
- updateThemeIcon();
-}
+        const isDark=
+            document.body.classList.contains("dark");
 
-function updateThemeIcon(){
+        localStorage.setItem(
+            "darkMode",
+            isDark
+        );
 
- const isDark=
-  document.body.classList.contains("dark");
+        updateThemeIcon();
+    }
 
- const icon=
-  isDark?"i-sun":"i-moon";
+    function updateThemeIcon(){
 
- ["themeBtn","themeBtnMenu"].forEach(id=>{
+        const isDark=
+            document.body.classList.contains("dark");
 
-  const element=
-   document.getElementById(id);
+        const icon=
+            isDark?"i-sun":"i-moon";
 
-  if(element){
+        ["themeBtn","themeBtnMenu"].forEach(id=>{
 
-   element.innerHTML=`
+            const element=
+                document.getElementById(id);
+
+            if(element){
+
+                element.innerHTML=`
     <svg class="icon">
      <use href="#${icon}"></use>
     </svg>
    `;
 
-  }
+            }
 
- });
-}
-
-/* =========================
-   PRICE
-========================= */
-
-function parsePrice(value){
-
- if(value===undefined||value===null)
-  return 0;
-
- if(typeof value==="number")
-  return value;
-
- const str=
-  String(value)
-   .replace(/\s/g,"")
-   .replace(/\$/g,"")
-   .replace(/,/g,"")
-   .replace(/\./g,"");
-
- const num=Number(str);
-
- return isNaN(num)?0:num;
-}
-
-function formatPrice(value,currency){
-
- const number=parsePrice(value);
-
- if(!number)
-  return String(value||"");
-
- const formatted=
-  number.toLocaleString("en-US")
-   .replace(/,/g," ");
-
- if(currency==="USD")
-  return formatted+" $";
-
- return formatted+" so‘m";
-}
-
-/* =========================
-   HOME SEARCH
-========================= */
-
-function searchCars(){
-
- const input=
-  document
-   .getElementById("searchInput")
-   .value
-   .toLowerCase()
-   .trim();
-
- filteredCars=
-  allCars.filter(car=>{
-
-   const type=
-    String(car.type||"").toLowerCase();
-
-   const name=
-    String(car.name||"").toLowerCase();
-
-   const description=
-    String(car.description||"").toLowerCase();
-
-   const address=
-    String(car.address||"").toLowerCase();
-
-   const price=
-    String(car.price||"").toLowerCase();
-
-   const matchesText=
-    !input||
-    name.includes(input)||
-    description.includes(input)||
-    address.includes(input)||
-    price.includes(input)||
-    type.includes(input);
-
-   const matchesType=
-    currentType==="all"||
-    type===currentType.toLowerCase();
-
-   return matchesText&&matchesType;
-
-  });
-
- renderFiltered();
-}
-
-function resetSearch(){
-
- const input=
-  document.getElementById("searchInput");
-
- if(input)
-  input.value="";
-
- currentType="all";
-
- filteredCars=[...allCars];
-
- renderFiltered();
-}
-
-/* =========================
-   SEARCH PAGE
-========================= */
-
-function toggleExtraFilters(){
-
- const filters=
-  document.getElementById("extraFilters");
-
- const button=
-  document.getElementById("filterToggle");
-
- if(!filters||!button)
-  return;
-
- const isOpen=
-  filters.classList.toggle("open");
-
- button.classList.toggle(
-  "open",
-  isOpen
- );
-}
-
-function filterSearchPage(type,button){
-
- searchPageType=type;
-
- document
-  .querySelectorAll(".search-category")
-  .forEach(item=>{
-   item.classList.remove("active");
-  });
-
- if(button)
-  button.classList.add("active");
-
- searchFromSearchPage();
-}
-
-function searchFromSearchPage(){
-
- const inputElement=
-  document.getElementById("searchPageInput");
-
- const input=
-  inputElement
-   ?inputElement.value.toLowerCase().trim()
-   :"";
-
- const result=
-  allCars.filter(car=>{
-
-   const types=
-    Array.isArray(car.types)
-     ?car.types
-     :[];
-
-   const mainType=
-    String(car.type||"");
-
-   const name=
-    String(car.name||"").toLowerCase();
-
-   const description=
-    String(car.description||"").toLowerCase();
-
-   const address=
-    String(car.address||"").toLowerCase();
-
-   const price=
-    String(car.price||"").toLowerCase();
-
-   const typeText=
-    types.join(" ").toLowerCase()+
-    " "+
-    mainType.toLowerCase();
-
-   const matchesText=
-    !input||
-    name.includes(input)||
-    description.includes(input)||
-    address.includes(input)||
-    price.includes(input)||
-    typeText.includes(input);
-
-   let matchesType=true;
-
-   if(searchPageType!=="all"){
-
-     // Admin panel tur nomini emoji bilan saqlaydi:
-     // "🏡 Hovli", "🏢 Kvartira", "🌳 Yer",
-     // "🏗️ Yangi qurilish".
-     // Qidiruv tugmalarida esa emoji yo'q.
-     // Shuning uchun ikkala qiymatni bir xil ko'rinishga keltiramiz.
-     const normalizeType = value =>
-      String(value||"")
-       .replace(/🏡|🏢|🌳|🏗️|🏗/g,"")
-       .replace(/\\uFE0F/g,"")
-       .trim()
-       .toLowerCase();
-
-     const wantedType =
-      normalizeType(searchPageType);
-
-     matchesType =
-      types.some(item=>
-       normalizeType(item) === wantedType
-      ) ||
-      normalizeType(mainType) === wantedType;
-
+        });
     }
 
-   return matchesText&&matchesType;
+    /* =========================
+       PRICE
+    ========================= */
 
-  });
+    function parsePrice(value){
 
- renderSearchPage(result);
-}
+        if(value===undefined||value===null)
+            return 0;
 
-function resetSearchPage(){
+        if(typeof value==="number")
+            return value;
 
- const input=
-  document.getElementById("searchPageInput");
+        const str=
+            String(value)
+                .replace(/\s/g,"")
+                .replace(/\$/g,"")
+                .replace(/,/g,"")
+                .replace(/\./g,"");
 
- if(input)
-  input.value="";
+        const num=Number(str);
 
- searchPageType="all";
+        return isNaN(num)?0:num;
+    }
 
- document
-  .querySelectorAll(".search-category")
-  .forEach((button,index)=>{
-   button.classList.toggle(
-    "active",
-    index===0
-   );
-  });
+    function formatPrice(value,currency){
 
- renderSearchPage([...allCars]);
-}
+        const number=parsePrice(value);
 
-function renderSearchPage(cars){
+        if(!number)
+            return String(value||"");
 
- const grid=
-  document.getElementById("searchCarsGrid");
+        const formatted=
+            number.toLocaleString("en-US")
+                .replace(/,/g," ");
 
- const count=
-  document.getElementById("searchResultsCount");
+        if(currency==="USD")
+            return formatted+" $";
 
- if(!grid||!count)
-  return;
+        return formatted+" so‘m";
+    }
 
- count.textContent=
-  cars.length+" ta";
+    /* =========================
+       HOME SEARCH
+    ========================= */
 
- if(cars.length===0){
+    function searchCars(){
 
-  const t=
-   translations[currentLang];
+        const input=
+            document
+                .getElementById("searchInput")
+                .value
+                .toLowerCase()
+                .trim();
 
-  grid.innerHTML=`
+        filteredCars=
+            allCars.filter(car=>{
+
+                const type=
+                    String(car.type||"").toLowerCase();
+
+                const name=
+                    String(car.name||"").toLowerCase();
+
+                const description=
+                    String(car.description||"").toLowerCase();
+
+                const address=
+                    String(car.address||"").toLowerCase();
+
+                const price=
+                    String(car.price||"").toLowerCase();
+
+                const matchesText=
+                    !input||
+                    name.includes(input)||
+                    description.includes(input)||
+                    address.includes(input)||
+                    price.includes(input)||
+                    type.includes(input);
+
+                const matchesType=
+                    currentType==="all"||
+                    type===currentType.toLowerCase();
+
+                return matchesText&&matchesType;
+
+            });
+
+        renderFiltered();
+    }
+
+    function resetSearch(){
+
+        const input=
+            document.getElementById("searchInput");
+
+        if(input)
+            input.value="";
+
+        currentType="all";
+
+        filteredCars=[...allCars];
+
+        renderFiltered();
+    }
+
+    /* =========================
+       SEARCH PAGE
+    ========================= */
+
+    function toggleExtraFilters(){
+
+        const filters=
+            document.getElementById("extraFilters");
+
+        const button=
+            document.getElementById("filterToggle");
+
+        if(!filters||!button)
+            return;
+
+        const isOpen=
+            filters.classList.toggle("open");
+
+        button.classList.toggle(
+            "open",
+            isOpen
+        );
+    }
+
+    function filterSearchPage(type,button){
+
+        searchPageType=type;
+
+        document
+            .querySelectorAll(".search-category")
+            .forEach(item=>{
+                item.classList.remove("active");
+            });
+
+        if(button)
+            button.classList.add("active");
+
+        searchFromSearchPage();
+    }
+
+    function searchFromSearchPage(){
+
+        const inputElement=
+            document.getElementById("searchPageInput");
+
+        const input=
+            inputElement
+                ?inputElement.value.toLowerCase().trim()
+                :"";
+
+        const result=
+            allCars.filter(car=>{
+
+                const types=
+                    Array.isArray(car.types)
+                        ?car.types
+                        :[];
+
+                const mainType=
+                    String(car.type||"");
+
+                const name=
+                    String(car.name||"").toLowerCase();
+
+                const description=
+                    String(car.description||"").toLowerCase();
+
+                const address=
+                    String(car.address||"").toLowerCase();
+
+                const price=
+                    String(car.price||"").toLowerCase();
+
+                const typeText=
+                    types.join(" ").toLowerCase()+
+                    " "+
+                    mainType.toLowerCase();
+
+                const matchesText=
+                    !input||
+                    name.includes(input)||
+                    description.includes(input)||
+                    address.includes(input)||
+                    price.includes(input)||
+                    typeText.includes(input);
+
+                let matchesType=true;
+
+                if(searchPageType!=="all"){
+
+                    // Admin panel tur nomini emoji bilan saqlaydi:
+                    // "🏡 Hovli", "🏢 Kvartira", "🌳 Yer",
+                    // "🏗️ Yangi qurilish".
+                    // Qidiruv tugmalarida esa emoji yo'q.
+                    // Shuning uchun ikkala qiymatni bir xil ko'rinishga keltiramiz.
+                    const normalizeType = value =>
+                        String(value||"")
+                            .replace(/🏡|🏢|🌳|🏗️|🏗/g,"")
+                            .replace(/\\uFE0F/g,"")
+                            .trim()
+                            .toLowerCase();
+
+                    const wantedType =
+                        normalizeType(searchPageType);
+
+                    matchesType =
+                        types.some(item=>
+                            normalizeType(item) === wantedType
+                        ) ||
+                        normalizeType(mainType) === wantedType;
+
+                }
+
+                return matchesText&&matchesType;
+
+            });
+
+        renderSearchPage(result);
+    }
+
+    function resetSearchPage(){
+
+        const input=
+            document.getElementById("searchPageInput");
+
+        if(input)
+            input.value="";
+
+        searchPageType="all";
+
+        document
+            .querySelectorAll(".search-category")
+            .forEach((button,index)=>{
+                button.classList.toggle(
+                    "active",
+                    index===0
+                );
+            });
+
+        renderSearchPage([...allCars]);
+    }
+
+    function renderSearchPage(cars){
+
+        const grid=
+            document.getElementById("searchCarsGrid");
+
+        const count=
+            document.getElementById("searchResultsCount");
+
+        if(!grid||!count)
+            return;
+
+        count.textContent=
+            cars.length+" ta";
+
+        if(cars.length===0){
+
+            const t=
+                translations[currentLang];
+
+            grid.innerHTML=`
 
    <div class="empty">
 
@@ -3122,95 +3194,95 @@ function renderSearchPage(cars){
 
   `;
 
-  return;
- }
+            return;
+        }
 
- grid.innerHTML="";
+        grid.innerHTML="";
 
- cars.forEach((car,index)=>{
+        cars.forEach((car,index)=>{
 
-  grid.appendChild(
-   createCarCard(car,index)
-  );
+            grid.appendChild(
+                createCarCard(car,index)
+            );
 
- });
+        });
 
- applySettings();
-}
+        applySettings();
+    }
 
-/* =========================
-   FILTER TYPE
-========================= */
+    /* =========================
+       FILTER TYPE
+    ========================= */
 
-function filterType(type){
+    function filterType(type){
 
- currentType=type;
- searchCars();
-}
+        currentType=type;
+        searchCars();
+    }
 
-/* =========================
-   LOAD
-========================= */
+    /* =========================
+       LOAD
+    ========================= */
 
-async function load(){
+    async function load(){
 
- showSkeleton();
+        showSkeleton();
 
- try{
+        try{
 
-  const response=
-   await fetch("/api/cars");
+            const response=
+                await fetch("/api/cars");
 
-  if(!response.ok)
-   throw new Error("API error");
+            if(!response.ok)
+                throw new Error("API error");
 
-  const data=
-   await response.json();
+            const data=
+                await response.json();
 
-  if(Array.isArray(data))
-   allCars=data;
-  else if(Array.isArray(data.cars))
-   allCars=data.cars;
-  else
-   allCars=[];
+            if(Array.isArray(data))
+                allCars=data;
+            else if(Array.isArray(data.cars))
+                allCars=data.cars;
+            else
+                allCars=[];
 
-  filteredCars=[...allCars];
+            filteredCars=[...allCars];
 
-  renderFiltered();
-  renderSearchPage([...allCars]);
+            renderFiltered();
+            renderSearchPage([...allCars]);
 
- }catch(error){
+        }catch(error){
 
-  console.error(error);
+            console.error(error);
 
-  allCars=[];
+            allCars=[];
 
-  const t=
-   translations[currentLang];
+            const t=
+                translations[currentLang];
 
-  renderEmpty(
-   t.loadingError,
-   t.serverError
-  );
+            renderEmpty(
+                t.loadingError,
+                t.serverError
+            );
 
-  renderSearchPage([]);
+            renderSearchPage([]);
 
- }
-}
+        }
+    }
 
-function showSkeleton(){
+    function showSkeleton(){
 
- const grid=
-  document.getElementById("carsGrid");
+        const grid=
+            document.getElementById("carsGrid");
 
- if(!grid)
-  return;
+        if(!grid)
+            return;
 
- grid.innerHTML="";
+        grid.innerHTML="";
 
- for(let i=0;i<6;i++){
+        for(let i=0;i<6;i++){
 
-  grid.innerHTML+=`
+            grid.innerHTML+=`
 
    <div class="skeleton">
 
@@ -3227,103 +3299,103 @@ function showSkeleton(){
    </div>
 
   `;
- }
-}
+        }
+    }
 
-/* =========================
-   IMAGES
-========================= */
+    /* =========================
+       IMAGES
+    ========================= */
 
-function imageUrl(filename){
+    function imageUrl(filename){
 
- if(!filename)
-  return "";
+        if(!filename)
+            return "";
 
- if(String(filename).startsWith("http"))
-  return filename;
+        if(String(filename).startsWith("http"))
+            return filename;
 
- if(String(filename).startsWith("/"))
-  return filename;
+        if(String(filename).startsWith("/"))
+            return filename;
 
- return "/uploads/"+filename;
-}
+        return "/uploads/"+filename;
+    }
 
-function getImages(car){
+    function getImages(car){
 
- if(Array.isArray(car.images))
-  return car.images;
+        if(Array.isArray(car.images))
+            return car.images;
 
- if(typeof car.images==="string"){
+        if(typeof car.images==="string"){
 
-  try{
+            try{
 
-   const parsed=
-    JSON.parse(car.images);
+                const parsed=
+                    JSON.parse(car.images);
 
-   if(Array.isArray(parsed))
-    return parsed;
+                if(Array.isArray(parsed))
+                    return parsed;
 
-  }catch(e){}
+            }catch(e){}
 
-  return car.images
-   .split(",")
-   .map(x=>x.trim())
-   .filter(Boolean);
- }
+            return car.images
+                .split(",")
+                .map(x=>x.trim())
+                .filter(Boolean);
+        }
 
- return [];
-}
+        return [];
+    }
 
-/* =========================
-   RENDER
-========================= */
+    /* =========================
+       RENDER
+    ========================= */
 
-function renderFiltered(){
+    function renderFiltered(){
 
- const grid=
-  document.getElementById("carsGrid");
+        const grid=
+            document.getElementById("carsGrid");
 
- const count=
-  document.getElementById("resultsCount");
+        const count=
+            document.getElementById("resultsCount");
 
- if(!grid||!count)
-  return;
+        if(!grid||!count)
+            return;
 
- count.textContent=
-  filteredCars.length+" ta";
+        count.textContent=
+            filteredCars.length+" ta";
 
- if(filteredCars.length===0){
+        if(filteredCars.length===0){
 
-  renderEmpty();
+            renderEmpty();
 
-  return;
- }
+            return;
+        }
 
- grid.innerHTML="";
+        grid.innerHTML="";
 
- filteredCars.forEach((car,index)=>{
+        filteredCars.forEach((car,index)=>{
 
-  grid.appendChild(
-   createCarCard(car,index)
-  );
+            grid.appendChild(
+                createCarCard(car,index)
+            );
 
- });
+        });
 
- applySettings();
-}
+        applySettings();
+    }
 
-function renderEmpty(title,text){
+    function renderEmpty(title,text){
 
- const t=
-  translations[currentLang];
+        const t=
+            translations[currentLang];
 
- const grid=
-  document.getElementById("carsGrid");
+        const grid=
+            document.getElementById("carsGrid");
 
- if(!grid)
-  return;
+        if(!grid)
+            return;
 
- grid.innerHTML=`
+        grid.innerHTML=`
 
   <div class="empty">
 
@@ -3350,41 +3422,41 @@ function renderEmpty(title,text){
 
  `;
 
- const count=
-  document.getElementById("resultsCount");
+        const count=
+            document.getElementById("resultsCount");
 
- if(count)
-  count.textContent="0 ta";
-}
+        if(count)
+            count.textContent="0 ta";
+    }
 
-/* =========================
-   PROPERTY CARD
-========================= */
+    /* =========================
+       PROPERTY CARD
+    ========================= */
 
-function createCarCard(car,index){
+    function createCarCard(car,index){
 
- const article=
-  document.createElement("article");
+        const article=
+            document.createElement("article");
 
- article.className="car-card";
+        article.className="car-card";
 
- const images=getImages(car);
+        const images=getImages(car);
 
- const firstImage=
-  images.length
-   ?imageUrl(images[0])
-   :"";
+        const firstImage=
+            images.length
+                ?imageUrl(images[0])
+                :"";
 
- const isFavorite=
-  favorites.includes(String(car.id));
+        const isFavorite=
+            favorites.includes(String(car.id));
 
- const t=
-  translations[currentLang];
+        const t=
+            translations[currentLang];
 
- const image=
-  firstImage||
-  "data:image/svg+xml;charset=UTF-8,"+
-  encodeURIComponent(`
+        const image=
+            firstImage||
+            "data:image/svg+xml;charset=UTF-8,"+
+            encodeURIComponent(`
    <svg
     xmlns="http://www.w3.org/2000/svg"
     width="800"
@@ -3407,27 +3479,27 @@ function createCarCard(car,index){
    </svg>
   `);
 
- const type=
-  car.type||
-  (
-   Array.isArray(car.types)&&car.types.length
-    ?car.types.join(", ")
-    :"Uy"
-  );
+        const type=
+            car.type||
+            (
+                Array.isArray(car.types)&&car.types.length
+                    ?car.types.join(", ")
+                    :"Uy"
+            );
 
- const rooms=
-  car.rooms||"—";
+        const rooms=
+            car.rooms||"—";
 
- const area=
-  car.area
-   ?car.area+" m²"
-   :"—";
+        const area=
+            car.area
+                ?car.area+" m²"
+                :"—";
 
- const address=
-  car.address||
-  "Manzil ko‘rsatilmagan";
+        const address=
+            car.address||
+            "Manzil ko‘rsatilmagan";
 
- article.innerHTML=`
+        article.innerHTML=`
 
   <div class="car-image-box">
 
@@ -3440,16 +3512,16 @@ function createCarCard(car,index){
    >
 
    ${
-    car.sold
-    ?
-    `<span class="badge sold-badge">
+            car.sold
+                ?
+                `<span class="badge sold-badge">
       ${t.soldBadge}
      </span>`
-    :
-    `<span class="badge">
+                :
+                `<span class="badge">
       ${t.new}
      </span>`
-   }
+        }
 
    <button
     class="favorite ${isFavorite?"active":""}"
@@ -3465,9 +3537,9 @@ function createCarCard(car,index){
    </button>
 
    ${
-    images.length
-    ?
-    `<span class="image-count">
+            images.length
+                ?
+                `<span class="image-count">
 
       <svg class="icon icon-sm">
        <use href="#i-camera"></use>
@@ -3476,8 +3548,8 @@ function createCarCard(car,index){
       ${images.length} ${t.photos}
 
      </span>`
-    :""
-   }
+                :""
+        }
 
   </div>
 
@@ -3548,206 +3620,206 @@ function createCarCard(car,index){
 
  `;
 
- article
-  .querySelector(".favorite")
-  .addEventListener("click",function(event){
+        article
+            .querySelector(".favorite")
+            .addEventListener("click",function(event){
 
-   event.stopPropagation();
+                event.stopPropagation();
 
-   toggleFavorite(car.id);
+                toggleFavorite(car.id);
 
-  });
+            });
 
- article
-  .querySelector(".detail-btn")
-  .addEventListener("click",function(event){
+        article
+            .querySelector(".detail-btn")
+            .addEventListener("click",function(event){
 
-   event.stopPropagation();
+                event.stopPropagation();
 
-   openDetails(car);
+                openDetails(car);
 
-  });
+            });
 
- article
-  .querySelector(".call-btn")
-  .addEventListener("click",function(event){
+        article
+            .querySelector(".call-btn")
+            .addEventListener("click",function(event){
 
-   event.stopPropagation();
+                event.stopPropagation();
 
-   trackCall(event);
+                trackCall(event);
 
-  });
+            });
 
- article
-  .querySelector(".car-image-box")
-  .addEventListener("click",function(event){
+        article
+            .querySelector(".car-image-box")
+            .addEventListener("click",function(event){
 
-   if(event.target.closest(".favorite"))
-    return;
+                if(event.target.closest(".favorite"))
+                    return;
 
-   openDetails(car);
+                openDetails(car);
 
-  });
+            });
 
- return article;
-}
+        return article;
+    }
 
-/* =========================
-   ESCAPE
-========================= */
+    /* =========================
+       ESCAPE
+    ========================= */
 
-function escapeHtml(value){
+    function escapeHtml(value){
 
- return String(value)
-  .replace(/&/g,"&amp;")
-  .replace(/</g,"&lt;")
-  .replace(/>/g,"&gt;")
-  .replace(/"/g,"&quot;")
-  .replace(/'/g,"&#039;");
-}
+        return String(value)
+            .replace(/&/g,"&amp;")
+            .replace(/</g,"&lt;")
+            .replace(/>/g,"&gt;")
+            .replace(/"/g,"&quot;")
+            .replace(/'/g,"&#039;");
+    }
 
-/* =========================
-   FAVORITES
-========================= */
+    /* =========================
+       FAVORITES
+    ========================= */
 
-function toggleFavorite(id){
+    function toggleFavorite(id){
 
- const key=String(id);
+        const key=String(id);
 
- if(favorites.includes(key)){
+        if(favorites.includes(key)){
 
-  favorites=
-   favorites.filter(
-    x=>x!==key
-   );
+            favorites=
+                favorites.filter(
+                    x=>x!==key
+                );
 
- }else{
+        }else{
 
-  favorites.push(key);
+            favorites.push(key);
 
- }
+        }
 
- localStorage.setItem(
-  "favorites",
-  JSON.stringify(favorites)
- );
+        localStorage.setItem(
+            "favorites",
+            JSON.stringify(favorites)
+        );
 
- const activePage=
-  document
-   .querySelector(".page.active");
+        const activePage=
+            document
+                .querySelector(".page.active");
 
- if(
-  activePage &&
-  activePage.id==="searchPage"
- ){
+        if(
+            activePage &&
+            activePage.id==="searchPage"
+        ){
 
-  searchFromSearchPage();
+            searchFromSearchPage();
 
- }else{
+        }else{
 
-  renderFiltered();
+            renderFiltered();
 
- }
-}
+        }
+    }
 
-function showFavorites(){
+    function showFavorites(){
 
- showPage("home");
+        showPage("home");
 
- const favoriteCars=
-  allCars.filter(
-   car=>
-    favorites.includes(
-     String(car.id)
-    )
-  );
+        const favoriteCars=
+            allCars.filter(
+                car=>
+                    favorites.includes(
+                        String(car.id)
+                    )
+            );
 
- filteredCars=favoriteCars;
+        filteredCars=favoriteCars;
 
- const input=
-  document.getElementById("searchInput");
+        const input=
+            document.getElementById("searchInput");
 
- if(input)
-  input.value="";
+        if(input)
+            input.value="";
 
- if(favoriteCars.length===0){
+        if(favoriteCars.length===0){
 
-  const t=
-   translations[currentLang];
+            const t=
+                translations[currentLang];
 
-  renderEmpty(
-   t.noFavorites,
-   t.noFavoritesText
-  );
+            renderEmpty(
+                t.noFavorites,
+                t.noFavoritesText
+            );
 
- }else{
+        }else{
 
-  const grid=
-   document.getElementById("carsGrid");
+            const grid=
+                document.getElementById("carsGrid");
 
-  grid.innerHTML="";
+            grid.innerHTML="";
 
-  favoriteCars.forEach((car,index)=>{
+            favoriteCars.forEach((car,index)=>{
 
-   grid.appendChild(
-    createCarCard(car,index)
-   );
+                grid.appendChild(
+                    createCarCard(car,index)
+                );
 
-  });
+            });
 
-  document
-   .getElementById("resultsCount")
-   .textContent=
-    favoriteCars.length+" ta";
+            document
+                .getElementById("resultsCount")
+                .textContent=
+                favoriteCars.length+" ta";
 
-  applySettings();
+            applySettings();
 
- }
+        }
 
- setActiveNav("navFavorites");
-}
+        setActiveNav("navFavorites");
+    }
 
-/* =========================
-   DETAILS
-========================= */
+    /* =========================
+       DETAILS
+    ========================= */
 
-function openDetails(car){
+    function openDetails(car){
 
- currentDetailsCar=car;
+        currentDetailsCar=car;
 
- showPage("details");
+        showPage("details");
 
- const images=getImages(car);
+        const images=getImages(car);
 
- const t=
-  translations[currentLang];
+        const t=
+            translations[currentLang];
 
- const firstImage=
-  images.length
-   ?imageUrl(images[0])
-   :"";
+        const firstImage=
+            images.length
+                ?imageUrl(images[0])
+                :"";
 
- const details=
-  document.getElementById("detailsCard");
+        const details=
+            document.getElementById("detailsCard");
 
- details.innerHTML=`
+        details.innerHTML=`
 
   <div class="details-main">
 
    <div>
 
     ${
-     firstImage
-     ?
-     `<img
+            firstImage
+                ?
+                `<img
        id="detailsMainImage"
        class="details-image"
        src="${firstImage}"
        alt="${escapeHtml(car.name||"")}"
        onclick="openLightbox(0)"
       >`
-     :
-     `<div
+                :
+                `<div
        class="details-image"
        style="
         background:#222;
@@ -3766,13 +3838,13 @@ function openDetails(car){
        </svg>
 
       </div>`
-    }
+        }
 
     <div class="thumbnails">
 
      ${
-      images.map(
-       (img,i)=>`
+            images.map(
+                (img,i)=>`
 
         <img
          class="thumb ${i===0?"active":""}"
@@ -3782,8 +3854,8 @@ function openDetails(car){
         >
 
        `
-      ).join("")
-     }
+            ).join("")
+        }
 
     </div>
 
@@ -3792,9 +3864,9 @@ function openDetails(car){
    <div class="details-info">
 
     ${
-     car.sold
-     ?
-     `<span
+            car.sold
+                ?
+                `<span
        class="badge sold-badge"
        style="
         position:static;
@@ -3804,8 +3876,8 @@ function openDetails(car){
       >
        ${t.soldBadge}
       </span>`
-     :""
-    }
+                :""
+        }
 
     <h1>
      ${escapeHtml(car.name||"Uy")}
@@ -3820,13 +3892,13 @@ function openDetails(car){
      <div class="details-meta-item">
       <b>${t.type}</b>
       ${escapeHtml(
-       car.type||
-       (
-        Array.isArray(car.types)&&car.types.length
-         ?car.types.join(", ")
-         :"Uy"
-       )
-      )}
+            car.type||
+            (
+                Array.isArray(car.types)&&car.types.length
+                    ?car.types.join(", ")
+                    :"Uy"
+            )
+        )}
      </div>
 
      <div class="details-meta-item">
@@ -3870,343 +3942,343 @@ function openDetails(car){
 
  `;
 
- applySettings();
-}
+        applySettings();
+    }
 
-/* =========================
-   DETAIL IMAGE
-========================= */
+    /* =========================
+       DETAIL IMAGE
+    ========================= */
 
-function selectDetailImage(index){
+    function selectDetailImage(index){
 
- const images=
-  getImages(currentDetailsCar);
+        const images=
+            getImages(currentDetailsCar);
 
- if(!images[index])
-  return;
+        if(!images[index])
+            return;
 
- const main=
-  document.getElementById("detailsMainImage");
+        const main=
+            document.getElementById("detailsMainImage");
 
- if(main)
-  main.src=imageUrl(images[index]);
+        if(main)
+            main.src=imageUrl(images[index]);
 
- document
-  .querySelectorAll(".thumb")
-  .forEach((thumb,i)=>{
+        document
+            .querySelectorAll(".thumb")
+            .forEach((thumb,i)=>{
 
-   thumb.classList.toggle(
-    "active",
-    i===index
-   );
+                thumb.classList.toggle(
+                    "active",
+                    i===index
+                );
 
-  });
-}
+            });
+    }
 
-/* =========================
-   LIGHTBOX
-========================= */
+    /* =========================
+       LIGHTBOX
+    ========================= */
 
-function openLightbox(index){
+    function openLightbox(index){
 
- if(!currentDetailsCar)
-  return;
+        if(!currentDetailsCar)
+            return;
 
- const images=
-  getImages(currentDetailsCar);
+        const images=
+            getImages(currentDetailsCar);
 
- if(!images.length)
-  return;
+        if(!images.length)
+            return;
 
- currentLightboxIndex=index;
+        currentLightboxIndex=index;
 
- document
-  .getElementById("lightboxImage")
-  .src=
-   imageUrl(
-    images[currentLightboxIndex]
-   );
+        document
+            .getElementById("lightboxImage")
+            .src=
+            imageUrl(
+                images[currentLightboxIndex]
+            );
 
- document
-  .getElementById("lightbox")
-  .classList
-  .add("active");
-}
+        document
+            .getElementById("lightbox")
+            .classList
+            .add("active");
+    }
 
-function closeLightbox(){
+    function closeLightbox(){
 
- document
-  .getElementById("lightbox")
-  .classList
-  .remove("active");
-}
+        document
+            .getElementById("lightbox")
+            .classList
+            .remove("active");
+    }
 
-function changeLightbox(direction){
+    function changeLightbox(direction){
 
- if(!currentDetailsCar)
-  return;
+        if(!currentDetailsCar)
+            return;
 
- const images=
-  getImages(currentDetailsCar);
+        const images=
+            getImages(currentDetailsCar);
 
- if(!images.length)
-  return;
+        if(!images.length)
+            return;
 
- currentLightboxIndex+=direction;
+        currentLightboxIndex+=direction;
 
- if(currentLightboxIndex<0)
-  currentLightboxIndex=images.length-1;
+        if(currentLightboxIndex<0)
+            currentLightboxIndex=images.length-1;
 
- if(currentLightboxIndex>=images.length)
-  currentLightboxIndex=0;
+        if(currentLightboxIndex>=images.length)
+            currentLightboxIndex=0;
 
- document
-  .getElementById("lightboxImage")
-  .src=
-   imageUrl(
-    images[currentLightboxIndex]
-   );
-}
+        document
+            .getElementById("lightboxImage")
+            .src=
+            imageUrl(
+                images[currentLightboxIndex]
+            );
+    }
 
-/* =========================
-   PAGE NAVIGATION
-========================= */
+    /* =========================
+       PAGE NAVIGATION
+    ========================= */
 
-function showPage(page){
+    function showPage(page){
 
- document
-  .querySelectorAll(".page")
-  .forEach(
-   p=>p.classList.remove("active")
-  );
+        document
+            .querySelectorAll(".page")
+            .forEach(
+                p=>p.classList.remove("active")
+            );
 
- if(page==="home")
-  document
-   .getElementById("homePage")
-   .classList.add("active");
+        if(page==="home")
+            document
+                .getElementById("homePage")
+                .classList.add("active");
 
- if(page==="search")
-  document
-   .getElementById("searchPage")
-   .classList.add("active");
+        if(page==="search")
+            document
+                .getElementById("searchPage")
+                .classList.add("active");
 
- if(page==="details")
-  document
-   .getElementById("detailsPage")
-   .classList.add("active");
+        if(page==="details")
+            document
+                .getElementById("detailsPage")
+                .classList.add("active");
 
- if(page==="menu")
-  document
-   .getElementById("menuPage")
-   .classList.add("active");
+        if(page==="menu")
+            document
+                .getElementById("menuPage")
+                .classList.add("active");
 
- window.scrollTo({
-  top:0,
-  behavior:"smooth"
- });
-}
+        window.scrollTo({
+            top:0,
+            behavior:"smooth"
+        });
+    }
 
-function setActiveNav(id){
+    function setActiveNav(id){
 
- document
-  .querySelectorAll(".bottom-nav button")
-  .forEach(btn=>{
-   btn.classList.remove("active");
-  });
+        document
+            .querySelectorAll(".bottom-nav button")
+            .forEach(btn=>{
+                btn.classList.remove("active");
+            });
 
- const button=
-  document.getElementById(id);
+        const button=
+            document.getElementById(id);
 
- if(button)
-  button.classList.add("active");
-}
+        if(button)
+            button.classList.add("active");
+    }
 
-function goHome(){
+    function goHome(){
 
- showPage("home");
+        showPage("home");
 
- currentType="all";
+        currentType="all";
 
- filteredCars=[...allCars];
+        filteredCars=[...allCars];
 
- const input=
-  document.getElementById("searchInput");
+        const input=
+            document.getElementById("searchInput");
 
- if(input)
-  input.value="";
+        if(input)
+            input.value="";
 
- renderFiltered();
+        renderFiltered();
 
- setActiveNav("navHome");
-}
+        setActiveNav("navHome");
+    }
 
-function showMenu(){
+    function showMenu(){
 
- showPage("menu");
+        showPage("menu");
 
- setActiveNav("navMenu");
-}
+        setActiveNav("navMenu");
+    }
 
-function focusSearch(){
+    function focusSearch(){
 
- showPage("search");
+        showPage("search");
 
- setActiveNav("navSearch");
+        setActiveNav("navSearch");
 
- renderSearchPage(
-  searchPageType==="all"
-   ?[...allCars]
-   :allCars.filter(car=>{
+        renderSearchPage(
+            searchPageType==="all"
+                ?[...allCars]
+                :allCars.filter(car=>{
 
-     const types=
-      Array.isArray(car.types)
-       ?car.types
-       :[];
+                    const types=
+                        Array.isArray(car.types)
+                            ?car.types
+                            :[];
 
-     const mainType=
-      String(car.type||"");
+                    const mainType=
+                        String(car.type||"");
 
-     const normalizeType = value =>
-      String(value||"")
-       .replace(/🏡|🏢|🌳|🏗️|🏗/g,"")
-       .replace(/\\uFE0F/g,"")
-       .trim()
-       .toLowerCase();
+                    const normalizeType = value =>
+                        String(value||"")
+                            .replace(/🏡|🏢|🌳|🏗️|🏗/g,"")
+                            .replace(/\\uFE0F/g,"")
+                            .trim()
+                            .toLowerCase();
 
-     const wantedType =
-      normalizeType(searchPageType);
+                    const wantedType =
+                        normalizeType(searchPageType);
 
-     return types.some(
-      item=>
-       normalizeType(item) === wantedType
-     )||
-     normalizeType(mainType) === wantedType;
+                    return types.some(
+                            item=>
+                                normalizeType(item) === wantedType
+                        )||
+                        normalizeType(mainType) === wantedType;
 
-    })
- );
+                })
+        );
 
- setTimeout(()=>{
+        setTimeout(()=>{
 
-  const input=
-   document.getElementById("searchPageInput");
+            const input=
+                document.getElementById("searchPageInput");
 
-  if(input)
-   input.focus();
+            if(input)
+                input.focus();
 
- },200);
-}
+        },200);
+    }
 
-/* =========================
-   CALL TRACKING
-========================= */
+    /* =========================
+       CALL TRACKING
+    ========================= */
 
-function trackCall(event){
+    function trackCall(event){
 
- if(event)
-  event.stopPropagation();
+        if(event)
+            event.stopPropagation();
 
- fetch(
-  "/api/stats/call",
-  {
-   method:"POST",
-   keepalive:true,
-   cache:"no-store"
-  }
- ).catch(()=>{});
-}
+        fetch(
+            "/api/stats/call",
+            {
+                method:"POST",
+                keepalive:true,
+                cache:"no-store"
+            }
+        ).catch(()=>{});
+    }
 
-/* =========================
-   VIEW TRACKING
-========================= */
+    /* =========================
+       VIEW TRACKING
+    ========================= */
 
-function trackView(){
+    function trackView(){
 
- fetch(
-  "/api/stats/view",
-  {
-   method:"POST",
-   keepalive:true,
-   cache:"no-store"
-  }
- ).catch(()=>{});
-}
+        fetch(
+            "/api/stats/view",
+            {
+                method:"POST",
+                keepalive:true,
+                cache:"no-store"
+            }
+        ).catch(()=>{});
+    }
 
-/* =========================
-   KEYBOARD
-========================= */
+    /* =========================
+       KEYBOARD
+    ========================= */
 
-document.addEventListener(
- "keydown",
- function(event){
+    document.addEventListener(
+        "keydown",
+        function(event){
 
-  if(event.key==="Escape")
-   closeLightbox();
+            if(event.key==="Escape")
+                closeLightbox();
 
-  if(event.key==="ArrowLeft"){
+            if(event.key==="ArrowLeft"){
 
-   const box=
-    document.getElementById("lightbox");
+                const box=
+                    document.getElementById("lightbox");
 
-   if(box.classList.contains("active"))
-    changeLightbox(-1);
+                if(box.classList.contains("active"))
+                    changeLightbox(-1);
 
-  }
+            }
 
-  if(event.key==="ArrowRight"){
+            if(event.key==="ArrowRight"){
 
-   const box=
-    document.getElementById("lightbox");
+                const box=
+                    document.getElementById("lightbox");
 
-   if(box.classList.contains("active"))
-    changeLightbox(1);
+                if(box.classList.contains("active"))
+                    changeLightbox(1);
 
-  }
+            }
 
- }
-);
+        }
+    );
 
-/* =========================
-   LIGHTBOX CLICK
-========================= */
+    /* =========================
+       LIGHTBOX CLICK
+    ========================= */
 
-document
- .getElementById("lightbox")
- .addEventListener(
-  "click",
-  function(event){
+    document
+        .getElementById("lightbox")
+        .addEventListener(
+            "click",
+            function(event){
 
-   if(event.target===this)
-    closeLightbox();
+                if(event.target===this)
+                    closeLightbox();
 
-  }
-);
+            }
+        );
 
-/* =========================
-   START
-========================= */
+    /* =========================
+       START
+    ========================= */
 
-if(
- localStorage.getItem("darkMode")==="true"
-){
+    if(
+        localStorage.getItem("darkMode")==="true"
+    ){
 
- document.body
-  .classList
-  .add("dark");
+        document.body
+            .classList
+            .add("dark");
 
-}
+    }
 
-document.documentElement.lang=
- currentLang;
+    document.documentElement.lang=
+        currentLang;
 
-applyLang();
+    applyLang();
 
-updateThemeIcon();
+    updateThemeIcon();
 
-trackView();
+    trackView();
 
-loadSettings();
+    loadSettings();
 
-load();
+    load();
 
 </script>
 
