@@ -1475,7 +1475,17 @@
                         <form id="addHomeForm" onsubmit="addHome(event)">
 
                             <div class="form-grid">
-</div>
+                                <div class="form-group"><label for="homeTitle">Uy nomi</label><input class="input" id="homeTitle" required placeholder="Masalan: Zamonaviy hovli"></div>
+                                <div class="form-group"><label for="homePrice">Narx</label><input class="input" id="homePrice" type="number" min="1" required placeholder="Masalan: 850000"></div>
+                                <div class="form-group full"><label>Valyuta</label><div class="currency-buttons"><button type="button" class="currency-btn active" data-currency="UZS" onclick="selectCurrency('UZS')">So‘m</button><button type="button" class="currency-btn" data-currency="USD" onclick="selectCurrency('USD')">USD</button></div></div>
+                                <div class="form-group full"><label>Uy turi</label><div class="type-options"><button type="button" class="type-option" data-type="🏡 Hovli" onclick="toggleHomeType(this)"><span class="type-option-icon"><svg class="icon"><use href="#i-villa"></use></svg></span><span class="type-option-name">Hovli</span><span class="type-option-check"><svg class="icon"><use href="#i-check"></use></svg></span></button><button type="button" class="type-option" data-type="🏢 Kvartira" onclick="toggleHomeType(this)"><span class="type-option-icon"><svg class="icon"><use href="#i-building"></use></svg></span><span class="type-option-name">Kvartira</span><span class="type-option-check"><svg class="icon"><use href="#i-check"></use></svg></span></button><button type="button" class="type-option" data-type="🌳 Yer" onclick="toggleHomeType(this)"><span class="type-option-icon"><svg class="icon"><use href="#i-land"></use></svg></span><span class="type-option-name">Yer</span><span class="type-option-check"><svg class="icon"><use href="#i-check"></use></svg></span></button><button type="button" class="type-option" data-type="🏗️ Yangi qurilish" onclick="toggleHomeType(this)"><span class="type-option-icon"><svg class="icon"><use href="#i-construction"></use></svg></span><span class="type-option-name">Yangi qurilish</span><span class="type-option-check"><svg class="icon"><use href="#i-check"></use></svg></span></button></div><div class="type-summary" id="homeTypeSummary">Hali tur tanlanmagan</div></div>
+                                <div class="form-group"><label for="homeLocation">Manzil</label><input class="input" id="homeLocation" required placeholder="Toshkent, Chilonzor"></div>
+                                <div class="form-group"><label for="homeRooms">Xonalar soni</label><input class="input" id="homeRooms" type="number" min="0" placeholder="Masalan: 4"></div>
+                                <div class="form-group"><label for="homeArea">Maydon (m²)</label><input class="input" id="homeArea" type="number" min="0" placeholder="Masalan: 180"></div>
+                                <div class="form-group"><label for="homePhone">Telefon</label><input class="input" id="homePhone" placeholder="+998 90 123 45 67"></div>
+                                <div class="form-group full"><label for="homeDescription">Tavsif</label><textarea class="textarea" id="homeDescription" placeholder="Uy haqida ma’lumot..."></textarea></div>
+                                <div class="form-group full"><label>Rasmlar</label><label class="upload-box" for="homeImages"><span class="upload-icon"><svg class="icon-lg"><use href="#i-camera"></use></svg></span><strong>Rasm tanlash</strong><span id="imageUploadText">Bir nechta rasm tanlashingiz mumkin</span></label><input class="upload-input" id="homeImages" type="file" accept="image/*" multiple onchange="handleImages(this)"><div class="preview-grid" id="imagePreview"></div></div>
+                            </div>
 
                             <div class="form-actions">
 
@@ -1785,7 +1795,11 @@
                                     >
 
                                 </div>
-</div>
+                                <div class="settings-item">
+                                    <div class="settings-head"><div class="settings-icon"><svg class="icon"><use href="#i-location"></use></svg></div><div><div class="settings-title">Manzil</div><div class="settings-sub">Saytda ko‘rsatiladigan manzil</div></div></div>
+                                    <input class="input" id="settingAddress" placeholder="Toshkent, O‘zbekiston">
+                                </div>
+                            </div>
 
                             <div class="form-actions">
 
@@ -2618,8 +2632,8 @@
                         method:"POST",
 
                         headers:adminHeaders({
-                                "Content-Type":"application/json"
-                            }),
+                            "Content-Type":"application/json"
+                        }),
 
                         body:JSON.stringify(payload)
 
@@ -2803,7 +2817,7 @@
               Admin parolini foydalanuvchi o‘zi kiritadi.
             */
 
-    
+
         }catch(error){
 
             console.error(error);
@@ -2855,8 +2869,8 @@
                     method:"POST",
 
                     headers:adminHeaders({
-                                "Content-Type":"application/json"
-                            }),
+                        "Content-Type":"application/json"
+                    }),
 
                     body:JSON.stringify(payload)
 
@@ -2888,7 +2902,7 @@
                 address:payload.address
             };
 
-    
+
             showToast(
                 "Sozlamalar saqlandi."
             );
@@ -3337,8 +3351,8 @@
                         method:"POST",
 
                         headers:adminHeaders({
-                                "Content-Type":"application/json"
-                            }),
+                            "Content-Type":"application/json"
+                        }),
 
                         body:JSON.stringify({
                             sold:!sold,
@@ -3427,8 +3441,8 @@
                         method:"DELETE",
 
                         headers:adminHeaders({
-                                "Content-Type":"application/json"
-                            }),
+                            "Content-Type":"application/json"
+                        }),
 
                         body:JSON.stringify({
                             password:password
