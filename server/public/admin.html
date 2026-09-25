@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="uz">
 <head>
@@ -317,6 +316,44 @@
             color:var(--muted);
             font-size:13px;
             margin-top:5px;
+        }
+
+        .stat-label-row{
+            display:flex;
+            align-items:center;
+            gap:5px;
+            margin-top:5px;
+        }
+
+        .stat-label-row .stat-label{
+            margin-top:0;
+        }
+
+        .mini-refresh{
+            border:0;
+            background:transparent;
+            color:var(--muted);
+            opacity:.4;
+            padding:2px;
+            display:inline-flex;
+            align-items:center;
+            justify-content:center;
+            border-radius:6px;
+            transition:.2s;
+        }
+
+        .mini-refresh:hover{
+            opacity:1;
+            background:var(--soft);
+        }
+
+        .mini-refresh .icon{
+            width:11px;
+            height:11px;
+        }
+
+        .mini-refresh.spinning .icon{
+            animation:spin .7s linear infinite;
         }
 
         .dashboard-grid{
@@ -1790,7 +1827,12 @@
                         <div class="stat-top">
                             <div>
                                 <div class="stat-value" id="statViews">0</div>
-                                <div class="stat-label">Ko‘rishlar</div>
+                                <div class="stat-label-row">
+                                    <span class="stat-label">Ko‘rishlar</span>
+                                    <button type="button" class="mini-refresh" onclick="refreshSingleStat(this)" title="Yangilash">
+                                        <svg class="icon"><use href="#i-refresh"></use></svg>
+                                    </button>
+                                </div>
                             </div>
                             <div class="stat-icon">
                                 <svg class="icon-lg"><use href="#i-eye"></use></svg>
@@ -1802,7 +1844,12 @@
                         <div class="stat-top">
                             <div>
                                 <div class="stat-value" id="statCalls">0</div>
-                                <div class="stat-label">Qo‘ng‘iroqlar</div>
+                                <div class="stat-label-row">
+                                    <span class="stat-label">Qo‘ng‘iroqlar</span>
+                                    <button type="button" class="mini-refresh" onclick="refreshSingleStat(this)" title="Yangilash">
+                                        <svg class="icon"><use href="#i-refresh"></use></svg>
+                                    </button>
+                                </div>
                             </div>
                             <div class="stat-icon">
                                 <svg class="icon-lg"><use href="#i-phone"></use></svg>
@@ -3971,6 +4018,35 @@
 
         }
 
+    }
+
+    /* =========================
+       MINI STAT REFRESH
+       (Ko'rishlar / Qo'ng'iroqlar
+       kartalaridagi kichik belgi)
+    ========================= */
+
+    async function refreshSingleStat(button){
+
+        if(button.classList.contains("spinning")){
+            return;
+        }
+
+        button.classList.add("spinning");
+
+        try{
+
+            await loadStats();
+
+        }catch(error){
+
+            console.error(error);
+
+        }finally{
+
+            button.classList.remove("spinning");
+
+        }
     }
 
     /* =========================
