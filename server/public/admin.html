@@ -3976,7 +3976,47 @@
        STATS
     ========================= */
 
-    async function loadStats(){
+    function animateStatValue(id,targetValue){
+
+        const el = $(id);
+
+        if(!el){
+            return;
+        }
+
+        const target = Number(targetValue) || 0;
+        const duration = 650;
+        const startTime = performance.now();
+
+        function step(now){
+
+            const progress =
+                Math.min((now - startTime) / duration,1);
+
+            const current =
+                Math.round(target * progress);
+
+            el.textContent =
+                current.toLocaleString("uz-UZ");
+
+            if(progress < 1){
+
+                requestAnimationFrame(step);
+
+            }else{
+
+                el.textContent =
+                    target.toLocaleString("uz-UZ");
+
+            }
+        }
+
+        el.textContent = "0";
+
+        requestAnimationFrame(step);
+    }
+
+    async function loadStats(animate=false){
 
         try{
 
@@ -4028,11 +4068,20 @@
                     0
                 );
 
-            $("statViews").textContent =
-                views.toLocaleString("uz-UZ");
+            if(animate){
 
-            $("statCalls").textContent =
-                calls.toLocaleString("uz-UZ");
+                animateStatValue("statViews",views);
+                animateStatValue("statCalls",calls);
+
+            }else{
+
+                $("statViews").textContent =
+                    views.toLocaleString("uz-UZ");
+
+                $("statCalls").textContent =
+                    calls.toLocaleString("uz-UZ");
+
+            }
 
         }catch(error){
 
@@ -4058,7 +4107,7 @@
 
         try{
 
-            await loadStats();
+            await loadStats(true);
 
         }catch(error){
 
