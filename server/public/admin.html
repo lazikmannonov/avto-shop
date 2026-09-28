@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="uz">
 <head>
@@ -306,6 +307,52 @@
             color:var(--text);
         }
 
+        .stat-refresh{
+            width:24px;
+            height:24px;
+            border:1px solid var(--border);
+            background:var(--soft);
+            color:var(--muted);
+            border-radius:8px;
+            display:inline-grid;
+            place-items:center;
+            padding:0;
+            margin-left:6px;
+            vertical-align:middle;
+            transition:.25s ease;
+        }
+
+        .stat-refresh:hover{
+            color:var(--text);
+            border-color:var(--text);
+            transform:translateY(-1px);
+            box-shadow:0 5px 14px rgba(0,0,0,.08);
+        }
+
+        .stat-refresh:active{
+            transform:scale(.92);
+        }
+
+        .stat-refresh .icon{
+            width:13px;
+            height:13px;
+        }
+
+        .stat-refresh.spinning .icon{
+            animation:statRefreshSpin .7s linear infinite;
+        }
+
+        @keyframes statRefreshSpin{
+            to{transform:rotate(360deg)}
+        }
+
+        .stat-label-row{
+            display:flex;
+            align-items:center;
+            gap:2px;
+            white-space:nowrap;
+        }
+
         .stat-value{
             font-size:29px;
             font-weight:850;
@@ -316,44 +363,6 @@
             color:var(--muted);
             font-size:13px;
             margin-top:5px;
-        }
-
-        .stat-label-row{
-            display:flex;
-            align-items:center;
-            gap:5px;
-            margin-top:5px;
-        }
-
-        .stat-label-row .stat-label{
-            margin-top:0;
-        }
-
-        .mini-refresh{
-            border:0;
-            background:transparent;
-            color:var(--muted);
-            opacity:.4;
-            padding:2px;
-            display:inline-flex;
-            align-items:center;
-            justify-content:center;
-            border-radius:6px;
-            transition:.2s;
-        }
-
-        .mini-refresh:hover{
-            opacity:1;
-            background:var(--soft);
-        }
-
-        .mini-refresh .icon{
-            width:11px;
-            height:11px;
-        }
-
-        .mini-refresh.spinning .icon{
-            animation:spin .7s linear infinite;
         }
 
         .dashboard-grid{
@@ -1112,445 +1121,7 @@
                 grid-template-columns:1fr;
             }
         }
-    
-        /* =====================================================
-           TELEFON UCHUN QAT'IY RESPONSIVE
-           ===================================================== */
-
-        @media (max-width: 800px){
-
-            body{
-                overflow-x:hidden;
-            }
-
-            .app{
-                display:block;
-                width:100%;
-                min-width:0;
-            }
-
-            .sidebar{
-                width:min(285px, 86vw);
-                max-width:86vw;
-            }
-
-            .main{
-                margin-left:0 !important;
-                width:100% !important;
-                min-width:0;
-            }
-
-            .topbar{
-                width:100%;
-                height:64px;
-                padding:0 12px;
-                gap:8px;
-            }
-
-            .top-left{
-                min-width:0;
-                flex:1;
-            }
-
-            .menu-btn{
-                width:40px;
-                height:40px;
-                flex:0 0 40px;
-            }
-
-            .page-title{
-                min-width:0;
-                max-width:calc(100vw - 150px);
-                font-size:16px;
-                white-space:nowrap;
-                overflow:hidden;
-                text-overflow:ellipsis;
-            }
-
-            .top-actions{
-                flex:0 0 auto;
-                gap:6px;
-            }
-
-            .top-btn{
-                width:40px;
-                height:40px;
-            }
-
-            .content{
-                width:100%;
-                max-width:none;
-                padding:12px !important;
-                margin:0;
-                overflow:hidden;
-            }
-
-            .page{
-                width:100%;
-                min-width:0;
-            }
-
-            .panel{
-                width:100%;
-                min-width:0;
-            }
-
-            .panel-header,
-            .panel-body{
-                min-width:0;
-            }
-
-            .panel-header{
-                padding:14px;
-            }
-
-            .panel-body{
-                padding:14px;
-            }
-
-            .stats-grid,
-            .dashboard-grid,
-            .form-grid,
-            .settings-grid{
-                width:100%;
-                min-width:0;
-            }
-
-            .homes-grid{
-                width:100%;
-                min-width:0;
-                grid-template-columns:1fr !important;
-                gap:12px;
-            }
-
-            .home-card{
-                width:100%;
-                min-width:0;
-            }
-
-            .home-image{
-                height:210px;
-            }
-
-            .home-content{
-                padding:13px;
-            }
-
-            .home-title{
-                max-width:100%;
-            }
-
-            .home-actions{
-                grid-template-columns:1fr 1fr !important;
-                width:100%;
-            }
-
-            .action-btn{
-                min-height:42px;
-                padding:10px 7px;
-                font-size:12px;
-                touch-action:manipulation;
-            }
-
-            .search-row{
-                width:100%;
-                min-width:0;
-                gap:8px;
-            }
-
-            .search-row > *{
-                min-width:0;
-                max-width:100%;
-            }
-
-            .filter{
-                min-height:42px;
-                touch-action:manipulation;
-            }
-
-            .input,
-            .select,
-            textarea,
-            button{
-                max-width:100%;
-            }
-
-            .input,
-            .select{
-                min-height:44px;
-                font-size:16px;
-            }
-
-            textarea.input{
-                min-height:110px;
-            }
-
-            .type-options{
-                width:100%;
-                grid-template-columns:1fr 1fr !important;
-            }
-
-            .preview-grid{
-                width:100%;
-                grid-template-columns:repeat(3,1fr) !important;
-            }
-
-            .toast{
-                left:12px;
-                right:12px;
-                bottom:12px;
-                max-width:none;
-            }
-        }
-
-        @media (max-width: 480px){
-
-            .content{
-                padding:9px !important;
-            }
-
-            .topbar{
-                padding:0 9px;
-            }
-
-            .page-title{
-                max-width:calc(100vw - 125px);
-                font-size:15px;
-            }
-
-            .top-btn,
-            .menu-btn{
-                width:38px;
-                height:38px;
-            }
-
-            .panel{
-                border-radius:13px;
-            }
-
-            .panel-header,
-            .panel-body{
-                padding:12px;
-            }
-
-            .homes-grid{
-                grid-template-columns:1fr !important;
-                gap:10px;
-            }
-
-            .home-image{
-                height:185px;
-            }
-
-            .home-content{
-                padding:12px;
-            }
-
-            .home-price{
-                font-size:17px;
-            }
-
-            .home-info{
-                gap:7px;
-                font-size:10px;
-            }
-
-            .home-actions{
-                grid-template-columns:1fr 1fr !important;
-                gap:6px;
-            }
-
-            .action-btn{
-                min-height:44px;
-                font-size:11px;
-            }
-
-            .type-options{
-                grid-template-columns:1fr !important;
-            }
-
-            .preview-grid{
-                grid-template-columns:repeat(3,1fr) !important;
-            }
-        }
-
-    
-/* ===== FINAL PHONE FIX ===== */
-@media screen and (max-width: 800px){
-    *{box-sizing:border-box}
-
-    html,body{
-        width:100%;
-        max-width:100%;
-        margin:0;
-        padding:0;
-        overflow-x:hidden !important;
-    }
-
-    .app{
-        display:block !important;
-        width:100% !important;
-        min-width:0 !important;
-    }
-
-    .sidebar{
-        width:280px !important;
-        max-width:85vw !important;
-        transform:translateX(-105%) !important;
-        transition:transform .25s ease !important;
-    }
-
-    .sidebar.open{
-        transform:translateX(0) !important;
-    }
-
-    .main{
-        display:block !important;
-        width:100% !important;
-        min-width:0 !important;
-        margin-left:0 !important;
-    }
-
-    .topbar{
-        width:100% !important;
-        min-width:0 !important;
-        padding:0 10px !important;
-    }
-
-    .content{
-        width:100% !important;
-        max-width:none !important;
-        min-width:0 !important;
-        padding:10px !important;
-        overflow:visible !important;
-    }
-
-    .page,
-    .page.active{
-        width:100% !important;
-        min-width:0 !important;
-        max-width:100% !important;
-    }
-
-    .panel{
-        width:100% !important;
-        max-width:100% !important;
-        min-width:0 !important;
-    }
-
-    .panel-body{
-        width:100% !important;
-        min-width:0 !important;
-        overflow:visible !important;
-    }
-
-    .homes-grid{
-        display:grid !important;
-        width:100% !important;
-        max-width:100% !important;
-        min-width:0 !important;
-        grid-template-columns:minmax(0,1fr) !important;
-        gap:10px !important;
-    }
-
-    .home-card{
-        display:block !important;
-        width:100% !important;
-        max-width:100% !important;
-        min-width:0 !important;
-        overflow:hidden !important;
-    }
-
-    .home-image{
-        width:100% !important;
-        height:190px !important;
-        max-width:100% !important;
-    }
-
-    .home-image img{
-        width:100% !important;
-        height:100% !important;
-        object-fit:cover !important;
-    }
-
-    .home-content{
-        width:100% !important;
-        min-width:0 !important;
-        padding:12px !important;
-    }
-
-    .home-title{
-        width:100% !important;
-        max-width:100% !important;
-        overflow:hidden !important;
-        text-overflow:ellipsis !important;
-    }
-
-    .home-info{
-        width:100% !important;
-        min-width:0 !important;
-    }
-
-    .home-info span{
-        max-width:100% !important;
-        overflow:hidden !important;
-        text-overflow:ellipsis !important;
-    }
-
-    .home-actions{
-        display:grid !important;
-        width:100% !important;
-        grid-template-columns:repeat(2,minmax(0,1fr)) !important;
-        gap:7px !important;
-    }
-
-    .action-btn{
-        width:100% !important;
-        min-width:0 !important;
-        min-height:44px !important;
-        touch-action:manipulation !important;
-    }
-
-    .search-row{
-        display:flex !important;
-        flex-direction:column !important;
-        width:100% !important;
-        min-width:0 !important;
-    }
-
-    .search-wrap,
-    .search-row .input,
-    .search-row .select,
-    .search-row button{
-        width:100% !important;
-        max-width:100% !important;
-        min-width:0 !important;
-    }
-
-    .nav button{
-        min-height:48px;
-        touch-action:manipulation;
-    }
-
-    .menu-btn{
-        display:grid !important;
-        place-items:center !important;
-        touch-action:manipulation !important;
-    }
-
-    .input,.select,textarea,button{
-        max-width:100%;
-    }
-}
-
-@media screen and (max-width:480px){
-    .content{padding:8px !important}
-    .panel-header,.panel-body{padding:11px !important}
-    .home-image{height:170px !important}
-    .home-actions{grid-template-columns:1fr 1fr !important}
-}
-
-</style>
+    </style>
 </head>
 
 <body>
@@ -1828,8 +1399,8 @@
                             <div>
                                 <div class="stat-value" id="statViews">0</div>
                                 <div class="stat-label-row">
-                                    <span class="stat-label">Ko‘rishlar</span>
-                                    <button type="button" class="mini-refresh" onclick="refreshSingleStat(this)" title="Yangilash">
+                                    <div class="stat-label">Ko‘rishlar</div>
+                                    <button class="stat-refresh" type="button" title="Statistikani yangilash" aria-label="Ko‘rishlar statistikasini yangilash" onclick="refreshDashboardStats(this)">
                                         <svg class="icon"><use href="#i-refresh"></use></svg>
                                     </button>
                                 </div>
@@ -1845,8 +1416,8 @@
                             <div>
                                 <div class="stat-value" id="statCalls">0</div>
                                 <div class="stat-label-row">
-                                    <span class="stat-label">Qo‘ng‘iroqlar</span>
-                                    <button type="button" class="mini-refresh" onclick="refreshSingleStat(this)" title="Yangilash">
+                                    <div class="stat-label">Qo‘ng‘iroqlar</div>
+                                    <button class="stat-refresh" type="button" title="Statistikani yangilash" aria-label="Qo‘ng‘iroqlar statistikasini yangilash" onclick="refreshDashboardStats(this)">
                                         <svg class="icon"><use href="#i-refresh"></use></svg>
                                     </button>
                                 </div>
@@ -1960,16 +1531,6 @@
                         <form id="addHomeForm" onsubmit="addHome(event)">
 
                             <div class="form-grid">
-                                <div class="form-group"><label for="homeTitle">Uy nomi</label><input class="input" id="homeTitle" required placeholder="Masalan: Zamonaviy hovli"></div>
-                                <div class="form-group"><label for="homePrice">Narx</label><input class="input" id="homePrice" type="number" min="1" required placeholder="Masalan: 850000"></div>
-                                <div class="form-group full"><label>Valyuta</label><div class="currency-buttons"><button type="button" class="currency-btn active" data-currency="UZS" onclick="selectCurrency('UZS')">So‘m</button><button type="button" class="currency-btn" data-currency="USD" onclick="selectCurrency('USD')">USD</button></div></div>
-                                <div class="form-group full"><label>Uy turi</label><div class="type-options"><button type="button" class="type-option" data-type="🏡 Hovli" onclick="toggleHomeType(this)"><span class="type-option-icon"><svg class="icon"><use href="#i-villa"></use></svg></span><span class="type-option-name">Hovli</span><span class="type-option-check"><svg class="icon"><use href="#i-check"></use></svg></span></button><button type="button" class="type-option" data-type="🏢 Kvartira" onclick="toggleHomeType(this)"><span class="type-option-icon"><svg class="icon"><use href="#i-building"></use></svg></span><span class="type-option-name">Kvartira</span><span class="type-option-check"><svg class="icon"><use href="#i-check"></use></svg></span></button><button type="button" class="type-option" data-type="🌳 Yer" onclick="toggleHomeType(this)"><span class="type-option-icon"><svg class="icon"><use href="#i-land"></use></svg></span><span class="type-option-name">Yer</span><span class="type-option-check"><svg class="icon"><use href="#i-check"></use></svg></span></button><button type="button" class="type-option" data-type="🏗️ Yangi qurilish" onclick="toggleHomeType(this)"><span class="type-option-icon"><svg class="icon"><use href="#i-construction"></use></svg></span><span class="type-option-name">Yangi qurilish</span><span class="type-option-check"><svg class="icon"><use href="#i-check"></use></svg></span></button></div><div class="type-summary" id="homeTypeSummary">Hali tur tanlanmagan</div></div>
-                                <div class="form-group"><label for="homeLocation">Manzil</label><input class="input" id="homeLocation" required placeholder="Toshkent, Chilonzor"></div>
-                                <div class="form-group"><label for="homeRooms">Xonalar soni</label><input class="input" id="homeRooms" type="number" min="0" placeholder="Masalan: 4"></div>
-                                <div class="form-group"><label for="homeArea">Maydon (m²)</label><input class="input" id="homeArea" type="number" min="0" placeholder="Masalan: 180"></div>
-                                <div class="form-group"><label for="homePhone">Telefon</label><input class="input" id="homePhone" placeholder="+998 90 123 45 67"></div>
-                                <div class="form-group full"><label for="homeDescription">Tavsif</label><textarea class="textarea" id="homeDescription" placeholder="Uy haqida ma’lumot..."></textarea></div>
-                                <div class="form-group full"><label>Rasmlar</label><label class="upload-box" for="homeImages"><span class="upload-icon"><svg class="icon-lg"><use href="#i-camera"></use></svg></span><strong>Rasm tanlash</strong><span id="imageUploadText">Bir nechta rasm tanlashingiz mumkin</span></label><input class="upload-input" id="homeImages" type="file" accept="image/*" multiple onchange="handleImages(this)"><div class="preview-grid" id="imagePreview"></div></div>
                             </div>
 
                             <div class="form-actions">
@@ -2279,10 +1840,6 @@
                                             placeholder="@username"
                                     >
 
-                                </div>
-                                <div class="settings-item">
-                                    <div class="settings-head"><div class="settings-icon"><svg class="icon"><use href="#i-location"></use></svg></div><div><div class="settings-title">Manzil</div><div class="settings-sub">Saytda ko‘rsatiladigan manzil</div></div></div>
-                                    <input class="input" id="settingAddress" placeholder="Toshkent, O‘zbekiston">
                                 </div>
                             </div>
 
@@ -3976,47 +3533,7 @@
        STATS
     ========================= */
 
-    function animateStatValue(id,targetValue){
-
-        const el = $(id);
-
-        if(!el){
-            return;
-        }
-
-        const target = Number(targetValue) || 0;
-        const duration = 650;
-        const startTime = performance.now();
-
-        function step(now){
-
-            const progress =
-                Math.min((now - startTime) / duration,1);
-
-            const current =
-                Math.round(target * progress);
-
-            el.textContent =
-                current.toLocaleString("uz-UZ");
-
-            if(progress < 1){
-
-                requestAnimationFrame(step);
-
-            }else{
-
-                el.textContent =
-                    target.toLocaleString("uz-UZ");
-
-            }
-        }
-
-        el.textContent = "0";
-
-        requestAnimationFrame(step);
-    }
-
-    async function loadStats(animate=false){
+    async function loadStats(){
 
         try{
 
@@ -4024,28 +3541,6 @@
                 await fetch("/api/stats",{headers:adminHeaders()});
 
             if(!response.ok){
-
-                const data =
-                    await response.json()
-                        .catch(()=>({}));
-
-                if(response.status === 401){
-
-                    showToast(
-                        "Admin paroli noto‘g‘ri yoki hali kiritilmagan. Statistika shu sabab 0 ko‘rsatilmoqda.",
-                        true
-                    );
-
-                }else{
-
-                    showToast(
-                        data.error ||
-                        "Statistikani olishda xatolik.",
-                        true
-                    );
-
-                }
-
                 return;
             }
 
@@ -4068,20 +3563,11 @@
                     0
                 );
 
-            if(animate){
+            $("statViews").textContent =
+                views.toLocaleString("uz-UZ");
 
-                animateStatValue("statViews",views);
-                animateStatValue("statCalls",calls);
-
-            }else{
-
-                $("statViews").textContent =
-                    views.toLocaleString("uz-UZ");
-
-                $("statCalls").textContent =
-                    calls.toLocaleString("uz-UZ");
-
-            }
+            $("statCalls").textContent =
+                calls.toLocaleString("uz-UZ");
 
         }catch(error){
 
@@ -4089,35 +3575,6 @@
 
         }
 
-    }
-
-    /* =========================
-       MINI STAT REFRESH
-       (Ko'rishlar / Qo'ng'iroqlar
-       kartalaridagi kichik belgi)
-    ========================= */
-
-    async function refreshSingleStat(button){
-
-        if(button.classList.contains("spinning")){
-            return;
-        }
-
-        button.classList.add("spinning");
-
-        try{
-
-            await loadStats(true);
-
-        }catch(error){
-
-            console.error(error);
-
-        }finally{
-
-            button.classList.remove("spinning");
-
-        }
     }
 
     /* =========================
@@ -4129,23 +3586,23 @@
         const chart =
             $("dailyChart");
 
+        if(!chart){
+            return;
+        }
+
         try{
 
             const response =
-                await fetch("/api/stats/daily",{headers:adminHeaders()});
+                await fetch(
+                    "/api/stats/daily?days=7",
+                    {
+                        headers:adminHeaders(),
+                        cache:"no-store"
+                    }
+                );
 
             if(!response.ok){
-
-                if(response.status === 401){
-
-                    showToast(
-                        "Admin paroli noto‘g‘ri yoki hali kiritilmagan. 7 kunlik statistika shu sabab bo‘sh ko‘rsatilmoqda.",
-                        true
-                    );
-
-                }
-
-                throw new Error();
+                throw new Error("7 kunlik statistika yuklanmadi.");
             }
 
             const data =
@@ -4154,31 +3611,27 @@
             let rows =
                 Array.isArray(data)
                     ? data
-                    : Array.isArray(data.daily)
-                        ? data.daily
-                        : Array.isArray(data.days)
-                            ? data.days
+                    : Array.isArray(data.days)
+                        ? data.days
+                        : Array.isArray(data.daily)
+                            ? data.daily
                             : [];
 
+            rows = rows.slice(-7);
+
             if(!rows.length){
-
                 renderEmptyChart();
-
                 return;
-
             }
 
-            rows =
-                rows.slice(-7);
-
             const values =
-                rows.map(row=>
+                rows.map(row =>
                     Number(
                         row.views ??
                         row.count ??
                         row.value ??
                         0
-                    )
+                    ) || 0
                 );
 
             const max =
@@ -4191,44 +3644,44 @@
                         values[index];
 
                     const height =
-                        Math.max(
-                            5,
-                            Math.round(
-                                (value / max) * 100
-                            )
-                        );
+                        value > 0
+                            ? Math.max(8,Math.round((value / max) * 100))
+                            : 5;
 
-                    const label =
+                    const rawLabel =
                         row.date ||
                         row.day ||
                         String(index + 1);
 
+                    let label = String(rawLabel);
+
+                    if(/^\d{4}-\d{2}-\d{2}/.test(label)){
+                        const parts = label.slice(0,10).split("-");
+                        label = `${parts[2]}.${parts[1]}`;
+                    }else{
+                        label = label.slice(-5);
+                    }
+
+                    const calls =
+                        Number(row.calls) || 0;
+
                     return `
-
-          <div class="chart-bar-wrap">
-
-            <div
-              class="chart-bar"
-              style="height:${height}%"
-              title="${value}"
-            ></div>
-
-            <div class="chart-label">
-              ${escapeHtml(
-                        String(label).slice(-5)
-                    )}
-            </div>
-
-          </div>
-
-        `;
+                        <div class="chart-bar-wrap" title="${value} ta ko‘rish · ${calls} ta qo‘ng‘iroq">
+                            <div
+                                class="chart-bar"
+                                style="height:${height}%"
+                            ></div>
+                            <div class="chart-label">
+                                ${escapeHtml(label)}
+                            </div>
+                        </div>
+                    `;
 
                 }).join("");
 
         }catch(error){
 
             console.error(error);
-
             renderEmptyChart();
 
         }
@@ -4260,6 +3713,36 @@
 
       `
             ).join("");
+
+    }
+
+    async function refreshDashboardStats(button){
+
+        if(button){
+            button.classList.add("spinning");
+            button.disabled = true;
+        }
+
+        try{
+            await Promise.all([
+                loadStats(),
+                loadDailyStats()
+            ]);
+
+            showToast("Statistika yangilandi.");
+
+        }catch(error){
+            console.error(error);
+            showToast("Statistikani yangilashda xatolik.",true);
+
+        }finally{
+            if(button){
+                setTimeout(()=>{
+                    button.classList.remove("spinning");
+                    button.disabled = false;
+                },350);
+            }
+        }
 
     }
 
