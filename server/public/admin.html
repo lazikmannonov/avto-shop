@@ -2759,79 +2759,59 @@
        ADD / EDIT HOME
     ========================= */
 
-    async function addHome(event){
+   async function addHome(event){
 
-        event.preventDefault();
+    event.preventDefault();
 
-        if(selectedHomeTypes.length < 1){
+    if(selectedHomeTypes.length < 1){
 
-            showToast(
-                "Kamida 1 ta uy turini tanlang.",
-                true
-            );
+        showToast(
+            "Kamida 1 ta uy turini tanlang.",
+            true
+        );
 
-            return;
-        }
-        if(!requireAdminPassword()){
-            return;
-        }
-        const password = adminPassword;
+        return;
+    }
 
-        const title =
-            $("homeTitle").value.trim();
+    if(!requireAdminPassword()){
+        return;
+    }
 
-        const price =
-            Number($("homePrice").value);
+    const password = adminPassword;
 
-        const location =
-            $("homeLocation").value.trim();
+    const title =
+        $("homeTitle").value.trim();
 
-        if(!title || !price || !location){
+    const price =
+        Number($("homePrice").value);
 
-            showToast(
-                "Majburiy maydonlarni to‘ldiring.",
-                true
-            );
+    const location =
+        $("homeLocation").value.trim();
 
-            return;
-        }
+    if(!title || !price || !location){
 
-        showLoading(true);
+        showToast(
+            "Majburiy maydonlarni to‘ldiring.",
+            true
+        );
 
-        try{
+        return;
+    }
 
-            let images = [];
+    showLoading(true);
 
-            if(editingHomeId){
+    try{
 
-                const optimizedNewImages =
-                    await optimizeImages();
+        /*
+         =====================================================
+         YANGI UY
+         =====================================================
+        */
 
-                let newIndex = 0;
+        if(!editingHomeId){
 
-                editingImageItems = editingImageItems.map(item=>{
-
-                    if(item.existing){
-                        return item;
-                    }
-
-                    const optimized = optimizedNewImages[newIndex] || item.src;
-                    newIndex += 1;
-
-                    return {
-                        ...item,
-                        src:optimized
-                    };
-                });
-
-                images = editingImageItems.map(item=>item.src);
-
-            }else{
-
-                images =
-                    await optimizeImages();
-
-            }
+            const images =
+                await optimizeImages();
 
             const payload = {
 
@@ -2865,278 +2845,14 @@
 
                 images:images,
 
+                status:"available",
+
                 password:password
 
             };
 
-            let response;
-
-            if(editingHomeId){
-
-                response =
-                    await fetch(
-                        `/api/cars/${encodeURIComponent(editingHomeId)}`,
-                        {
-                            method:"PUT",
-
-                            headers:adminHeaders({
-                                "Content-Type":"application/json"
-                            }),
-
-                            body:JSON.stringify(payload)
-
-                        }
-                    );
-
-            }else{
-
-                payload.status = "available";
-
-                response =
-                    await fetch("/api/cars",{
-
-                        method:"POST",
-
-                        headers:adminHeaders({
-                            "Content-Type":"application/json"
-                        }),
-
-                        body:JSON.stringify(payload)
-
-                    });
-
-            }
-
-            const data =
-                await response.json()
-                    .catch(()=>({}));
-
-            if(!response.ok){
-
-                throw new Error(
-                    data.message ||
-                    data.error ||
-                    (
-                        editingHomeId
-                            ? "Uyni tahrirlashda xatolik."
-                            : "Uy qo‘shishda xatolik."
-                    )
-                );
-
-            }
-
-            showToast(
-                editingHomeId
-                    ? "Uy ma’lumotlari saqlandi."
-                    : "Uy muvaffaqiyatli qo‘shildi."
-            );
-
-            cancelEdit();
-
-            await loadAll();
-
-            showPage("homes");
-
-        }catch(error){
-
-            console.error(error);
-
-            showToast(
-                error.message ||
-                "Xatolik yuz berdi.",
-                true
-            );
-
-        }finally{
-
-            showLoading(false);
-
-        }
-    }
-
-    /* =========================
-       RESET ADD FORM
-    ========================= */
-
-    function resetAddForm(){
-
-        if(editingHomeId){
-
-            cancelEdit();
-
-            return;
-        }
-
-        $("addHomeForm").reset();
-
-        editingExistingImages = [];
-        editingImageItems = [];
-        uploadedImages = [];
-
-        selectedCurrency = "UZS";
-
-        document.querySelectorAll(".currency-btn")
-            .forEach(button=>{
-
-                button.classList.toggle(
-                    "active",
-                    button.dataset.currency === "UZS"
-                );
-
-            });
-
-        $("imagePreview").innerHTML = "";
-        $("addImagePreview").innerHTML = "";
-        $("editImagesBox").style.display = "none";
-
-        $("imageUploadText").textContent =
-            "Bir nechta rasm tanlashingiz mumkin";
-
-        $("imageUploadTitle").textContent =
-            "Rasm tanlash";
-
-        resetHomeTypes();
-
-    }
-
-    /* =========================
-       LOAD CARS
-    ========================= */
-
-    async function loadCars(){
-
-        try{
-
             const response =
-                await fetch("/api/cars");
-
-            if(!response.ok){
-
-                throw new Error(
-                    "Uylar ma’lumotini olishda xatolik."
-                );
-
-            }
-
-            const data =
-                await response.json();
-
-            if(Array.isArray(data)){
-
-                cars = data;
-
-            }else if(Array.isArray(data.cars)){
-
-                cars = data.cars;
-
-            }else{
-
-                cars = [];
-
-            }
-
-        }catch(error){
-
-            console.error(error);
-
-            cars = [];
-
-            showToast(
-                "Uylar yuklanmadi.",
-                true
-            );
-
-        }
-    }
-
-    /* =========================
-       SETTINGS
-    ========================= */
-
-    async function loadSettings(){
-
-        try{
-
-            const response =
-                await fetch("/api/settings");
-
-            if(!response.ok){
-                return;
-            }
-
-            const data =
-                await response.json();
-
-            settings = data || {};
-
-            $("settingPhone").value =
-                settings.phone || "";
-
-            $("settingTelegram").value =
-                settings.telegram || "";
-
-            $("settingWhatsapp").value =
-                settings.whatsapp || "";
-
-            $("settingInstagram").value =
-                settings.instagram || "";
-
-            $("settingAddress").value =
-                settings.address || "";
-
-            /*
-              Parol serverdan olinmaydi.
-              Admin parolini foydalanuvchi o‘zi kiritadi.
-            */
-
-
-        }catch(error){
-
-            console.error(error);
-
-        }
-    }
-
-    async function saveSettings(event){
-
-        event.preventDefault();
-        if(!requireAdminPassword()){
-            return;
-        }
-        const password = adminPassword;
-
-        const payload = {
-
-            phone:
-                $("settingPhone").value.trim(),
-
-            telegram:
-                $("settingTelegram").value.trim(),
-
-            whatsapp:
-                $("settingWhatsapp").value.trim(),
-
-            instagram:
-                $("settingInstagram").value.trim(),
-
-            address:
-                $("settingAddress").value.trim(),
-
-            /*
-              MUHIM:
-              index.js shu password orqali
-              admin parolini tekshiradi.
-            */
-            password:password
-
-        };
-
-        showLoading(true);
-
-        try{
-
-            const response =
-                await fetch("/api/settings",{
+                await fetch("/api/cars",{
 
                     method:"POST",
 
@@ -3157,44 +2873,199 @@
                 throw new Error(
                     data.message ||
                     data.error ||
-                    "Sozlamalarni saqlab bo‘lmadi."
+                    "Uy qo‘shishda xatolik."
                 );
 
             }
 
+            showToast(
+                "Uy muvaffaqiyatli qo‘shildi."
+            );
+
+            cancelEdit();
+
+            await loadAll();
+
+            showPage("homes");
+
+            return;
+        }
+
+
+        /*
+         =====================================================
+         MAVJUD UYNI TAHRIRLASH
+         =====================================================
+        */
+
+        /*
+         Eski rasmlar o‘z holicha qoladi.
+
+         Faqat yangi rasm qo‘shilgan bo‘lsa,
+         yangi JPEG rasmlar serverga yuboriladi.
+
+         Agar umuman yangi rasm qo‘shilmagan bo‘lsa,
+         images property umuman yuborilmaydi.
+
+         Backend images kelmaganida eski rasmlarni saqlab qoladi.
+        */
+
+        const newImages =
+            uploadedImages.length
+                ? await optimizeImages()
+                : [];
+
+
+        const payload = {
+
+            title:title,
+
+            name:title,
+
+            type:selectedHomeTypes[0],
+
+            types:[...selectedHomeTypes],
+
+            price:price,
+
+            currency:selectedCurrency,
+
+            location:location,
+
+            address:location,
+
+            rooms:
+                Number($("homeRooms").value) || 0,
+
+            area:
+                Number($("homeArea").value) || 0,
+
+            phone:
+                $("homePhone").value.trim(),
+
+            description:
+                $("homeDescription").value.trim(),
+
+            password:password
+
+        };
+
+
+        /*
+         =====================================================
+         RASM O‘ZGARMAGAN
+         =====================================================
+
+         images yuborilmaydi.
+
+         Backend eski rasmlarni saqlab qoladi.
+        */
+
+        const imagesWereNotChanged =
+            editingImageItems.length === editingExistingImages.length &&
+            editingImageItems.every((item,index)=>{
+
+                return (
+                    item.existing &&
+                    item.src === editingExistingImages[index]
+                );
+
+            }) &&
+            newImages.length === 0;
+
+
+        if(imagesWereNotChanged){
+
             /*
-              Parolni settings ichida saqlamaymiz.
+             Juda muhim:
+             payload.images YO‘Q.
             */
 
-            settings = {
-                phone:payload.phone,
-                telegram:payload.telegram,
-                whatsapp:payload.whatsapp,
-                instagram:payload.instagram,
-                address:payload.address
-            };
+        }else{
 
+            /*
+             =================================================
+             DIQQAT
+             =================================================
 
-            showToast(
-                "Sozlamalar saqlandi."
-            );
+             Hozirgi backend eski /uploads rasmlarni
+             prepareImage() orqali qabul qilmaydi.
 
-        }catch(error){
+             Shuning uchun yangi rasm qo‘shilgan holatda
+             eski rasmlarni qayta yubormaymiz.
 
-            console.error(error);
+             Yangi JPEG rasmlar alohida yuboriladi.
+            */
 
-            showToast(
-                error.message ||
-                "Xatolik yuz berdi.",
-                true
-            );
+            if(newImages.length){
 
-        }finally{
+                payload.images = newImages;
 
-            showLoading(false);
+            }
 
         }
+
+
+        const response =
+            await fetch(
+                `/api/cars/${encodeURIComponent(editingHomeId)}`,
+                {
+                    method:"PUT",
+
+                    headers:adminHeaders({
+                        "Content-Type":"application/json"
+                    }),
+
+                    body:JSON.stringify(payload)
+                }
+            );
+
+
+        const data =
+            await response.json()
+                .catch(()=>({}));
+
+
+        if(!response.ok){
+
+            throw new Error(
+                data.message ||
+                data.error ||
+                "Uyni tahrirlashda xatolik."
+            );
+
+        }
+
+
+        showToast(
+            "Uy ma’lumotlari saqlandi."
+        );
+
+
+        cancelEdit();
+
+        await loadAll();
+
+        showPage("homes");
+
+
+    }catch(error){
+
+        console.error(error);
+
+        showToast(
+            error.message ||
+            "Xatolik yuz berdi.",
+            true
+        );
+
+    }finally{
+
+        showLoading(false);
+
     }
+
+}
 
     /* =========================
        TYPES
