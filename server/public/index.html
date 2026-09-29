@@ -795,7 +795,7 @@ let currentDetailsCar=null;
 let currentLightboxIndex=0;
 
 /* ===== VALYUTA (UZS / USD) ===== */
-const USD_RATE=12750; // 1 $ = 12 750 so‘m
+const USD_RATE=12000; // 1 $ = 12 000 so‘m
 
 let currentCurrency=(function(){
     try{
@@ -1220,6 +1220,22 @@ function parsePrice(value){
     return isNaN(num)?0:num;
 }
 
+/* Narx qaysi valyutada saqlanganini aniqlaydi.
+   "USD", "usd", "$", "dollar", "доллар" — hammasi dollar.
+   Valyuta yozilmagan bo‘lsa va narx 1 000 000 dan kichik bo‘lsa — dollar deb olinadi. */
+function detectCurrency(number,currency){
+
+    const c=String(currency||"").toLowerCase().trim();
+
+    if(c){
+        if(c.includes("usd")||c.includes("$")||c.includes("dollar")||c.includes("доллар")||c.includes("dollir"))
+            return "USD";
+        return "UZS";
+    }
+
+    return number<1000000?"USD":"UZS";
+}
+
 /* Narx saqlangan valyutadan (car.currency) tanlangan valyutaga o‘tkaziladi.
    Bazadagi qiymat o‘zgarmaydi — faqat ko‘rsatish. */
 function formatPrice(value,currency){
@@ -1229,7 +1245,7 @@ function formatPrice(value,currency){
     if(!number)
         return String(value||"");
 
-    const from=String(currency||"").toUpperCase()==="USD"?"USD":"UZS";
+    const from=detectCurrency(number,currency);
 
     let amount=number;
 
