@@ -2437,6 +2437,72 @@ const server =
                 }
 
                 // =================================================
+                // RESET TOTAL VIEWS
+                // =================================================
+
+                if (
+                    url === '/api/stats/reset-views' &&
+                    req.method === 'POST'
+                ) {
+
+                    let body = {};
+
+                    try {
+
+                        const raw =
+                            await readBody(req);
+
+                        if (raw) {
+
+                            body =
+                                JSON.parse(raw);
+                        }
+
+                    } catch (e) {
+
+                        body = {};
+                    }
+
+                    // ADMIN PASSWORD
+                    if (
+                        !isAdmin(
+                            req,
+                            body
+                        )
+                    ) {
+
+                        return sendJson(
+                            res,
+                            401,
+                            {
+                                error:
+                                    "Parol noto'g'ri"
+                            }
+                        );
+                    }
+
+                    // FAQAT UMUMIY KO'RISHLAR 0 QILINADI.
+                    //
+                    // daily_stats JADVALIGA TEGILMAYDI.
+                    //
+
+                    await pool.query(`
+                        UPDATE stats
+                        SET views = 0
+                        WHERE id = 1
+                    `);
+
+                    return sendJson(
+                        res,
+                        200,
+                        {
+                            ok: true,
+                            views: 0
+                        }
+                    );
+                }
+
+                // =================================================
                 // DAILY STATS
                 // =================================================
 
