@@ -858,7 +858,14 @@ const translations={
         type:"Turi",
         rooms:"Xonalar",
         area:"Maydon",
-        addressLabel:"Manzil"
+        addressLabel:"Manzil",
+        unit:"ta",
+        sum:"so‘m",
+        sqm:"m²",
+        noAddress:"Manzil ko‘rsatilmagan",
+        house:"Uy",
+        defaultAddress:"Toshkent, O‘zbekiston",
+        pageTitle:"pul.zarill — Uylar"
     },
 
     ru:{
@@ -904,7 +911,14 @@ const translations={
         type:"Тип",
         rooms:"Комнаты",
         area:"Площадь",
-        addressLabel:"Адрес"
+        addressLabel:"Адрес",
+        unit:"шт.",
+        sum:"сум",
+        sqm:"м²",
+        noAddress:"Адрес не указан",
+        house:"Жильё",
+        defaultAddress:"Ташкент, Узбекистан",
+        pageTitle:"pul.zarill — Недвижимость"
     },
 
     en:{
@@ -950,10 +964,60 @@ const translations={
         type:"Type",
         rooms:"Rooms",
         area:"Area",
-        addressLabel:"Address"
+        addressLabel:"Address",
+        unit:"pcs",
+        sum:"UZS",
+        sqm:"m²",
+        noAddress:"Address not specified",
+        house:"Property",
+        defaultAddress:"Tashkent, Uzbekistan",
+        pageTitle:"pul.zarill — Properties"
     }
 
 };
+
+
+function T(){
+    return translations[currentLang]||translations.uz;
+}
+
+function countText(n){
+    return n+" "+T().unit;
+}
+
+/* Bazada name_ru, name_en, description_ru... bo‘lsa shuni ko‘rsatadi, bo‘lmasa asl matn */
+function field(car,name){
+    const v=car[name+"_"+currentLang];
+    if(v!==undefined&&v!==null&&String(v).trim())
+        return v;
+    return car[name]||"";
+}
+
+function translateType(value){
+
+    const key=normalizeType(value);
+
+    const map={
+        "hovli":"hovli","частный дом":"hovli","house":"hovli",
+        "kvartira":"kvartira","квартира":"kvartira","apartment":"kvartira",
+        "yer":"yer","земля":"yer","land":"yer",
+        "yangi qurilish":"yangi","новостройка":"yangi","new building":"yangi"
+    };
+
+    const found=map[key];
+
+    return found?T().categories[found]:String(value||"");
+}
+
+function typeLabel(car){
+
+    const raw=car.type||(Array.isArray(car.types)&&car.types.length?car.types.join(", "):"");
+
+    if(!raw)
+        return T().house;
+
+    return String(raw).split(",").map(x=>translateType(x.trim())).join(", ");
+}
 
 function phoneHref(phone){
     const value=String(phone||"").trim();
@@ -1077,8 +1141,12 @@ function applySettings(){
     });
 
     const address=document.getElementById("menuAddress");
-    if(address)
-        address.textContent=siteSettings.address||"";
+    if(address){
+        const tt=T();
+        const custom=siteSettings["address_"+currentLang];
+        const raw=siteSettings.address;
+        address.textContent=custom||((!raw||raw==="Toshkent, O‘zbekiston")?tt.defaultAddress:raw);
+    }
 
     document.querySelectorAll(".call-btn").forEach(button=>{
         button.href=href;
@@ -1169,6 +1237,10 @@ function applyLang(){
     document.querySelectorAll(".lang-btn").forEach(button=>{
         button.classList.toggle("active",button.textContent.trim().toLowerCase()===currentLang);
     });
+
+    document.title=t.pageTitle;
+
+    applySettings();
 }
 
 function setText(id,value){
@@ -1258,7 +1330,7 @@ function formatPrice(value,currency){
     if(currentCurrency==="USD")
         return "$ "+amount.toLocaleString("en-US");
 
-    return amount.toLocaleString("en-US").replace(/,/g," ")+" so‘m";
+    return amount.toLocaleString("en-US").replace(/,/g," ")+" "+T().sum;
 }
 
 function updatePrices(){
@@ -1432,7 +1504,7 @@ function renderSearchPage(cars){
     if(!Array.isArray(cars))
         cars=[];
 
-    count.textContent=cars.length+" ta";
+    count.textContent=countText(cars.length);
 
     if(cars.length===0){
 
@@ -1566,7 +1638,7 @@ function renderFiltered(){
     if(!grid||!count)
         return;
 
-    count.textContent=filteredCars.length+" ta";
+    count.textContent=countText(filteredCars.length);
 
     if(filteredCars.length===0){
         renderEmpty();
@@ -1603,7 +1675,7 @@ function renderEmpty(title,text){
     const count=document.getElementById("resultsCount");
 
     if(count)
-        count.textContent="0 ta";
+        count.textContent=countText(0);
 }
 
 function createCarCard(car,index){
@@ -1625,15 +1697,13 @@ function createCarCard(car,index){
         "data:image/svg+xml;charset=UTF-8,"+
         encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" width="800" height="500"><rect width="100%" height="100%" fill="#111"/><text x="50%" y="50%" fill="#19d66b" text-anchor="middle" font-size="30" font-family="Arial">pul.zarill</text></svg>`);
 
-    const type=
-        car.type||
-        (Array.isArray(car.types)&&car.types.length?car.types.join(", "):"Uy");
+    const type=typeLabel(car);
 
     const rooms=car.rooms||"—";
 
-    const area=car.area?car.area+" m²":"—";
+    const area=car.area?car.area+" "+t.sqm:"—";
 
-    const address=car.address||"Manzil ko‘rsatilmagan";
+    const address=field(car,"address")||t.noAddress;
 
     article.innerHTML=`
 
@@ -1642,7 +1712,7 @@ function createCarCard(car,index){
 <img
 class="car-image"
 src="${image}"
-alt="${escapeHtml(car.name||"Uy")}"
+alt="${escapeHtml(field(car,"name")||t.house)}"
 loading="lazy"
 onerror="this.style.display='none'"
 >
@@ -1670,7 +1740,7 @@ ${images.length} ${t.photos}
 
 <div class="car-content">
 
-<div class="car-name">${escapeHtml(car.name||"Uy")}</div>
+<div class="car-name">${escapeHtml(field(car,"name")||t.house)}</div>
 
 <div class="car-price" data-price="${escapeHtml(car.price||"")}" data-cur="${escapeHtml(car.currency||"")}">
 ${formatPrice(car.price,car.currency)}
@@ -1687,7 +1757,7 @@ ${formatPrice(car.price,car.currency)}
 ${escapeHtml(address)}
 </div>
 
-<div class="car-description">${escapeHtml(car.description||"")}</div>
+<div class="car-description">${escapeHtml(field(car,"description"))}</div>
 
 <div class="card-bottom">
 
@@ -1785,7 +1855,7 @@ function showFavorites(){
             grid.appendChild(createCarCard(car,index));
         });
 
-        document.getElementById("resultsCount").textContent=favoriteCars.length+" ta";
+        document.getElementById("resultsCount").textContent=countText(favoriteCars.length);
 
         applySettings();
     }
@@ -1815,7 +1885,7 @@ function openDetails(car){
 
 ${
     firstImage
-    ?`<img id="detailsMainImage" class="details-image" src="${firstImage}" alt="${escapeHtml(car.name||"")}" onclick="openLightbox(0)">`
+    ?`<img id="detailsMainImage" class="details-image" src="${firstImage}" alt="${escapeHtml(field(car,"name"))}" onclick="openLightbox(0)">`
     :`<div class="details-image" style="background:#111;display:flex;align-items:center;justify-content:center;color:#19d66b">
 <svg class="icon" style="width:70px;height:70px"><use href="#i-home"></use></svg>
 </div>`
@@ -1839,7 +1909,7 @@ ${
     :""
 }
 
-<h1>${escapeHtml(car.name||"Uy")}</h1>
+<h1>${escapeHtml(field(car,"name")||t.house)}</h1>
 
 <div class="details-price" data-price="${escapeHtml(car.price||"")}" data-cur="${escapeHtml(car.currency||"")}">
 ${formatPrice(car.price,car.currency)}
@@ -1849,7 +1919,7 @@ ${formatPrice(car.price,car.currency)}
 
 <div class="details-meta-item">
 <b>${t.type}</b>
-${escapeHtml(car.type||(Array.isArray(car.types)&&car.types.length?car.types.join(", "):"Uy"))}
+${escapeHtml(typeLabel(car))}
 </div>
 
 <div class="details-meta-item">
@@ -1859,17 +1929,17 @@ ${escapeHtml(car.rooms||"—")}
 
 <div class="details-meta-item">
 <b>${t.area}</b>
-${escapeHtml(car.area||"—")} m²
+${car.area?escapeHtml(car.area)+" "+t.sqm:"—"}
 </div>
 
 <div class="details-meta-item">
 <b>${t.addressLabel}</b>
-${escapeHtml(car.address||"—")}
+${escapeHtml(field(car,"address")||"—")}
 </div>
 
 </div>
 
-<div class="details-description">${escapeHtml(car.description||"")}</div>
+<div class="details-description">${escapeHtml(field(car,"description"))}</div>
 
 <a class="details-call" href="${phoneHref(siteSettings.phone)}" onclick="trackCall(event)">
 <svg class="icon"><use href="#i-phone"></use></svg>
