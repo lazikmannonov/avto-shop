@@ -1,3 +1,5 @@
+'use strict';
+
 const http = require('http');
 const fs = require('fs');
 const path = require('path');
@@ -5,12 +7,10 @@ const crypto = require('crypto');
 const { Pool } = require('pg');
 
 // =====================================================
-// ADMIN PASSWORD
+// SOZLAMALAR
 // =====================================================
 
-const ADMIN_PASSWORD = String(
-    process.env.ADMIN_PASSWORD || ''
-).trim();
+const ADMIN_PASSWORD = String(process.env.ADMIN_PASSWORD || '').trim();
 
 if (!process.env.DATABASE_URL) {
     console.error('DATABASE_URL topilmadi!');
@@ -22,16 +22,56 @@ if (!ADMIN_PASSWORD) {
     process.exit(1);
 }
 
+if (ADMIN_PASSWORD.length < 12) {
+    console.warn(
+        "OGOHLANTIRISH: ADMIN_PASSWORD kamida 16 belgi bo'lgani ma'qul"
+    );
+}
+
+const PORT = Number(process.env.PORT) || 3000;
+
+// Frontend shu serverning o'zidan beriladi. Boshqa domendan
+// foydalansangiz, Render'da ALLOWED_ORIGIN ni o'sha domenga qo'ying.
+const ALLOWED_ORIGIN = process.env.ALLOWED_ORIGIN || '*';
+
+const PUBLIC_DIR = path.join(__dirname, 'public');
+
+const MAX_BODY_BYTES = 40 * 1024 * 1024;   // 8 ta rasm (base64) sig'ishi uchun
+const MAX_IMAGE_BYTES = 3 * 1024 * 1024;   // bitta rasm
+const MAX_IMAGES = 8;
+const MAX_PRICE = 1000000000000000;
+
 // =====================================================
 // DATABASE
 // =====================================================
 
 const pool = new Pool({
     connectionString: process.env.DATABASE_URL,
+    ssl: process.env.DATABASE_SSL === 'true'
+        ? { rejectUnauthorized: false }
+        : undefined,
     max: 10,
     idleTimeoutMillis: 30000,
     connectionTimeoutMillis: 10000
 });
+
+pool.on('error', err => {
+    console.error('DB POOL ERROR:', err);
+});
+
+// =====================================================
+// XATO SINFI
+// Faqat shu turdagi xatolar matni foydalanuvchiga ko'rsatiladi.
+// Boshqa (ichki) xatolar faqat logga yoziladi.
+// =====================================================
+
+class HttpError extends Error {
+
+    constructor(status, message) {
+        super(message);
+        this.status = status;
+    }
+}
 
 // =====================================================
 // DATABASE INIT
@@ -39,15 +79,11 @@ const pool = new Pool({
 
 async function initDatabase() {
 
-    // -------------------------------------------------
-    // CARS
-    // -------------------------------------------------
-
     await pool.query(`
         CREATE TABLE IF NOT EXISTS cars (
             id SERIAL PRIMARY KEY,
             name TEXT NOT NULL,
-            price INTEGER NOT NULL DEFAULT 0,
+            price BIGINT NOT NULL DEFAULT 0,
             description TEXT DEFAULT '',
             images TEXT DEFAULT '[]',
             sold BOOLEAN DEFAULT false,
@@ -64,52 +100,34 @@ async function initDatabase() {
 
     await pool.query(`
         ALTER TABLE cars
-        ADD COLUMN IF NOT EXISTS sold BOOLEAN DEFAULT false
+            ADD COLUMN IF NOT EXISTS sold BOOLEAN DEFAULT false,
+            ADD COLUMN IF NOT EXISTS currency TEXT DEFAULT 'UZS',
+            ADD COLUMN IF NOT EXISTS type TEXT DEFAULT '',
+            ADD COLUMN IF NOT EXISTS types TEXT DEFAULT '[]',
+            ADD COLUMN IF NOT EXISTS location TEXT DEFAULT '',
+            ADD COLUMN IF NOT EXISTS address TEXT DEFAULT '',
+            ADD COLUMN IF NOT EXISTS rooms INTEGER DEFAULT 0,
+            ADD COLUMN IF NOT EXISTS area INTEGER DEFAULT 0,
+            ADD COLUMN IF NOT EXISTS phone TEXT DEFAULT ''
     `);
 
+    // Eski bazada price INTEGER bo'lsa, BIGINT ga o'tkaziladi
+    // (2,14 milliarddan katta narxlar uchun). Ma'lumot yo'qolmaydi.
     await pool.query(`
-        ALTER TABLE cars
-        ADD COLUMN IF NOT EXISTS currency TEXT DEFAULT 'UZS'
+        DO $$
+        BEGIN
+            IF (
+                SELECT data_type
+                FROM information_schema.columns
+                WHERE table_schema = current_schema()
+                  AND table_name = 'cars'
+                  AND column_name = 'price'
+            ) = 'integer' THEN
+                ALTER TABLE cars ALTER COLUMN price TYPE BIGINT;
+            END IF;
+        END
+        $$
     `);
-
-    await pool.query(`
-        ALTER TABLE cars
-        ADD COLUMN IF NOT EXISTS type TEXT DEFAULT ''
-    `);
-
-    await pool.query(`
-        ALTER TABLE cars
-        ADD COLUMN IF NOT EXISTS types TEXT DEFAULT '[]'
-    `);
-
-    await pool.query(`
-        ALTER TABLE cars
-        ADD COLUMN IF NOT EXISTS location TEXT DEFAULT ''
-    `);
-
-    await pool.query(`
-        ALTER TABLE cars
-        ADD COLUMN IF NOT EXISTS address TEXT DEFAULT ''
-    `);
-
-    await pool.query(`
-        ALTER TABLE cars
-        ADD COLUMN IF NOT EXISTS rooms INTEGER DEFAULT 0
-    `);
-
-    await pool.query(`
-        ALTER TABLE cars
-        ADD COLUMN IF NOT EXISTS area INTEGER DEFAULT 0
-    `);
-
-    await pool.query(`
-        ALTER TABLE cars
-        ADD COLUMN IF NOT EXISTS phone TEXT DEFAULT ''
-    `);
-
-    // -------------------------------------------------
-    // IMAGE FILES
-    // -------------------------------------------------
 
     await pool.query(`
         CREATE TABLE IF NOT EXISTS image_files (
@@ -118,10 +136,6 @@ async function initDatabase() {
             data BYTEA NOT NULL
         )
     `);
-
-    // -------------------------------------------------
-    // TOTAL STATS
-    // -------------------------------------------------
 
     await pool.query(`
         CREATE TABLE IF NOT EXISTS stats (
@@ -132,22 +146,10 @@ async function initDatabase() {
     `);
 
     await pool.query(`
-        INSERT INTO stats (
-            id,
-            views,
-            calls
-        )
-        VALUES (
-            1,
-            0,
-            0
-        )
+        INSERT INTO stats (id, views, calls)
+        VALUES (1, 0, 0)
         ON CONFLICT (id) DO NOTHING
     `);
-
-    // -------------------------------------------------
-    // DAILY STATS
-    // -------------------------------------------------
 
     await pool.query(`
         CREATE TABLE IF NOT EXISTS daily_stats (
@@ -156,10 +158,6 @@ async function initDatabase() {
             calls INTEGER DEFAULT 0
         )
     `);
-
-    // -------------------------------------------------
-    // SITE SETTINGS
-    // -------------------------------------------------
 
     await pool.query(`
         CREATE TABLE IF NOT EXISTS site_settings (
@@ -173,14 +171,7 @@ async function initDatabase() {
     `);
 
     await pool.query(`
-        INSERT INTO site_settings (
-            id,
-            phone,
-            telegram,
-            whatsapp,
-            instagram,
-            address
-        )
+        INSERT INTO site_settings (id, phone, telegram, whatsapp, instagram, address)
         VALUES (
             1,
             '+998 88 950 00 05',
@@ -196,403 +187,616 @@ async function initDatabase() {
 }
 
 // =====================================================
-// JSON RESPONSE
+// YORDAMCHI FUNKSIYALAR
 // =====================================================
 
-function sendJson(res, status, data) {
+function str(value, max) {
 
-    res.writeHead(status, {
-        'Content-Type': 'application/json; charset=utf-8',
-        'Cache-Control': 'no-store',
-        'Access-Control-Allow-Origin': '*'
-    });
-
-    res.end(
-        JSON.stringify(data)
-    );
+    return String(
+        value === undefined || value === null ? '' : value
+    )
+        .trim()
+        .slice(0, max);
 }
-
-// =====================================================
-// FILE RESPONSE
-// =====================================================
-
-function sendFile(res, name) {
-
-    const safeName = path.basename(name);
-
-    const file = path.join(
-        __dirname,
-        'public',
-        safeName
-    );
-
-    if (!fs.existsSync(file)) {
-
-        res.writeHead(404, {
-            'Content-Type': 'text/plain; charset=utf-8'
-        });
-
-        return res.end(
-            'File topilmadi'
-        );
-    }
-
-    let contentType =
-        'text/html; charset=utf-8';
-
-    if (safeName.endsWith('.css')) {
-
-        contentType =
-            'text/css; charset=utf-8';
-    }
-
-    if (safeName.endsWith('.js')) {
-
-        contentType =
-            'application/javascript; charset=utf-8';
-    }
-
-    if (safeName.endsWith('.json')) {
-
-        contentType =
-            'application/json; charset=utf-8';
-    }
-
-    res.writeHead(200, {
-        'Content-Type': contentType,
-        'Cache-Control': 'no-cache'
-    });
-
-    res.end(
-        fs.readFileSync(file)
-    );
-}
-
-// =====================================================
-// READ BODY
-// =====================================================
-
-function readBody(req) {
-
-    return new Promise(
-        (resolve, reject) => {
-
-            let data = '';
-            let totalLength = 0;
-            let finished = false;
-
-            req.on(
-                'data',
-                chunk => {
-
-                    if (finished) {
-                        return;
-                    }
-
-                    totalLength += chunk.length;
-
-                    if (totalLength > 30000000) {
-
-                        finished = true;
-
-                        reject(
-                            new Error(
-                                "Ma'lumot juda katta"
-                            )
-                        );
-
-                        req.destroy();
-
-                        return;
-                    }
-
-                    data += chunk.toString();
-                }
-            );
-
-            req.on(
-                'end',
-                () => {
-
-                    if (!finished) {
-
-                        finished = true;
-
-                        resolve(data);
-                    }
-                }
-            );
-
-            req.on(
-                'error',
-                error => {
-
-                    if (!finished) {
-
-                        finished = true;
-
-                        reject(error);
-                    }
-                }
-            );
-        }
-    );
-}
-
-// =====================================================
-// PASSWORD
-// =====================================================
-
-function normalizePassword(value) {
-
-    if (
-        value === undefined ||
-        value === null
-    ) {
-        return '';
-    }
-
-    return String(value).trim();
-}
-
-// =====================================================
-// SAFE PASSWORD COMPARE
-// =====================================================
-
-function passwordMatches(value) {
-
-    const input =
-        normalizePassword(value);
-
-    if (!input) {
-        return false;
-    }
-
-    const a =
-        Buffer.from(input);
-
-    const b =
-        Buffer.from(ADMIN_PASSWORD);
-
-    if (a.length !== b.length) {
-        return false;
-    }
-
-    try {
-
-        return crypto.timingSafeEqual(
-            a,
-            b
-        );
-
-    } catch (e) {
-
-        return false;
-    }
-}
-
-// =====================================================
-// ADMIN HEADER
-// =====================================================
-
-function isAdminHeader(req) {
-
-    const password =
-        req.headers['x-admin-password'];
-
-    return passwordMatches(
-        password
-    );
-}
-
-// =====================================================
-// ADMIN BODY
-// =====================================================
-
-function isAdminBody(body) {
-
-    if (
-        !body ||
-        typeof body !== 'object'
-    ) {
-        return false;
-    }
-
-    return passwordMatches(
-        body.password
-    );
-}
-
-// =====================================================
-// ADMIN
-// =====================================================
-
-function isAdmin(req, body = null) {
-
-    return (
-        isAdminHeader(req) ||
-        isAdminBody(body)
-    );
-}
-
-// =====================================================
-// INTEGER
-// =====================================================
 
 function toInteger(value, fallback = 0) {
 
-    const number =
-        Number(value);
+    const number = Number(value);
 
-    if (
-        !Number.isFinite(number) ||
-        !Number.isInteger(number)
-    ) {
+    if (!Number.isFinite(number) || !Number.isInteger(number)) {
         return fallback;
     }
 
     return number;
 }
 
-// =====================================================
-// CURRENCY
-// =====================================================
-
 function normalizeCurrency(value) {
 
-    const currency =
-        String(
-            value || 'UZS'
-        )
-        .trim()
-        .toUpperCase();
+    const currency = String(value || 'UZS').trim().toUpperCase();
 
-    if (
-        currency === 'USD'
-    ) {
-        return 'USD';
+    return currency === 'USD' ? 'USD' : 'UZS';
+}
+
+function escapeLike(value) {
+
+    return String(value).replace(/[\\%_]/g, '\\$&');
+}
+
+function parseId(url) {
+
+    const id = Number(url.split('/')[3]);
+
+    if (!Number.isInteger(id) || id <= 0 || id > 2147483647) {
+        throw new HttpError(400, "ID noto'g'ri");
     }
 
-    return 'UZS';
+    return id;
+}
+
+function cleanLink(value, max) {
+
+    const link = str(value, max);
+
+    if (link && !/^https?:\/\//i.test(link)) {
+
+        throw new HttpError(
+            400,
+            "Havola http:// yoki https:// bilan boshlanishi kerak"
+        );
+    }
+
+    return link;
 }
 
 // =====================================================
-// IMAGE PREPARE
+// JAVOB YUBORISH
 // =====================================================
+
+const SECURITY_HEADERS = {
+    'X-Content-Type-Options': 'nosniff',
+    'X-Frame-Options': 'SAMEORIGIN',
+    'Referrer-Policy': 'strict-origin-when-cross-origin'
+};
+
+function sendJson(res, status, data) {
+
+    if (res.headersSent || res.writableEnded) {
+        return;
+    }
+
+    res.writeHead(status, {
+        ...SECURITY_HEADERS,
+        'Content-Type': 'application/json; charset=utf-8',
+        'Cache-Control': 'no-store',
+        'Access-Control-Allow-Origin': ALLOWED_ORIGIN
+    });
+
+    res.end(JSON.stringify(data));
+}
+
+// =====================================================
+// STATIK FAYLLAR
+// =====================================================
+
+const MIME = {
+    '.html': 'text/html; charset=utf-8',
+    '.css': 'text/css; charset=utf-8',
+    '.js': 'application/javascript; charset=utf-8',
+    '.json': 'application/json; charset=utf-8',
+    '.png': 'image/png',
+    '.jpg': 'image/jpeg',
+    '.jpeg': 'image/jpeg',
+    '.webp': 'image/webp',
+    '.svg': 'image/svg+xml',
+    '.ico': 'image/x-icon',
+    '.woff2': 'font/woff2',
+    '.txt': 'text/plain; charset=utf-8'
+};
+
+async function sendFile(res, name) {
+
+    const safeName = path.basename(name);
+    const ext = path.extname(safeName).toLowerCase();
+    const contentType = MIME[ext];
+
+    if (!contentType) {
+
+        return sendJson(res, 404, { error: 'Fayl topilmadi' });
+    }
+
+    let data;
+
+    try {
+
+        data = await fs.promises.readFile(
+            path.join(PUBLIC_DIR, safeName)
+        );
+
+    } catch (e) {
+
+        return sendJson(res, 404, { error: 'Fayl topilmadi' });
+    }
+
+    const isCode =
+        ext === '.html' || ext === '.css' || ext === '.js';
+
+    res.writeHead(200, {
+        ...SECURITY_HEADERS,
+        'Content-Type': contentType,
+        'Cache-Control': isCode
+            ? 'no-cache'
+            : 'public, max-age=86400'
+    });
+
+    res.end(data);
+}
+
+// =====================================================
+// SO'ROV BODY'SINI O'QISH
+// =====================================================
+
+function readBody(req) {
+
+    return new Promise((resolve, reject) => {
+
+        const declared = Number(req.headers['content-length']);
+
+        if (Number.isFinite(declared) && declared > MAX_BODY_BYTES) {
+
+            return reject(
+                new HttpError(413, "Ma'lumot juda katta")
+            );
+        }
+
+        const chunks = [];
+        let total = 0;
+        let done = false;
+
+        req.on('data', chunk => {
+
+            if (done) {
+                return;
+            }
+
+            total += chunk.length;
+
+            if (total > MAX_BODY_BYTES) {
+
+                done = true;
+
+                reject(new HttpError(413, "Ma'lumot juda katta"));
+
+                req.destroy();
+
+                return;
+            }
+
+            chunks.push(chunk);
+        });
+
+        req.on('end', () => {
+
+            if (!done) {
+
+                done = true;
+
+                resolve(Buffer.concat(chunks).toString('utf8'));
+            }
+        });
+
+        req.on('error', error => {
+
+            if (!done) {
+
+                done = true;
+
+                reject(error);
+            }
+        });
+    });
+}
+
+async function readJson(req, optional = false) {
+
+    const raw = await readBody(req);
+
+    if (!raw.trim()) {
+
+        if (optional) {
+            return {};
+        }
+
+        throw new HttpError(400, "Ma'lumot yuborilmadi");
+    }
+
+    let data;
+
+    try {
+
+        data = JSON.parse(raw);
+
+    } catch (e) {
+
+        if (optional) {
+            return {};
+        }
+
+        throw new HttpError(400, "Ma'lumot formati noto'g'ri");
+    }
+
+    if (!data || typeof data !== 'object' || Array.isArray(data)) {
+
+        if (optional) {
+            return {};
+        }
+
+        throw new HttpError(400, "Ma'lumot formati noto'g'ri");
+    }
+
+    return data;
+}
+
+// =====================================================
+// TRANZAKSIYA
+// =====================================================
+
+async function withTransaction(fn) {
+
+    const client = await pool.connect();
+
+    try {
+
+        await client.query('BEGIN');
+
+        const result = await fn(client);
+
+        await client.query('COMMIT');
+
+        return result;
+
+    } catch (e) {
+
+        try {
+            await client.query('ROLLBACK');
+        } catch (_) {}
+
+        throw e;
+
+    } finally {
+
+        client.release();
+    }
+}
+
+// =====================================================
+// ADMIN AUTH
+// Parol faqat X-Admin-Password headerida yuboriladi.
+// =====================================================
+
+function normalizePassword(value) {
+
+    if (value === undefined || value === null) {
+        return '';
+    }
+
+    return String(value).trim();
+}
+
+const ADMIN_HASH = crypto
+    .createHash('sha256')
+    .update(ADMIN_PASSWORD)
+    .digest();
+
+// Ikkala tomon ham 32 bayt (sha256), shuning uchun parol uzunligi bilinmaydi
+function passwordMatches(value) {
+
+    const input = normalizePassword(value);
+
+    if (!input) {
+        return false;
+    }
+
+    const hash = crypto
+        .createHash('sha256')
+        .update(input)
+        .digest();
+
+    return crypto.timingSafeEqual(hash, ADMIN_HASH);
+}
+
+// -----------------------------------------------------
+// URINISHLARNI CHEKLASH
+// -----------------------------------------------------
+
+const MAX_FAILS_PER_IP = 3;               // bitta IP dan 3 ta xato
+const MAX_FAILS_TOTAL = 100;              // hamma IP lardan jami
+const WINDOW_MS = 15 * 60 * 1000;         // blok muddati: 15 daqiqa
+
+const failedAttempts = new Map();
+let totalFails = { count: 0, first: Date.now() };
+
+function getIp(req) {
+
+    const fwd = req.headers['x-forwarded-for'];
+
+    if (fwd) {
+        return String(fwd).split(',')[0].trim();
+    }
+
+    return req.socket.remoteAddress || 'unknown';
+}
+
+function isBlocked(req) {
+
+    const now = Date.now();
+    const ip = getIp(req);
+
+    if (now - totalFails.first > WINDOW_MS) {
+        totalFails = { count: 0, first: now };
+    }
+
+    if (totalFails.count >= MAX_FAILS_TOTAL) {
+        return true;
+    }
+
+    const rec = failedAttempts.get(ip);
+
+    if (!rec) {
+        return false;
+    }
+
+    if (now - rec.first > WINDOW_MS) {
+        failedAttempts.delete(ip);
+        return false;
+    }
+
+    return rec.count >= MAX_FAILS_PER_IP;
+}
+
+function registerFail(req) {
+
+    const ip = getIp(req);
+    const now = Date.now();
+    const rec = failedAttempts.get(ip);
+
+    totalFails.count++;
+
+    if (!rec || now - rec.first > WINDOW_MS) {
+        failedAttempts.set(ip, { count: 1, first: now });
+    } else {
+        rec.count++;
+    }
+}
+
+setInterval(() => {
+
+    const now = Date.now();
+
+    for (const [ip, rec] of failedAttempts) {
+
+        if (now - rec.first > WINDOW_MS) {
+            failedAttempts.delete(ip);
+        }
+    }
+
+}, 60 * 1000).unref();
+
+// true qaytsa davom etiladi.
+// false qaytsa javob allaqachon yuborilgan (return qiling).
+function checkAdmin(req, res) {
+
+    if (isBlocked(req)) {
+
+        sendJson(res, 429, {
+            error: "Ko'p xato urinish. Keyinroq qayta urinib ko'ring"
+        });
+
+        return false;
+    }
+
+    if (passwordMatches(req.headers['x-admin-password'])) {
+
+        // To'g'ri parol: shu IP dagi xatolar tozalanadi
+        failedAttempts.delete(getIp(req));
+
+        return true;
+    }
+
+    registerFail(req);
+
+    const rec = failedAttempts.get(getIp(req));
+
+    const left = Math.max(
+        MAX_FAILS_PER_IP - (rec ? rec.count : 0),
+        0
+    );
+
+    sendJson(res, 401, {
+        error: left > 0
+            ? "Parol noto'g'ri. Qolgan urinish: " + left
+            : "Parol noto'g'ri. Urinishlar tugadi, 15 daqiqadan keyin qayta urinib ko'ring"
+    });
+
+    return false;
+}
+
+// =====================================================
+// UMUMIY CHEKLOVCHI (statistika spam'iga qarshi)
+// =====================================================
+
+function createLimiter(max, windowMs) {
+
+    const hits = new Map();
+
+    setInterval(() => {
+
+        const now = Date.now();
+
+        for (const [key, rec] of hits) {
+
+            if (now - rec.first > windowMs) {
+                hits.delete(key);
+            }
+        }
+
+    }, 60 * 1000).unref();
+
+    return function allow(key) {
+
+        const now = Date.now();
+        const rec = hits.get(key);
+
+        if (!rec || now - rec.first > windowMs) {
+
+            hits.set(key, { count: 1, first: now });
+
+            return true;
+        }
+
+        rec.count++;
+
+        return rec.count <= max;
+    };
+}
+
+const viewLimiter = createLimiter(30, 10 * 60 * 1000);
+const callLimiter = createLimiter(10, 10 * 60 * 1000);
+
+// =====================================================
+// RASMLAR
+// =====================================================
+
+const JPEG_PREFIX = 'data:image/jpeg;base64,';
 
 function prepareImage(dataUrl) {
 
     if (
-        typeof dataUrl !== 'string'
+        typeof dataUrl !== 'string' ||
+        dataUrl.slice(0, JPEG_PREFIX.length).toLowerCase() !== JPEG_PREFIX
     ) {
 
-        throw new Error(
-            "Rasm formati noto'g'ri"
-        );
+        throw new HttpError(400, "Rasm JPEG formatda bo'lishi kerak");
     }
 
-    const match =
-        /^data:image\/jpeg;base64,(.+)$/i
-            .exec(dataUrl);
+    const base64 = dataUrl.slice(JPEG_PREFIX.length);
 
-    if (!match) {
+    // base64 hajmi asl hajmdan ~33% katta
+    if (base64.length > Math.ceil(MAX_IMAGE_BYTES * 4 / 3) + 8) {
 
-        throw new Error(
-            "Rasm JPEG formatda bo'lishi kerak"
-        );
-    }
-
-    let buffer;
-
-    try {
-
-        buffer =
-            Buffer.from(
-                match[1],
-                'base64'
-            );
-
-    } catch (e) {
-
-        throw new Error(
-            "Rasmni o'qib bo'lmadi"
-        );
-    }
-
-    if (!buffer.length) {
-
-        throw new Error(
-            "Rasm bo'sh"
-        );
-    }
-
-    if (
-        buffer.length >
-        3000000
-    ) {
-
-        throw new Error(
+        throw new HttpError(
+            400,
             "Bitta rasm 3 MB dan katta bo'lmasligi kerak"
         );
     }
 
-    const imageName =
-        crypto
-            .randomBytes(16)
-            .toString('hex') +
-        '.jpg';
+    const buffer = Buffer.from(base64, 'base64');
+
+    if (!buffer.length) {
+        throw new HttpError(400, "Rasm bo'sh");
+    }
+
+    if (buffer.length > MAX_IMAGE_BYTES) {
+
+        throw new HttpError(
+            400,
+            "Bitta rasm 3 MB dan katta bo'lmasligi kerak"
+        );
+    }
+
+    // Haqiqiy JPEG fayl FF D8 FF bilan boshlanadi
+    if (buffer[0] !== 0xFF || buffer[1] !== 0xD8 || buffer[2] !== 0xFF) {
+
+        throw new HttpError(400, "Rasm buzilgan yoki JPEG emas");
+    }
 
     return {
-        name: imageName,
+        name: crypto.randomBytes(16).toString('hex') + '.jpg',
         buffer
     };
 }
 
+// Kelgan ro'yxatni tayyorlaydi.
+// Element yoki yangi rasm (data:image/jpeg;base64,...),
+// yoki mavjud rasm ("/uploads/xxxx.jpg" yoki "xxxx.jpg") bo'lishi mumkin.
+function resolveImages(incoming, allowedExisting) {
+
+    if (incoming.length > MAX_IMAGES) {
+
+        throw new HttpError(
+            400,
+            "Ko'pi bilan " + MAX_IMAGES + " ta rasm"
+        );
+    }
+
+    return incoming.map(item => {
+
+        if (typeof item !== 'string') {
+            throw new HttpError(400, "Rasm formati noto'g'ri");
+        }
+
+        if (item.startsWith('data:')) {
+            return { isNew: true, ...prepareImage(item) };
+        }
+
+        const match = /([a-f0-9]{32}\.jpg)$/.exec(item);
+
+        if (!match || !allowedExisting.includes(match[1])) {
+            throw new HttpError(400, 'Rasm topilmadi');
+        }
+
+        return { isNew: false, name: match[1] };
+    });
+}
+
+// Yangi rasmlarni bazaga yozadi, oxirgi tartibdagi nomlarni qaytaradi
+async function saveNewImages(client, items) {
+
+    const names = [];
+
+    for (const item of items) {
+
+        if (item.isNew) {
+
+            await client.query(
+                'INSERT INTO image_files (name, data) VALUES ($1, $2)',
+                [item.name, item.buffer]
+            );
+        }
+
+        names.push(item.name);
+    }
+
+    return names;
+}
+
 // =====================================================
-// PARSE IMAGES
+// MA'LUMOTNI O'QISH
 // =====================================================
 
 function parseImages(row) {
 
-    if (
-        !row ||
-        !row.images
-    ) {
+    if (!row || !row.images) {
         return [];
     }
 
-    if (
-        Array.isArray(row.images)
-    ) {
-        return row.images;
+    if (Array.isArray(row.images)) {
+
+        return row.images.filter(x => typeof x === 'string');
     }
 
     try {
 
-        const images =
-            JSON.parse(
-                row.images
-            );
+        const images = JSON.parse(row.images);
 
-        if (
-            Array.isArray(images)
-        ) {
+        if (Array.isArray(images)) {
 
-            return images
-                .filter(
-                    x =>
-                        typeof x === 'string'
-                );
+            return images.filter(x => typeof x === 'string');
         }
 
     } catch (e) {}
 
     return [];
 }
-
-// =====================================================
-// PARSE TYPES
-// =====================================================
 
 function parseTypes(row) {
 
@@ -606,2052 +810,861 @@ function parseTypes(row) {
         row.types === ''
     ) {
 
-        return row.type
-            ? [String(row.type)]
-            : [];
+        return row.type ? [String(row.type)] : [];
     }
 
     try {
 
-        const types =
-            JSON.parse(
-                row.types
-            );
+        const types = JSON.parse(row.types);
 
-        if (
-            Array.isArray(types)
-        ) {
+        if (Array.isArray(types)) {
 
             return types
-                .map(
-                    x =>
-                        String(x).trim()
-                )
+                .map(x => String(x).trim())
                 .filter(Boolean)
                 .slice(0, 3);
         }
 
     } catch (e) {}
 
-    return row.type
-        ? [String(row.type)]
-        : [];
+    return row.type ? [String(row.type)] : [];
 }
-
-// =====================================================
-// CAR OUTPUT
-// =====================================================
 
 function carOut(row) {
 
-    const types =
-        parseTypes(row);
-
-    const currency =
-        normalizeCurrency(
-            row.currency
-        );
+    const types = parseTypes(row);
 
     return {
-
-        id:
-            Number(row.id),
-
-        name:
-            row.name || '',
-
-        title:
-            row.name || '',
-
-        price:
-            Number(row.price) || 0,
-
-        currency:
-
-            currency,
-
-        type:
-            row.type ||
-            types[0] ||
-            '',
-
-        types:
-
-            types,
-
-        location:
-            row.location ||
-            row.address ||
-            '',
-
-        address:
-            row.address ||
-            row.location ||
-            '',
-
-        rooms:
-            Number(row.rooms) || 0,
-
-        area:
-            Number(row.area) || 0,
-
-        phone:
-            row.phone || '',
-
-        description:
-            row.description || '',
-
-        images:
-            parseImages(row),
-
-        sold:
-            Boolean(row.sold),
-
-        status:
-            row.sold
-                ? 'sold'
-                : 'available'
+        id: Number(row.id),
+        name: row.name || '',
+        title: row.name || '',
+        price: Number(row.price) || 0,
+        currency: normalizeCurrency(row.currency),
+        type: row.type || types[0] || '',
+        types,
+        location: row.location || row.address || '',
+        address: row.address || row.location || '',
+        rooms: Number(row.rooms) || 0,
+        area: Number(row.area) || 0,
+        phone: row.phone || '',
+        description: row.description || '',
+        images: parseImages(row),
+        sold: Boolean(row.sold),
+        status: row.sold ? 'sold' : 'available'
     };
 }
-
-// =====================================================
-// SETTINGS OUTPUT
-// =====================================================
 
 function settingsOut(row) {
 
     return {
-
-        phone:
-            row.phone || '',
-
-        telegram:
-            row.telegram || '',
-
-        whatsapp:
-            row.whatsapp || '',
-
-        instagram:
-            row.instagram || '',
-
-        address:
-            row.address || ''
+        phone: row.phone || '',
+        telegram: row.telegram || '',
+        whatsapp: row.whatsapp || '',
+        instagram: row.instagram || '',
+        address: row.address || ''
     };
 }
 
 // =====================================================
-// DAILY STAT
+// E'LON MAYDONLARINI YIG'ISH (qo'shish va tahrirlash uchun)
+// old = null bo'lsa yangi e'lon, aks holda tahrirlash
+// =====================================================
+
+function buildCarFields(body, old) {
+
+    const oldTypes = old ? parseTypes(old) : [];
+
+    const nameKey =
+        body.name !== undefined ? 'name'
+            : body.title !== undefined ? 'title'
+                : null;
+
+    const name = str(
+        nameKey ? body[nameKey] : (old ? old.name : ''),
+        300
+    );
+
+    const price =
+        body.price !== undefined
+            ? toInteger(body.price, -1)
+            : (old ? toInteger(old.price, -1) : -1);
+
+    const currency = normalizeCurrency(
+        body.currency !== undefined
+            ? body.currency
+            : (old ? old.currency : 'UZS')
+    );
+
+    const type = str(
+        body.type !== undefined
+            ? body.type
+            : (old ? (old.type || oldTypes[0] || '') : ''),
+        100
+    );
+
+    let types;
+
+    if (Array.isArray(body.types)) {
+
+        types = body.types
+            .map(x => str(x, 100))
+            .filter(Boolean)
+            .slice(0, 3);
+
+    } else if (body.type !== undefined) {
+
+        types = type ? [type] : [];
+
+    } else {
+
+        types = old ? oldTypes : [];
+    }
+
+    const locKey =
+        body.location !== undefined ? 'location'
+            : body.address !== undefined ? 'address'
+                : null;
+
+    const adrKey =
+        body.address !== undefined ? 'address'
+            : body.location !== undefined ? 'location'
+                : null;
+
+    const location = str(
+        locKey ? body[locKey] : (old ? old.location : ''),
+        500
+    );
+
+    const address = str(
+        adrKey ? body[adrKey] : (old ? old.address : ''),
+        500
+    );
+
+    const rooms =
+        body.rooms !== undefined
+            ? toInteger(body.rooms, 0)
+            : (old ? toInteger(old.rooms, 0) : 0);
+
+    const area =
+        body.area !== undefined
+            ? toInteger(body.area, 0)
+            : (old ? toInteger(old.area, 0) : 0);
+
+    const phone = str(
+        body.phone !== undefined ? body.phone : (old ? old.phone : ''),
+        100
+    );
+
+    const description = str(
+        body.description !== undefined
+            ? body.description
+            : (old ? old.description : ''),
+        2000
+    );
+
+    return {
+        name,
+        price,
+        currency,
+        types,
+        location,
+        address,
+        rooms,
+        area,
+        phone,
+        description
+    };
+}
+
+function validateCar(f) {
+
+    if (!f.name || f.price <= 0 || f.price > MAX_PRICE) {
+
+        throw new HttpError(400, "Nom va narxni to'g'ri kiriting");
+    }
+
+    if (f.rooms < 0 || f.rooms > 1000 || f.area < 0 || f.area > 1000000) {
+
+        throw new HttpError(400, "Xona yoki maydon noto'g'ri");
+    }
+}
+
+// =====================================================
+// KUNLIK STATISTIKA
 // =====================================================
 
 async function recordDailyStat(type) {
 
-    if (
-        type !== 'views' &&
-        type !== 'calls'
-    ) {
+    if (type !== 'views' && type !== 'calls') {
         return;
     }
 
     await pool.query(
         `
-        INSERT INTO daily_stats (
-            stat_date,
-            views,
-            calls
-        )
-        VALUES (
-            CURRENT_DATE,
-            $1,
-            $2
-        )
+        INSERT INTO daily_stats (stat_date, views, calls)
+        VALUES (CURRENT_DATE, $1, $2)
         ON CONFLICT (stat_date)
         DO UPDATE SET
-
-            views =
-                daily_stats.views +
-                EXCLUDED.views,
-
-            calls =
-                daily_stats.calls +
-                EXCLUDED.calls
+            views = daily_stats.views + EXCLUDED.views,
+            calls = daily_stats.calls + EXCLUDED.calls
         `,
         [
-            type === 'views'
-                ? 1
-                : 0,
-
-            type === 'calls'
-                ? 1
-                : 0
+            type === 'views' ? 1 : 0,
+            type === 'calls' ? 1 : 0
         ]
     );
+}
+
+// =====================================================
+// SO'ROVLARNI QAYTA ISHLASH
+// =====================================================
+
+async function handleRequest(req, res) {
+
+    let url;
+
+    try {
+
+        url = new URL(req.url, 'http://localhost').pathname;
+
+    } catch (e) {
+
+        throw new HttpError(400, "So'rov manzili noto'g'ri");
+    }
+
+    if (url.length > 1 && url.endsWith('/')) {
+        url = url.slice(0, -1);
+    }
+
+    const method = req.method;
+
+    // -------------------------------------------------
+    // CORS
+    // -------------------------------------------------
+
+    if (method === 'OPTIONS') {
+
+        res.writeHead(204, {
+            'Access-Control-Allow-Origin': ALLOWED_ORIGIN,
+            'Access-Control-Allow-Methods': 'GET,POST,PUT,DELETE,OPTIONS',
+            'Access-Control-Allow-Headers': 'Content-Type,X-Admin-Password',
+            'Access-Control-Max-Age': '86400'
+        });
+
+        return res.end();
+    }
+
+    // -------------------------------------------------
+    // SALOMATLIK TEKSHIRUVI
+    // -------------------------------------------------
+
+    if (url === '/healthz' && method === 'GET') {
+
+        return sendJson(res, 200, { ok: true });
+    }
+
+    // -------------------------------------------------
+    // E'LONLAR RO'YXATI + QIDIRUV
+    //
+    // ?q=matn          nom, manzil, tavsif bo'yicha
+    // ?type=kvartira   turi bo'yicha
+    // ?currency=USD    valyuta
+    // ?minPrice=&maxPrice=
+    // ?rooms=3         kamida shuncha xona
+    // ?minArea=50      kamida shuncha m2
+    // ?available=1     faqat sotilmaganlar
+    // ?limit=&offset=  sahifalash (standart 500)
+    // -------------------------------------------------
+
+    if (url === '/api/cars' && method === 'GET') {
+
+        const params = new URL(req.url, 'http://localhost').searchParams;
+
+        const values = [];
+        const where = [];
+
+        const bind = value => {
+            values.push(value);
+            return '$' + values.length;
+        };
+
+        const q = str(params.get('q'), 100);
+
+        if (q) {
+
+            const p = bind('%' + escapeLike(q) + '%');
+
+            where.push(
+                `(name ILIKE ${p} OR location ILIKE ${p} OR address ILIKE ${p} OR description ILIKE ${p})`
+            );
+        }
+
+        const type = str(params.get('type'), 100);
+
+        if (type) {
+
+            const exact = bind(escapeLike(type));
+            const inList = bind('%' + escapeLike(JSON.stringify(type)) + '%');
+
+            where.push(`(type ILIKE ${exact} OR types ILIKE ${inList})`);
+        }
+
+        if (params.get('currency')) {
+
+            where.push(
+                `currency = ${bind(normalizeCurrency(params.get('currency')))}`
+            );
+        }
+
+        const minPrice = toInteger(params.get('minPrice'), -1);
+
+        if (minPrice >= 0) {
+            where.push(`price >= ${bind(minPrice)}`);
+        }
+
+        const maxPrice = toInteger(params.get('maxPrice'), -1);
+
+        if (maxPrice >= 0) {
+            where.push(`price <= ${bind(maxPrice)}`);
+        }
+
+        const rooms = toInteger(params.get('rooms'), 0);
+
+        if (rooms > 0) {
+            where.push(`rooms >= ${bind(rooms)}`);
+        }
+
+        const minArea = toInteger(params.get('minArea'), 0);
+
+        if (minArea > 0) {
+            where.push(`area >= ${bind(minArea)}`);
+        }
+
+        if (params.get('available') === '1') {
+            where.push('sold = false');
+        }
+
+        const limit = Math.min(
+            Math.max(toInteger(params.get('limit'), 500), 1),
+            500
+        );
+
+        const offset = Math.max(toInteger(params.get('offset'), 0), 0);
+
+        const limitP = bind(limit);
+        const offsetP = bind(offset);
+
+        const result = await pool.query(
+            `
+            SELECT * FROM cars
+            ${where.length ? 'WHERE ' + where.join(' AND ') : ''}
+            ORDER BY id DESC
+            LIMIT ${limitP} OFFSET ${offsetP}
+            `,
+            values
+        );
+
+        return sendJson(res, 200, result.rows.map(carOut));
+    }
+
+    // -------------------------------------------------
+    // E'LON QO'SHISH
+    // -------------------------------------------------
+
+    if (url === '/api/cars' && method === 'POST') {
+
+        if (!checkAdmin(req, res)) return;
+
+        const body = await readJson(req);
+
+        const f = buildCarFields(body, null);
+
+        validateCar(f);
+
+        const items = Array.isArray(body.images)
+            ? resolveImages(body.images, [])
+            : [];
+
+        const car = await withTransaction(async client => {
+
+            const names = await saveNewImages(client, items);
+
+            const inserted = await client.query(
+                `
+                INSERT INTO cars (
+                    name, price, description, images, sold, currency,
+                    type, types, location, address, rooms, area, phone
+                )
+                VALUES ($1, $2, $3, $4, false, $5, $6, $7, $8, $9, $10, $11, $12)
+                RETURNING *
+                `,
+                [
+                    f.name,
+                    f.price,
+                    f.description,
+                    JSON.stringify(names),
+                    f.currency,
+                    f.types[0] || '',
+                    JSON.stringify(f.types),
+                    f.location,
+                    f.address,
+                    f.rooms,
+                    f.area,
+                    f.phone
+                ]
+            );
+
+            return inserted.rows[0];
+        });
+
+        return sendJson(res, 201, { ok: true, car: carOut(car) });
+    }
+
+    // -------------------------------------------------
+    // E'LONNI TAHRIRLASH
+    // -------------------------------------------------
+
+    if (/^\/api\/cars\/\d+$/.test(url) && method === 'PUT') {
+
+        if (!checkAdmin(req, res)) return;
+
+        const id = parseId(url);
+
+        const body = await readJson(req);
+
+        const car = await withTransaction(async client => {
+
+            const oldResult = await client.query(
+                'SELECT * FROM cars WHERE id = $1 FOR UPDATE',
+                [id]
+            );
+
+            if (oldResult.rows.length === 0) {
+                throw new HttpError(404, 'Mashina topilmadi');
+            }
+
+            const old = oldResult.rows[0];
+
+            const f = buildCarFields(body, old);
+
+            validateCar(f);
+
+            const oldNames = parseImages(old);
+
+            let finalNames = oldNames;
+
+            if (Array.isArray(body.images)) {
+
+                const items = resolveImages(body.images, oldNames);
+
+                finalNames = await saveNewImages(client, items);
+
+                const removed = oldNames.filter(
+                    n => !finalNames.includes(n)
+                );
+
+                if (removed.length) {
+
+                    await client.query(
+                        'DELETE FROM image_files WHERE name = ANY($1::text[])',
+                        [removed]
+                    );
+                }
+            }
+
+            const updated = await client.query(
+                `
+                UPDATE cars SET
+                    name = $1,
+                    price = $2,
+                    description = $3,
+                    images = $4,
+                    currency = $5,
+                    type = $6,
+                    types = $7,
+                    location = $8,
+                    address = $9,
+                    rooms = $10,
+                    area = $11,
+                    phone = $12
+                WHERE id = $13
+                RETURNING *
+                `,
+                [
+                    f.name,
+                    f.price,
+                    f.description,
+                    JSON.stringify(finalNames),
+                    f.currency,
+                    f.types[0] || '',
+                    JSON.stringify(f.types),
+                    f.location,
+                    f.address,
+                    f.rooms,
+                    f.area,
+                    f.phone,
+                    id
+                ]
+            );
+
+            return updated.rows[0];
+        });
+
+        return sendJson(res, 200, { ok: true, car: carOut(car) });
+    }
+
+    // -------------------------------------------------
+    // SOTILDI / SOTILMADI
+    // Body'da { "sold": true/false } bo'lsa aynan shu qo'yiladi,
+    // bo'lmasa holat almashtiriladi (eski xatti-harakat).
+    // -------------------------------------------------
+
+    if (/^\/api\/cars\/\d+\/sold$/.test(url) && method === 'POST') {
+
+        if (!checkAdmin(req, res)) return;
+
+        const id = parseId(url);
+
+        const body = await readJson(req, true);
+
+        const result = typeof body.sold === 'boolean'
+            ? await pool.query(
+                'UPDATE cars SET sold = $2 WHERE id = $1 RETURNING *',
+                [id, body.sold]
+            )
+            : await pool.query(
+                'UPDATE cars SET sold = NOT sold WHERE id = $1 RETURNING *',
+                [id]
+            );
+
+        if (result.rows.length === 0) {
+            throw new HttpError(404, 'Mashina topilmadi');
+        }
+
+        return sendJson(res, 200, {
+            ok: true,
+            sold: Boolean(result.rows[0].sold),
+            car: carOut(result.rows[0])
+        });
+    }
+
+    // -------------------------------------------------
+    // E'LONNI O'CHIRISH
+    // -------------------------------------------------
+
+    if (/^\/api\/cars\/\d+$/.test(url) && method === 'DELETE') {
+
+        if (!checkAdmin(req, res)) return;
+
+        const id = parseId(url);
+
+        await withTransaction(async client => {
+
+            const result = await client.query(
+                'SELECT images FROM cars WHERE id = $1 FOR UPDATE',
+                [id]
+            );
+
+            if (result.rows.length === 0) {
+                throw new HttpError(404, 'Mashina topilmadi');
+            }
+
+            const names = parseImages(result.rows[0]);
+
+            if (names.length) {
+
+                await client.query(
+                    'DELETE FROM image_files WHERE name = ANY($1::text[])',
+                    [names]
+                );
+            }
+
+            await client.query('DELETE FROM cars WHERE id = $1', [id]);
+        });
+
+        return sendJson(res, 200, { ok: true });
+    }
+
+    // -------------------------------------------------
+    // SAYT SOZLAMALARI
+    // -------------------------------------------------
+
+    if (url === '/api/settings' && method === 'GET') {
+
+        const result = await pool.query(`
+            SELECT phone, telegram, whatsapp, instagram, address
+            FROM site_settings
+            WHERE id = 1
+        `);
+
+        const row = result.rows[0];
+
+        if (!row) {
+
+            return sendJson(res, 200, {
+                settings: {
+                    phone: '+998 88 950 00 05',
+                    telegram: 'https://t.me/',
+                    whatsapp: 'https://wa.me/',
+                    instagram: 'https://instagram.com/',
+                    address: "Toshkent, O'zbekiston"
+                }
+            });
+        }
+
+        return sendJson(res, 200, { settings: settingsOut(row) });
+    }
+
+    if (url === '/api/settings' && method === 'POST') {
+
+        if (!checkAdmin(req, res)) return;
+
+        const body = await readJson(req);
+
+        const phone = str(body.phone, 50);
+        const telegram = cleanLink(body.telegram, 500);
+        const whatsapp = cleanLink(body.whatsapp, 500);
+        const instagram = cleanLink(body.instagram, 500);
+        const address = str(body.address, 300);
+
+        if (!phone) {
+            throw new HttpError(400, 'Telefon raqamini kiriting');
+        }
+
+        const result = await pool.query(
+            `
+            UPDATE site_settings SET
+                phone = $1,
+                telegram = $2,
+                whatsapp = $3,
+                instagram = $4,
+                address = $5
+            WHERE id = 1
+            RETURNING phone, telegram, whatsapp, instagram, address
+            `,
+            [phone, telegram, whatsapp, instagram, address]
+        );
+
+        return sendJson(res, 200, {
+            ok: true,
+            settings: settingsOut(result.rows[0])
+        });
+    }
+
+    // -------------------------------------------------
+    // RASMNI OLISH
+    // -------------------------------------------------
+
+    if (url.startsWith('/uploads/') && method === 'GET') {
+
+        const name = url.slice('/uploads/'.length);
+
+        if (!/^[a-f0-9]{32}\.jpg$/.test(name)) {
+
+            res.writeHead(404);
+
+            return res.end();
+        }
+
+        const result = await pool.query(
+            'SELECT data FROM image_files WHERE name = $1',
+            [name]
+        );
+
+        if (result.rows.length === 0) {
+
+            res.writeHead(404);
+
+            return res.end();
+        }
+
+        res.writeHead(200, {
+            ...SECURITY_HEADERS,
+            'Content-Type': 'image/jpeg',
+            'Cache-Control': 'public, max-age=86400'
+        });
+
+        return res.end(result.rows[0].data);
+    }
+
+    // -------------------------------------------------
+    // STATISTIKA: KO'RISH VA QO'NG'IROQ
+    // Limitdan oshsa ham { ok: true } qaytadi, lekin sanalmaydi.
+    // -------------------------------------------------
+
+    if (url === '/api/stats/view' && method === 'POST') {
+
+        if (!viewLimiter(getIp(req))) {
+
+            return sendJson(res, 200, { ok: true, counted: false });
+        }
+
+        await pool.query(
+            'UPDATE stats SET views = views + 1 WHERE id = 1'
+        );
+
+        await recordDailyStat('views');
+
+        return sendJson(res, 200, { ok: true });
+    }
+
+    if (url === '/api/stats/call' && method === 'POST') {
+
+        if (!callLimiter(getIp(req))) {
+
+            return sendJson(res, 200, { ok: true, counted: false });
+        }
+
+        await pool.query(
+            'UPDATE stats SET calls = calls + 1 WHERE id = 1'
+        );
+
+        await recordDailyStat('calls');
+
+        return sendJson(res, 200, { ok: true });
+    }
+
+    // -------------------------------------------------
+    // STATISTIKA: UMUMIY (admin)
+    // -------------------------------------------------
+
+    if (url === '/api/stats' && method === 'GET') {
+
+        if (!checkAdmin(req, res)) return;
+
+        const result = await pool.query(
+            'SELECT views, calls FROM stats WHERE id = 1'
+        );
+
+        const row = result.rows[0] || { views: 0, calls: 0 };
+
+        const carsResult = await pool.query(`
+            SELECT
+                COUNT(*)::int AS total,
+                COUNT(*) FILTER (WHERE sold = true)::int AS sold
+            FROM cars
+        `);
+
+        const cars = carsResult.rows[0] || { total: 0, sold: 0 };
+
+        return sendJson(res, 200, {
+            views: Number(row.views) || 0,
+            calls: Number(row.calls) || 0,
+            cars: Number(cars.total) || 0,
+            sold: Number(cars.sold) || 0
+        });
+    }
+
+    // -------------------------------------------------
+    // KO'RISHLARNI NOLGA TUSHIRISH (admin)
+    // daily_stats jadvaliga tegilmaydi.
+    // -------------------------------------------------
+
+    if (url === '/api/stats/reset-views' && method === 'POST') {
+
+        if (!checkAdmin(req, res)) return;
+
+        await pool.query(
+            'UPDATE stats SET views = 0 WHERE id = 1'
+        );
+
+        return sendJson(res, 200, { ok: true, views: 0 });
+    }
+
+    // -------------------------------------------------
+    // KUNLIK STATISTIKA (admin)
+    // -------------------------------------------------
+
+    if (url === '/api/stats/daily' && method === 'GET') {
+
+        if (!checkAdmin(req, res)) return;
+
+        const result = await pool.query(`
+            SELECT
+                stat_date::text AS stat_date,
+                views,
+                calls
+            FROM daily_stats
+            WHERE stat_date >= CURRENT_DATE - INTERVAL '29 days'
+            ORDER BY stat_date ASC
+        `);
+
+        return sendJson(res, 200, {
+            days: result.rows.map(row => ({
+                date: row.stat_date,
+                views: Number(row.views) || 0,
+                calls: Number(row.calls) || 0
+            }))
+        });
+    }
+
+    // -------------------------------------------------
+    // SAHIFALAR
+    // -------------------------------------------------
+
+    if (
+        (url === '/admin' || url === '/admin.html') &&
+        method === 'GET'
+    ) {
+
+        return sendFile(res, 'admin.html');
+    }
+
+    if (
+        (url === '/' || url === '/index.html') &&
+        method === 'GET'
+    ) {
+
+        return sendFile(res, 'index.html');
+    }
+
+    // -------------------------------------------------
+    // BOSHQA STATIK FAYLLAR (css, js, rasm, shrift, favicon)
+    // -------------------------------------------------
+
+    if (method === 'GET') {
+
+        const ext = path.extname(url).toLowerCase();
+
+        if (ext && ext !== '.html' && MIME[ext]) {
+
+            return sendFile(res, url.replace(/^\/+/, ''));
+        }
+    }
+
+    // -------------------------------------------------
+    // 404
+    // -------------------------------------------------
+
+    return sendJson(res, 404, { error: 'Sahifa topilmadi' });
 }
 
 // =====================================================
 // SERVER
 // =====================================================
 
-const server =
-    http.createServer(
-        async (req, res) => {
+const server = http.createServer(async (req, res) => {
 
-            try {
+    try {
 
-                const url =
-                    req.url.split('?')[0];
+        await handleRequest(req, res);
 
-                // =================================================
-                // CORS / OPTIONS
-                // =================================================
+    } catch (e) {
 
-                if (
-                    req.method === 'OPTIONS'
-                ) {
+        if (e instanceof HttpError) {
 
-                    res.writeHead(
-                        204,
-                        {
-                            'Access-Control-Allow-Origin': '*',
-                            'Access-Control-Allow-Methods':
-                                'GET,POST,PUT,DELETE,OPTIONS',
-                            'Access-Control-Allow-Headers':
-                                'Content-Type,X-Admin-Password'
-                        }
-                    );
-
-                    return res.end();
-                }
-
-                // =================================================
-                // GET CARS
-                // =================================================
-
-                if (
-                    url === '/api/cars' &&
-                    req.method === 'GET'
-                ) {
-
-                    const result =
-                        await pool.query(`
-                            SELECT *
-                            FROM cars
-                            ORDER BY id DESC
-                        `);
-
-                    return sendJson(
-                        res,
-                        200,
-                        result.rows.map(
-                            carOut
-                        )
-                    );
-                }
-
-                // =================================================
-                // ADD CAR
-                // =================================================
-
-                if (
-                    url === '/api/cars' &&
-                    req.method === 'POST'
-                ) {
-
-                    let body;
-
-                    try {
-
-                        body =
-                            JSON.parse(
-                                await readBody(req)
-                            );
-
-                    } catch (e) {
-
-                        return sendJson(
-                            res,
-                            400,
-                            {
-                                error:
-                                    "Ma'lumot formati noto'g'ri"
-                            }
-                        );
-                    }
-
-                    if (
-                        !isAdmin(
-                            req,
-                            body
-                        )
-                    ) {
-
-                        return sendJson(
-                            res,
-                            401,
-                            {
-                                error:
-                                    "Parol noto'g'ri"
-                            }
-                        );
-                    }
-
-                    const client =
-                        await pool.connect();
-
-                    try {
-
-                        const name =
-                            String(
-                                body.name ??
-                                body.title ??
-                                ''
-                            )
-                            .trim()
-                            .slice(
-                                0,
-                                300
-                            );
-
-                        const price =
-                            toInteger(
-                                body.price,
-                                -1
-                            );
-
-                        const currency =
-                            normalizeCurrency(
-                                body.currency
-                            );
-
-                        const type =
-                            String(
-                                body.type ||
-                                ''
-                            )
-                            .trim()
-                            .slice(
-                                0,
-                                100
-                            );
-
-                        let types;
-
-                        if (
-                            Array.isArray(
-                                body.types
-                            )
-                        ) {
-
-                            types =
-                                body.types
-                                    .map(
-                                        x =>
-                                            String(x)
-                                                .trim()
-                                    )
-                                    .filter(
-                                        Boolean
-                                    )
-                                    .slice(
-                                        0,
-                                        3
-                                    );
-
-                        } else {
-
-                            types =
-                                type
-                                    ? [type]
-                                    : [];
-                        }
-
-                        const location =
-                            String(
-                                body.location ??
-                                body.address ??
-                                ''
-                            )
-                            .trim()
-                            .slice(
-                                0,
-                                500
-                            );
-
-                        const address =
-                            String(
-                                body.address ??
-                                body.location ??
-                                ''
-                            )
-                            .trim()
-                            .slice(
-                                0,
-                                500
-                            );
-
-                        const rooms =
-                            toInteger(
-                                body.rooms,
-                                0
-                            );
-
-                        const area =
-                            toInteger(
-                                body.area,
-                                0
-                            );
-
-                        const phone =
-                            String(
-                                body.phone ||
-                                ''
-                            )
-                            .trim()
-                            .slice(
-                                0,
-                                100
-                            );
-
-                        const description =
-                            String(
-                                body.description ||
-                                ''
-                            )
-                            .trim()
-                            .slice(
-                                0,
-                                2000
-                            );
-
-                        if (
-                            !name ||
-                            price <= 0
-                        ) {
-
-                            return sendJson(
-                                res,
-                                400,
-                                {
-                                    error:
-                                        "Nom va narxni to'g'ri kiriting"
-                                }
-                            );
-                        }
-
-                        if (
-                            rooms < 0 ||
-                            area < 0
-                        ) {
-
-                            return sendJson(
-                                res,
-                                400,
-                                {
-                                    error:
-                                        "Xona yoki maydon noto'g'ri"
-                                }
-                            );
-                        }
-
-                        const incomingImages =
-                            Array.isArray(
-                                body.images
-                            )
-                                ? body.images
-                                : [];
-
-                        if (
-                            incomingImages.length >
-                            8
-                        ) {
-
-                            return sendJson(
-                                res,
-                                400,
-                                {
-                                    error:
-                                        "Ko'pi bilan 8 ta rasm"
-                                }
-                            );
-                        }
-
-                        const preparedImages =
-                            incomingImages.map(
-                                prepareImage
-                            );
-
-                        await client.query(
-                            'BEGIN'
-                        );
-
-                        const savedNames = [];
-
-                        for (
-                            const image
-                            of preparedImages
-                        ) {
-
-                            await client.query(
-                                `
-                                INSERT INTO image_files (
-                                    name,
-                                    data
-                                )
-                                VALUES (
-                                    $1,
-                                    $2
-                                )
-                                `,
-                                [
-                                    image.name,
-                                    image.buffer
-                                ]
-                            );
-
-                            savedNames.push(
-                                image.name
-                            );
-                        }
-
-                        const inserted =
-                            await client.query(
-                                `
-                                INSERT INTO cars (
-                                    name,
-                                    price,
-                                    description,
-                                    images,
-                                    sold,
-                                    currency,
-                                    type,
-                                    types,
-                                    location,
-                                    address,
-                                    rooms,
-                                    area,
-                                    phone
-                                )
-                                VALUES (
-                                    $1,
-                                    $2,
-                                    $3,
-                                    $4,
-                                    false,
-                                    $5,
-                                    $6,
-                                    $7,
-                                    $8,
-                                    $9,
-                                    $10,
-                                    $11,
-                                    $12
-                                )
-                                RETURNING *
-                                `,
-                                [
-                                    name,
-                                    price,
-                                    description,
-                                    JSON.stringify(
-                                        savedNames
-                                    ),
-                                    currency,
-                                    types[0] || '',
-                                    JSON.stringify(
-                                        types
-                                    ),
-                                    location,
-                                    address,
-                                    rooms,
-                                    area,
-                                    phone
-                                ]
-                            );
-
-                        await client.query(
-                            'COMMIT'
-                        );
-
-                        return sendJson(
-                            res,
-                            201,
-                            {
-                                ok: true,
-
-                                car:
-                                    carOut(
-                                        inserted.rows[0]
-                                    )
-                            }
-                        );
-
-                    } catch (e) {
-
-                        try {
-                            await client.query(
-                                'ROLLBACK'
-                            );
-                        } catch (_) {}
-
-                        console.error(
-                            'ADD CAR ERROR:',
-                            e
-                        );
-
-                        return sendJson(
-                            res,
-                            400,
-                            {
-                                error:
-                                    e.message ||
-                                    "Mashina qo'shishda xatolik"
-                            }
-                        );
-
-                    } finally {
-
-                        client.release();
-                    }
-                }
-
-                // =================================================
-                // EDIT CAR
-                // =================================================
-
-                if (
-                    /^\/api\/cars\/\d+$/.test(url) &&
-                    req.method === 'PUT'
-                ) {
-
-                    let body;
-
-                    try {
-
-                        body =
-                            JSON.parse(
-                                await readBody(req)
-                            );
-
-                    } catch (e) {
-
-                        return sendJson(
-                            res,
-                            400,
-                            {
-                                error:
-                                    "Ma'lumot formati noto'g'ri"
-                            }
-                        );
-                    }
-
-                    if (
-                        !isAdmin(
-                            req,
-                            body
-                        )
-                    ) {
-
-                        return sendJson(
-                            res,
-                            401,
-                            {
-                                error:
-                                    "Parol noto'g'ri"
-                            }
-                        );
-                    }
-
-                    const id =
-                        Number(
-                            url.split('/')[3]
-                        );
-
-                    if (
-                        !Number.isInteger(id) ||
-                        id <= 0
-                    ) {
-
-                        return sendJson(
-                            res,
-                            400,
-                            {
-                                error:
-                                    "ID noto'g'ri"
-                            }
-                        );
-                    }
-
-                    const client =
-                        await pool.connect();
-
-                    try {
-
-                        const oldResult =
-                            await client.query(
-                                `
-                                SELECT *
-                                FROM cars
-                                WHERE id = $1
-                                `,
-                                [id]
-                            );
-
-                        if (
-                            oldResult.rows.length ===
-                            0
-                        ) {
-
-                            return sendJson(
-                                res,
-                                404,
-                                {
-                                    error:
-                                        "Mashina topilmadi"
-                                }
-                            );
-                        }
-
-                        const oldCar =
-                            oldResult.rows[0];
-
-                        // -----------------------------------------
-                        // NAME
-                        // -----------------------------------------
-
-                        const name =
-                            String(
-                                body.name !== undefined
-                                    ? body.name
-                                    : (
-                                        body.title !== undefined
-                                            ? body.title
-                                            : oldCar.name
-                                    )
-                            )
-                            .trim()
-                            .slice(
-                                0,
-                                300
-                            );
-
-                        // -----------------------------------------
-                        // PRICE
-                        // -----------------------------------------
-
-                        const price =
-                            body.price !== undefined
-                                ? toInteger(
-                                    body.price,
-                                    -1
-                                )
-                                : toInteger(
-                                    oldCar.price,
-                                    -1
-                                );
-
-                        // -----------------------------------------
-                        // CURRENCY
-                        // -----------------------------------------
-
-                        const currency =
-                            body.currency !== undefined
-                                ? normalizeCurrency(
-                                    body.currency
-                                )
-                                : normalizeCurrency(
-                                    oldCar.currency
-                                );
-
-                        // -----------------------------------------
-                        // OLD TYPES
-                        // -----------------------------------------
-
-                        const oldTypes =
-                            parseTypes(
-                                oldCar
-                            );
-
-                        // -----------------------------------------
-                        // TYPE
-                        // -----------------------------------------
-
-                        const type =
-                            String(
-                                body.type !== undefined
-                                    ? body.type
-                                    : (
-                                        oldCar.type ||
-                                        oldTypes[0] ||
-                                        ''
-                                    )
-                            )
-                            .trim()
-                            .slice(
-                                0,
-                                100
-                            );
-
-                        // -----------------------------------------
-                        // TYPES
-                        // -----------------------------------------
-
-                        let types;
-
-                        if (
-                            Array.isArray(
-                                body.types
-                            )
-                        ) {
-
-                            types =
-                                body.types
-                                    .map(
-                                        x =>
-                                            String(x)
-                                                .trim()
-                                    )
-                                    .filter(
-                                        Boolean
-                                    )
-                                    .slice(
-                                        0,
-                                        3
-                                    );
-
-                        } else {
-
-                            types =
-                                type
-                                    ? [type]
-                                    : oldTypes;
-                        }
-
-                        // -----------------------------------------
-                        // LOCATION
-                        // -----------------------------------------
-
-                        const location =
-                            String(
-                                body.location !== undefined
-                                    ? body.location
-                                    : (
-                                        body.address !== undefined
-                                            ? body.address
-                                            : oldCar.location || ''
-                                    )
-                            )
-                            .trim()
-                            .slice(
-                                0,
-                                500
-                            );
-
-                        // -----------------------------------------
-                        // ADDRESS
-                        // -----------------------------------------
-
-                        const address =
-                            String(
-                                body.address !== undefined
-                                    ? body.address
-                                    : (
-                                        body.location !== undefined
-                                            ? body.location
-                                            : oldCar.address || ''
-                                    )
-                            )
-                            .trim()
-                            .slice(
-                                0,
-                                500
-                            );
-
-                        // -----------------------------------------
-                        // ROOMS
-                        // -----------------------------------------
-
-                        const rooms =
-                            body.rooms !== undefined
-                                ? toInteger(
-                                    body.rooms,
-                                    0
-                                )
-                                : toInteger(
-                                    oldCar.rooms,
-                                    0
-                                );
-
-                        // -----------------------------------------
-                        // AREA
-                        // -----------------------------------------
-
-                        const area =
-                            body.area !== undefined
-                                ? toInteger(
-                                    body.area,
-                                    0
-                                )
-                                : toInteger(
-                                    oldCar.area,
-                                    0
-                                );
-
-                        // -----------------------------------------
-                        // PHONE
-                        // -----------------------------------------
-
-                        const phone =
-                            String(
-                                body.phone !== undefined
-                                    ? body.phone
-                                    : (
-                                        oldCar.phone ||
-                                        ''
-                                    )
-                            )
-                            .trim()
-                            .slice(
-                                0,
-                                100
-                            );
-
-                        // -----------------------------------------
-                        // DESCRIPTION
-                        // -----------------------------------------
-
-                        const description =
-                            String(
-                                body.description !== undefined
-                                    ? body.description
-                                    : (
-                                        oldCar.description ||
-                                        ''
-                                    )
-                            )
-                            .trim()
-                            .slice(
-                                0,
-                                2000
-                            );
-
-                        // -----------------------------------------
-                        // VALIDATION
-                        // -----------------------------------------
-
-                        if (
-                            !name ||
-                            price <= 0
-                        ) {
-
-                            return sendJson(
-                                res,
-                                400,
-                                {
-                                    error:
-                                        "Nom va narxni to'g'ri kiriting"
-                                }
-                            );
-                        }
-
-                        if (
-                            rooms < 0 ||
-                            area < 0
-                        ) {
-
-                            return sendJson(
-                                res,
-                                400,
-                                {
-                                    error:
-                                        "Xona yoki maydon noto'g'ri"
-                                }
-                            );
-                        }
-
-                        // -----------------------------------------
-                        // IMAGES
-                        // -----------------------------------------
-
-                        const incomingImages =
-                            Array.isArray(
-                                body.images
-                            )
-                                ? body.images
-                                : null;
-
-                        await client.query(
-                            'BEGIN'
-                        );
-
-                        let finalImages =
-                            parseImages(
-                                oldCar
-                            );
-
-                        if (
-                            incomingImages !== null
-                        ) {
-
-                            if (
-                                incomingImages.length >
-                                8
-                            ) {
-
-                                throw new Error(
-                                    "Ko'pi bilan 8 ta rasm"
-                                );
-                            }
-
-                            const preparedImages =
-                                incomingImages.map(
-                                    prepareImage
-                                );
-
-                            const savedNames = [];
-
-                            for (
-                                const image
-                                of preparedImages
-                            ) {
-
-                                await client.query(
-                                    `
-                                    INSERT INTO image_files (
-                                        name,
-                                        data
-                                    )
-                                    VALUES (
-                                        $1,
-                                        $2
-                                    )
-                                    `,
-                                    [
-                                        image.name,
-                                        image.buffer
-                                    ]
-                                );
-
-                                savedNames.push(
-                                    image.name
-                                );
-                            }
-
-                            for (
-                                const oldImage
-                                of finalImages
-                            ) {
-
-                                if (
-                                    typeof oldImage !==
-                                    'string'
-                                ) {
-                                    continue;
-                                }
-
-                                await client.query(
-                                    `
-                                    DELETE FROM image_files
-                                    WHERE name = $1
-                                    `,
-                                    [oldImage]
-                                );
-                            }
-
-                            finalImages =
-                                savedNames;
-                        }
-
-                        // -----------------------------------------
-                        // UPDATE
-                        // -----------------------------------------
-
-                        const updated =
-                            await client.query(
-                                `
-                                UPDATE cars
-                                SET
-                                    name = $1,
-                                    price = $2,
-                                    description = $3,
-                                    images = $4,
-                                    currency = $5,
-                                    type = $6,
-                                    types = $7,
-                                    location = $8,
-                                    address = $9,
-                                    rooms = $10,
-                                    area = $11,
-                                    phone = $12
-                                WHERE id = $13
-                                RETURNING *
-                                `,
-                                [
-                                    name,
-                                    price,
-                                    description,
-                                    JSON.stringify(
-                                        finalImages
-                                    ),
-                                    currency,
-                                    types[0] || '',
-                                    JSON.stringify(
-                                        types
-                                    ),
-                                    location,
-                                    address,
-                                    rooms,
-                                    area,
-                                    phone,
-                                    id
-                                ]
-                            );
-
-                        await client.query(
-                            'COMMIT'
-                        );
-
-                        return sendJson(
-                            res,
-                            200,
-                            {
-                                ok: true,
-
-                                car:
-                                    carOut(
-                                        updated.rows[0]
-                                    )
-                            }
-                        );
-
-                    } catch (e) {
-
-                        try {
-                            await client.query(
-                                'ROLLBACK'
-                            );
-                        } catch (_) {}
-
-                        console.error(
-                            'EDIT CAR ERROR:',
-                            e
-                        );
-
-                        return sendJson(
-                            res,
-                            400,
-                            {
-                                error:
-                                    e.message ||
-                                    "Tahrirlashda xatolik"
-                            }
-                        );
-
-                    } finally {
-
-                        client.release();
-                    }
-                }
-
-                // =================================================
-                // GET SETTINGS
-                // =================================================
-
-                if (
-                    url === '/api/settings' &&
-                    req.method === 'GET'
-                ) {
-
-                    const result =
-                        await pool.query(`
-                            SELECT
-                                phone,
-                                telegram,
-                                whatsapp,
-                                instagram,
-                                address
-                            FROM site_settings
-                            WHERE id = 1
-                        `);
-
-                    const row =
-                        result.rows[0];
-
-                    if (!row) {
-
-                        return sendJson(
-                            res,
-                            200,
-                            {
-                                settings: {
-                                    phone:
-                                        '+998 88 950 00 05',
-
-                                    telegram:
-                                        'https://t.me/',
-
-                                    whatsapp:
-                                        'https://wa.me/',
-
-                                    instagram:
-                                        'https://instagram.com/',
-
-                                    address:
-                                        "Toshkent, O'zbekiston"
-                                }
-                            }
-                        );
-                    }
-
-                    return sendJson(
-                        res,
-                        200,
-                        {
-                            settings:
-                                settingsOut(row)
-                        }
-                    );
-                }
-
-                // =================================================
-                // SAVE SETTINGS
-                // =================================================
-
-                if (
-                    url === '/api/settings' &&
-                    req.method === 'POST'
-                ) {
-
-                    let body;
-
-                    try {
-
-                        body =
-                            JSON.parse(
-                                await readBody(req)
-                            );
-
-                    } catch (e) {
-
-                        return sendJson(
-                            res,
-                            400,
-                            {
-                                error:
-                                    "Ma'lumot formati noto'g'ri"
-                            }
-                        );
-                    }
-
-                    if (
-                        !isAdmin(
-                            req,
-                            body
-                        )
-                    ) {
-
-                        return sendJson(
-                            res,
-                            401,
-                            {
-                                error:
-                                    "Parol noto'g'ri"
-                            }
-                        );
-                    }
-
-                    const phone =
-                        String(
-                            body.phone || ''
-                        )
-                        .trim()
-                        .slice(
-                            0,
-                            50
-                        );
-
-                    const telegram =
-                        String(
-                            body.telegram || ''
-                        )
-                        .trim()
-                        .slice(
-                            0,
-                            500
-                        );
-
-                    const whatsapp =
-                        String(
-                            body.whatsapp || ''
-                        )
-                        .trim()
-                        .slice(
-                            0,
-                            500
-                        );
-
-                    const instagram =
-                        String(
-                            body.instagram || ''
-                        )
-                        .trim()
-                        .slice(
-                            0,
-                            500
-                        );
-
-                    const address =
-                        String(
-                            body.address || ''
-                        )
-                        .trim()
-                        .slice(
-                            0,
-                            300
-                        );
-
-                    if (!phone) {
-
-                        return sendJson(
-                            res,
-                            400,
-                            {
-                                error:
-                                    "Telefon raqamini kiriting"
-                            }
-                        );
-                    }
-
-                    const result =
-                        await pool.query(
-                            `
-                            UPDATE site_settings
-                            SET
-                                phone = $1,
-                                telegram = $2,
-                                whatsapp = $3,
-                                instagram = $4,
-                                address = $5
-                            WHERE id = 1
-                            RETURNING
-                                phone,
-                                telegram,
-                                whatsapp,
-                                instagram,
-                                address
-                            `,
-                            [
-                                phone,
-                                telegram,
-                                whatsapp,
-                                instagram,
-                                address
-                            ]
-                        );
-
-                    return sendJson(
-                        res,
-                        200,
-                        {
-                            ok: true,
-
-                            settings:
-                                settingsOut(
-                                    result.rows[0]
-                                )
-                        }
-                    );
-                }
-
-                // =================================================
-                // TOGGLE SOLD
-                // =================================================
-
-                if (
-                    /^\/api\/cars\/\d+\/sold$/.test(url) &&
-                    req.method === 'POST'
-                ) {
-
-                    let body = {};
-
-                    try {
-
-                        const raw =
-                            await readBody(req);
-
-                        if (raw) {
-
-                            body =
-                                JSON.parse(raw);
-                        }
-
-                    } catch (e) {
-
-                        body = {};
-                    }
-
-                    if (
-                        !isAdmin(
-                            req,
-                            body
-                        )
-                    ) {
-
-                        return sendJson(
-                            res,
-                            401,
-                            {
-                                error:
-                                    "Parol noto'g'ri"
-                            }
-                        );
-                    }
-
-                    const id =
-                        Number(
-                            url.split('/')[3]
-                        );
-
-                    if (
-                        !Number.isInteger(id) ||
-                        id <= 0
-                    ) {
-
-                        return sendJson(
-                            res,
-                            400,
-                            {
-                                error:
-                                    "ID noto'g'ri"
-                            }
-                        );
-                    }
-
-                    const result =
-                        await pool.query(
-                            `
-                            UPDATE cars
-                            SET sold = NOT sold
-                            WHERE id = $1
-                            RETURNING *
-                            `,
-                            [id]
-                        );
-
-                    if (
-                        result.rows.length === 0
-                    ) {
-
-                        return sendJson(
-                            res,
-                            404,
-                            {
-                                error:
-                                    "Mashina topilmadi"
-                            }
-                        );
-                    }
-
-                    return sendJson(
-                        res,
-                        200,
-                        {
-                            ok: true,
-
-                            sold:
-                                Boolean(
-                                    result.rows[0].sold
-                                ),
-
-                            car:
-                                carOut(
-                                    result.rows[0]
-                                )
-                        }
-                    );
-                }
-
-                // =================================================
-                // DELETE CAR
-                // =================================================
-
-                if (
-                    /^\/api\/cars\/\d+$/.test(url) &&
-                    req.method === 'DELETE'
-                ) {
-
-                    let body = {};
-
-                    try {
-
-                        const raw =
-                            await readBody(req);
-
-                        if (raw) {
-
-                            body =
-                                JSON.parse(raw);
-                        }
-
-                    } catch (e) {
-
-                        body = {};
-                    }
-
-                    if (
-                        !isAdmin(
-                            req,
-                            body
-                        )
-                    ) {
-
-                        return sendJson(
-                            res,
-                            401,
-                            {
-                                error:
-                                    "Parol noto'g'ri"
-                            }
-                        );
-                    }
-
-                    const id =
-                        Number(
-                            url.split('/')[3]
-                        );
-
-                    if (
-                        !Number.isInteger(id) ||
-                        id <= 0
-                    ) {
-
-                        return sendJson(
-                            res,
-                            400,
-                            {
-                                error:
-                                    "ID noto'g'ri"
-                            }
-                        );
-                    }
-
-                    const client =
-                        await pool.connect();
-
-                    try {
-
-                        await client.query(
-                            'BEGIN'
-                        );
-
-                        const result =
-                            await client.query(
-                                `
-                                SELECT images
-                                FROM cars
-                                WHERE id = $1
-                                `,
-                                [id]
-                            );
-
-                        if (
-                            result.rows.length === 0
-                        ) {
-
-                            await client.query(
-                                'ROLLBACK'
-                            );
-
-                            return sendJson(
-                                res,
-                                404,
-                                {
-                                    error:
-                                        "Mashina topilmadi"
-                                }
-                            );
-                        }
-
-                        const images =
-                            parseImages(
-                                result.rows[0]
-                            );
-
-                        for (
-                            const name
-                            of images
-                        ) {
-
-                            await client.query(
-                                `
-                                DELETE FROM image_files
-                                WHERE name = $1
-                                `,
-                                [name]
-                            );
-                        }
-
-                        await client.query(
-                            `
-                            DELETE FROM cars
-                            WHERE id = $1
-                            `,
-                            [id]
-                        );
-
-                        await client.query(
-                            'COMMIT'
-                        );
-
-                        return sendJson(
-                            res,
-                            200,
-                            {
-                                ok: true
-                            }
-                        );
-
-                    } catch (e) {
-
-                        try {
-                            await client.query(
-                                'ROLLBACK'
-                            );
-                        } catch (_) {}
-
-                        console.error(
-                            'DELETE CAR ERROR:',
-                            e
-                        );
-
-                        return sendJson(
-                            res,
-                            500,
-                            {
-                                error:
-                                    "O'chirishda xatolik"
-                            }
-                        );
-
-                    } finally {
-
-                        client.release();
-                    }
-                }
-
-                // =================================================
-                // GET IMAGE
-                // =================================================
-
-                if (
-                    url.startsWith('/uploads/') &&
-                    req.method === 'GET'
-                ) {
-
-                    const name =
-                        url.slice(
-                            '/uploads/'.length
-                        );
-
-                    if (
-                        !/^[a-f0-9]{32}\.jpg$/.test(
-                            name
-                        )
-                    ) {
-
-                        res.writeHead(404);
-
-                        return res.end();
-                    }
-
-                    const result =
-                        await pool.query(
-                            `
-                            SELECT data
-                            FROM image_files
-                            WHERE name = $1
-                            `,
-                            [name]
-                        );
-
-                    if (
-                        result.rows.length === 0
-                    ) {
-
-                        res.writeHead(404);
-
-                        return res.end();
-                    }
-
-                    res.writeHead(
-                        200,
-                        {
-                            'Content-Type':
-                                'image/jpeg',
-
-                            'Cache-Control':
-                                'public, max-age=86400'
-                        }
-                    );
-
-                    return res.end(
-                        result.rows[0].data
-                    );
-                }
-
-                // =================================================
-                // STAT VIEW
-                // =================================================
-
-                if (
-                    url === '/api/stats/view' &&
-                    req.method === 'POST'
-                ) {
-
-                    await pool.query(`
-                        UPDATE stats
-                        SET views = views + 1
-                        WHERE id = 1
-                    `);
-
-                    await recordDailyStat(
-                        'views'
-                    );
-
-                    return sendJson(
-                        res,
-                        200,
-                        {
-                            ok: true
-                        }
-                    );
-                }
-
-                // =================================================
-                // STAT CALL
-                // =================================================
-
-                if (
-                    url === '/api/stats/call' &&
-                    req.method === 'POST'
-                ) {
-
-                    await pool.query(`
-                        UPDATE stats
-                        SET calls = calls + 1
-                        WHERE id = 1
-                    `);
-
-                    await recordDailyStat(
-                        'calls'
-                    );
-
-                    return sendJson(
-                        res,
-                        200,
-                        {
-                            ok: true
-                        }
-                    );
-                }
-
-                // =================================================
-                // TOTAL STATS
-                // =================================================
-
-                if (
-                    url === '/api/stats' &&
-                    req.method === 'GET'
-                ) {
-
-                    if (
-                        !isAdminHeader(req)
-                    ) {
-
-                        return sendJson(
-                            res,
-                            401,
-                            {
-                                error:
-                                    "Parol noto'g'ri"
-                            }
-                        );
-                    }
-
-                    const result =
-                        await pool.query(`
-                            SELECT
-                                views,
-                                calls
-                            FROM stats
-                            WHERE id = 1
-                        `);
-
-                    const row =
-                        result.rows[0] || {
-                            views: 0,
-                            calls: 0
-                        };
-
-                    const carsResult =
-                        await pool.query(`
-                            SELECT
-                                COUNT(*)::int AS total,
-
-                                COUNT(*)
-                                FILTER (
-                                    WHERE sold = true
-                                )::int AS sold
-                            FROM cars
-                        `);
-
-                    const cars =
-                        carsResult.rows[0] || {
-                            total: 0,
-                            sold: 0
-                        };
-
-                    return sendJson(
-                        res,
-                        200,
-                        {
-                            views:
-                                Number(
-                                    row.views
-                                ) || 0,
-
-                            calls:
-                                Number(
-                                    row.calls
-                                ) || 0,
-
-                            cars:
-                                Number(
-                                    cars.total
-                                ) || 0,
-
-                            sold:
-                                Number(
-                                    cars.sold
-                                ) || 0
-                        }
-                    );
-                }
-
-                // =================================================
-                // RESET TOTAL VIEWS
-                // =================================================
-
-                if (
-                    url === '/api/stats/reset-views' &&
-                    req.method === 'POST'
-                ) {
-
-                    let body = {};
-
-                    try {
-
-                        const raw =
-                            await readBody(req);
-
-                        if (raw) {
-
-                            body =
-                                JSON.parse(raw);
-                        }
-
-                    } catch (e) {
-
-                        body = {};
-                    }
-
-                    // ADMIN PASSWORD
-                    if (
-                        !isAdmin(
-                            req,
-                            body
-                        )
-                    ) {
-
-                        return sendJson(
-                            res,
-                            401,
-                            {
-                                error:
-                                    "Parol noto'g'ri"
-                            }
-                        );
-                    }
-
-                    // FAQAT UMUMIY KO'RISHLAR 0 QILINADI.
-                    //
-                    // daily_stats JADVALIGA TEGILMAYDI.
-                    //
-
-                    await pool.query(`
-                        UPDATE stats
-                        SET views = 0
-                        WHERE id = 1
-                    `);
-
-                    return sendJson(
-                        res,
-                        200,
-                        {
-                            ok: true,
-                            views: 0
-                        }
-                    );
-                }
-
-                // =================================================
-                // DAILY STATS
-                // =================================================
-
-                if (
-                    url === '/api/stats/daily' &&
-                    req.method === 'GET'
-                ) {
-
-                    if (
-                        !isAdminHeader(req)
-                    ) {
-
-                        return sendJson(
-                            res,
-                            401,
-                            {
-                                error:
-                                    "Parol noto'g'ri"
-                            }
-                        );
-                    }
-
-                    const result =
-                        await pool.query(`
-                            SELECT
-                                stat_date,
-                                views,
-                                calls
-                            FROM daily_stats
-                            WHERE stat_date >=
-                                CURRENT_DATE -
-                                INTERVAL '29 days'
-                            ORDER BY stat_date ASC
-                        `);
-
-                    return sendJson(
-                        res,
-                        200,
-                        {
-                            days:
-                                result.rows.map(
-                                    row => ({
-                                        date:
-                                            row.stat_date,
-
-                                        views:
-                                            Number(
-                                                row.views
-                                            ) || 0,
-
-                                        calls:
-                                            Number(
-                                                row.calls
-                                            ) || 0
-                                    })
-                                )
-                        }
-                    );
-                }
-
-                // =================================================
-                // ADMIN PAGE
-                // =================================================
-
-                if (
-                    url === '/admin' ||
-                    url === '/admin.html'
-                ) {
-
-                    return sendFile(
-                        res,
-                        'admin.html'
-                    );
-                }
-
-                // =================================================
-                // MAIN PAGE
-                // =================================================
-
-                if (
-                    url === '/' ||
-                    url === '/index.html'
-                ) {
-
-                    return sendFile(
-                        res,
-                        'index.html'
-                    );
-                }
-
-                // =================================================
-                // OTHER STATIC FILES
-                // =================================================
-
-                if (
-                    req.method === 'GET' &&
-                    (
-                        url.endsWith('.css') ||
-                        url.endsWith('.js')
-                    )
-                ) {
-
-                    const requested =
-                        url.replace(
-                            /^\/+/,
-                            ''
-                        );
-
-                    return sendFile(
-                        res,
-                        requested
-                    );
-                }
-
-                // =================================================
-                // 404
-                // =================================================
-
-                return sendJson(
-                    res,
-                    404,
-                    {
-                        error:
-                            'Sahifa topilmadi'
-                    }
-                );
-
-            } catch (e) {
-
-                console.error(
-                    'SERVER ERROR:',
-                    e
-                );
-
-                return sendJson(
-                    res,
-                    500,
-                    {
-                        error:
-                            'Server xatosi'
-                    }
-                );
-            }
+            return sendJson(res, e.status, { error: e.message });
         }
-    );
 
-// =====================================================
-// START SERVER
-// =====================================================
+        console.error('SERVER ERROR:', e);
+
+        return sendJson(res, 500, { error: 'Server xatosi' });
+    }
+});
+
+// Render (proksi) orqasida uzilib qolmasligi uchun
+server.keepAliveTimeout = 65 * 1000;
+server.headersTimeout = 66 * 1000;
 
 async function start() {
 
@@ -2659,31 +1672,15 @@ async function start() {
 
         await initDatabase();
 
-        const PORT =
-            Number(
-                process.env.PORT
-            ) || 3000;
+        server.listen(PORT, () => {
 
-        server.listen(
-            PORT,
-            () => {
-
-                console.log(
-                    `Server ${PORT}-portda ishlayapti`
-                );
-
-                console.log(
-                    'Admin password tekshiruvi faol'
-                );
-            }
-        );
+            console.log(`Server ${PORT}-portda ishlayapti`);
+            console.log('Admin password tekshiruvi faol (3 ta urinish)');
+        });
 
     } catch (error) {
 
-        console.error(
-            'Database ulanishida xatolik:',
-            error
-        );
+        console.error('Database ulanishida xatolik:', error);
 
         process.exit(1);
     }
@@ -2692,14 +1689,28 @@ async function start() {
 start();
 
 // =====================================================
-// GRACEFUL SHUTDOWN
+// XATOLAR VA TO'XTATISH
 // =====================================================
+
+process.on('unhandledRejection', reason => {
+
+    console.error('UNHANDLED REJECTION:', reason);
+});
+
+process.on('uncaughtException', error => {
+
+    console.error('UNCAUGHT EXCEPTION:', error);
+
+    process.exit(1);
+});
 
 async function shutdown(signal) {
 
-    console.log(
-        `${signal}: Server to'xtatilmoqda...`
-    );
+    console.log(`${signal}: Server to'xtatilmoqda...`);
+
+    const force = setTimeout(() => process.exit(1), 10000);
+
+    force.unref();
 
     try {
 
@@ -2711,21 +1722,11 @@ async function shutdown(signal) {
 
     } catch (e) {
 
-        console.error(
-            'Shutdown xatosi:',
-            e
-        );
+        console.error('Shutdown xatosi:', e);
 
         process.exit(1);
     }
 }
 
-process.on(
-    'SIGTERM',
-    () => shutdown('SIGTERM')
-);
-
-process.on(
-    'SIGINT',
-    () => shutdown('SIGINT')
-);
+process.on('SIGTERM', () => shutdown('SIGTERM'));
+process.on('SIGINT', () => shutdown('SIGINT'));
