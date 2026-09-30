@@ -395,44 +395,114 @@ function passwordMatches(value) {
 // ADMIN HEADER
 // =====================================================
 
-function isAdminHeader(req) {
+// =====================================================
+// ADMIN (3 TA URINISH)
+// =====================================================
 
-    const password =
-        req.headers['x-admin-password'];
+const MAX_FAILS = 3;
+const BLOCK_MS = 15 * 60 * 1000;
+const failedAttempts = new Map();
 
-    return passwordMatches(
-        password
-    );
+function getIp(req) {
+
+    const fwd = req.headers['x-forwarded-for'];
+
+    if (fwd) {
+        return String(fwd).split(',')[0].trim();
+    }
+
+    return req.socket.remoteAddress || 'unknown';
 }
 
-// =====================================================
-// ADMIN BODY
-// =====================================================
+function isBlocked(req) {
 
-function isAdminBody(body) {
+    const ip = getIp(req);
+    const rec = failedAttempts.get(ip);
 
-    if (
-        !body ||
-        typeof body !== 'object'
-    ) {
+    if (!rec) {
         return false;
     }
 
-    return passwordMatches(
-        body.password
-    );
+    if (Date.now() - rec.first > BLOCK_MS) {
+
+        failedAttempts.delete(ip);
+
+        return false;
+    }
+
+    return rec.count >= MAX_FAILS;
 }
 
-// =====================================================
-// ADMIN
-// =====================================================
+function registerFail(req) {
+
+    const ip = getIp(req);
+    const rec = failedAttempts.get(ip);
+
+    if (!rec || Date.now() - rec.first > BLOCK_MS) {
+
+        failedAttempts.set(ip, { count: 1, first: Date.now() });
+
+    } else {
+
+        rec.count++;
+    }
+}
+
+setInterval(() => {
+
+    const now = Date.now();
+
+    for (const [ip, rec] of failedAttempts) {
+
+        if (now - rec.first > BLOCK_MS) {
+            failedAttempts.delete(ip);
+        }
+    }
+
+}, 60 * 1000).unref();
+
+function checkPassword(req, bodyPassword) {
+
+    if (isBlocked(req)) {
+        return false;
+    }
+
+    const headerPassword = req.headers['x-admin-password'];
+
+    if (
+        passwordMatches(headerPassword) ||
+        passwordMatches(bodyPassword)
+    ) {
+
+        failedAttempts.delete(getIp(req));
+
+        return true;
+    }
+
+    // Parol umuman yuborilmagan bo'lsa, xato hisoblanmaydi
+    if (
+        normalizePassword(headerPassword) ||
+        normalizePassword(bodyPassword)
+    ) {
+        registerFail(req);
+    }
+
+    return false;
+}
+
+function isAdminHeader(req) {
+
+    return checkPassword(req, '');
+}
 
 function isAdmin(req, body = null) {
 
-    return (
-        isAdminHeader(req) ||
-        isAdminBody(body)
-    );
+    const bodyPassword =
+        body && typeof body === 'object'
+            ? body.password
+            : '';
+
+    return checkPassword(req, bodyPassword);
 }
 
 // =====================================================
