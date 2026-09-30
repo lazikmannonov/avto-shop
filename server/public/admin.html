@@ -6,11 +6,7 @@
 <title>Admin Panel — Uylar</title>
 
 <style>
-*{
-    box-sizing:border-box;
-    margin:0;
-    padding:0;
-}
+*{box-sizing:border-box;margin:0;padding:0}
 
 :root{
     --bg:#f4f6f8;
@@ -36,92 +32,31 @@ body.dark{
     --shadow:0 12px 35px rgba(0,0,0,.25);
 }
 
-html{
-    scroll-behavior:smooth;
-}
+html{scroll-behavior:smooth}
+body{font-family:Inter,Arial,Helvetica,sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+button,input,select,textarea{font:inherit}
+button{cursor:pointer}
+button:disabled{cursor:not-allowed}
+a{color:inherit;text-decoration:none}
 
-body{
-    font-family:Inter,Arial,Helvetica,sans-serif;
-    background:var(--bg);
-    color:var(--text);
-    min-height:100vh;
-}
+.icon-sprite{position:absolute;width:0;height:0;overflow:hidden}
+.icon{width:19px;height:19px;display:inline-block;flex:none;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.icon-sm{width:16px;height:16px}
+.icon-lg{width:22px;height:22px}
+.icon-xl{width:28px;height:28px}
 
-button,
-input,
-select,
-textarea{
-    font:inherit;
-}
-
-button{
-    cursor:pointer;
-}
-
-button:disabled{
-    cursor:not-allowed;
-}
-
-a{
-    color:inherit;
-    text-decoration:none;
-}
-
-.icon-sprite{
-    position:absolute;
-    width:0;
-    height:0;
-    overflow:hidden;
-}
-
-.icon{
-    width:19px;
-    height:19px;
-    display:inline-block;
-    flex:none;
-    fill:none;
-    stroke:currentColor;
-    stroke-width:1.8;
-    stroke-linecap:round;
-    stroke-linejoin:round;
-}
-
-.icon-sm{
-    width:16px;
-    height:16px;
-}
-
-.icon-lg{
-    width:22px;
-    height:22px;
-}
-
-.icon-xl{
-    width:28px;
-    height:28px;
-}
-
-/* =========================
-   LOGIN
-========================= */
+/* ========================= LOGIN ========================= */
 
 .login-screen{
-    position:fixed;
-    inset:0;
-    z-index:10000;
-    display:flex;
-    align-items:center;
-    justify-content:center;
+    position:fixed;inset:0;z-index:10000;
+    display:flex;align-items:center;justify-content:center;
     padding:20px;
     background:
         radial-gradient(circle at 20% 20%,rgba(25,214,107,.13),transparent 32%),
         radial-gradient(circle at 80% 80%,rgba(59,130,246,.10),transparent 30%),
         var(--bg);
 }
-
-.login-screen.hidden{
-    display:none;
-}
+.login-screen.hidden{display:none}
 
 .login-card{
     width:min(430px,100%);
@@ -132,1392 +67,397 @@ a{
     box-shadow:0 30px 80px rgba(0,0,0,.14);
     animation:loginIn .35s ease;
 }
-
 @keyframes loginIn{
-    from{
-        opacity:0;
-        transform:translateY(16px) scale(.98);
-    }
-    to{
-        opacity:1;
-        transform:none;
-    }
+    from{opacity:0;transform:translateY(16px) scale(.98)}
+    to{opacity:1;transform:none}
 }
 
 .login-logo{
-    width:64px;
-    height:64px;
-    border-radius:20px;
+    width:64px;height:64px;border-radius:20px;
     background:linear-gradient(135deg,#111827,#2d3748);
-    color:#fff;
-    display:grid;
-    place-items:center;
-    margin-bottom:20px;
+    color:#fff;display:grid;place-items:center;margin-bottom:20px;
     box-shadow:0 12px 30px rgba(0,0,0,.18);
 }
-
-.login-logo .icon{
-    width:31px;
-    height:31px;
-}
-
-.login-title{
-    font-size:25px;
-    font-weight:900;
-    letter-spacing:-.6px;
-}
-
-.login-sub{
-    margin-top:7px;
-    color:var(--muted);
-    font-size:13px;
-    line-height:1.55;
-}
-
-.login-form{
-    margin-top:24px;
-}
-
-.login-input-wrap{
-    position:relative;
-}
+.login-logo .icon{width:31px;height:31px}
+.login-title{font-size:25px;font-weight:900;letter-spacing:-.6px}
+.login-sub{margin-top:7px;color:var(--muted);font-size:13px;line-height:1.55}
+.login-form{margin-top:24px}
+.login-input-wrap{position:relative}
 
 .login-input{
-    width:100%;
-    height:52px;
+    width:100%;height:52px;
     border:1px solid var(--border);
-    background:var(--soft);
-    color:var(--text);
-    border-radius:14px;
-    padding:0 50px 0 15px;
-    outline:none;
-    transition:.2s;
+    background:var(--soft);color:var(--text);
+    border-radius:14px;padding:0 50px 0 15px;
+    outline:none;transition:.2s;
 }
-
-.login-input:focus{
-    border-color:var(--accent);
-    box-shadow:0 0 0 4px rgba(25,214,107,.10);
-}
+.login-input:focus{border-color:var(--accent);box-shadow:0 0 0 4px rgba(25,214,107,.10)}
+.login-input:disabled{opacity:.55;cursor:not-allowed}
 
 .login-eye{
-    position:absolute;
-    right:7px;
-    top:7px;
-    width:38px;
-    height:38px;
-    border:0;
-    border-radius:10px;
-    background:transparent;
-    color:var(--muted);
-    display:grid;
-    place-items:center;
+    position:absolute;right:7px;top:7px;width:38px;height:38px;
+    border:0;border-radius:10px;background:transparent;color:var(--muted);
+    display:grid;place-items:center;
 }
-
-.login-eye:hover{
-    background:var(--card);
-    color:var(--text);
-}
+.login-eye:hover{background:var(--card);color:var(--text)}
+.login-eye:disabled{opacity:.5}
 
 .login-button{
-    width:100%;
-    height:52px;
-    margin-top:12px;
-    border:0;
-    border-radius:14px;
-    background:linear-gradient(135deg,#111827,#222b38);
-    color:#fff;
-    font-weight:800;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    gap:8px;
-    box-shadow:0 12px 25px rgba(0,0,0,.13);
-    transition:.2s;
+    width:100%;height:52px;margin-top:12px;border:0;border-radius:14px;
+    background:linear-gradient(135deg,#111827,#222b38);color:#fff;font-weight:800;
+    display:flex;align-items:center;justify-content:center;gap:8px;
+    box-shadow:0 12px 25px rgba(0,0,0,.13);transition:.2s;
 }
+.login-button:hover:not(:disabled){transform:translateY(-1px)}
+.login-button:disabled{opacity:.55}
 
-.login-button:hover{
-    transform:translateY(-1px);
-}
+.login-error{min-height:18px;margin-top:10px;color:var(--danger);font-size:12px;font-weight:700;line-height:1.5}
+.login-error.warn{color:var(--warning)}
 
-.login-error{
-    min-height:18px;
-    margin-top:10px;
-    color:var(--danger);
-    font-size:12px;
-    font-weight:700;
-}
+/* ========================= APP ========================= */
 
-/* =========================
-   APP
-========================= */
-
-.app{
-    min-height:100vh;
-    display:flex;
-}
+.app{min-height:100vh;display:flex}
 
 .sidebar{
-    width:255px;
-    background:var(--card);
-    border-right:1px solid var(--border);
-    position:fixed;
-    left:0;
-    top:0;
-    bottom:0;
-    z-index:100;
-    display:flex;
-    flex-direction:column;
-    transition:.25s;
+    width:255px;background:var(--card);border-right:1px solid var(--border);
+    position:fixed;left:0;top:0;bottom:0;z-index:100;
+    display:flex;flex-direction:column;transition:.25s;
 }
 
 .logo{
-    height:76px;
-    display:flex;
-    align-items:center;
-    gap:11px;
-    padding:0 22px;
-    border-bottom:1px solid var(--border);
-    font-weight:850;
-    font-size:20px;
+    height:76px;display:flex;align-items:center;gap:11px;padding:0 22px;
+    border-bottom:1px solid var(--border);font-weight:850;font-size:20px;
 }
+.logo-mark{width:38px;height:38px;border-radius:12px;background:var(--text);color:var(--bg);display:grid;place-items:center}
+.logo-mark .icon{width:22px;height:22px}
 
-.logo-mark{
-    width:38px;
-    height:38px;
-    border-radius:12px;
-    background:var(--text);
-    color:var(--bg);
-    display:grid;
-    place-items:center;
-}
-
-.logo-mark .icon{
-    width:22px;
-    height:22px;
-}
-
-.nav{
-    padding:18px 12px;
-    display:flex;
-    flex-direction:column;
-    gap:5px;
-}
-
+.nav{padding:18px 12px;display:flex;flex-direction:column;gap:5px}
 .nav button{
-    width:100%;
-    border:0;
-    background:transparent;
-    color:var(--muted);
-    border-radius:12px;
-    padding:12px 13px;
-    display:flex;
-    align-items:center;
-    gap:12px;
-    text-align:left;
-    transition:.2s;
+    width:100%;border:0;background:transparent;color:var(--muted);
+    border-radius:12px;padding:12px 13px;display:flex;align-items:center;gap:12px;
+    text-align:left;transition:.2s;
 }
+.nav button:hover{background:var(--soft);color:var(--text)}
+.nav button.active{background:var(--text);color:var(--bg)}
 
-.nav button:hover{
-    background:var(--soft);
-    color:var(--text);
-}
-
-.nav button.active{
-    background:var(--text);
-    color:var(--bg);
-}
-
-.sidebar-bottom{
-    margin-top:auto;
-    padding:12px;
-    border-top:1px solid var(--border);
-    display:flex;
-    flex-direction:column;
-    gap:5px;
-}
-
+.sidebar-bottom{margin-top:auto;padding:12px;border-top:1px solid var(--border);display:flex;flex-direction:column;gap:5px}
 .sidebar-bottom button{
-    border:0;
-    background:transparent;
-    color:var(--muted);
-    border-radius:12px;
-    padding:12px 13px;
-    display:flex;
-    align-items:center;
-    gap:12px;
-    text-align:left;
+    border:0;background:transparent;color:var(--muted);border-radius:12px;
+    padding:12px 13px;display:flex;align-items:center;gap:12px;text-align:left;
 }
+.sidebar-bottom button:hover{background:var(--soft);color:var(--text)}
 
-.sidebar-bottom button:hover{
-    background:var(--soft);
-    color:var(--text);
-}
-
-.main{
-    margin-left:255px;
-    width:calc(100% - 255px);
-    min-height:100vh;
-}
+.main{margin-left:255px;width:calc(100% - 255px);min-height:100vh}
 
 .topbar{
-    height:76px;
-    background:var(--card);
-    border-bottom:1px solid var(--border);
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    padding:0 28px;
-    position:sticky;
-    top:0;
-    z-index:50;
+    height:76px;background:var(--card);border-bottom:1px solid var(--border);
+    display:flex;align-items:center;justify-content:space-between;
+    padding:0 28px;position:sticky;top:0;z-index:50;
 }
-
-.top-left{
-    display:flex;
-    align-items:center;
-    gap:12px;
-}
-
+.top-left{display:flex;align-items:center;gap:12px}
 .menu-btn{
-    display:none;
-    width:40px;
-    height:40px;
-    border:1px solid var(--border);
-    background:var(--card);
-    color:var(--text);
-    border-radius:10px;
-    place-items:center;
+    display:none;width:40px;height:40px;border:1px solid var(--border);
+    background:var(--card);color:var(--text);border-radius:10px;place-items:center;
 }
-
-.page-title{
-    font-size:20px;
-    font-weight:850;
-}
-
-.top-actions{
-    display:flex;
-    align-items:center;
-    gap:8px;
-}
-
+.page-title{font-size:20px;font-weight:850}
+.top-actions{display:flex;align-items:center;gap:8px}
 .top-btn{
-    width:40px;
-    height:40px;
-    border:1px solid var(--border);
-    background:var(--card);
-    color:var(--text);
-    border-radius:11px;
-    display:grid;
-    place-items:center;
+    width:40px;height:40px;border:1px solid var(--border);background:var(--card);
+    color:var(--text);border-radius:11px;display:grid;place-items:center;
 }
+.top-btn:hover{background:var(--soft)}
 
-.top-btn:hover{
-    background:var(--soft);
-}
+.content{padding:28px;max-width:1500px;margin:auto}
+.page{display:none}
+.page.active{display:block}
 
-.content{
-    padding:28px;
-    max-width:1500px;
-    margin:auto;
-}
+/* ========================= STATS ========================= */
 
-.page{
-    display:none;
-}
-
-.page.active{
-    display:block;
-}
-
-/* =========================
-   STATS
-========================= */
-
-.stats-grid{
-    display:grid;
-    grid-template-columns:repeat(4,1fr);
-    gap:16px;
-    margin-bottom:22px;
-}
-
-.stat-card{
-    background:var(--card);
-    border:1px solid var(--border);
-    border-radius:20px;
-    padding:20px;
-    box-shadow:var(--shadow);
-}
-
-.stat-top{
-    display:flex;
-    justify-content:space-between;
-    align-items:flex-start;
-    margin-bottom:20px;
-}
-
-.stat-icon{
-    width:46px;
-    height:46px;
-    border-radius:14px;
-    background:var(--soft);
-    display:grid;
-    place-items:center;
-}
-
-.stat-value{
-    font-size:29px;
-    font-weight:900;
-    letter-spacing:-1px;
-}
-
-.stat-label-row{
-    display:flex;
-    align-items:center;
-    gap:4px;
-}
-
-.stat-label{
-    color:var(--muted);
-    font-size:13px;
-    margin-top:5px;
-}
-
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:22px}
+.stat-card{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:20px;box-shadow:var(--shadow)}
+.stat-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:20px}
+.stat-icon{width:46px;height:46px;border-radius:14px;background:var(--soft);display:grid;place-items:center}
+.stat-value{font-size:29px;font-weight:900;letter-spacing:-1px}
+.stat-label-row{display:flex;align-items:center;gap:4px}
+.stat-label{color:var(--muted);font-size:13px;margin-top:5px}
 .stat-refresh{
-    width:25px;
-    height:25px;
-    border:1px solid var(--border);
-    background:var(--soft);
-    color:var(--muted);
-    border-radius:8px;
-    display:inline-grid;
-    place-items:center;
-    padding:0;
-    margin-left:4px;
-    transition:.25s;
+    width:25px;height:25px;border:1px solid var(--border);background:var(--soft);
+    color:var(--muted);border-radius:8px;display:inline-grid;place-items:center;
+    padding:0;margin-left:4px;transition:.25s;
 }
+.stat-refresh:hover{color:var(--text);border-color:var(--accent);box-shadow:0 0 0 3px rgba(25,214,107,.08)}
+.stat-refresh:active{transform:scale(.9)}
+.stat-refresh .icon{width:13px;height:13px}
+.stat-refresh.spinning .icon{animation:statRefreshSpin .7s linear infinite}
+@keyframes statRefreshSpin{to{transform:rotate(360deg)}}
 
-.stat-refresh:hover{
-    color:var(--text);
-    border-color:var(--accent);
-    box-shadow:0 0 0 3px rgba(25,214,107,.08);
+/* ========================= PANELS ========================= */
+
+.dashboard-grid{display:grid;grid-template-columns:1.5fr 1fr;gap:18px}
+.panel{background:var(--card);border:1px solid var(--border);border-radius:20px;box-shadow:var(--shadow);overflow:hidden}
+.panel-header{padding:18px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:10px}
+.panel-title{font-weight:850}
+.panel-body{padding:20px}
+
+.activity-list{display:flex;flex-direction:column;gap:13px}
+.activity{display:flex;align-items:center;gap:12px}
+.activity-icon{width:38px;height:38px;border-radius:11px;background:var(--soft);display:grid;place-items:center}
+.activity-main{flex:1;min-width:0}
+.activity-title{font-size:14px;font-weight:700}
+.activity-time{font-size:12px;color:var(--muted);margin-top:3px}
+
+.chart{height:240px;display:flex;align-items:flex-end;gap:9px;padding-top:20px}
+.chart-bar-wrap{flex:1;height:100%;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:7px}
+.chart-bar{width:100%;max-width:42px;min-height:5px;border-radius:8px 8px 3px 3px;background:linear-gradient(180deg,var(--accent),#0fa957);transition:.3s}
+.chart-label{font-size:10px;color:var(--muted)}
+
+/* ========================= FORMS ========================= */
+
+.form-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+.form-group{display:flex;flex-direction:column;gap:7px}
+.form-group.full{grid-column:1/-1}
+label{font-size:13px;font-weight:750}
+
+.input,.select,.textarea{
+    width:100%;border:1px solid var(--border);background:var(--card);color:var(--text);
+    border-radius:12px;padding:12px 13px;outline:none;transition:.2s;
 }
+.input:focus,.select:focus,.textarea:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(25,214,107,.09)}
+.textarea{min-height:120px;resize:vertical}
 
-.stat-refresh:active{
-    transform:scale(.9);
-}
-
-.stat-refresh .icon{
-    width:13px;
-    height:13px;
-}
-
-.stat-refresh.spinning .icon{
-    animation:statRefreshSpin .7s linear infinite;
-}
-
-@keyframes statRefreshSpin{
-    to{
-        transform:rotate(360deg);
-    }
-}
-
-/* =========================
-   PANELS
-========================= */
-
-.dashboard-grid{
-    display:grid;
-    grid-template-columns:1.5fr 1fr;
-    gap:18px;
-}
-
-.panel{
-    background:var(--card);
-    border:1px solid var(--border);
-    border-radius:20px;
-    box-shadow:var(--shadow);
-    overflow:hidden;
-}
-
-.panel-header{
-    padding:18px 20px;
-    border-bottom:1px solid var(--border);
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    gap:10px;
-}
-
-.panel-title{
-    font-weight:850;
-}
-
-.panel-body{
-    padding:20px;
-}
-
-.activity-list{
-    display:flex;
-    flex-direction:column;
-    gap:13px;
-}
-
-.activity{
-    display:flex;
-    align-items:center;
-    gap:12px;
-}
-
-.activity-icon{
-    width:38px;
-    height:38px;
-    border-radius:11px;
-    background:var(--soft);
-    display:grid;
-    place-items:center;
-}
-
-.activity-main{
-    flex:1;
-    min-width:0;
-}
-
-.activity-title{
-    font-size:14px;
-    font-weight:700;
-}
-
-.activity-time{
-    font-size:12px;
-    color:var(--muted);
-    margin-top:3px;
-}
-
-.chart{
-    height:240px;
-    display:flex;
-    align-items:flex-end;
-    gap:9px;
-    padding-top:20px;
-}
-
-.chart-bar-wrap{
-    flex:1;
-    height:100%;
-    display:flex;
-    flex-direction:column;
-    justify-content:flex-end;
-    align-items:center;
-    gap:7px;
-}
-
-.chart-bar{
-    width:100%;
-    max-width:42px;
-    min-height:5px;
-    border-radius:8px 8px 3px 3px;
-    background:linear-gradient(180deg,var(--accent),#0fa957);
-    transition:.3s;
-}
-
-.chart-label{
-    font-size:10px;
-    color:var(--muted);
-}
-
-/* =========================
-   FORMS
-========================= */
-
-.form-grid{
-    display:grid;
-    grid-template-columns:repeat(2,1fr);
-    gap:16px;
-}
-
-.form-group{
-    display:flex;
-    flex-direction:column;
-    gap:7px;
-}
-
-.form-group.full{
-    grid-column:1/-1;
-}
-
-label{
-    font-size:13px;
-    font-weight:750;
-}
-
-.input,
-.select,
-.textarea{
-    width:100%;
-    border:1px solid var(--border);
-    background:var(--card);
-    color:var(--text);
-    border-radius:12px;
-    padding:12px 13px;
-    outline:none;
-    transition:.2s;
-}
-
-.input:focus,
-.select:focus,
-.textarea:focus{
-    border-color:var(--accent);
-    box-shadow:0 0 0 3px rgba(25,214,107,.09);
-}
-
-.textarea{
-    min-height:120px;
-    resize:vertical;
-}
-
-.password-wrap{
-    position:relative;
-}
-
-.password-wrap .input{
-    padding-right:48px;
-}
-
+.password-wrap{position:relative}
+.password-wrap .input{padding-right:48px}
 .password-eye{
-    position:absolute;
-    right:8px;
-    top:50%;
-    transform:translateY(-50%);
-    width:34px;
-    height:34px;
-    border:0;
-    background:transparent;
-    color:var(--muted);
-    display:grid;
-    place-items:center;
+    position:absolute;right:8px;top:50%;transform:translateY(-50%);
+    width:34px;height:34px;border:0;background:transparent;color:var(--muted);
+    display:grid;place-items:center;
 }
 
-/* =========================
-   TYPES
-========================= */
+/* ========================= TYPES ========================= */
 
-.type-options{
-    display:grid;
-    grid-template-columns:repeat(2,1fr);
-    gap:10px;
-}
-
+.type-options{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
 .type-option{
-    position:relative;
-    min-height:72px;
-    border:1px solid var(--border);
-    background:var(--soft);
-    color:var(--text);
-    border-radius:15px;
-    padding:12px 13px;
-    display:flex;
-    align-items:center;
-    gap:11px;
-    text-align:left;
-    transition:.2s;
+    position:relative;min-height:72px;border:1px solid var(--border);background:var(--soft);
+    color:var(--text);border-radius:15px;padding:12px 13px;display:flex;align-items:center;
+    gap:11px;text-align:left;transition:.2s;
 }
+.type-option:hover{transform:translateY(-1px);border-color:var(--accent)}
+.type-option.selected{background:var(--text);color:var(--bg);border-color:var(--text);box-shadow:0 8px 20px rgba(0,0,0,.12)}
+body.dark .type-option.selected{background:#fff;color:#111;border-color:#fff}
+.type-option-icon{width:39px;height:39px;border-radius:11px;background:var(--card);display:grid;place-items:center;flex:none}
+.type-option-check{width:22px;height:22px;border-radius:50%;border:1px solid var(--border);margin-left:auto;display:grid;place-items:center}
+.type-option-check .icon{width:13px;height:13px;opacity:0}
+.type-option.selected .type-option-check{background:var(--card);color:var(--text)}
+.type-option.selected .type-option-check .icon{opacity:1}
+.type-summary{margin-top:9px;padding:9px 11px;border-radius:10px;background:var(--soft);color:var(--muted);font-size:12px}
 
-.type-option:hover{
-    transform:translateY(-1px);
-    border-color:var(--accent);
-}
+/* ========================= CURRENCY ========================= */
 
-.type-option.selected{
-    background:var(--text);
-    color:var(--bg);
-    border-color:var(--text);
-    box-shadow:0 8px 20px rgba(0,0,0,.12);
-}
-
-body.dark .type-option.selected{
-    background:#fff;
-    color:#111;
-    border-color:#fff;
-}
-
-.type-option-icon{
-    width:39px;
-    height:39px;
-    border-radius:11px;
-    background:var(--card);
-    display:grid;
-    place-items:center;
-    flex:none;
-}
-
-.type-option-check{
-    width:22px;
-    height:22px;
-    border-radius:50%;
-    border:1px solid var(--border);
-    margin-left:auto;
-    display:grid;
-    place-items:center;
-}
-
-.type-option-check .icon{
-    width:13px;
-    height:13px;
-    opacity:0;
-}
-
-.type-option.selected .type-option-check{
-    background:var(--card);
-    color:var(--text);
-}
-
-.type-option.selected .type-option-check .icon{
-    opacity:1;
-}
-
-.type-summary{
-    margin-top:9px;
-    padding:9px 11px;
-    border-radius:10px;
-    background:var(--soft);
-    color:var(--muted);
-    font-size:12px;
-}
-
-/* =========================
-   CURRENCY
-========================= */
-
-.currency-buttons{
-    display:flex;
-    gap:8px;
-}
-
+.currency-buttons{display:flex;gap:8px}
 .currency-btn{
-    flex:1;
-    border:1px solid var(--border);
-    background:var(--soft);
-    color:var(--text);
-    border-radius:11px;
-    padding:11px;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    gap:7px;
-    font-weight:750;
+    flex:1;border:1px solid var(--border);background:var(--soft);color:var(--text);
+    border-radius:11px;padding:11px;display:flex;align-items:center;justify-content:center;
+    gap:7px;font-weight:750;
 }
+.currency-btn.active{background:var(--text);color:var(--bg);border-color:var(--text)}
 
-.currency-btn.active{
-    background:var(--text);
-    color:var(--bg);
-    border-color:var(--text);
-}
-
-/* =========================
-   UPLOAD
-========================= */
+/* ========================= UPLOAD ========================= */
 
 .upload-box{
-    border:1.5px dashed var(--border);
-    border-radius:15px;
-    min-height:145px;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    flex-direction:column;
-    gap:8px;
-    background:var(--soft);
-    color:var(--muted);
-    transition:.2s;
-    text-align:center;
-    padding:20px;
-    cursor:pointer;
+    border:1.5px dashed var(--border);border-radius:15px;min-height:145px;
+    display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px;
+    background:var(--soft);color:var(--muted);transition:.2s;text-align:center;padding:20px;cursor:pointer;
 }
+.upload-box:hover{border-color:var(--accent)}
+.upload-icon{width:45px;height:45px;border-radius:13px;background:var(--card);display:grid;place-items:center;color:var(--text)}
+.upload-input{display:none}
+.preview-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-top:10px}
+.preview-item{aspect-ratio:1;border-radius:11px;overflow:hidden;border:1px solid var(--border);background:var(--soft)}
+.preview-item img{width:100%;height:100%;object-fit:cover}
 
-.upload-box:hover{
-    border-color:var(--accent);
-}
+/* ========================= EDIT IMAGES ========================= */
 
-.upload-icon{
-    width:45px;
-    height:45px;
-    border-radius:13px;
-    background:var(--card);
-    display:grid;
-    place-items:center;
-    color:var(--text);
-}
-
-.upload-input{
-    display:none;
-}
-
-.preview-grid{
-    display:grid;
-    grid-template-columns:repeat(5,1fr);
-    gap:8px;
-    margin-top:10px;
-}
-
-.preview-item{
-    aspect-ratio:1;
-    border-radius:11px;
-    overflow:hidden;
-    border:1px solid var(--border);
-    background:var(--soft);
-}
-
-.preview-item img{
-    width:100%;
-    height:100%;
-    object-fit:cover;
-}
-
-/* =========================
-   EDIT IMAGES
-========================= */
-
-.edit-images-box{
-    border:1px solid var(--border);
-    border-radius:18px;
-    padding:14px;
-    background:var(--soft);
-    margin-top:12px;
-}
-
-.edit-images-head{
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    gap:12px;
-    margin-bottom:12px;
-}
-
-.edit-images-title{
-    font-size:13px;
-    font-weight:850;
-}
-
-.edit-images-note{
-    color:var(--muted);
-    font-size:11px;
-    margin-top:3px;
-}
-
-.edit-images-grid{
-    display:grid;
-    grid-template-columns:repeat(4,minmax(0,1fr));
-    gap:12px;
-}
-
+.edit-images-box{border:1px solid var(--border);border-radius:18px;padding:14px;background:var(--soft);margin-top:12px}
+.edit-images-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px}
+.edit-images-title{font-size:13px;font-weight:850}
+.edit-images-note{color:var(--muted);font-size:11px;margin-top:3px}
+.edit-images-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
 .edit-image-card{
-    position:relative;
-    aspect-ratio:1/.82;
-    border:1px solid var(--border);
-    border-radius:14px;
-    overflow:hidden;
-    background:var(--card);
-    box-shadow:0 7px 18px rgba(0,0,0,.06);
+    position:relative;aspect-ratio:1/.82;border:1px solid var(--border);border-radius:14px;
+    overflow:hidden;background:var(--card);box-shadow:0 7px 18px rgba(0,0,0,.06);
 }
-
-.edit-image-card img{
-    width:100%;
-    height:100%;
-    object-fit:cover;
-    display:block;
-}
-
-.edit-image-card.main-image{
-    border:2px solid var(--accent);
-}
-
+.edit-image-card img{width:100%;height:100%;object-fit:cover;display:block}
+.edit-image-card.main-image{border:2px solid var(--accent)}
 .edit-image-badge{
-    position:absolute;
-    left:8px;
-    top:8px;
-    padding:5px 7px;
-    border-radius:8px;
-    background:rgba(0,0,0,.72);
-    color:#fff;
-    font-size:9px;
-    font-weight:800;
-    backdrop-filter:blur(8px);
+    position:absolute;left:8px;top:8px;padding:5px 7px;border-radius:8px;
+    background:rgba(0,0,0,.72);color:#fff;font-size:9px;font-weight:800;backdrop-filter:blur(8px);
 }
-
 .edit-image-new{
-    position:absolute;
-    right:8px;
-    top:8px;
-    padding:5px 7px;
-    border-radius:8px;
-    background:rgba(25,214,107,.9);
-    color:#06150d;
-    font-size:9px;
-    font-weight:850;
+    position:absolute;right:8px;top:8px;padding:5px 7px;border-radius:8px;
+    background:rgba(25,214,107,.9);color:#06150d;font-size:9px;font-weight:850;
 }
-
-.edit-image-actions{
-    position:absolute;
-    left:7px;
-    right:7px;
-    bottom:7px;
-    display:flex;
-    gap:5px;
-}
-
+.edit-image-actions{position:absolute;left:7px;right:7px;bottom:7px;display:flex;gap:5px}
 .edit-image-btn{
-    flex:1;
-    min-width:0;
-    height:31px;
-    border:1px solid rgba(255,255,255,.2);
-    border-radius:8px;
-    background:rgba(0,0,0,.72);
-    color:#fff;
-    display:grid;
-    place-items:center;
-    backdrop-filter:blur(8px);
+    flex:1;min-width:0;height:31px;border:1px solid rgba(255,255,255,.2);border-radius:8px;
+    background:rgba(0,0,0,.72);color:#fff;display:grid;place-items:center;backdrop-filter:blur(8px);
 }
-
-.edit-image-btn:hover{
-    background:rgba(0,0,0,.9);
-}
-
+.edit-image-btn:hover{background:rgba(0,0,0,.9)}
 .edit-images-empty{
-    grid-column:1/-1;
-    padding:24px;
-    text-align:center;
-    color:var(--muted);
-    font-size:12px;
-    border:1px dashed var(--border);
-    border-radius:12px;
-    background:var(--card);
+    grid-column:1/-1;padding:24px;text-align:center;color:var(--muted);font-size:12px;
+    border:1px dashed var(--border);border-radius:12px;background:var(--card);
 }
+.edit-images-add{margin-top:12px;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
 
-.edit-images-add{
-    margin-top:12px;
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    gap:10px;
-    flex-wrap:wrap;
-}
-
-/* =========================
-   BUTTONS
-========================= */
+/* ========================= BUTTONS ========================= */
 
 .main-btn{
-    border:0;
-    background:var(--text);
-    color:var(--bg);
-    border-radius:12px;
-    padding:13px 17px;
-    display:inline-flex;
-    align-items:center;
-    justify-content:center;
-    gap:8px;
-    font-weight:750;
-    transition:.2s;
+    border:0;background:var(--text);color:var(--bg);border-radius:12px;padding:13px 17px;
+    display:inline-flex;align-items:center;justify-content:center;gap:8px;font-weight:750;transition:.2s;
 }
-
-.main-btn:hover{
-    opacity:.88;
-    transform:translateY(-1px);
-}
-
-.main-btn:disabled{
-    opacity:.5;
-}
-
+.main-btn:hover{opacity:.88;transform:translateY(-1px)}
+.main-btn:disabled{opacity:.5}
 .secondary-btn{
-    border:1px solid var(--border);
-    background:var(--card);
-    color:var(--text);
-    border-radius:12px;
-    padding:12px 15px;
-    display:inline-flex;
-    align-items:center;
-    justify-content:center;
-    gap:8px;
-    font-weight:700;
+    border:1px solid var(--border);background:var(--card);color:var(--text);border-radius:12px;
+    padding:12px 15px;display:inline-flex;align-items:center;justify-content:center;gap:8px;font-weight:700;
 }
+.secondary-btn:hover{background:var(--soft)}
+.form-actions{display:flex;gap:9px;justify-content:flex-end;margin-top:20px;flex-wrap:wrap}
 
-.secondary-btn:hover{
-    background:var(--soft);
-}
+/* ========================= SETTINGS ========================= */
 
-.form-actions{
-    display:flex;
-    gap:9px;
-    justify-content:flex-end;
-    margin-top:20px;
-    flex-wrap:wrap;
-}
+.settings-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+.settings-item{border:1px solid var(--border);background:var(--card);border-radius:15px;padding:15px}
+.settings-head{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.settings-icon{width:40px;height:40px;border-radius:12px;background:var(--soft);display:grid;place-items:center}
+.settings-title{font-weight:750}
+.settings-sub{font-size:12px;color:var(--muted);margin-top:2px}
 
-/* =========================
-   SETTINGS
-========================= */
+/* ========================= HOMES ========================= */
 
-.settings-grid{
-    display:grid;
-    grid-template-columns:repeat(2,1fr);
-    gap:16px;
-}
-
-.settings-item{
-    border:1px solid var(--border);
-    background:var(--card);
-    border-radius:15px;
-    padding:15px;
-}
-
-.settings-head{
-    display:flex;
-    align-items:center;
-    gap:10px;
-    margin-bottom:10px;
-}
-
-.settings-icon{
-    width:40px;
-    height:40px;
-    border-radius:12px;
-    background:var(--soft);
-    display:grid;
-    place-items:center;
-}
-
-.settings-title{
-    font-weight:750;
-}
-
-.settings-sub{
-    font-size:12px;
-    color:var(--muted);
-    margin-top:2px;
-}
-
-/* =========================
-   HOMES
-========================= */
-
-.search-row{
-    display:flex;
-    gap:10px;
-    margin-bottom:15px;
-}
-
-.search-wrap{
-    position:relative;
-    flex:1;
-}
-
-.search-wrap .input{
-    padding-left:42px;
-}
-
-.search-icon{
-    position:absolute;
-    left:13px;
-    top:50%;
-    transform:translateY(-50%);
-    color:var(--muted);
-}
-
-.filters{
-    display:flex;
-    flex-wrap:wrap;
-    gap:8px;
-    margin-bottom:18px;
-}
-
+.search-row{display:flex;gap:10px;margin-bottom:15px}
+.search-wrap{position:relative;flex:1}
+.search-wrap .input{padding-left:42px}
+.search-icon{position:absolute;left:13px;top:50%;transform:translateY(-50%);color:var(--muted)}
+.filters{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:18px}
 .filter{
-    border:1px solid var(--border);
-    background:var(--card);
-    color:var(--muted);
-    border-radius:11px;
-    padding:10px 12px;
-    display:flex;
-    align-items:center;
-    gap:7px;
-    font-size:12px;
-    font-weight:700;
+    border:1px solid var(--border);background:var(--card);color:var(--muted);border-radius:11px;
+    padding:10px 12px;display:flex;align-items:center;gap:7px;font-size:12px;font-weight:700;
 }
+.filter:hover{background:var(--soft);color:var(--text)}
+.filter.active{background:var(--text);color:var(--bg);border-color:var(--text)}
 
-.filter:hover{
-    background:var(--soft);
-    color:var(--text);
-}
-
-.filter.active{
-    background:var(--text);
-    color:var(--bg);
-    border-color:var(--text);
-}
-
-.homes-grid{
-    display:grid;
-    grid-template-columns:repeat(3,1fr);
-    gap:16px;
-}
-
-.home-card{
-    background:var(--card);
-    border:1px solid var(--border);
-    border-radius:17px;
-    overflow:hidden;
-    box-shadow:var(--shadow);
-    transition:.22s;
-}
-
-.home-card:hover{
-    transform:translateY(-2px);
-    box-shadow:0 18px 40px rgba(0,0,0,.10);
-}
-
-.home-image{
-    height:190px;
-    position:relative;
-    background:var(--soft);
-    overflow:hidden;
-}
-
-.home-image img{
-    width:100%;
-    height:100%;
-    object-fit:cover;
-}
-
-.home-image-placeholder{
-    width:100%;
-    height:100%;
-    display:grid;
-    place-items:center;
-    color:var(--muted);
-}
-
+.homes-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.home-card{background:var(--card);border:1px solid var(--border);border-radius:17px;overflow:hidden;box-shadow:var(--shadow);transition:.22s}
+.home-card:hover{transform:translateY(-2px);box-shadow:0 18px 40px rgba(0,0,0,.10)}
+.home-image{height:190px;position:relative;background:var(--soft);overflow:hidden}
+.home-image img{width:100%;height:100%;object-fit:cover}
+.home-image-placeholder{width:100%;height:100%;display:grid;place-items:center;color:var(--muted)}
 .home-status{
-    position:absolute;
-    left:10px;
-    top:10px;
-    border-radius:9px;
-    padding:6px 8px;
-    background:rgba(255,255,255,.92);
-    color:#111;
-    font-size:10px;
-    font-weight:800;
-    backdrop-filter:blur(8px);
+    position:absolute;left:10px;top:10px;border-radius:9px;padding:6px 8px;
+    background:rgba(255,255,255,.92);color:#111;font-size:10px;font-weight:800;backdrop-filter:blur(8px);
 }
-
-.home-content{
-    padding:15px;
-}
-
-.home-title{
-    font-size:16px;
-    font-weight:800;
-    margin-bottom:6px;
-    white-space:nowrap;
-    overflow:hidden;
-    text-overflow:ellipsis;
-}
-
-.home-price{
-    font-size:18px;
-    font-weight:850;
-    margin-bottom:10px;
-}
-
-.home-type{
-    color:var(--muted);
-    font-size:12px;
-    margin-bottom:9px;
-    line-height:1.5;
-}
-
-.home-info{
-    display:flex;
-    flex-wrap:wrap;
-    gap:9px;
-    color:var(--muted);
-    font-size:11px;
-    margin-bottom:12px;
-}
-
-.home-info span{
-    display:flex;
-    align-items:center;
-    gap:4px;
-}
-
-.home-actions{
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:7px;
-}
-
+.home-content{padding:15px}
+.home-title{font-size:16px;font-weight:800;margin-bottom:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.home-price{font-size:18px;font-weight:850;margin-bottom:10px}
+.home-type{color:var(--muted);font-size:12px;margin-bottom:9px;line-height:1.5}
+.home-info{display:flex;flex-wrap:wrap;gap:9px;color:var(--muted);font-size:11px;margin-bottom:12px}
+.home-info span{display:flex;align-items:center;gap:4px}
+.home-actions{display:grid;grid-template-columns:1fr 1fr;gap:7px}
 .action-btn{
-    border:1px solid var(--border);
-    background:var(--soft);
-    color:var(--text);
-    border-radius:10px;
-    padding:9px;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    gap:6px;
-    font-size:11px;
-    font-weight:750;
+    border:1px solid var(--border);background:var(--soft);color:var(--text);border-radius:10px;
+    padding:9px;display:flex;align-items:center;justify-content:center;gap:6px;font-size:11px;font-weight:750;
 }
+.action-btn:hover{background:var(--text);color:var(--bg)}
+.action-btn.danger:hover{background:var(--danger);border-color:var(--danger);color:#fff}
 
-.action-btn:hover{
-    background:var(--text);
-    color:var(--bg);
-}
+/* ========================= EMPTY / TOAST / LOADING ========================= */
 
-.action-btn.danger:hover{
-    background:var(--danger);
-    border-color:var(--danger);
-    color:#fff;
-}
-
-/* =========================
-   EMPTY / TOAST / LOADING
-========================= */
-
-.empty{
-    padding:55px 20px;
-    text-align:center;
-    color:var(--muted);
-    border:1px dashed var(--border);
-    border-radius:16px;
-    grid-column:1/-1;
-}
-
-.empty .icon{
-    width:38px;
-    height:38px;
-    margin-bottom:10px;
-}
+.empty{padding:55px 20px;text-align:center;color:var(--muted);border:1px dashed var(--border);border-radius:16px;grid-column:1/-1}
+.empty .icon{width:38px;height:38px;margin-bottom:10px}
 
 .toast{
-    position:fixed;
-    right:22px;
-    bottom:22px;
-    z-index:11000;
-    background:var(--text);
-    color:var(--bg);
-    border-radius:12px;
-    padding:13px 16px;
-    max-width:360px;
-    box-shadow:0 15px 35px rgba(0,0,0,.2);
-    transform:translateY(120px);
-    opacity:0;
-    pointer-events:none;
-    transition:.25s;
-    font-size:13px;
-    font-weight:650;
+    position:fixed;right:22px;bottom:22px;z-index:11000;background:var(--text);color:var(--bg);
+    border-radius:12px;padding:13px 16px;max-width:360px;box-shadow:0 15px 35px rgba(0,0,0,.2);
+    transform:translateY(120px);opacity:0;pointer-events:none;transition:.25s;font-size:13px;font-weight:650;
 }
-
-.toast.show{
-    transform:translateY(0);
-    opacity:1;
-}
-
-.toast.error{
-    background:var(--danger);
-    color:#fff;
-}
+.toast.show{transform:translateY(0);opacity:1}
+.toast.error{background:var(--danger);color:#fff}
 
 .loading{
-    display:none;
-    position:fixed;
-    inset:0;
-    z-index:12000;
-    background:rgba(0,0,0,.3);
-    backdrop-filter:blur(3px);
-    align-items:center;
-    justify-content:center;
+    display:none;position:fixed;inset:0;z-index:12000;background:rgba(0,0,0,.3);
+    backdrop-filter:blur(3px);align-items:center;justify-content:center;
 }
+.loading.show{display:flex}
+.loader{width:45px;height:45px;border:3px solid rgba(255,255,255,.35);border-top-color:#fff;border-radius:50%;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
 
-.loading.show{
-    display:flex;
-}
-
-.loader{
-    width:45px;
-    height:45px;
-    border:3px solid rgba(255,255,255,.35);
-    border-top-color:#fff;
-    border-radius:50%;
-    animation:spin .8s linear infinite;
-}
-
-@keyframes spin{
-    to{
-        transform:rotate(360deg);
-    }
-}
-
-/* =========================
-   RESPONSIVE
-========================= */
+/* ========================= RESPONSIVE ========================= */
 
 @media(max-width:1100px){
-
-    .stats-grid{
-        grid-template-columns:repeat(2,1fr);
-    }
-
-    .dashboard-grid{
-        grid-template-columns:1fr;
-    }
-
-    .homes-grid{
-        grid-template-columns:repeat(2,1fr);
-    }
+    .stats-grid{grid-template-columns:repeat(2,1fr)}
+    .dashboard-grid{grid-template-columns:1fr}
+    .homes-grid{grid-template-columns:repeat(2,1fr)}
 }
 
 @media(max-width:800px){
-
-    .sidebar{
-        transform:translateX(-100%);
-    }
-
-    .sidebar.open{
-        transform:translateX(0);
-        box-shadow:20px 0 50px rgba(0,0,0,.2);
-    }
-
-    .main{
-        margin-left:0;
-        width:100%;
-    }
-
-    .menu-btn{
-        display:grid;
-    }
-
-    .content{
-        padding:18px;
-    }
-
-    .topbar{
-        padding:0 16px;
-    }
-
-    .form-grid,
-    .settings-grid{
-        grid-template-columns:1fr;
-    }
-
-    .type-options{
-        grid-template-columns:1fr 1fr;
-    }
-
-    .edit-images-grid{
-        grid-template-columns:repeat(3,1fr);
-    }
+    .sidebar{transform:translateX(-100%)}
+    .sidebar.open{transform:translateX(0);box-shadow:20px 0 50px rgba(0,0,0,.2)}
+    .main{margin-left:0;width:100%}
+    .menu-btn{display:grid}
+    .content{padding:18px}
+    .topbar{padding:0 16px}
+    .form-grid,.settings-grid{grid-template-columns:1fr}
+    .type-options{grid-template-columns:1fr 1fr}
+    .edit-images-grid{grid-template-columns:repeat(3,1fr)}
 }
 
 @media(max-width:600px){
-
-    .stats-grid{
-        grid-template-columns:1fr;
-    }
-
-    .homes-grid{
-        grid-template-columns:1fr;
-    }
-
-    .type-options{
-        grid-template-columns:1fr;
-    }
-
-    .preview-grid{
-        grid-template-columns:repeat(3,1fr);
-    }
-
-    .edit-images-grid{
-        grid-template-columns:repeat(2,1fr);
-    }
-
-    .search-row{
-        flex-direction:column;
-    }
-
-    .page-title{
-        font-size:17px;
-    }
-
-    .home-actions{
-        grid-template-columns:1fr;
-    }
-
-    .login-card{
-        padding:24px;
-        border-radius:22px;
-    }
+    .stats-grid{grid-template-columns:1fr}
+    .homes-grid{grid-template-columns:1fr}
+    .type-options{grid-template-columns:1fr}
+    .preview-grid{grid-template-columns:repeat(3,1fr)}
+    .edit-images-grid{grid-template-columns:repeat(2,1fr)}
+    .search-row{flex-direction:column}
+    .page-title{font-size:17px}
+    .home-actions{grid-template-columns:1fr}
+    .login-card{padding:24px;border-radius:22px}
 }
 </style>
 </head>
 
 <body>
 
-<!-- =========================
-     ICONS
-========================= -->
+<!-- ========================= ICONS ========================= -->
 
 <svg class="icon-sprite" aria-hidden="true">
 
-<symbol id="i-menu" viewBox="0 0 24 24">
-<path d="M4 6h16M4 12h16M4 18h16"/>
-</symbol>
+<symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></symbol>
 
 <symbol id="i-dashboard" viewBox="0 0 24 24">
-<rect x="3" y="3" width="7" height="7" rx="1"/>
-<rect x="14" y="3" width="7" height="7" rx="1"/>
-<rect x="3" y="14" width="7" height="7" rx="1"/>
-<rect x="14" y="14" width="7" height="7" rx="1"/>
+<rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/>
+<rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>
 </symbol>
 
-<symbol id="i-plus" viewBox="0 0 24 24">
-<path d="M12 5v14M5 12h14"/>
-</symbol>
+<symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
 
 <symbol id="i-home" viewBox="0 0 24 24">
-<path d="M3 10.5 12 3l9 7.5"/>
-<path d="M5 9.5V21h14V9.5"/>
-<path d="M9 21v-6h6v6"/>
+<path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/><path d="M9 21v-6h6v6"/>
 </symbol>
 
 <symbol id="i-villa" viewBox="0 0 24 24">
-<path d="m3 11 9-7 9 7"/>
-<path d="M5 10v10h14V10"/>
-<path d="M8 20v-5h8v5"/>
-<path d="M9 11h2M13 11h2"/>
+<path d="m3 11 9-7 9 7"/><path d="M5 10v10h14V10"/><path d="M8 20v-5h8v5"/><path d="M9 11h2M13 11h2"/>
 </symbol>
 
 <symbol id="i-building" viewBox="0 0 24 24">
-<path d="M5 21V4h14v17"/>
-<path d="M9 8h2M13 8h2M9 12h2M13 12h2M9 16h2M13 16h2"/>
-<path d="M3 21h18"/>
+<path d="M5 21V4h14v17"/><path d="M9 8h2M13 8h2M9 12h2M13 12h2M9 16h2M13 16h2"/><path d="M3 21h18"/>
 </symbol>
 
 <symbol id="i-land" viewBox="0 0 24 24">
-<path d="M3 19c4-5 7-7 10-7 3 0 5 2 8 0"/>
-<path d="M4 19h16"/>
-<path d="M12 12V5"/>
-<path d="m12 5-3 3M12 5l3 3"/>
+<path d="M3 19c4-5 7-7 10-7 3 0 5 2 8 0"/><path d="M4 19h16"/><path d="M12 12V5"/><path d="m12 5-3 3M12 5l3 3"/>
 </symbol>
 
 <symbol id="i-construction" viewBox="0 0 24 24">
-<path d="M4 20h16"/>
-<path d="M6 20v-7h12v7"/>
-<path d="M8 13V8h8v5"/>
-<path d="M4 8h16"/>
-<path d="M12 4v4"/>
-<path d="M10 4h4"/>
+<path d="M4 20h16"/><path d="M6 20v-7h12v7"/><path d="M8 13V8h8v5"/><path d="M4 8h16"/><path d="M12 4v4"/><path d="M10 4h4"/>
 </symbol>
 
 <symbol id="i-settings" viewBox="0 0 24 24">
@@ -1526,15 +466,10 @@ body.dark .type-option.selected{
 </symbol>
 
 <symbol id="i-refresh" viewBox="0 0 24 24">
-<path d="M20 11a8 8 0 0 0-14.7-4L3 10"/>
-<path d="M3 5v5h5"/>
-<path d="M4 13a8 8 0 0 0 14.7 4L21 14"/>
-<path d="M21 19v-5h-5"/>
+<path d="M20 11a8 8 0 0 0-14.7-4L3 10"/><path d="M3 5v5h5"/><path d="M4 13a8 8 0 0 0 14.7 4L21 14"/><path d="M21 19v-5h-5"/>
 </symbol>
 
-<symbol id="i-moon" viewBox="0 0 24 24">
-<path d="M20 15.5A8.5 8.5 0 0 1 8.5 4 8.5 8.5 0 1 0 20 15.5Z"/>
-</symbol>
+<symbol id="i-moon" viewBox="0 0 24 24"><path d="M20 15.5A8.5 8.5 0 0 1 8.5 4 8.5 8.5 0 1 0 20 15.5Z"/></symbol>
 
 <symbol id="i-sun" viewBox="0 0 24 24">
 <circle cx="12" cy="12" r="4"/>
@@ -1542,8 +477,7 @@ body.dark .type-option.selected{
 </symbol>
 
 <symbol id="i-eye" viewBox="0 0 24 24">
-<path d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6Z"/>
-<circle cx="12" cy="12" r="2.5"/>
+<path d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6Z"/><circle cx="12" cy="12" r="2.5"/>
 </symbol>
 
 <symbol id="i-eye-off" viewBox="0 0 24 24">
@@ -1556,98 +490,54 @@ body.dark .type-option.selected{
 <path d="M6 3h3l1.5 4-2 1.5a14 14 0 0 0 7 7l1.5-2 4 1.5v3c0 1-1 2-2 2C10 20 4 14 4 5c0-1 1-2 2-2Z"/>
 </symbol>
 
-<symbol id="i-chart" viewBox="0 0 24 24">
-<path d="M4 20V10M10 20V4M16 20v-7M22 20V7"/>
-</symbol>
+<symbol id="i-chart" viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M22 20V7"/></symbol>
 
-<symbol id="i-camera" viewBox="0 0 24 24">
-<path d="M4 7h4l1.5-2h5L16 7h4v13H4V7Z"/>
-<circle cx="12" cy="13" r="3.5"/>
-</symbol>
+<symbol id="i-camera" viewBox="0 0 24 24"><path d="M4 7h4l1.5-2h5L16 7h4v13H4V7Z"/><circle cx="12" cy="13" r="3.5"/></symbol>
 
-<symbol id="i-save" viewBox="0 0 24 24">
-<path d="M5 3h12l3 3v15H5V3Z"/>
-<path d="M8 3v6h8V3M8 21v-6h8v6"/>
-</symbol>
+<symbol id="i-save" viewBox="0 0 24 24"><path d="M5 3h12l3 3v15H5V3Z"/><path d="M8 3v6h8V3M8 21v-6h8v6"/></symbol>
 
-<symbol id="i-search" viewBox="0 0 24 24">
-<circle cx="11" cy="11" r="7"/>
-<path d="m20 20-4-4"/>
-</symbol>
+<symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></symbol>
 
-<symbol id="i-check" viewBox="0 0 24 24">
-<path d="m5 12 4 4L19 6"/>
-</symbol>
+<symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12 4 4L19 6"/></symbol>
 
 <symbol id="i-grid" viewBox="0 0 24 24">
-<rect x="3" y="3" width="7" height="7" rx="1"/>
-<rect x="14" y="3" width="7" height="7" rx="1"/>
-<rect x="3" y="14" width="7" height="7" rx="1"/>
-<rect x="14" y="14" width="7" height="7" rx="1"/>
+<rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/>
+<rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>
 </symbol>
 
-<symbol id="i-trash" viewBox="0 0 24 24">
-<path d="M4 7h16M10 11v6M14 11v6"/>
-<path d="M9 7V4h6v3M6 7l1 14h10l1-14"/>
-</symbol>
+<symbol id="i-trash" viewBox="0 0 24 24"><path d="M4 7h16M10 11v6M14 11v6"/><path d="M9 7V4h6v3M6 7l1 14h10l1-14"/></symbol>
 
-<symbol id="i-location" viewBox="0 0 24 24">
-<path d="M20 10c0 5-8 11-8 11S4 15 4 10a8 8 0 1 1 16 0Z"/>
-<circle cx="12" cy="10" r="2.5"/>
-</symbol>
+<symbol id="i-location" viewBox="0 0 24 24"><path d="M20 10c0 5-8 11-8 11S4 15 4 10a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="2.5"/></symbol>
 
 <symbol id="i-bed" viewBox="0 0 24 24">
-<path d="M3 18v-7M3 15h18M21 18v-7"/>
-<path d="M5 15V9a3 3 0 0 1 3-3h8a3 3 0 0 1 3 3v6"/>
-<path d="M8 10h3M15 10h3"/>
+<path d="M3 18v-7M3 15h18M21 18v-7"/><path d="M5 15V9a3 3 0 0 1 3-3h8a3 3 0 0 1 3 3v6"/><path d="M8 10h3M15 10h3"/>
 </symbol>
 
-<symbol id="i-ruler" viewBox="0 0 24 24">
-<path d="m4 17 13-13 3 3L7 20l-3-3Z"/>
-<path d="m9 12 2 2M12 9l2 2M15 6l2 2"/>
-</symbol>
+<symbol id="i-ruler" viewBox="0 0 24 24"><path d="m4 17 13-13 3 3L7 20l-3-3Z"/><path d="m9 12 2 2M12 9l2 2M15 6l2 2"/></symbol>
 
-<symbol id="i-message" viewBox="0 0 24 24">
-<path d="M4 5h16v12H8l-4 4V5Z"/>
-<path d="M8 9h8M8 13h5"/>
-</symbol>
+<symbol id="i-message" viewBox="0 0 24 24"><path d="M4 5h16v12H8l-4 4V5Z"/><path d="M8 9h8M8 13h5"/></symbol>
 
-<symbol id="i-edit" viewBox="0 0 24 24">
-<path d="M12 20h9"/>
-<path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L8 18l-4 1 1-4Z"/>
-</symbol>
+<symbol id="i-edit" viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L8 18l-4 1 1-4Z"/></symbol>
 
-<symbol id="i-x" viewBox="0 0 24 24">
-<path d="M6 6l12 12M18 6 6 18"/>
-</symbol>
+<symbol id="i-x" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></symbol>
 
-<symbol id="i-chevron-left" viewBox="0 0 24 24">
-<path d="m15 18-6-6 6-6"/>
-</symbol>
+<symbol id="i-chevron-left" viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></symbol>
 
-<symbol id="i-chevron-right" viewBox="0 0 24 24">
-<path d="m9 18 6-6-6-6"/>
-</symbol>
+<symbol id="i-chevron-right" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></symbol>
 
 </svg>
 
-<!-- =========================
-     LOGIN SCREEN
-========================= -->
+<!-- ========================= LOGIN SCREEN ========================= -->
 
 <div class="login-screen" id="loginScreen">
 
     <div class="login-card">
 
         <div class="login-logo">
-            <svg class="icon">
-                <use href="#i-home"></use>
-            </svg>
+            <svg class="icon"><use href="#i-home"></use></svg>
         </div>
 
-        <div class="login-title">
-            Uylar Admin
-        </div>
+        <div class="login-title">Uylar Admin</div>
 
         <div class="login-sub">
             Admin panelga kirish uchun administrator parolini kiriting.
@@ -1668,30 +558,20 @@ body.dark .type-option.selected{
 
                 <button
                     class="login-eye"
+                    id="loginEye"
                     type="button"
                     onclick="toggleLoginPassword()"
                     title="Parolni ko‘rsatish"
                 >
-                    <svg class="icon" id="loginPasswordIcon">
-                        <use href="#i-eye"></use>
-                    </svg>
+                    <svg class="icon" id="loginPasswordIcon"><use href="#i-eye"></use></svg>
                 </button>
 
             </div>
 
-            <div
-                class="login-error"
-                id="loginError"
-            ></div>
+            <div class="login-error" id="loginError" role="alert"></div>
 
-            <button
-                class="login-button"
-                type="submit"
-                id="loginButton"
-            >
-                <svg class="icon icon-sm">
-                    <use href="#i-check"></use>
-                </svg>
+            <button class="login-button" type="submit" id="loginButton">
+                <svg class="icon icon-sm"><use href="#i-check"></use></svg>
                 Admin panelga kirish
             </button>
 
@@ -1701,60 +581,43 @@ body.dark .type-option.selected{
 
 </div>
 
-<!-- =========================
-     APP
-========================= -->
+<!-- ========================= APP ========================= -->
 
 <div class="app" id="app" style="display:none">
 
 <aside class="sidebar" id="sidebar">
 
     <div class="logo">
-
         <div class="logo-mark">
-            <svg class="icon">
-                <use href="#i-home"></use>
-            </svg>
+            <svg class="icon"><use href="#i-home"></use></svg>
         </div>
-
         <span>Uylar Admin</span>
-
     </div>
 
     <nav class="nav">
 
         <button class="active" data-page="dashboard" onclick="showPage('dashboard')">
-            <svg class="icon">
-                <use href="#i-dashboard"></use>
-            </svg>
+            <svg class="icon"><use href="#i-dashboard"></use></svg>
             <span>Dashboard</span>
         </button>
 
         <button data-page="add" onclick="showPage('add')">
-            <svg class="icon">
-                <use href="#i-plus"></use>
-            </svg>
+            <svg class="icon"><use href="#i-plus"></use></svg>
             <span>Uy qo‘shish</span>
         </button>
 
         <button data-page="homes" onclick="showPage('homes')">
-            <svg class="icon">
-                <use href="#i-home"></use>
-            </svg>
+            <svg class="icon"><use href="#i-home"></use></svg>
             <span>Uylar</span>
         </button>
 
         <button data-page="settings" onclick="showPage('settings')">
-            <svg class="icon">
-                <use href="#i-settings"></use>
-            </svg>
+            <svg class="icon"><use href="#i-settings"></use></svg>
             <span>Aloqa sozlamalari</span>
         </button>
 
         <button data-page="password" onclick="showPage('password')">
-            <svg class="icon">
-                <use href="#i-settings"></use>
-            </svg>
+            <svg class="icon"><use href="#i-settings"></use></svg>
             <span>Admin paroli</span>
         </button>
 
@@ -1763,23 +626,17 @@ body.dark .type-option.selected{
     <div class="sidebar-bottom">
 
         <button onclick="loadAll()">
-            <svg class="icon">
-                <use href="#i-refresh"></use>
-            </svg>
+            <svg class="icon"><use href="#i-refresh"></use></svg>
             <span>Yangilash</span>
         </button>
 
         <button onclick="toggleDark()">
-            <svg class="icon" id="sideThemeIcon">
-                <use href="#i-moon"></use>
-            </svg>
+            <svg class="icon" id="sideThemeIcon"><use href="#i-moon"></use></svg>
             <span id="sideThemeText">Dark mode</span>
         </button>
 
         <button onclick="logoutAdmin()">
-            <svg class="icon">
-                <use href="#i-x"></use>
-            </svg>
+            <svg class="icon"><use href="#i-x"></use></svg>
             <span>Chiqish</span>
         </button>
 
@@ -1794,37 +651,21 @@ body.dark .type-option.selected{
     <div class="top-left">
 
         <button class="menu-btn" onclick="toggleSidebar()">
-            <svg class="icon">
-                <use href="#i-menu"></use>
-            </svg>
+            <svg class="icon"><use href="#i-menu"></use></svg>
         </button>
 
-        <div class="page-title" id="pageTitle">
-            Dashboard
-        </div>
+        <div class="page-title" id="pageTitle">Dashboard</div>
 
     </div>
 
     <div class="top-actions">
 
-        <button
-            class="top-btn"
-            onclick="loadAll()"
-            title="Yangilash"
-        >
-            <svg class="icon">
-                <use href="#i-refresh"></use>
-            </svg>
+        <button class="top-btn" onclick="loadAll()" title="Yangilash">
+            <svg class="icon"><use href="#i-refresh"></use></svg>
         </button>
 
-        <button
-            class="top-btn"
-            onclick="toggleDark()"
-            title="Dark mode"
-        >
-            <svg class="icon" id="topThemeIcon">
-                <use href="#i-moon"></use>
-            </svg>
+        <button class="top-btn" onclick="toggleDark()" title="Dark mode">
+            <svg class="icon" id="topThemeIcon"><use href="#i-moon"></use></svg>
         </button>
 
     </div>
@@ -1833,150 +674,60 @@ body.dark .type-option.selected{
 
 <div class="content">
 
-<!-- =========================
-     DASHBOARD
-========================= -->
+<!-- ========================= DASHBOARD ========================= -->
 
 <section class="page active" id="page-dashboard">
 
 <div class="stats-grid">
 
     <div class="stat-card">
-
         <div class="stat-top">
-
             <div>
-
-                <div
-                    class="stat-value"
-                    id="statViews"
-                >0</div>
-
+                <div class="stat-value" id="statViews">0</div>
                 <div class="stat-label-row">
-
-                    <div class="stat-label">
-                        Ko‘rishlar
-                    </div>
-
-                    <button
-                        class="stat-refresh"
-                        type="button"
-                        title="Statistikani yangilash"
-                        onclick="refreshDashboardStats(this)"
-                    >
-                        <svg class="icon">
-                            <use href="#i-refresh"></use>
-                        </svg>
+                    <div class="stat-label">Ko‘rishlar</div>
+                    <button class="stat-refresh" type="button" title="Statistikani yangilash" onclick="refreshDashboardStats(this)">
+                        <svg class="icon"><use href="#i-refresh"></use></svg>
                     </button>
-
                 </div>
-
             </div>
-
-            <div class="stat-icon">
-                <svg class="icon-lg">
-                    <use href="#i-eye"></use>
-                </svg>
-            </div>
-
+            <div class="stat-icon"><svg class="icon-lg"><use href="#i-eye"></use></svg></div>
         </div>
-
     </div>
 
     <div class="stat-card">
-
         <div class="stat-top">
-
             <div>
-
-                <div
-                    class="stat-value"
-                    id="statCalls"
-                >0</div>
-
+                <div class="stat-value" id="statCalls">0</div>
                 <div class="stat-label-row">
-
-                    <div class="stat-label">
-                        Qo‘ng‘iroqlar
-                    </div>
-
-                    <button
-                        class="stat-refresh"
-                        type="button"
-                        title="Statistikani yangilash"
-                        onclick="refreshDashboardStats(this)"
-                    >
-                        <svg class="icon">
-                            <use href="#i-refresh"></use>
-                        </svg>
+                    <div class="stat-label">Qo‘ng‘iroqlar</div>
+                    <button class="stat-refresh" type="button" title="Statistikani yangilash" onclick="refreshDashboardStats(this)">
+                        <svg class="icon"><use href="#i-refresh"></use></svg>
                     </button>
-
                 </div>
-
             </div>
-
-            <div class="stat-icon">
-                <svg class="icon-lg">
-                    <use href="#i-phone"></use>
-                </svg>
-            </div>
-
+            <div class="stat-icon"><svg class="icon-lg"><use href="#i-phone"></use></svg></div>
         </div>
-
     </div>
 
     <div class="stat-card">
-
         <div class="stat-top">
-
             <div>
-
-                <div
-                    class="stat-value"
-                    id="statHomes"
-                >0</div>
-
-                <div class="stat-label">
-                    Jami uylar
-                </div>
-
+                <div class="stat-value" id="statHomes">0</div>
+                <div class="stat-label">Jami uylar</div>
             </div>
-
-            <div class="stat-icon">
-                <svg class="icon-lg">
-                    <use href="#i-home"></use>
-                </svg>
-            </div>
-
+            <div class="stat-icon"><svg class="icon-lg"><use href="#i-home"></use></svg></div>
         </div>
-
     </div>
 
     <div class="stat-card">
-
         <div class="stat-top">
-
             <div>
-
-                <div
-                    class="stat-value"
-                    id="statAvailable"
-                >0</div>
-
-                <div class="stat-label">
-                    Sotuvda
-                </div>
-
+                <div class="stat-value" id="statAvailable">0</div>
+                <div class="stat-label">Sotuvda</div>
             </div>
-
-            <div class="stat-icon">
-                <svg class="icon-lg">
-                    <use href="#i-check"></use>
-                </svg>
-            </div>
-
+            <div class="stat-icon"><svg class="icon-lg"><use href="#i-check"></use></svg></div>
         </div>
-
     </div>
 
 </div>
@@ -1986,486 +737,193 @@ body.dark .type-option.selected{
     <div class="panel">
 
         <div class="panel-header">
-            <div class="panel-title">
-                So‘nggi faollik
-            </div>
+            <div class="panel-title">So‘nggi faollik</div>
         </div>
 
         <div class="panel-body">
-
             <div class="activity-list">
 
                 <div class="activity">
-
-                    <div class="activity-icon">
-                        <svg class="icon">
-                            <use href="#i-home"></use>
-                        </svg>
-                    </div>
-
+                    <div class="activity-icon"><svg class="icon"><use href="#i-home"></use></svg></div>
                     <div class="activity-main">
-
-                        <div class="activity-title">
-                            Uylar ma’lumotlari
-                        </div>
-
-                        <div class="activity-time">
-                            Jami e’lonlar holati
-                        </div>
-
+                        <div class="activity-title">Uylar ma’lumotlari</div>
+                        <div class="activity-time">Jami e’lonlar holati</div>
                     </div>
-
                 </div>
 
                 <div class="activity">
-
-                    <div class="activity-icon">
-                        <svg class="icon">
-                            <use href="#i-eye"></use>
-                        </svg>
-                    </div>
-
+                    <div class="activity-icon"><svg class="icon"><use href="#i-eye"></use></svg></div>
                     <div class="activity-main">
-
-                        <div class="activity-title">
-                            Sayt ko‘rishlari
-                        </div>
-
-                        <div class="activity-time">
-                            Statistika avtomatik yangilanadi
-                        </div>
-
+                        <div class="activity-title">Sayt ko‘rishlari</div>
+                        <div class="activity-time">Statistika avtomatik yangilanadi</div>
                     </div>
-
                 </div>
 
                 <div class="activity">
-
-                    <div class="activity-icon">
-                        <svg class="icon">
-                            <use href="#i-phone"></use>
-                        </svg>
-                    </div>
-
+                    <div class="activity-icon"><svg class="icon"><use href="#i-phone"></use></svg></div>
                     <div class="activity-main">
-
-                        <div class="activity-title">
-                            Aloqa faolligi
-                        </div>
-
-                        <div class="activity-time">
-                            Qo‘ng‘iroqlar statistikasi
-                        </div>
-
+                        <div class="activity-title">Aloqa faolligi</div>
+                        <div class="activity-time">Qo‘ng‘iroqlar statistikasi</div>
                     </div>
-
                 </div>
 
             </div>
-
         </div>
 
     </div>
 
     <div class="panel">
-
         <div class="panel-header">
-            <div class="panel-title">
-                7 kunlik statistika
-            </div>
+            <div class="panel-title">7 kunlik statistika</div>
         </div>
-
         <div class="panel-body">
             <div class="chart" id="dailyChart"></div>
         </div>
-
     </div>
 
 </div>
 
 </section>
 
-<!-- =========================
-     ADD / EDIT
-========================= -->
+<!-- ========================= ADD / EDIT ========================= -->
 
 <section class="page" id="page-add">
 
 <div class="panel">
 
     <div class="panel-header">
-
-        <div
-            class="panel-title"
-            id="addPanelTitle"
-        >
-            Yangi uy qo‘shish
-        </div>
-
+        <div class="panel-title" id="addPanelTitle">Yangi uy qo‘shish</div>
     </div>
 
     <div class="panel-body">
 
-<form
-    id="addHomeForm"
-    onsubmit="addHome(event)"
->
+<form id="addHomeForm" onsubmit="addHome(event)">
 
 <div class="form-grid">
 
 <div class="form-group">
-
-<label for="homeTitle">
-Uy nomi
-</label>
-
-<input
-    class="input"
-    id="homeTitle"
-    required
-    placeholder="Masalan: Zamonaviy hovli"
->
-
+    <label for="homeTitle">Uy nomi</label>
+    <input class="input" id="homeTitle" required placeholder="Masalan: Zamonaviy hovli">
 </div>
 
 <div class="form-group">
+    <label for="homePrice">Narx</label>
+    <input class="input" id="homePrice" type="number" min="1" required placeholder="Masalan: 850000">
+</div>
 
-<label for="homePrice">
-Narx
-</label>
-
-<input
-    class="input"
-    id="homePrice"
-    type="number"
-    min="1"
-    required
-    placeholder="Masalan: 850000"
->
-
+<div class="form-group full">
+    <label>Valyuta</label>
+    <div class="currency-buttons">
+        <button type="button" class="currency-btn active" data-currency="UZS" onclick="selectCurrency('UZS')">So‘m</button>
+        <button type="button" class="currency-btn" data-currency="USD" onclick="selectCurrency('USD')">USD</button>
+    </div>
 </div>
 
 <div class="form-group full">
 
-<label>
-Valyuta
-</label>
+    <label>Uy turi</label>
 
-<div class="currency-buttons">
+    <div class="type-options">
 
-<button
-    type="button"
-    class="currency-btn active"
-    data-currency="UZS"
-    onclick="selectCurrency('UZS')"
->
-    So‘m
-</button>
+        <button type="button" class="type-option" data-type="🏡 Hovli" onclick="toggleHomeType(this)">
+            <span class="type-option-icon"><svg class="icon"><use href="#i-villa"></use></svg></span>
+            <span class="type-option-name">Hovli</span>
+            <span class="type-option-check"><svg class="icon"><use href="#i-check"></use></svg></span>
+        </button>
 
-<button
-    type="button"
-    class="currency-btn"
-    data-currency="USD"
-    onclick="selectCurrency('USD')"
->
-    USD
-</button>
+        <button type="button" class="type-option" data-type="🏢 Kvartira" onclick="toggleHomeType(this)">
+            <span class="type-option-icon"><svg class="icon"><use href="#i-building"></use></svg></span>
+            <span class="type-option-name">Kvartira</span>
+            <span class="type-option-check"><svg class="icon"><use href="#i-check"></use></svg></span>
+        </button>
+
+        <button type="button" class="type-option" data-type="🌳 Yer" onclick="toggleHomeType(this)">
+            <span class="type-option-icon"><svg class="icon"><use href="#i-land"></use></svg></span>
+            <span class="type-option-name">Yer</span>
+            <span class="type-option-check"><svg class="icon"><use href="#i-check"></use></svg></span>
+        </button>
+
+        <button type="button" class="type-option" data-type="🏗️ Yangi qurilish" onclick="toggleHomeType(this)">
+            <span class="type-option-icon"><svg class="icon"><use href="#i-construction"></use></svg></span>
+            <span class="type-option-name">Yangi qurilish</span>
+            <span class="type-option-check"><svg class="icon"><use href="#i-check"></use></svg></span>
+        </button>
+
+    </div>
+
+    <div class="type-summary" id="homeTypeSummary">Hali tur tanlanmagan</div>
 
 </div>
 
+<div class="form-group">
+    <label for="homeLocation">Manzil</label>
+    <input class="input" id="homeLocation" required placeholder="Toshkent, Chilonzor">
+</div>
+
+<div class="form-group">
+    <label for="homeRooms">Xonalar soni</label>
+    <input class="input" id="homeRooms" type="number" min="0" placeholder="Masalan: 4">
+</div>
+
+<div class="form-group">
+    <label for="homeArea">Maydon (m²)</label>
+    <input class="input" id="homeArea" type="number" min="0" placeholder="Masalan: 180">
+</div>
+
+<div class="form-group">
+    <label for="homePhone">Telefon</label>
+    <input class="input" id="homePhone" placeholder="+998 90 123 45 67">
+</div>
+
+<div class="form-group full">
+    <label for="homeDescription">Tavsif</label>
+    <textarea class="textarea" id="homeDescription" placeholder="Uy haqida ma’lumot..."></textarea>
 </div>
 
 <div class="form-group full">
 
-<label>
-Uy turi
-</label>
-
-<div class="type-options">
-
-<button
-    type="button"
-    class="type-option"
-    data-type="🏡 Hovli"
-    onclick="toggleHomeType(this)"
->
-
-<span class="type-option-icon">
-<svg class="icon">
-<use href="#i-villa"></use>
-</svg>
-</span>
-
-<span class="type-option-name">
-Hovli
-</span>
-
-<span class="type-option-check">
-<svg class="icon">
-<use href="#i-check"></use>
-</svg>
-</span>
-
-</button>
-
-<button
-    type="button"
-    class="type-option"
-    data-type="🏢 Kvartira"
-    onclick="toggleHomeType(this)"
->
-
-<span class="type-option-icon">
-<svg class="icon">
-<use href="#i-building"></use>
-</svg>
-</span>
-
-<span class="type-option-name">
-Kvartira
-</span>
-
-<span class="type-option-check">
-<svg class="icon">
-<use href="#i-check"></use>
-</svg>
-</span>
-
-</button>
-
-<button
-    type="button"
-    class="type-option"
-    data-type="🌳 Yer"
-    onclick="toggleHomeType(this)"
->
-
-<span class="type-option-icon">
-<svg class="icon">
-<use href="#i-land"></use>
-</svg>
-</span>
-
-<span class="type-option-name">
-Yer
-</span>
-
-<span class="type-option-check">
-<svg class="icon">
-<use href="#i-check"></use>
-</svg>
-</span>
-
-</button>
-
-<button
-    type="button"
-    class="type-option"
-    data-type="🏗️ Yangi qurilish"
-    onclick="toggleHomeType(this)"
->
-
-<span class="type-option-icon">
-<svg class="icon">
-<use href="#i-construction"></use>
-</svg>
-</span>
-
-<span class="type-option-name">
-Yangi qurilish
-</span>
-
-<span class="type-option-check">
-<svg class="icon">
-<use href="#i-check"></use>
-</svg>
-</span>
-
-</button>
-
-</div>
-
-<div
-    class="type-summary"
-    id="homeTypeSummary"
->
-Hali tur tanlanmagan
-</div>
-
-</div>
-
-<div class="form-group">
-
-<label for="homeLocation">
-Manzil
-</label>
-
-<input
-    class="input"
-    id="homeLocation"
-    required
-    placeholder="Toshkent, Chilonzor"
->
-
-</div>
-
-<div class="form-group">
-
-<label for="homeRooms">
-Xonalar soni
-</label>
-
-<input
-    class="input"
-    id="homeRooms"
-    type="number"
-    min="0"
-    placeholder="Masalan: 4"
->
-
-</div>
-
-<div class="form-group">
-
-<label for="homeArea">
-Maydon (m²)
-</label>
-
-<input
-    class="input"
-    id="homeArea"
-    type="number"
-    min="0"
-    placeholder="Masalan: 180"
->
-
-</div>
-
-<div class="form-group">
-
-<label for="homePhone">
-Telefon
-</label>
-
-<input
-    class="input"
-    id="homePhone"
-    placeholder="+998 90 123 45 67"
->
-
-</div>
-
-<div class="form-group full">
-
-<label for="homeDescription">
-Tavsif
-</label>
-
-<textarea
-    class="textarea"
-    id="homeDescription"
-    placeholder="Uy haqida ma’lumot..."
-></textarea>
-
-</div>
-
-<div class="form-group full">
-
-<label>
-Rasmlar
-</label>
-
-<label
-    class="upload-box"
-    for="homeImages"
->
-
-<span class="upload-icon">
-
-<svg class="icon-lg">
-<use href="#i-camera"></use>
-</svg>
-
-</span>
-
-<strong id="imageUploadTitle">
-Rasm tanlash
-</strong>
-
-<span id="imageUploadText">
-Bir nechta rasm tanlashingiz mumkin
-</span>
-
-</label>
-
-<input
-    class="upload-input"
-    id="homeImages"
-    type="file"
-    accept="image/jpeg,image/jpg,image/png,image/webp,image/*"
-    multiple
-    onchange="handleImages(this)"
->
-
-<div
-    class="edit-images-box"
-    id="editImagesBox"
-    style="display:none"
->
-
-<div class="edit-images-head">
-
-<div>
-
-<div class="edit-images-title">
-Mavjud rasmlar
-</div>
-
-<div class="edit-images-note">
-Tahrirlashga kirganda eski rasmlar o‘chirilmaydi. Rasm tanlamasangiz ular o‘z holicha saqlanadi.
-</div>
-
-</div>
-
-<span
-    class="type-summary"
-    id="editImagesCount"
-    style="margin:0"
->
-0 ta rasm
-</span>
-
-</div>
-
-<div
-    class="edit-images-grid"
-    id="imagePreview"
-></div>
-
-<div class="edit-images-add">
-
-<span class="edit-images-note">
-Yangi rasm tanlansa, yangi rasm serverga yuboriladi.
-</span>
-
-<label
-    class="secondary-btn"
-    for="homeImages"
->
-<svg class="icon icon-sm">
-<use href="#i-plus"></use>
-</svg>
-Yangi rasm tanlash
-</label>
-
-</div>
-
-</div>
-
-<div
-    class="preview-grid"
-    id="addImagePreview"
-></div>
+    <label>Rasmlar</label>
+
+    <label class="upload-box" for="homeImages">
+        <span class="upload-icon"><svg class="icon-lg"><use href="#i-camera"></use></svg></span>
+        <strong id="imageUploadTitle">Rasm tanlash</strong>
+        <span id="imageUploadText">Bir nechta rasm tanlashingiz mumkin (ko‘pi bilan 8 ta)</span>
+    </label>
+
+    <input
+        class="upload-input"
+        id="homeImages"
+        type="file"
+        accept="image/jpeg,image/jpg,image/png,image/webp,image/*"
+        multiple
+        onchange="handleImages(this)"
+    >
+
+    <div class="edit-images-box" id="editImagesBox" style="display:none">
+
+        <div class="edit-images-head">
+            <div>
+                <div class="edit-images-title">Mavjud rasmlar</div>
+                <div class="edit-images-note">
+                    Tahrirlashga kirganda eski rasmlar o‘chirilmaydi. Rasm tanlamasangiz ular o‘z holicha saqlanadi.
+                </div>
+            </div>
+            <span class="type-summary" id="editImagesCount" style="margin:0">0 ta rasm</span>
+        </div>
+
+        <div class="edit-images-grid" id="imagePreview"></div>
+
+        <div class="edit-images-add">
+            <span class="edit-images-note">Yangi rasm tanlansa, yangi rasm serverga yuboriladi.</span>
+            <label class="secondary-btn" for="homeImages">
+                <svg class="icon icon-sm"><use href="#i-plus"></use></svg>
+                Yangi rasm tanlash
+            </label>
+        </div>
+
+    </div>
+
+    <div class="preview-grid" id="addImagePreview"></div>
 
 </div>
 
@@ -2473,64 +931,32 @@ Yangi rasm tanlash
 
 <div class="form-actions">
 
-<button
-    type="button"
-    class="secondary-btn"
-    id="cancelEditBtn"
-    onclick="cancelEdit()"
-    style="display:none"
->
+    <button type="button" class="secondary-btn" id="cancelEditBtn" onclick="cancelEdit()" style="display:none">
+        <svg class="icon icon-sm"><use href="#i-x"></use></svg>
+        Bekor qilish
+    </button>
 
-<svg class="icon icon-sm">
-<use href="#i-x"></use>
-</svg>
+    <button type="button" class="secondary-btn" onclick="resetAddForm()" id="clearHomeBtn">
+        <svg class="icon icon-sm"><use href="#i-refresh"></use></svg>
+        Tozalash
+    </button>
 
-Bekor qilish
-
-</button>
-
-<button
-    type="button"
-    class="secondary-btn"
-    onclick="resetAddForm()"
-    id="clearHomeBtn"
->
-
-<svg class="icon icon-sm">
-<use href="#i-refresh"></use>
-</svg>
-
-Tozalash
-
-</button>
-
-<button
-    type="submit"
-    class="main-btn"
-    id="saveHomeBtn"
->
-
-<svg class="icon icon-sm">
-<use href="#i-save"></use>
-</svg>
-
-Uy qo‘shish
-
-</button>
+    <button type="submit" class="main-btn" id="saveHomeBtn">
+        <svg class="icon icon-sm"><use href="#i-save"></use></svg>
+        Uy qo‘shish
+    </button>
 
 </div>
 
 </form>
 
-</div>
+    </div>
 
 </div>
 
 </section>
 
-<!-- =========================
-     HOMES
-========================= -->
+<!-- ========================= HOMES ========================= -->
 
 <section class="page" id="page-homes">
 
@@ -2538,22 +964,12 @@ Uy qo‘shish
 
 <div class="panel-header">
 
-<div class="panel-title">
-Uylar
-</div>
+    <div class="panel-title">Uylar</div>
 
-<button
-    class="main-btn"
-    onclick="startNewHome()"
->
-
-<svg class="icon icon-sm">
-<use href="#i-plus"></use>
-</svg>
-
-Uy qo‘shish
-
-</button>
+    <button class="main-btn" onclick="startNewHome()">
+        <svg class="icon icon-sm"><use href="#i-plus"></use></svg>
+        Uy qo‘shish
+    </button>
 
 </div>
 
@@ -2561,123 +977,49 @@ Uy qo‘shish
 
 <div class="search-row">
 
-<div class="search-wrap">
+    <div class="search-wrap">
+        <svg class="icon search-icon"><use href="#i-search"></use></svg>
+        <input class="input" id="homeSearch" type="text" placeholder="Uy qidirish..." oninput="renderHomes()">
+    </div>
 
-<svg class="icon search-icon">
-<use href="#i-search"></use>
-</svg>
-
-<input
-    class="input"
-    id="homeSearch"
-    type="text"
-    placeholder="Uy qidirish..."
-    oninput="renderHomes()"
->
-
-</div>
-
-<select
-    class="select"
-    id="statusFilter"
-    onchange="renderHomes()"
-    style="max-width:180px"
->
-
-<option value="all">
-Barchasi
-</option>
-
-<option value="available">
-Sotuvda
-</option>
-
-<option value="sold">
-Sotilgan
-</option>
-
-</select>
+    <select class="select" id="statusFilter" onchange="renderHomes()" style="max-width:180px">
+        <option value="all">Barchasi</option>
+        <option value="available">Sotuvda</option>
+        <option value="sold">Sotilgan</option>
+    </select>
 
 </div>
 
 <div class="filters">
 
-<button
-    class="filter active"
-    id="typeAll"
-    onclick="setHomeType('all')"
->
+    <button class="filter active" id="typeAll" onclick="setHomeType('all')">
+        <svg class="icon icon-sm"><use href="#i-grid"></use></svg>
+        Barchasi
+    </button>
 
-<svg class="icon icon-sm">
-<use href="#i-grid"></use>
-</svg>
+    <button class="filter" id="typeYard" onclick="setHomeType('🏡 Hovli')">
+        <svg class="icon icon-sm"><use href="#i-villa"></use></svg>
+        Hovli
+    </button>
 
-Barchasi
+    <button class="filter" id="typeApartment" onclick="setHomeType('🏢 Kvartira')">
+        <svg class="icon icon-sm"><use href="#i-building"></use></svg>
+        Kvartira
+    </button>
 
-</button>
+    <button class="filter" id="typeLand" onclick="setHomeType('🌳 Yer')">
+        <svg class="icon icon-sm"><use href="#i-land"></use></svg>
+        Yer
+    </button>
 
-<button
-    class="filter"
-    id="typeYard"
-    onclick="setHomeType('🏡 Hovli')"
->
-
-<svg class="icon icon-sm">
-<use href="#i-villa"></use>
-</svg>
-
-Hovli
-
-</button>
-
-<button
-    class="filter"
-    id="typeApartment"
-    onclick="setHomeType('🏢 Kvartira')"
->
-
-<svg class="icon icon-sm">
-<use href="#i-building"></use>
-</svg>
-
-Kvartira
-
-</button>
-
-<button
-    class="filter"
-    id="typeLand"
-    onclick="setHomeType('🌳 Yer')"
->
-
-<svg class="icon icon-sm">
-<use href="#i-land"></use>
-</svg>
-
-Yer
-
-</button>
-
-<button
-    class="filter"
-    id="typeNew"
-    onclick="setHomeType('🏗️ Yangi qurilish')"
->
-
-<svg class="icon icon-sm">
-<use href="#i-construction"></use>
-</svg>
-
-Yangi qurilish
-
-</button>
+    <button class="filter" id="typeNew" onclick="setHomeType('🏗️ Yangi qurilish')">
+        <svg class="icon icon-sm"><use href="#i-construction"></use></svg>
+        Yangi qurilish
+    </button>
 
 </div>
 
-<div
-    class="homes-grid"
-    id="homesGrid"
-></div>
+<div class="homes-grid" id="homesGrid"></div>
 
 </div>
 
@@ -2685,65 +1027,34 @@ Yangi qurilish
 
 </section>
 
-<!-- =========================
-     PASSWORD
-========================= -->
+<!-- ========================= PASSWORD ========================= -->
 
 <section class="page" id="page-password">
 
 <div class="panel">
 
 <div class="panel-header">
-<div class="panel-title">
-Admin paroli
-</div>
+    <div class="panel-title">Admin paroli</div>
 </div>
 
 <div class="panel-body">
 
 <div class="settings-item">
 
-<div class="settings-head">
+    <div class="settings-head">
+        <div class="settings-icon"><svg class="icon"><use href="#i-settings"></use></svg></div>
+        <div>
+            <div class="settings-title">Joriy admin sessiyasi</div>
+            <div class="settings-sub">Panelga kirishda ishlatilgan parol session davomida saqlanadi.</div>
+        </div>
+    </div>
 
-<div class="settings-icon">
-
-<svg class="icon">
-<use href="#i-settings"></use>
-</svg>
-
-</div>
-
-<div>
-
-<div class="settings-title">
-Joriy admin sessiyasi
-</div>
-
-<div class="settings-sub">
-Panelga kirishda ishlatilgan parol session davomida saqlanadi.
-</div>
-
-</div>
-
-</div>
-
-<div class="form-actions">
-
-<button
-    class="secondary-btn"
-    type="button"
-    onclick="logoutAdmin()"
->
-
-<svg class="icon icon-sm">
-<use href="#i-x"></use>
-</svg>
-
-Chiqish
-
-</button>
-
-</div>
+    <div class="form-actions">
+        <button class="secondary-btn" type="button" onclick="logoutAdmin()">
+            <svg class="icon icon-sm"><use href="#i-x"></use></svg>
+            Chiqish
+        </button>
+    </div>
 
 </div>
 
@@ -2753,18 +1064,14 @@ Chiqish
 
 </section>
 
-<!-- =========================
-     SETTINGS
-========================= -->
+<!-- ========================= SETTINGS ========================= -->
 
 <section class="page" id="page-settings">
 
 <div class="panel">
 
 <div class="panel-header">
-<div class="panel-title">
-Aloqa sozlamalari
-</div>
+    <div class="panel-title">Aloqa sozlamalari</div>
 </div>
 
 <div class="panel-body">
@@ -2774,182 +1081,67 @@ Aloqa sozlamalari
 <div class="settings-grid">
 
 <div class="settings-item">
-
-<div class="settings-head">
-
-<div class="settings-icon">
-<svg class="icon">
-<use href="#i-phone"></use>
-</svg>
-</div>
-
-<div>
-
-<div class="settings-title">
-Telefon
-</div>
-
-<div class="settings-sub">
-Asosiy aloqa raqami
-</div>
-
-</div>
-
-</div>
-
-<input
-    class="input"
-    id="settingPhone"
-    placeholder="+998 90 123 45 67"
->
-
+    <div class="settings-head">
+        <div class="settings-icon"><svg class="icon"><use href="#i-phone"></use></svg></div>
+        <div>
+            <div class="settings-title">Telefon</div>
+            <div class="settings-sub">Asosiy aloqa raqami</div>
+        </div>
+    </div>
+    <input class="input" id="settingPhone" placeholder="+998 90 123 45 67">
 </div>
 
 <div class="settings-item">
-
-<div class="settings-head">
-
-<div class="settings-icon">
-<svg class="icon">
-<use href="#i-message"></use>
-</svg>
-</div>
-
-<div>
-
-<div class="settings-title">
-Telegram
-</div>
-
-<div class="settings-sub">
-Telegram username yoki link
-</div>
-
-</div>
-
-</div>
-
-<input
-    class="input"
-    id="settingTelegram"
-    placeholder="@username"
->
-
+    <div class="settings-head">
+        <div class="settings-icon"><svg class="icon"><use href="#i-message"></use></svg></div>
+        <div>
+            <div class="settings-title">Telegram</div>
+            <div class="settings-sub">Telegram username yoki link</div>
+        </div>
+    </div>
+    <input class="input" id="settingTelegram" placeholder="@username">
 </div>
 
 <div class="settings-item">
-
-<div class="settings-head">
-
-<div class="settings-icon">
-<svg class="icon">
-<use href="#i-message"></use>
-</svg>
-</div>
-
-<div>
-
-<div class="settings-title">
-WhatsApp
-</div>
-
-<div class="settings-sub">
-WhatsApp raqami
-</div>
-
-</div>
-
-</div>
-
-<input
-    class="input"
-    id="settingWhatsapp"
-    placeholder="+998901234567"
->
-
+    <div class="settings-head">
+        <div class="settings-icon"><svg class="icon"><use href="#i-message"></use></svg></div>
+        <div>
+            <div class="settings-title">WhatsApp</div>
+            <div class="settings-sub">WhatsApp raqami</div>
+        </div>
+    </div>
+    <input class="input" id="settingWhatsapp" placeholder="+998901234567">
 </div>
 
 <div class="settings-item">
-
-<div class="settings-head">
-
-<div class="settings-icon">
-<svg class="icon">
-<use href="#i-message"></use>
-</svg>
-</div>
-
-<div>
-
-<div class="settings-title">
-Instagram
-</div>
-
-<div class="settings-sub">
-Instagram username yoki link
-</div>
-
-</div>
-
-</div>
-
-<input
-    class="input"
-    id="settingInstagram"
-    placeholder="@username"
->
-
+    <div class="settings-head">
+        <div class="settings-icon"><svg class="icon"><use href="#i-message"></use></svg></div>
+        <div>
+            <div class="settings-title">Instagram</div>
+            <div class="settings-sub">Instagram username yoki link</div>
+        </div>
+    </div>
+    <input class="input" id="settingInstagram" placeholder="@username">
 </div>
 
 <div class="settings-item">
-
-<div class="settings-head">
-
-<div class="settings-icon">
-<svg class="icon">
-<use href="#i-location"></use>
-</svg>
-</div>
-
-<div>
-
-<div class="settings-title">
-Manzil
-</div>
-
-<div class="settings-sub">
-Saytda ko‘rsatiladigan manzil
-</div>
-
-</div>
-
-</div>
-
-<input
-    class="input"
-    id="settingAddress"
-    placeholder="Shahrisabz, Qashqadaryo"
->
-
+    <div class="settings-head">
+        <div class="settings-icon"><svg class="icon"><use href="#i-location"></use></svg></div>
+        <div>
+            <div class="settings-title">Manzil</div>
+            <div class="settings-sub">Saytda ko‘rsatiladigan manzil</div>
+        </div>
+    </div>
+    <input class="input" id="settingAddress" placeholder="Shahrisabz, Qashqadaryo">
 </div>
 
 </div>
 
 <div class="form-actions">
-
-<button
-    class="main-btn"
-    type="submit"
->
-
-<svg class="icon icon-sm">
-<use href="#i-save"></use>
-</svg>
-
-Saqlash
-
-</button>
-
+    <button class="main-btn" type="submit">
+        <svg class="icon icon-sm"><use href="#i-save"></use></svg>
+        Saqlash
+    </button>
 </div>
 
 </form>
@@ -2969,7 +1161,7 @@ Saqlash
 <div class="toast" id="toast"></div>
 
 <div class="loading" id="loading">
-<div class="loader"></div>
+    <div class="loader"></div>
 </div>
 
 <script>
@@ -2979,22 +1171,16 @@ Saqlash
 ========================================================= */
 
 let cars = [];
-
 let selectedHomeTypes = [];
-
 let selectedCurrency = "UZS";
-
 let currentHomeType = "all";
-
 let uploadedImages = [];
-
 let editingExistingImages = [];
-
 let editingImageItems = [];
-
 let editingHomeId = null;
-
 let settings = {};
+
+const MAX_IMAGES = 8;
 
 let adminPassword =
     sessionStorage.getItem("admin_panel_password") || "";
@@ -3009,52 +1195,44 @@ function $(id){
 }
 
 function escapeHtml(value){
-
     return String(value ?? "")
         .replace(/&/g,"&amp;")
         .replace(/</g,"&lt;")
         .replace(/>/g,"&gt;")
         .replace(/"/g,"&quot;")
         .replace(/'/g,"&#039;");
-
 }
 
 function escapeJs(value){
-
     return String(value ?? "")
         .replace(/\\/g,"\\\\")
         .replace(/'/g,"\\'")
         .replace(/"/g,'\\"')
         .replace(/\n/g,"\\n")
         .replace(/\r/g,"\\r");
+}
 
+/* onclick="..." ichiga xavfsiz qo‘yish uchun */
+function jsArg(value){
+    return escapeHtml(escapeJs(value));
 }
 
 function adminHeaders(extra = {}){
 
-    const headers = {
-        ...extra
-    };
+    const headers = {...extra};
 
     if(adminPassword){
-
-        headers["X-Admin-Password"] =
-            adminPassword;
-
+        headers["X-Admin-Password"] = adminPassword;
     }
 
     return headers;
-
 }
 
 function showLoading(show=true){
-
     const loading = $("loading");
-
     if(loading){
         loading.classList.toggle("show",show);
     }
-
 }
 
 function showToast(message,error=false){
@@ -3066,21 +1244,280 @@ function showToast(message,error=false){
     }
 
     toast.textContent = message;
-
-    toast.classList.toggle(
-        "error",
-        !!error
-    );
-
+    toast.classList.toggle("error",!!error);
     toast.classList.add("show");
 
     clearTimeout(window.toastTimer);
 
-    window.toastTimer =
-        setTimeout(()=>{
-            toast.classList.remove("show");
-        },3200);
+    window.toastTimer = setTimeout(()=>{
+        toast.classList.remove("show");
+    },3200);
+}
 
+
+/* =========================================================
+   LOGIN GUARD
+   3 ta urinish → 3-xatoda 10 daqiqaga blok →
+   blokdan keyin yana 3 ta urinish.
+   To‘g‘ri parol → hisob tozalanadi va darhol kiradi.
+========================================================= */
+
+const LOGIN_MAX_ATTEMPTS = 3;
+const LOGIN_BLOCK_MS = 10 * 60 * 1000;
+const LOGIN_GUARD_KEY = "admin_login_guard";
+
+let loginLockTimer = null;
+
+function readGuard(){
+
+    try{
+
+        const raw =
+            JSON.parse(
+                localStorage.getItem(LOGIN_GUARD_KEY) || "{}"
+            );
+
+        return {
+            count:Number(raw.count) || 0,
+            blockedUntil:Number(raw.blockedUntil) || 0
+        };
+
+    }catch(error){
+
+        return {count:0,blockedUntil:0};
+
+    }
+}
+
+function writeGuard(guard){
+
+    try{
+        localStorage.setItem(
+            LOGIN_GUARD_KEY,
+            JSON.stringify(guard)
+        );
+    }catch(error){
+        /* localStorage yopiq bo‘lsa ham panel ishlashda davom etadi */
+    }
+}
+
+function clearGuard(){
+
+    try{
+        localStorage.removeItem(LOGIN_GUARD_KEY);
+    }catch(error){}
+}
+
+/* Blok muddati tugagan bo‘lsa — hisob nolga tushadi */
+function getGuard(){
+
+    const guard = readGuard();
+
+    if(
+        guard.blockedUntil &&
+        guard.blockedUntil <= Date.now()
+    ){
+
+        clearGuard();
+
+        return {count:0,blockedUntil:0};
+
+    }
+
+    return guard;
+}
+
+function isLoginLocked(){
+    return getGuard().blockedUntil > Date.now();
+}
+
+function formatLeft(ms){
+
+    const total =
+        Math.max(0,Math.ceil(ms / 1000));
+
+    const minutes =
+        Math.floor(total / 60);
+
+    const seconds =
+        total % 60;
+
+    return (
+        String(minutes).padStart(2,"0") +
+        ":" +
+        String(seconds).padStart(2,"0")
+    );
+}
+
+function setLoginMessage(text,kind){
+
+    const el = $("loginError");
+
+    if(!el){
+        return;
+    }
+
+    el.textContent = text || "";
+
+    el.classList.toggle(
+        "warn",
+        kind === "warn"
+    );
+}
+
+function setLoginDisabled(disabled){
+
+    const input = $("loginPassword");
+    const button = $("loginButton");
+    const eye = $("loginEye");
+
+    if(input){
+        input.disabled = disabled;
+    }
+
+    if(button){
+        button.disabled = disabled;
+    }
+
+    if(eye){
+        eye.disabled = disabled;
+    }
+}
+
+/* Blok bo‘lsa — countdown ishga tushadi va true qaytaradi */
+function applyLoginLock(){
+
+    clearInterval(loginLockTimer);
+    loginLockTimer = null;
+
+    const guard = getGuard();
+
+    if(guard.blockedUntil <= Date.now()){
+
+        setLoginDisabled(false);
+
+        return false;
+
+    }
+
+    setLoginDisabled(true);
+
+    if($("loginPassword")){
+        $("loginPassword").value = "";
+    }
+
+    const tick = ()=>{
+
+        const left =
+            guard.blockedUntil - Date.now();
+
+        if(left <= 0){
+
+            clearInterval(loginLockTimer);
+            loginLockTimer = null;
+
+            clearGuard();
+
+            setLoginDisabled(false);
+
+            setLoginMessage(
+                "Blok tugadi. Yana " +
+                LOGIN_MAX_ATTEMPTS +
+                " ta imkoniyatingiz bor.",
+                "warn"
+            );
+
+            $("loginPassword")?.focus();
+
+            return;
+        }
+
+        setLoginMessage(
+            "3 marta xato kiritildi. Bloklandi — " +
+            formatLeft(left) +
+            " dan keyin qayta urinib ko‘ring."
+        );
+
+    };
+
+    tick();
+
+    loginLockTimer = setInterval(tick,1000);
+
+    return true;
+}
+
+/* Noto‘g‘ri parol: hisobni oshiradi */
+function registerWrongAttempt(){
+
+    const guard = getGuard();
+
+    guard.count += 1;
+
+    if(guard.count >= LOGIN_MAX_ATTEMPTS){
+
+        guard.blockedUntil =
+            Date.now() + LOGIN_BLOCK_MS;
+
+        writeGuard(guard);
+
+        applyLoginLock();
+
+        return;
+    }
+
+    writeGuard(guard);
+
+    const left =
+        LOGIN_MAX_ATTEMPTS - guard.count;
+
+    setLoginMessage(
+        "Parol noto‘g‘ri. " +
+        left +
+        " ta imkoniyat qoldi."
+    );
+
+    const input = $("loginPassword");
+
+    if(input){
+        input.focus();
+        input.select();
+    }
+}
+
+/* Server 429 qaytarsa (kelajakda server tomonida limit qo‘shilsa) */
+async function handleServerBlock(response){
+
+    let seconds = 600;
+
+    const header =
+        Number(response.headers.get("Retry-After"));
+
+    if(header > 0){
+
+        seconds = header;
+
+    }else{
+
+        try{
+
+            const data =
+                await response.json();
+
+            if(Number(data.retryAfter) > 0){
+                seconds = Number(data.retryAfter);
+            }
+
+        }catch(error){}
+
+    }
+
+    writeGuard({
+        count:LOGIN_MAX_ATTEMPTS,
+        blockedUntil:Date.now() + seconds * 1000
+    });
+
+    applyLoginLock();
 }
 
 
@@ -3090,78 +1527,57 @@ function showToast(message,error=false){
 
 function toggleLoginPassword(){
 
-    const input =
-        $("loginPassword");
-
-    const icon =
-        $("loginPasswordIcon");
+    const input = $("loginPassword");
+    const icon = $("loginPasswordIcon");
 
     if(!input || !icon){
         return;
     }
 
-    const visible =
-        input.type === "text";
+    const visible = input.type === "text";
 
-    input.type =
-        visible
-            ? "password"
-            : "text";
+    input.type = visible ? "password" : "text";
 
-    icon.innerHTML = `
-        <use href="${visible ? "#i-eye" : "#i-eye-off"}"></use>
-    `;
-
+    icon.innerHTML =
+        `<use href="${visible ? "#i-eye" : "#i-eye-off"}"></use>`;
 }
 
 async function loginAdmin(event){
 
     event.preventDefault();
 
-    const input =
-        $("loginPassword");
+    /* Bloklangan bo‘lsa — so‘rov umuman yuborilmaydi */
+    if(isLoginLocked()){
+        applyLoginLock();
+        return;
+    }
 
-    const button =
-        $("loginButton");
-
-    const error =
-        $("loginError");
+    const input = $("loginPassword");
+    const button = $("loginButton");
 
     const password =
-        input
-            ? input.value.trim()
-            : "";
+        input ? input.value.trim() : "";
 
     if(!password){
-
-        if(error){
-            error.textContent =
-                "Admin parolini kiriting.";
-        }
-
+        setLoginMessage("Admin parolini kiriting.");
         return;
     }
 
     if(button){
         button.disabled = true;
         button.innerHTML = `
-            <svg class="icon icon-sm">
-                <use href="#i-refresh"></use>
-            </svg>
+            <svg class="icon icon-sm"><use href="#i-refresh"></use></svg>
             Tekshirilmoqda...
         `;
     }
 
-    if(error){
-        error.textContent = "";
-    }
+    setLoginMessage("");
 
     try{
 
         /*
          * /api/stats mavjud backendda admin
          * parolini header orqali tekshiradi.
-         *
          * index.js o‘zgartirilmaydi.
          */
 
@@ -3170,34 +1586,33 @@ async function loginAdmin(event){
                 "/api/stats",
                 {
                     method:"GET",
-                    headers:{
-                        "X-Admin-Password":password
-                    },
+                    headers:{"X-Admin-Password":password},
                     cache:"no-store"
                 }
             );
+
+        if(response.status === 429){
+            await handleServerBlock(response);
+            return;
+        }
 
         if(
             response.status === 401 ||
             response.status === 403
         ){
-
-            throw new Error(
-                "Admin paroli noto‘g‘ri."
-            );
-
+            registerWrongAttempt();
+            return;
         }
 
         if(!response.ok){
-
-            throw new Error(
-                "Admin panelga kirishda xatolik."
-            );
-
+            throw new Error("Admin panelga kirishda xatolik.");
         }
 
-        adminPassword =
-            password;
+        /* To‘g‘ri parol — hisob tozalanadi, darhol kiradi */
+
+        clearGuard();
+
+        adminPassword = password;
 
         sessionStorage.setItem(
             "admin_panel_password",
@@ -3211,55 +1626,46 @@ async function loginAdmin(event){
             input.value = "";
         }
 
+        setLoginMessage("");
+
         await loadAll();
 
-    }catch(error){
+    }catch(err){
 
-        console.error(error);
+        console.error(err);
 
-        if(error.message === "Failed to fetch"){
+        /* Tarmoq/server xatosi urinish hisobiga qo‘shilmaydi */
 
-            if(error){
-                error.textContent =
-                    "Server bilan ulanishda xatolik.";
-            }
-
+        if(err.message === "Failed to fetch"){
+            setLoginMessage("Server bilan ulanishda xatolik.");
         }else{
-
-            if($("loginError")){
-                $("loginError").textContent =
-                    error.message ||
-                    "Parol noto‘g‘ri.";
-            }
-
+            setLoginMessage(
+                err.message ||
+                "Admin panelga kirishda xatolik."
+            );
         }
 
     }finally{
 
         if(button){
 
-            button.disabled = false;
+            button.disabled = isLoginLocked();
 
             button.innerHTML = `
-                <svg class="icon icon-sm">
-                    <use href="#i-check"></use>
-                </svg>
+                <svg class="icon icon-sm"><use href="#i-check"></use></svg>
                 Admin panelga kirish
             `;
 
         }
 
     }
-
 }
 
-function logoutAdmin(){
+function logoutAdmin(message){
 
     adminPassword = "";
 
-    sessionStorage.removeItem(
-        "admin_panel_password"
-    );
+    sessionStorage.removeItem("admin_panel_password");
 
     $("app").style.display = "none";
 
@@ -3269,14 +1675,20 @@ function logoutAdmin(){
         $("loginPassword").value = "";
     }
 
-    if($("loginError")){
-        $("loginError").textContent = "";
+    setLoginMessage(
+        typeof message === "string"
+            ? message
+            : ""
+    );
+
+    /* Agar blok hali davom etayotgan bo‘lsa — qayta ko‘rsatiladi */
+    const locked = applyLoginLock();
+
+    if(!locked){
+        setTimeout(()=>{
+            $("loginPassword")?.focus();
+        },100);
     }
-
-    setTimeout(()=>{
-        $("loginPassword")?.focus();
-    },100);
-
 }
 
 
@@ -3285,17 +1697,11 @@ function logoutAdmin(){
 ========================================================= */
 
 const pageTitles = {
-
     dashboard:"Dashboard",
-
     add:"Uy qo‘shish",
-
     homes:"Uylar",
-
     settings:"Aloqa sozlamalari",
-
     password:"Admin paroli"
-
 };
 
 function requireAdminPassword(){
@@ -3307,7 +1713,6 @@ function requireAdminPassword(){
     logoutAdmin();
 
     return false;
-
 }
 
 function showPage(page){
@@ -3321,8 +1726,7 @@ function showPage(page){
             item.classList.remove("active");
         });
 
-    const target =
-        $("page-" + page);
+    const target = $("page-" + page);
 
     if(target){
         target.classList.add("active");
@@ -3330,12 +1734,10 @@ function showPage(page){
 
     document.querySelectorAll(".nav button")
         .forEach(button=>{
-
             button.classList.toggle(
                 "active",
                 button.dataset.page === page
             );
-
         });
 
     $("pageTitle").textContent =
@@ -3346,19 +1748,12 @@ function showPage(page){
     }
 
     if(window.innerWidth <= 800){
-
-        $("sidebar")
-            .classList.remove("open");
-
+        $("sidebar").classList.remove("open");
     }
-
 }
 
 function toggleSidebar(){
-
-    $("sidebar")
-        .classList.toggle("open");
-
+    $("sidebar").classList.toggle("open");
 }
 
 
@@ -3371,37 +1766,21 @@ function updateThemeIcons(){
     const dark =
         document.body.classList.contains("dark");
 
-    const topIcon =
-        $("topThemeIcon");
+    const html =
+        `<use href="${dark ? "#i-sun" : "#i-moon"}"></use>`;
 
-    const sideIcon =
-        $("sideThemeIcon");
-
-    if(topIcon){
-
-        topIcon.innerHTML = `
-            <use href="${dark ? "#i-sun" : "#i-moon"}"></use>
-        `;
-
+    if($("topThemeIcon")){
+        $("topThemeIcon").innerHTML = html;
     }
 
-    if(sideIcon){
-
-        sideIcon.innerHTML = `
-            <use href="${dark ? "#i-sun" : "#i-moon"}"></use>
-        `;
-
+    if($("sideThemeIcon")){
+        $("sideThemeIcon").innerHTML = html;
     }
 
     if($("sideThemeText")){
-
         $("sideThemeText").textContent =
-            dark
-                ? "Light mode"
-                : "Dark mode";
-
+            dark ? "Light mode" : "Dark mode";
     }
-
 }
 
 function toggleDark(){
@@ -3415,7 +1794,6 @@ function toggleDark(){
     );
 
     updateThemeIcons();
-
 }
 
 
@@ -3425,15 +1803,12 @@ function toggleDark(){
 
 function toggleHomeType(button){
 
-    const type =
-        button.dataset.type;
+    const type = button.dataset.type;
 
     if(selectedHomeTypes.includes(type)){
 
         selectedHomeTypes =
-            selectedHomeTypes.filter(
-                item=>item !== type
-            );
+            selectedHomeTypes.filter(item=>item !== type);
 
     }else{
 
@@ -3448,56 +1823,43 @@ function toggleHomeType(button){
         }
 
         selectedHomeTypes.push(type);
-
     }
 
     updateTypeButtons();
     updateTypeSummary();
-
 }
 
 function updateTypeButtons(){
 
     document.querySelectorAll(".type-option")
         .forEach(button=>{
-
             button.classList.toggle(
                 "selected",
-                selectedHomeTypes.includes(
-                    button.dataset.type
-                )
+                selectedHomeTypes.includes(button.dataset.type)
             );
-
         });
-
 }
 
 function updateTypeSummary(){
 
-    const summary =
-        $("homeTypeSummary");
+    const summary = $("homeTypeSummary");
 
     if(!summary){
         return;
     }
 
     if(!selectedHomeTypes.length){
-
-        summary.textContent =
-            "Hali tur tanlanmagan";
-
+        summary.textContent = "Hali tur tanlanmagan";
         return;
     }
 
     const names =
         selectedHomeTypes.map(type=>{
-
             return type
                 .replace("🏡 ","")
                 .replace("🏢 ","")
                 .replace("🌳 ","")
                 .replace("🏗️ ","");
-
         });
 
     summary.textContent =
@@ -3505,16 +1867,12 @@ function updateTypeSummary(){
         " — " +
         selectedHomeTypes.length +
         "/3 ta tanlandi";
-
 }
 
 function resetHomeTypes(){
-
     selectedHomeTypes = [];
-
     updateTypeButtons();
     updateTypeSummary();
-
 }
 
 
@@ -3525,20 +1883,15 @@ function resetHomeTypes(){
 function selectCurrency(currency){
 
     selectedCurrency =
-        currency === "USD"
-            ? "USD"
-            : "UZS";
+        currency === "USD" ? "USD" : "UZS";
 
     document.querySelectorAll(".currency-btn")
         .forEach(button=>{
-
             button.classList.toggle(
                 "active",
                 button.dataset.currency === selectedCurrency
             );
-
         });
-
 }
 
 
@@ -3548,19 +1901,13 @@ function selectCurrency(currency){
 
 function formatPrice(price,currency){
 
-    const number =
-        Number(price || 0);
+    const number = Number(price || 0);
 
     if(currency === "USD"){
-
-        return "$ " +
-            number.toLocaleString("en-US");
-
+        return "$ " + number.toLocaleString("en-US");
     }
 
-    return number.toLocaleString("uz-UZ") +
-        " so‘m";
-
+    return number.toLocaleString("uz-UZ") + " so‘m";
 }
 
 
@@ -3570,8 +1917,7 @@ function formatPrice(price,currency){
 
 function normalizeImageUrl(image){
 
-    const value =
-        String(image || "").trim();
+    const value = String(image || "").trim();
 
     if(!value){
         return "";
@@ -3583,45 +1929,55 @@ function normalizeImageUrl(image){
         value.startsWith("data:") ||
         value.startsWith("/")
     ){
-
         return value;
-
     }
 
     return "/uploads/" + value;
-
 }
 
 function handleImages(input){
 
-    const files =
-        Array.from(
-            input.files || []
-        );
+    const files = Array.from(input.files || []);
 
     if(!files.length){
         return;
     }
 
+    /*
+     * Yangi tanlangan rasmlar soni
+     * hamma holatda (qo‘shish ham, tahrirlash ham)
+     * MAX_IMAGES dan oshmasligi kerak.
+     */
+
     const remaining =
-        Math.max(
-            1,
-            8 -
-            (
-                editingHomeId
-                    ? 0
-                    : uploadedImages.length
-            )
+        MAX_IMAGES - uploadedImages.length;
+
+    if(remaining <= 0){
+
+        showToast(
+            `Ko‘pi bilan ${MAX_IMAGES} ta rasm tanlash mumkin.`,
+            true
         );
 
-    const selected =
-        files.slice(0,remaining);
+        input.value = "";
+
+        return;
+    }
+
+    if(files.length > remaining){
+
+        showToast(
+            `Faqat ${remaining} ta rasm qo‘shildi (limit: ${MAX_IMAGES}).`,
+            true
+        );
+
+    }
+
+    const selected = files.slice(0,remaining);
 
     selected.forEach(file=>{
 
-        if(
-            !file.type.startsWith("image/")
-        ){
+        if(!file.type.startsWith("image/")){
 
             showToast(
                 `${file.name} rasm fayli emas.`,
@@ -3629,39 +1985,33 @@ function handleImages(input){
             );
 
             return;
-
         }
 
-        const reader =
-            new FileReader();
+        const reader = new FileReader();
 
-        reader.onload =
-            event=>{
+        reader.onload = event=>{
 
-                const src =
-                    event.target.result;
+            const src = event.target.result;
 
-                uploadedImages.push(src);
+            uploadedImages.push(src);
 
-                if(editingHomeId){
+            if(editingHomeId){
 
-                    editingImageItems.push({
-                        src:src,
-                        existing:false
-                    });
+                editingImageItems.push({
+                    src:src,
+                    existing:false
+                });
 
-                    renderImagePreview();
+                renderImagePreview();
 
-                }else{
+            }else{
 
-                    renderAddImagePreview();
+                renderAddImagePreview();
 
-                }
-
-            };
+            }
+        };
 
         reader.readAsDataURL(file);
-
     });
 
     if($("imageUploadText")){
@@ -3670,143 +2020,87 @@ function handleImages(input){
             editingHomeId
                 ? "Yangi rasm tanlandi — saqlaganda almashtiriladi"
                 : "Rasm(lar) tanlandi";
-
     }
 
-    /*
-     * Muhim:
-     * inputni bo‘shatamiz.
-     *
-     * Shunda bir xil rasmni qayta tanlash
-     * ham ishlaydi.
-     */
-
+    /* Bir xil rasmni qayta tanlash ham ishlashi uchun */
     input.value = "";
-
 }
 
 function renderAddImagePreview(){
 
-    const preview =
-        $("addImagePreview");
+    const preview = $("addImagePreview");
 
     if(!preview){
         return;
     }
 
     preview.innerHTML =
-        uploadedImages.map(
-            src=>`
-
+        uploadedImages.map(src=>`
             <div class="preview-item">
-
-                <img
-                    src="${escapeHtml(src)}"
-                    alt="Yangi uy rasmi"
-                >
-
+                <img src="${escapeHtml(src)}" alt="Yangi uy rasmi">
             </div>
-
-            `
-        ).join("");
-
+        `).join("");
 }
 
 function renderImagePreview(){
 
-    const preview =
-        $("imagePreview");
-
-    const box =
-        $("editImagesBox");
-
-    const count =
-        $("editImagesCount");
+    const preview = $("imagePreview");
+    const box = $("editImagesBox");
+    const count = $("editImagesCount");
 
     if(!preview || !box){
         return;
     }
 
     box.style.display =
-        editingHomeId
-            ? "block"
-            : "none";
+        editingHomeId ? "block" : "none";
 
     if(count){
-
         count.textContent =
             `${editingImageItems.length} ta rasm`;
-
     }
 
     if(!editingImageItems.length){
 
         preview.innerHTML = `
-            <div class="edit-images-empty">
-                Hozircha rasm yo‘q.
-            </div>
+            <div class="edit-images-empty">Hozircha rasm yo‘q.</div>
         `;
 
         return;
     }
 
     preview.innerHTML =
-        editingImageItems.map(
-            (item,index)=>`
+        editingImageItems.map((item,index)=>`
 
             <div class="edit-image-card ${index === 0 ? "main-image" : ""}">
 
-                <img
-                    src="${escapeHtml(item.src)}"
-                    alt="Uy rasmi ${index+1}"
-                >
+                <img src="${escapeHtml(item.src)}" alt="Uy rasmi ${index+1}">
 
-                ${
-                    index === 0
-                        ? `
-                        <span class="edit-image-badge">
-                            ASOSIY RASM
-                        </span>
-                        `
-                        : ""
-                }
+                ${index === 0
+                    ? `<span class="edit-image-badge">ASOSIY RASM</span>`
+                    : ""}
 
-                ${
-                    item.existing
-                        ? ""
-                        : `
-                        <span class="edit-image-new">
-                            YANGI
-                        </span>
-                        `
-                }
+                ${item.existing
+                    ? ""
+                    : `<span class="edit-image-new">YANGI</span>`}
 
-                ${
-                    item.existing
-                        ? ""
-                        : `
-                        <div class="edit-image-actions">
-
-                            <button
-                                type="button"
-                                class="edit-image-btn"
-                                onclick="removeNewEditImage(${index})"
-                                title="Yangi rasmni olib tashlash"
-                            >
-                                <svg class="icon icon-sm">
-                                    <use href="#i-trash"></use>
-                                </svg>
-                            </button>
-
-                        </div>
-                        `
-                }
+                ${item.existing
+                    ? ""
+                    : `
+                    <div class="edit-image-actions">
+                        <button
+                            type="button"
+                            class="edit-image-btn"
+                            onclick="removeNewEditImage(${index})"
+                            title="Yangi rasmni olib tashlash"
+                        >
+                            <svg class="icon icon-sm"><use href="#i-trash"></use></svg>
+                        </button>
+                    </div>`}
 
             </div>
 
-            `
-        ).join("");
-
+        `).join("");
 }
 
 function removeNewEditImage(index){
@@ -3818,156 +2112,95 @@ function removeNewEditImage(index){
         return;
     }
 
-    /*
-     * Eski rasmlarga tegmaymiz.
-     * Faqat yangi tanlangan rasm o‘chiriladi.
-     */
+    const item = editingImageItems[index];
 
-    if(
-        editingImageItems[index].existing
-    ){
+    /* Eski (serverdagi) rasmlarga tegilmaydi */
+    if(item.existing){
         return;
     }
 
-    editingImageItems.splice(
-        index,
-        1
-    );
+    /*
+     * Avval src ni eslab qolamiz, keyin o‘chiramiz.
+     * (Oldingi versiyada splice'dan keyin noto‘g‘ri
+     * element bo‘yicha filtrlanar edi.)
+     */
 
-    uploadedImages =
-        uploadedImages.filter(
-            src =>
-                !(
-                    src ===
-                    editingImageItems[index]?.src
-                )
-        );
+    const removedSrc = item.src;
+
+    editingImageItems.splice(index,1);
+
+    const uploadedIndex =
+        uploadedImages.indexOf(removedSrc);
+
+    if(uploadedIndex !== -1){
+        uploadedImages.splice(uploadedIndex,1);
+    }
+
+    if(
+        !uploadedImages.length &&
+        $("imageUploadText")
+    ){
+        $("imageUploadText").textContent =
+            "Eski rasmlar saqlanadi — yangi rasm tanlash shart emas";
+    }
 
     renderImagePreview();
 
-    showToast(
-        "Yangi rasm olib tashlandi."
-    );
-
+    showToast("Yangi rasm olib tashlandi.");
 }
 
-function resizeImage(
-    dataUrl,
-    maxWidth=1400
-){
+function resizeImage(dataUrl,maxWidth=1400){
 
-    return new Promise(
-        (resolve,reject)=>{
+    return new Promise((resolve,reject)=>{
 
-            const img =
-                new Image();
+        const img = new Image();
 
-            img.onload = ()=>{
+        img.onload = ()=>{
 
-                let width =
-                    img.width;
+            let width = img.width;
+            let height = img.height;
 
-                let height =
-                    img.height;
+            if(width > maxWidth){
+                const ratio = maxWidth / width;
+                width = maxWidth;
+                height = Math.round(height * ratio);
+            }
 
-                if(
-                    width > maxWidth
-                ){
+            const canvas = document.createElement("canvas");
 
-                    const ratio =
-                        maxWidth / width;
+            canvas.width = width;
+            canvas.height = height;
 
-                    width =
-                        maxWidth;
+            const ctx = canvas.getContext("2d");
 
-                    height =
-                        Math.round(
-                            height * ratio
-                        );
+            if(!ctx){
+                reject(new Error("Rasmni qayta ishlash imkoni bo‘lmadi."));
+                return;
+            }
 
-                }
+            ctx.drawImage(img,0,0,width,height);
 
-                const canvas =
-                    document.createElement(
-                        "canvas"
-                    );
+            /* Backend uchun har doim JPEG */
+            resolve(canvas.toDataURL("image/jpeg",.82));
+        };
 
-                canvas.width =
-                    width;
+        img.onerror = ()=>{
+            reject(new Error("Rasmni o‘qib bo‘lmadi."));
+        };
 
-                canvas.height =
-                    height;
-
-                const ctx =
-                    canvas.getContext("2d");
-
-                if(!ctx){
-
-                    reject(
-                        new Error(
-                            "Rasmni qayta ishlash imkoni bo‘lmadi."
-                        )
-                    );
-
-                    return;
-
-                }
-
-                ctx.drawImage(
-                    img,
-                    0,
-                    0,
-                    width,
-                    height
-                );
-
-                /*
-                 * Backend uchun har doim JPEG.
-                 */
-
-                resolve(
-                    canvas.toDataURL(
-                        "image/jpeg",
-                        .82
-                    )
-                );
-
-            };
-
-            img.onerror = ()=>{
-
-                reject(
-                    new Error(
-                        "Rasmni o‘qib bo‘lmadi."
-                    )
-                );
-
-            };
-
-            img.src =
-                dataUrl;
-
-        }
-    );
-
+        img.src = dataUrl;
+    });
 }
 
 async function optimizeImages(){
 
     const result = [];
 
-    for(
-        const image of uploadedImages
-    ){
-
-        result.push(
-            await resizeImage(image)
-        );
-
+    for(const image of uploadedImages){
+        result.push(await resizeImage(image));
     }
 
     return result;
-
 }
 
 
@@ -3976,11 +2209,8 @@ async function optimizeImages(){
 ========================================================= */
 
 function startNewHome(){
-
     resetAddForm();
-
     showPage("add");
-
 }
 
 
@@ -3994,20 +2224,14 @@ function startEditHome(id){
         return;
     }
 
-    /*
-     * ID ni Number/String farqidan qat’i nazar
-     * topamiz.
-     */
-
     const car =
-        cars.find(
-            item =>
-                String(
-                    item.id ??
-                    item._id ??
-                    item.car_id ??
-                    ""
-                ) === String(id)
+        cars.find(item =>
+            String(
+                item.id ??
+                item._id ??
+                item.car_id ??
+                ""
+            ) === String(id)
         );
 
     if(!car){
@@ -4018,7 +2242,6 @@ function startEditHome(id){
         );
 
         return;
-
     }
 
     editingHomeId =
@@ -4026,55 +2249,38 @@ function startEditHome(id){
         car._id ??
         car.car_id;
 
-    const types =
-        getHomeTypes(car);
-
     selectedHomeTypes =
-        types.slice(0,3);
+        getHomeTypes(car).slice(0,3);
 
     selectedCurrency =
-        car.currency === "USD"
-            ? "USD"
-            : "UZS";
+        car.currency === "USD" ? "USD" : "UZS";
 
     uploadedImages = [];
 
     const images =
-        Array.isArray(car.images)
-            ? car.images
-            : [];
+        Array.isArray(car.images) ? car.images : [];
 
     editingExistingImages =
         images
             .map(normalizeImageUrl)
             .filter(Boolean);
 
-    /*
-     * Muhim:
-     * Tahrirlash oynasiga kirilganda
-     * eski rasmlar o‘chirilmaydi.
-     */
+    /* Tahrirlashga kirilganda eski rasmlar o‘chirilmaydi */
 
     editingImageItems =
-        editingExistingImages.map(
-            src=>({
-                src:src,
-                existing:true
-            })
-        );
+        editingExistingImages.map(src=>({
+            src:src,
+            existing:true
+        }));
 
     $("homeTitle").value =
-        car.title ??
-        car.name ??
-        "";
+        car.title ?? car.name ?? "";
 
     $("homePrice").value =
         Number(car.price || 0);
 
     $("homeLocation").value =
-        car.location ??
-        car.address ??
-        "";
+        car.location ?? car.address ?? "";
 
     $("homeRooms").value =
         Number(car.rooms || 0) || "";
@@ -4083,33 +2289,24 @@ function startEditHome(id){
         Number(car.area || 0) || "";
 
     $("homePhone").value =
-        car.phone ??
-        "";
+        car.phone ?? "";
 
     $("homeDescription").value =
-        car.description ??
-        "";
+        car.description ?? "";
 
     $("homeImages").value = "";
 
-    $("addPanelTitle").textContent =
-        "Uyni tahrirlash";
+    $("addPanelTitle").textContent = "Uyni tahrirlash";
 
     $("saveHomeBtn").innerHTML = `
-        <svg class="icon icon-sm">
-            <use href="#i-save"></use>
-        </svg>
+        <svg class="icon icon-sm"><use href="#i-save"></use></svg>
         O‘zgarishlarni saqlash
     `;
 
-    $("cancelEditBtn").style.display =
-        "inline-flex";
+    $("cancelEditBtn").style.display = "inline-flex";
+    $("clearHomeBtn").style.display = "none";
 
-    $("clearHomeBtn").style.display =
-        "none";
-
-    $("imageUploadTitle").textContent =
-        "Yangi rasm tanlash";
+    $("imageUploadTitle").textContent = "Yangi rasm tanlash";
 
     $("imageUploadText").textContent =
         editingExistingImages.length
@@ -4117,24 +2314,14 @@ function startEditHome(id){
             : "Hozircha rasm yo‘q";
 
     updateTypeButtons();
-
     updateTypeSummary();
-
-    selectCurrency(
-        selectedCurrency
-    );
-
+    selectCurrency(selectedCurrency);
     renderImagePreview();
-
     renderAddImagePreview();
 
     showPage("add");
 
-    window.scrollTo({
-        top:0,
-        behavior:"smooth"
-    });
-
+    window.scrollTo({top:0,behavior:"smooth"});
 }
 
 
@@ -4145,103 +2332,70 @@ function startEditHome(id){
 function cancelEdit(){
 
     editingHomeId = null;
-
     editingExistingImages = [];
-
     editingImageItems = [];
-
     uploadedImages = [];
-
     selectedHomeTypes = [];
-
     selectedCurrency = "UZS";
 
-    const form =
-        $("addHomeForm");
+    const form = $("addHomeForm");
 
     if(form){
         form.reset();
     }
 
-    $("addPanelTitle").textContent =
-        "Yangi uy qo‘shish";
+    $("addPanelTitle").textContent = "Yangi uy qo‘shish";
 
     $("saveHomeBtn").innerHTML = `
-        <svg class="icon icon-sm">
-            <use href="#i-save"></use>
-        </svg>
+        <svg class="icon icon-sm"><use href="#i-save"></use></svg>
         Uy qo‘shish
     `;
 
-    $("cancelEditBtn").style.display =
-        "none";
-
-    $("clearHomeBtn").style.display =
-        "inline-flex";
+    $("cancelEditBtn").style.display = "none";
+    $("clearHomeBtn").style.display = "inline-flex";
 
     $("imageUploadText").textContent =
-        "Bir nechta rasm tanlashingiz mumkin";
+        `Bir nechta rasm tanlashingiz mumkin (ko‘pi bilan ${MAX_IMAGES} ta)`;
 
-    $("imageUploadTitle").textContent =
-        "Rasm tanlash";
+    $("imageUploadTitle").textContent = "Rasm tanlash";
 
     $("imagePreview").innerHTML = "";
-
     $("addImagePreview").innerHTML = "";
-
-    $("editImagesBox").style.display =
-        "none";
+    $("editImagesBox").style.display = "none";
 
     resetHomeTypes();
-
     selectCurrency("UZS");
-
 }
 
 function resetAddForm(){
 
     if(editingHomeId){
-
         cancelEdit();
-
-        showToast(
-            "Tahrirlash bekor qilindi."
-        );
-
+        showToast("Tahrirlash bekor qilindi.");
         return;
-
     }
 
-    const form =
-        $("addHomeForm");
+    const form = $("addHomeForm");
 
     if(form){
         form.reset();
     }
 
     uploadedImages = [];
-
     selectedHomeTypes = [];
-
     selectedCurrency = "UZS";
 
     $("addImagePreview").innerHTML = "";
-
     $("imagePreview").innerHTML = "";
+    $("editImagesBox").style.display = "none";
 
-    $("editImagesBox").style.display =
-        "none";
-
-    $("imageUploadTitle").textContent =
-        "Rasm tanlash";
+    $("imageUploadTitle").textContent = "Rasm tanlash";
 
     $("imageUploadText").textContent =
-        "Bir nechta rasm tanlashingiz mumkin";
+        `Bir nechta rasm tanlashingiz mumkin (ko‘pi bilan ${MAX_IMAGES} ta)`;
 
     resetHomeTypes();
-
     selectCurrency("UZS");
-
 }
 
 
@@ -4258,151 +2412,74 @@ async function addHome(event){
     }
 
     if(selectedHomeTypes.length < 1){
-
-        showToast(
-            "Kamida 1 ta uy turini tanlang.",
-            true
-        );
-
+        showToast("Kamida 1 ta uy turini tanlang.",true);
         return;
-
     }
 
-    const title =
-        $("homeTitle").value.trim();
+    const title = $("homeTitle").value.trim();
+    const price = Number($("homePrice").value);
+    const location = $("homeLocation").value.trim();
 
-    const price =
-        Number(
-            $("homePrice").value
-        );
-
-    const location =
-        $("homeLocation").value.trim();
-
-    if(
-        !title ||
-        !price ||
-        !location
-    ){
-
-        showToast(
-            "Majburiy maydonlarni to‘ldiring.",
-            true
-        );
-
+    if(!title || !price || !location){
+        showToast("Majburiy maydonlarni to‘ldiring.",true);
         return;
-
     }
 
     showLoading(true);
 
     try{
 
-        /* =========================
-           NEW HOME
-        ========================= */
+        /* ========================= NEW HOME ========================= */
 
         if(!editingHomeId){
 
-            const images =
-                await optimizeImages();
+            const images = await optimizeImages();
 
             const payload = {
-
                 title:title,
-
                 name:title,
-
                 type:selectedHomeTypes[0],
-
-                types:[
-                    ...selectedHomeTypes
-                ],
-
+                types:[...selectedHomeTypes],
                 price:price,
-
                 currency:selectedCurrency,
-
                 location:location,
-
                 address:location,
-
-                rooms:
-                    Number(
-                        $("homeRooms").value
-                    ) || 0,
-
-                area:
-                    Number(
-                        $("homeArea").value
-                    ) || 0,
-
-                phone:
-                    $("homePhone")
-                        .value
-                        .trim(),
-
-                description:
-                    $("homeDescription")
-                        .value
-                        .trim(),
-
+                rooms:Number($("homeRooms").value) || 0,
+                area:Number($("homeArea").value) || 0,
+                phone:$("homePhone").value.trim(),
+                description:$("homeDescription").value.trim(),
                 images:images,
-
                 status:"available",
-
                 password:adminPassword
-
             };
 
             const response =
-                await fetch(
-                    "/api/cars",
-                    {
-                        method:"POST",
-
-                        headers:adminHeaders({
-                            "Content-Type":
-                                "application/json"
-                        }),
-
-                        body:
-                            JSON.stringify(payload)
-
-                    }
-                );
+                await fetch("/api/cars",{
+                    method:"POST",
+                    headers:adminHeaders({"Content-Type":"application/json"}),
+                    body:JSON.stringify(payload)
+                });
 
             const data =
-                await response
-                    .json()
-                    .catch(()=>({}));
+                await response.json().catch(()=>({}));
 
             if(
                 response.status === 401 ||
                 response.status === 403
             ){
-
-                logoutAdmin();
-
-                throw new Error(
-                    "Admin paroli noto‘g‘ri yoki sessiya tugagan."
-                );
-
+                logoutAdmin("Sessiya tugadi. Qayta kiring.");
+                throw new Error("Admin paroli noto‘g‘ri yoki sessiya tugagan.");
             }
 
             if(!response.ok){
-
                 throw new Error(
                     data.message ||
                     data.error ||
                     "Uy qo‘shishda xatolik."
                 );
-
             }
 
-            showToast(
-                "Uy muvaffaqiyatli qo‘shildi."
-            );
+            showToast("Uy muvaffaqiyatli qo‘shildi.");
 
             cancelEdit();
 
@@ -4411,23 +2488,14 @@ async function addHome(event){
             showPage("homes");
 
             return;
-
         }
 
 
-        /* =========================
-           EDIT EXISTING HOME
-        ========================= */
+        /* ========================= EDIT EXISTING HOME ========================= */
 
         /*
-         * MUHIM:
-         *
-         * Agar yangi rasm tanlanmagan bo‘lsa:
-         *
-         * payload.images YO‘Q.
-         *
-         * Shu sababli backend eski rasmlarga
-         * tegmaydi.
+         * Agar yangi rasm tanlanmagan bo‘lsa payload.images YO‘Q —
+         * backend eski rasmlarga tegmaydi.
          */
 
         const newImages =
@@ -4436,109 +2504,52 @@ async function addHome(event){
                 : [];
 
         const payload = {
-
             title:title,
-
             name:title,
-
             type:selectedHomeTypes[0],
-
-            types:[
-                ...selectedHomeTypes
-            ],
-
+            types:[...selectedHomeTypes],
             price:price,
-
             currency:selectedCurrency,
-
             location:location,
-
             address:location,
-
-            rooms:
-                Number(
-                    $("homeRooms").value
-                ) || 0,
-
-            area:
-                Number(
-                    $("homeArea").value
-                ) || 0,
-
-            phone:
-                $("homePhone")
-                    .value
-                    .trim(),
-
-            description:
-                $("homeDescription")
-                    .value
-                    .trim(),
-
-            password:
-                adminPassword
-
+            rooms:Number($("homeRooms").value) || 0,
+            area:Number($("homeArea").value) || 0,
+            phone:$("homePhone").value.trim(),
+            description:$("homeDescription").value.trim(),
+            password:adminPassword
         };
 
-        /*
-         * Faqat yangi rasm tanlangan bo‘lsa
-         * images yuboriladi.
-         *
-         * Eski rasmga tegilmagan holatda
-         * JPEG/format xatosi chiqmaydi.
-         */
-
         if(newImages.length){
-
-            payload.images =
-                newImages;
-
+            payload.images = newImages;
         }
 
         const response =
             await fetch(
-                `/api/cars/${encodeURIComponent(
-                    editingHomeId
-                )}`,
+                `/api/cars/${encodeURIComponent(editingHomeId)}`,
                 {
                     method:"PUT",
-
-                    headers:adminHeaders({
-                        "Content-Type":
-                            "application/json"
-                    }),
-
-                    body:
-                        JSON.stringify(payload)
+                    headers:adminHeaders({"Content-Type":"application/json"}),
+                    body:JSON.stringify(payload)
                 }
             );
 
         const data =
-            await response
-                .json()
-                .catch(()=>({}));
+            await response.json().catch(()=>({}));
 
         if(
             response.status === 401 ||
             response.status === 403
         ){
-
-            logoutAdmin();
-
-            throw new Error(
-                "Admin paroli noto‘g‘ri yoki sessiya tugagan."
-            );
-
+            logoutAdmin("Sessiya tugadi. Qayta kiring.");
+            throw new Error("Admin paroli noto‘g‘ri yoki sessiya tugagan.");
         }
 
         if(!response.ok){
-
             throw new Error(
                 data.message ||
                 data.error ||
                 "Uyni tahrirlashda xatolik."
             );
-
         }
 
         showToast(
@@ -4558,8 +2569,7 @@ async function addHome(event){
         console.error(error);
 
         showToast(
-            error.message ||
-            "Xatolik yuz berdi.",
+            error.message || "Xatolik yuz berdi.",
             true
         );
 
@@ -4568,7 +2578,6 @@ async function addHome(event){
         showLoading(false);
 
     }
-
 }
 
 
@@ -4578,25 +2587,15 @@ async function addHome(event){
 
 function getHomeTypes(car){
 
-    if(
-        Array.isArray(car.types) &&
-        car.types.length
-    ){
-
+    if(Array.isArray(car.types) && car.types.length){
         return car.types;
-
     }
 
     if(car.type){
-
-        return [
-            car.type
-        ];
-
+        return [car.type];
     }
 
     return [];
-
 }
 
 function homeHasType(car,type){
@@ -4605,18 +2604,12 @@ function homeHasType(car,type){
         return true;
     }
 
-    return getHomeTypes(car)
-        .some(
-            item =>
-                item === type
-        );
-
+    return getHomeTypes(car).some(item=>item === type);
 }
 
 function setHomeType(type){
 
-    currentHomeType =
-        type;
+    currentHomeType = type;
 
     document.querySelectorAll(".filter")
         .forEach(button=>{
@@ -4624,44 +2617,27 @@ function setHomeType(type){
         });
 
     const map = {
-
         all:"typeAll",
-
         "🏡 Hovli":"typeYard",
-
         "🏢 Kvartira":"typeApartment",
-
         "🌳 Yer":"typeLand",
-
         "🏗️ Yangi qurilish":"typeNew"
-
     };
 
-    const id =
-        map[type];
+    const id = map[type];
 
-    if(
-        id &&
-        $(id)
-    ){
-
-        $(id).classList.add(
-            "active"
-        );
-
+    if(id && $(id)){
+        $(id).classList.add("active");
     }
 
     renderHomes();
-
 }
 
 function isSold(car){
-
     return (
         car.status === "sold" ||
         car.sold === true
     );
-
 }
 
 
@@ -4671,113 +2647,70 @@ function isSold(car){
 
 function renderHomes(){
 
-    const grid =
-        $("homesGrid");
+    const grid = $("homesGrid");
 
     if(!grid){
         return;
     }
 
     const search =
-        (
-            $("homeSearch")?.value ||
-            ""
-        )
-        .trim()
-        .toLowerCase();
+        ($("homeSearch")?.value || "")
+            .trim()
+            .toLowerCase();
 
     const status =
-        $("statusFilter")?.value ||
-        "all";
+        $("statusFilter")?.value || "all";
 
     const filtered =
         cars.filter(car=>{
 
-            const types =
-                getHomeTypes(car);
+            const types = getHomeTypes(car);
 
             const title =
-                String(
-                    car.title ??
-                    car.name ??
-                    ""
-                )
-                .toLowerCase();
+                String(car.title ?? car.name ?? "").toLowerCase();
 
             const location =
-                String(
-                    car.location ??
-                    car.address ??
-                    ""
-                )
-                .toLowerCase();
+                String(car.location ?? car.address ?? "").toLowerCase();
 
             const matchesSearch =
                 !search ||
                 title.includes(search) ||
                 location.includes(search) ||
-                types.some(
-                    type =>
-                        String(type)
-                            .toLowerCase()
-                            .includes(search)
+                types.some(type =>
+                    String(type).toLowerCase().includes(search)
                 );
 
-            const sold =
-                isSold(car);
+            const sold = isSold(car);
 
             const matchesStatus =
                 status === "all" ||
-                (
-                    status === "sold" &&
-                    sold
-                ) ||
-                (
-                    status === "available" &&
-                    !sold
-                );
+                (status === "sold" && sold) ||
+                (status === "available" && !sold);
 
             const matchesType =
-                homeHasType(
-                    car,
-                    currentHomeType
-                );
+                homeHasType(car,currentHomeType);
 
             return (
                 matchesSearch &&
                 matchesStatus &&
                 matchesType
             );
-
         });
 
     if(!filtered.length){
 
         grid.innerHTML = `
-
             <div class="empty">
-
-                <svg class="icon-xl">
-                    <use href="#i-home"></use>
-                </svg>
-
-                <div>
-                    Uy topilmadi
-                </div>
-
+                <svg class="icon-xl"><use href="#i-home"></use></svg>
+                <div>Uy topilmadi</div>
             </div>
-
         `;
 
         return;
-
     }
 
     grid.innerHTML =
-        filtered
-            .map(createHomeCard)
-            .join("");
-
+        filtered.map(createHomeCard).join("");
 }
 
 
@@ -4801,22 +2734,14 @@ function createHomeCard(car){
     const price =
         formatPrice(
             car.price,
-            car.currency === "USD"
-                ? "USD"
-                : "UZS"
+            car.currency === "USD" ? "USD" : "UZS"
         );
 
-    const types =
-        getHomeTypes(car);
+    const types = getHomeTypes(car);
 
     const typeText =
         types.length
-            ? types
-                .map(
-                    type =>
-                        escapeHtml(type)
-                )
-                .join(" • ")
+            ? types.map(type=>escapeHtml(type)).join(" • ")
             : "Uy turi ko‘rsatilmagan";
 
     const location =
@@ -4824,31 +2749,16 @@ function createHomeCard(car){
         car.address ??
         "Manzil ko‘rsatilmagan";
 
-    const rooms =
-        Number(
-            car.rooms || 0
-        );
-
-    const area =
-        Number(
-            car.area || 0
-        );
-
-    const sold =
-        isSold(car);
+    const rooms = Number(car.rooms || 0);
+    const area = Number(car.area || 0);
+    const sold = isSold(car);
 
     const images =
-        Array.isArray(car.images)
-            ? car.images
-            : [];
+        Array.isArray(car.images) ? car.images : [];
 
-    const image =
-        images[0] ||
-        car.image ||
-        "";
+    const image = images[0] || car.image || "";
 
-    const imageSrc =
-        normalizeImageUrl(image);
+    const imageSrc = normalizeImageUrl(image);
 
     const imageHtml =
         imageSrc
@@ -4859,20 +2769,13 @@ function createHomeCard(car){
                     loading="lazy"
                     onerror="this.style.display='none';this.nextElementSibling.style.display='grid'"
                 >
-                <div
-                    class="home-image-placeholder"
-                    style="display:none"
-                >
-                    <svg class="icon-xl">
-                        <use href="#i-home"></use>
-                    </svg>
+                <div class="home-image-placeholder" style="display:none">
+                    <svg class="icon-xl"><use href="#i-home"></use></svg>
                 </div>
             `
             : `
                 <div class="home-image-placeholder">
-                    <svg class="icon-xl">
-                        <use href="#i-home"></use>
-                    </svg>
+                    <svg class="icon-xl"><use href="#i-home"></use></svg>
                 </div>
             `;
 
@@ -4885,125 +2788,64 @@ function createHomeCard(car){
                 ${imageHtml}
 
                 <div class="home-status">
-                    ${
-                        sold
-                            ? "Sotilgan"
-                            : "Sotuvda"
-                    }
+                    ${sold ? "Sotilgan" : "Sotuvda"}
                 </div>
 
             </div>
 
             <div class="home-content">
 
-                <div class="home-title">
-                    ${escapeHtml(title)}
-                </div>
+                <div class="home-title">${escapeHtml(title)}</div>
 
-                <div class="home-price">
-                    ${escapeHtml(price)}
-                </div>
+                <div class="home-price">${escapeHtml(price)}</div>
 
-                <div class="home-type">
-                    ${typeText}
-                </div>
+                <div class="home-type">${typeText}</div>
 
                 <div class="home-info">
 
                     <span>
-
-                        <svg class="icon icon-sm">
-                            <use href="#i-location"></use>
-                        </svg>
-
+                        <svg class="icon icon-sm"><use href="#i-location"></use></svg>
                         ${escapeHtml(location)}
-
                     </span>
 
-                    ${
-                        rooms > 0
-                            ? `
-                                <span>
-                                    <svg class="icon icon-sm">
-                                        <use href="#i-bed"></use>
-                                    </svg>
-                                    ${rooms} xona
-                                </span>
-                            `
-                            : ""
-                    }
+                    ${rooms > 0
+                        ? `<span>
+                                <svg class="icon icon-sm"><use href="#i-bed"></use></svg>
+                                ${rooms} xona
+                           </span>`
+                        : ""}
 
-                    ${
-                        area > 0
-                            ? `
-                                <span>
-                                    <svg class="icon icon-sm">
-                                        <use href="#i-ruler"></use>
-                                    </svg>
-                                    ${area} m²
-                                </span>
-                            `
-                            : ""
-                    }
+                    ${area > 0
+                        ? `<span>
+                                <svg class="icon icon-sm"><use href="#i-ruler"></use></svg>
+                                ${area} m²
+                           </span>`
+                        : ""}
 
-                    ${
-                        images.length
-                            ? `
-                                <span>
-                                    <svg class="icon icon-sm">
-                                        <use href="#i-camera"></use>
-                                    </svg>
-                                    ${images.length}
-                                </span>
-                            `
-                            : ""
-                    }
+                    ${images.length
+                        ? `<span>
+                                <svg class="icon icon-sm"><use href="#i-camera"></use></svg>
+                                ${images.length}
+                           </span>`
+                        : ""}
 
                 </div>
 
                 <div class="home-actions">
 
-                    <button
-                        class="action-btn"
-                        onclick="startEditHome('${escapeJs(id)}')"
-                    >
-
-                        <svg class="icon icon-sm">
-                            <use href="#i-edit"></use>
-                        </svg>
-
+                    <button class="action-btn" onclick="startEditHome('${jsArg(id)}')">
+                        <svg class="icon icon-sm"><use href="#i-edit"></use></svg>
                         Tahrirlash
-
                     </button>
 
-                    <button
-                        class="action-btn"
-                        onclick="toggleSold('${escapeJs(id)}',${sold})"
-                    >
-
-                        <svg class="icon icon-sm">
-                            <use href="#i-check"></use>
-                        </svg>
-
-                        ${
-                            sold
-                                ? "Sotuvga qaytarish"
-                                : "Sotildi"
-                        }
-
+                    <button class="action-btn" onclick="toggleSold('${jsArg(id)}',${sold})">
+                        <svg class="icon icon-sm"><use href="#i-check"></use></svg>
+                        ${sold ? "Sotuvga qaytarish" : "Sotildi"}
                     </button>
 
-                    <button
-                        class="action-btn danger"
-                        onclick="deleteHome('${escapeJs(id)}')"
-                    >
-
-                        <svg class="icon icon-sm">
-                            <use href="#i-trash"></use>
-                        </svg>
-
+                    <button class="action-btn danger" onclick="deleteHome('${jsArg(id)}')">
+                        <svg class="icon icon-sm"><use href="#i-trash"></use></svg>
                         O‘chirish
-
                     </button>
 
                 </div>
@@ -5013,7 +2855,6 @@ function createHomeCard(car){
         </article>
 
     `;
-
 }
 
 
@@ -5028,12 +2869,7 @@ async function toggleSold(id,sold){
     }
 
     if(!id){
-
-        showToast(
-            "Uy ID topilmadi.",
-            true
-        );
-
+        showToast("Uy ID topilmadi.",true);
         return;
     }
 
@@ -5056,51 +2892,32 @@ async function toggleSold(id,sold){
                 `/api/cars/${encodeURIComponent(id)}/sold`,
                 {
                     method:"POST",
-
-                    headers:adminHeaders({
-                        "Content-Type":
-                            "application/json"
-                    }),
-
-                    body:
-                        JSON.stringify({
-                            sold:!sold,
-                            status:
-                                sold
-                                    ? "available"
-                                    : "sold",
-                            password:
-                                adminPassword
-                        })
+                    headers:adminHeaders({"Content-Type":"application/json"}),
+                    body:JSON.stringify({
+                        sold:!sold,
+                        status:sold ? "available" : "sold",
+                        password:adminPassword
+                    })
                 }
             );
 
         const data =
-            await response
-                .json()
-                .catch(()=>({}));
+            await response.json().catch(()=>({}));
 
         if(
             response.status === 401 ||
             response.status === 403
         ){
-
-            logoutAdmin();
-
-            throw new Error(
-                "Admin paroli noto‘g‘ri."
-            );
-
+            logoutAdmin("Sessiya tugadi. Qayta kiring.");
+            throw new Error("Admin paroli noto‘g‘ri.");
         }
 
         if(!response.ok){
-
             throw new Error(
                 data.message ||
                 data.error ||
                 "Statusni o‘zgartirib bo‘lmadi."
             );
-
         }
 
         showToast(
@@ -5116,8 +2933,7 @@ async function toggleSold(id,sold){
         console.error(error);
 
         showToast(
-            error.message ||
-            "Xatolik yuz berdi.",
+            error.message || "Xatolik yuz berdi.",
             true
         );
 
@@ -5126,7 +2942,6 @@ async function toggleSold(id,sold){
         showLoading(false);
 
     }
-
 }
 
 
@@ -5141,23 +2956,12 @@ async function deleteHome(id){
     }
 
     if(!id){
-
-        showToast(
-            "Uy ID topilmadi.",
-            true
-        );
-
+        showToast("Uy ID topilmadi.",true);
         return;
     }
 
-    if(
-        !confirm(
-            "Bu uyni o‘chirishni tasdiqlaysizmi?"
-        )
-    ){
-
+    if(!confirm("Bu uyni o‘chirishni tasdiqlaysizmi?")){
         return;
-
     }
 
     showLoading(true);
@@ -5169,51 +2973,31 @@ async function deleteHome(id){
                 `/api/cars/${encodeURIComponent(id)}`,
                 {
                     method:"DELETE",
-
-                    headers:adminHeaders({
-                        "Content-Type":
-                            "application/json"
-                    }),
-
-                    body:
-                        JSON.stringify({
-                            password:
-                                adminPassword
-                        })
+                    headers:adminHeaders({"Content-Type":"application/json"}),
+                    body:JSON.stringify({password:adminPassword})
                 }
             );
 
         const data =
-            await response
-                .json()
-                .catch(()=>({}));
+            await response.json().catch(()=>({}));
 
         if(
             response.status === 401 ||
             response.status === 403
         ){
-
-            logoutAdmin();
-
-            throw new Error(
-                "Admin paroli noto‘g‘ri."
-            );
-
+            logoutAdmin("Sessiya tugadi. Qayta kiring.");
+            throw new Error("Admin paroli noto‘g‘ri.");
         }
 
         if(!response.ok){
-
             throw new Error(
                 data.message ||
                 data.error ||
                 "Uyni o‘chirib bo‘lmadi."
             );
-
         }
 
-        showToast(
-            "Uy o‘chirildi."
-        );
+        showToast("Uy o‘chirildi.");
 
         await loadAll();
 
@@ -5222,8 +3006,7 @@ async function deleteHome(id){
         console.error(error);
 
         showToast(
-            error.message ||
-            "Xatolik yuz berdi.",
+            error.message || "Xatolik yuz berdi.",
             true
         );
 
@@ -5232,7 +3015,6 @@ async function deleteHome(id){
         showLoading(false);
 
     }
-
 }
 
 
@@ -5256,54 +3038,27 @@ async function loadCars(){
         response.status === 401 ||
         response.status === 403
     ){
-
-        logoutAdmin();
-
-        throw new Error(
-            "Admin sessiyasi tugagan."
-        );
-
+        logoutAdmin("Sessiya tugadi. Qayta kiring.");
+        throw new Error("Admin sessiyasi tugagan.");
     }
 
     if(!response.ok){
-
-        throw new Error(
-            "Uylar ma’lumotini yuklab bo‘lmadi."
-        );
-
+        throw new Error("Uylar ma’lumotini yuklab bo‘lmadi.");
     }
 
-    const data =
-        await response
-            .json();
+    const data = await response.json();
 
-    /*
-     * Backend turli ko‘rinishda array qaytarsa ham
-     * ishlashi uchun.
-     */
+    /* Backend turli ko‘rinishda array qaytarsa ham ishlaydi */
 
     if(Array.isArray(data)){
-
         cars = data;
-
-    }else if(
-        Array.isArray(data.cars)
-    ){
-
+    }else if(Array.isArray(data.cars)){
         cars = data.cars;
-
-    }else if(
-        Array.isArray(data.data)
-    ){
-
+    }else if(Array.isArray(data.data)){
         cars = data.data;
-
     }else{
-
         cars = [];
-
     }
-
 }
 
 
@@ -5327,51 +3082,23 @@ async function loadSettings(){
         response.status === 401 ||
         response.status === 403
     ){
-
-        logoutAdmin();
-
-        throw new Error(
-            "Admin sessiyasi tugagan."
-        );
-
+        logoutAdmin("Sessiya tugadi. Qayta kiring.");
+        throw new Error("Admin sessiyasi tugagan.");
     }
 
     if(!response.ok){
-
-        throw new Error(
-            "Aloqa sozlamalarini yuklab bo‘lmadi."
-        );
-
+        throw new Error("Aloqa sozlamalarini yuklab bo‘lmadi.");
     }
 
-    const data =
-        await response.json();
+    const data = await response.json();
 
-    settings =
-        data.settings ||
-        data ||
-        {};
+    settings = data.settings || data || {};
 
-    $("settingPhone").value =
-        settings.phone ||
-        "";
-
-    $("settingTelegram").value =
-        settings.telegram ||
-        "";
-
-    $("settingWhatsapp").value =
-        settings.whatsapp ||
-        "";
-
-    $("settingInstagram").value =
-        settings.instagram ||
-        "";
-
-    $("settingAddress").value =
-        settings.address ||
-        "";
-
+    $("settingPhone").value = settings.phone || "";
+    $("settingTelegram").value = settings.telegram || "";
+    $("settingWhatsapp").value = settings.whatsapp || "";
+    $("settingInstagram").value = settings.instagram || "";
+    $("settingAddress").value = settings.address || "";
 }
 
 
@@ -5388,105 +3115,59 @@ async function saveSettings(event){
     }
 
     const payload = {
-
-        phone:
-            $("settingPhone")
-                .value
-                .trim(),
-
-        telegram:
-            $("settingTelegram")
-                .value
-                .trim(),
-
-        whatsapp:
-            $("settingWhatsapp")
-                .value
-                .trim(),
-
-        instagram:
-            $("settingInstagram")
-                .value
-                .trim(),
-
-        address:
-            $("settingAddress")
-                .value
-                .trim(),
-
-        password:
-            adminPassword
-
+        phone:$("settingPhone").value.trim(),
+        telegram:$("settingTelegram").value.trim(),
+        whatsapp:$("settingWhatsapp").value.trim(),
+        instagram:$("settingInstagram").value.trim(),
+        address:$("settingAddress").value.trim(),
+        password:adminPassword
     };
 
     showLoading(true);
 
     try{
 
-        /*
-         * Mavjud index.js contract:
-         * POST /api/settings
-         */
+        /* Mavjud index.js contract: POST /api/settings */
 
         const response =
             await fetch(
                 "/api/settings",
                 {
                     method:"POST",
-
-                    headers:adminHeaders({
-                        "Content-Type":
-                            "application/json"
-                    }),
-
-                    body:
-                        JSON.stringify(payload)
+                    headers:adminHeaders({"Content-Type":"application/json"}),
+                    body:JSON.stringify(payload)
                 }
             );
 
         const data =
-            await response
-                .json()
-                .catch(()=>({}));
+            await response.json().catch(()=>({}));
 
         if(
             response.status === 401 ||
             response.status === 403
         ){
-
-            logoutAdmin();
-
-            throw new Error(
-                "Admin paroli noto‘g‘ri."
-            );
-
+            logoutAdmin("Sessiya tugadi. Qayta kiring.");
+            throw new Error("Admin paroli noto‘g‘ri.");
         }
 
         if(!response.ok){
-
             throw new Error(
                 data.message ||
                 data.error ||
                 "Aloqa sozlamalarini saqlab bo‘lmadi."
             );
-
         }
 
-        settings =
-            data.settings ||
-            payload;
+        settings = data.settings || payload;
 
-        showToast(
-            "Aloqa sozlamalari saqlandi."
-        );
+        showToast("Aloqa sozlamalari saqlandi.");
 
     }catch(error){
 
         console.error(error);
 
         showToast(
-            error.message ||
-            "Xatolik yuz berdi.",
+            error.message || "Xatolik yuz berdi.",
             true
         );
 
@@ -5495,7 +3176,6 @@ async function saveSettings(event){
         showLoading(false);
 
     }
-
 }
 
 
@@ -5521,19 +3201,15 @@ async function loadStats(){
             response.status === 401 ||
             response.status === 403
         ){
-
-            logoutAdmin();
-
+            logoutAdmin("Sessiya tugadi. Qayta kiring.");
             return;
-
         }
 
         if(!response.ok){
             return;
         }
 
-        const data =
-            await response.json();
+        const data = await response.json();
 
         const views =
             Number(
@@ -5559,13 +3235,9 @@ async function loadStats(){
 
     }catch(error){
 
-        console.error(
-            "Stats:",
-            error
-        );
+        console.error("Stats:",error);
 
     }
-
 }
 
 
@@ -5575,8 +3247,7 @@ async function loadStats(){
 
 async function loadDailyStats(){
 
-    const chart =
-        $("dailyChart");
+    const chart = $("dailyChart");
 
     if(!chart){
         return;
@@ -5598,23 +3269,15 @@ async function loadDailyStats(){
             response.status === 401 ||
             response.status === 403
         ){
-
-            logoutAdmin();
-
+            logoutAdmin("Sessiya tugadi. Qayta kiring.");
             return;
-
         }
 
         if(!response.ok){
-
-            throw new Error(
-                "7 kunlik statistika yuklanmadi."
-            );
-
+            throw new Error("7 kunlik statistika yuklanmadi.");
         }
 
-        const data =
-            await response.json();
+        const data = await response.json();
 
         let rows =
             Array.isArray(data)
@@ -5625,154 +3288,99 @@ async function loadDailyStats(){
                         ? data.daily
                         : [];
 
-        rows =
-            rows.slice(-7);
+        rows = rows.slice(-7);
 
         if(!rows.length){
-
             renderEmptyChart();
-
             return;
-
         }
 
         const values =
-            rows.map(
-                row =>
-                    Number(
-                        row.views ??
-                        row.count ??
-                        row.value ??
-                        0
-                    ) || 0
+            rows.map(row =>
+                Number(
+                    row.views ??
+                    row.count ??
+                    row.value ??
+                    0
+                ) || 0
             );
 
-        const max =
-            Math.max(
-                ...values,
-                1
-            );
+        const max = Math.max(...values,1);
 
         chart.innerHTML =
-            rows
-                .map(
-                    (row,index)=>{
+            rows.map((row,index)=>{
 
-                        const value =
-                            values[index];
+                const value = values[index];
 
-                        const height =
-                            value > 0
-                                ? Math.max(
-                                    8,
-                                    Math.round(
-                                        (value / max) *
-                                        100
-                                    )
-                                )
-                                : 5;
+                const height =
+                    value > 0
+                        ? Math.max(8,Math.round((value / max) * 100))
+                        : 5;
 
-                        const rawLabel =
-                            row.date ??
-                            row.day ??
-                            String(index + 1);
+                const rawLabel =
+                    row.date ??
+                    row.day ??
+                    String(index + 1);
 
-                        let label =
-                            String(rawLabel);
+                let label = String(rawLabel);
 
-                        if(
-                            /^\d{4}-\d{2}-\d{2}/
-                                .test(label)
-                        ){
+                if(/^\d{4}-\d{2}-\d{2}/.test(label)){
 
-                            const parts =
-                                label
-                                    .slice(0,10)
-                                    .split("-");
+                    const parts = label.slice(0,10).split("-");
 
-                            label =
-                                `${parts[2]}.${parts[1]}`;
+                    label = `${parts[2]}.${parts[1]}`;
 
-                        }else{
+                }else{
 
-                            label =
-                                label.slice(-5);
+                    label = label.slice(-5);
 
-                        }
+                }
 
-                        const calls =
-                            Number(
-                                row.calls || 0
-                            );
+                const calls = Number(row.calls || 0);
 
-                        return `
+                return `
 
-                            <div
-                                class="chart-bar-wrap"
-                                title="${value} ta ko‘rish · ${calls} ta qo‘ng‘iroq"
-                            >
+                    <div
+                        class="chart-bar-wrap"
+                        title="${value} ta ko‘rish · ${calls} ta qo‘ng‘iroq"
+                    >
 
-                                <div
-                                    class="chart-bar"
-                                    style="height:${height}%"
-                                ></div>
+                        <div class="chart-bar" style="height:${height}%"></div>
 
-                                <div class="chart-label">
-                                    ${escapeHtml(label)}
-                                </div>
+                        <div class="chart-label">${escapeHtml(label)}</div>
 
-                            </div>
+                    </div>
 
-                        `;
+                `;
 
-                    }
-                )
-                .join("");
+            }).join("");
 
     }catch(error){
 
-        console.error(
-            "Daily stats:",
-            error
-        );
+        console.error("Daily stats:",error);
 
         renderEmptyChart();
 
     }
-
 }
 
 function renderEmptyChart(){
 
-    const chart =
-        $("dailyChart");
+    const chart = $("dailyChart");
 
     if(!chart){
         return;
     }
 
     chart.innerHTML =
-        Array.from(
-            {length:7},
-            (_,index)=>`
+        Array.from({length:7},(_,index)=>`
 
-                <div class="chart-bar-wrap">
+            <div class="chart-bar-wrap">
+                <div class="chart-bar" style="height:5%"></div>
+                <div class="chart-label">${index + 1}</div>
+            </div>
 
-                    <div
-                        class="chart-bar"
-                        style="height:5%"
-                    ></div>
-
-                    <div class="chart-label">
-                        ${index + 1}
-                    </div>
-
-                </div>
-
-            `
-        )
-        .join("");
-
+        `).join("");
 }
 
 async function refreshDashboardStats(button){
@@ -5782,13 +3390,8 @@ async function refreshDashboardStats(button){
     }
 
     if(button){
-
-        button.classList.add(
-            "spinning"
-        );
-
+        button.classList.add("spinning");
         button.disabled = true;
-
     }
 
     try{
@@ -5798,39 +3401,26 @@ async function refreshDashboardStats(button){
             loadDailyStats()
         ]);
 
-        showToast(
-            "Statistika yangilandi."
-        );
+        showToast("Statistika yangilandi.");
 
     }catch(error){
 
         console.error(error);
 
-        showToast(
-            "Statistikani yangilashda xatolik.",
-            true
-        );
+        showToast("Statistikani yangilashda xatolik.",true);
 
     }finally{
 
         if(button){
 
-            setTimeout(
-                ()=>{
-                    button.classList.remove(
-                        "spinning"
-                    );
-
-                    button.disabled =
-                        false;
-                },
-                350
-            );
+            setTimeout(()=>{
+                button.classList.remove("spinning");
+                button.disabled = false;
+            },350);
 
         }
 
     }
-
 }
 
 
@@ -5841,18 +3431,13 @@ async function refreshDashboardStats(button){
 function updateDashboard(){
 
     $("statHomes").textContent =
-        cars.length
-            .toLocaleString("uz-UZ");
+        cars.length.toLocaleString("uz-UZ");
 
     $("statAvailable").textContent =
         cars
-            .filter(
-                car =>
-                    !isSold(car)
-            )
+            .filter(car => !isSold(car))
             .length
             .toLocaleString("uz-UZ");
-
 }
 
 
@@ -5863,23 +3448,38 @@ function updateDashboard(){
 async function loadAll(){
 
     if(!adminPassword){
-
         logoutAdmin();
-
         return;
-
     }
 
     showLoading(true);
 
     try{
 
+        /*
+         * Aloqa sozlamalari yuklanmasa ham
+         * uylar va statistika ko‘rsatilaveradi.
+         */
+
         await Promise.all([
             loadCars(),
-            loadSettings(),
             loadStats(),
-            loadDailyStats()
+            loadDailyStats(),
+            loadSettings().catch(error=>{
+
+                console.error("Settings:",error);
+
+                if(adminPassword){
+                    showToast(error.message,true);
+                }
+
+            })
         ]);
+
+        /* Sessiya tugab logout bo‘lgan bo‘lsa — davom etmaymiz */
+        if(!adminPassword){
+            return;
+        }
 
         updateDashboard();
 
@@ -5889,22 +3489,15 @@ async function loadAll(){
 
         console.error(error);
 
-        /*
-         * Login tekshiruvi xatosi bo‘lsa
-         * foydalanuvchini qayta login oynasiga
-         * qaytaramiz.
-         */
-
         if(
-            error.message.includes(
-                "sessiyasi"
-            ) ||
-            error.message.includes(
-                "Admin paroli"
-            )
+            !adminPassword ||
+            String(error.message).includes("sessiyasi") ||
+            String(error.message).includes("Admin paroli")
         ){
 
-            logoutAdmin();
+            if(adminPassword){
+                logoutAdmin("Sessiya tugadi. Qayta kiring.");
+            }
 
         }else{
 
@@ -5921,7 +3514,6 @@ async function loadAll(){
         showLoading(false);
 
     }
-
 }
 
 
@@ -5931,51 +3523,37 @@ async function loadAll(){
 
 function init(){
 
-    if(
-        localStorage.getItem(
-            "admin_dark_mode"
-        ) === "1"
-    ){
-
-        document.body.classList.add(
-            "dark"
-        );
-
+    if(localStorage.getItem("admin_dark_mode") === "1"){
+        document.body.classList.add("dark");
     }
 
     updateThemeIcons();
-
     updateTypeSummary();
 
-    /*
-     * Oldingi session mavjud bo‘lsa,
-     * qayta parol so‘ramasdan tekshiramiz.
-     */
+    /* Oldingi session mavjud bo‘lsa, qayta parol so‘ramaymiz */
 
     if(adminPassword){
 
-        $("loginScreen")
-            .classList.add("hidden");
-
-        $("app").style.display =
-            "flex";
+        $("loginScreen").classList.add("hidden");
+        $("app").style.display = "flex";
 
         loadAll();
 
     }else{
 
-        $("loginScreen")
-            .classList.remove("hidden");
+        $("loginScreen").classList.remove("hidden");
+        $("app").style.display = "none";
 
-        $("app").style.display =
-            "none";
+        /* Sahifa yangilansa ham blok saqlanib qoladi */
+        const locked = applyLoginLock();
 
-        setTimeout(()=>{
-            $("loginPassword")?.focus();
-        },100);
+        if(!locked){
+            setTimeout(()=>{
+                $("loginPassword")?.focus();
+            },100);
+        }
 
     }
-
 }
 
 
@@ -5983,38 +3561,26 @@ function init(){
    MOBILE SIDEBAR
 ========================================================= */
 
-document.addEventListener(
-    "click",
-    event=>{
+document.addEventListener("click",event=>{
 
-        if(window.innerWidth > 800){
-            return;
-        }
-
-        const sidebar =
-            $("sidebar");
-
-        const menu =
-            document.querySelector(
-                ".menu-btn"
-            );
-
-        if(
-            sidebar &&
-            menu &&
-            sidebar.classList.contains("open") &&
-            !sidebar.contains(event.target) &&
-            !menu.contains(event.target)
-        ){
-
-            sidebar.classList.remove(
-                "open"
-            );
-
-        }
-
+    if(window.innerWidth > 800){
+        return;
     }
-);
+
+    const sidebar = $("sidebar");
+    const menu = document.querySelector(".menu-btn");
+
+    if(
+        sidebar &&
+        menu &&
+        sidebar.classList.contains("open") &&
+        !sidebar.contains(event.target) &&
+        !menu.contains(event.target)
+    ){
+        sidebar.classList.remove("open");
+    }
+
+});
 
 
 /* =========================================================
