@@ -1196,19 +1196,6 @@ async function telegramContact(chatId) {
     }
 
     const buttons = [];
-
-if (settings.phone) {
-    let phoneLink = String(settings.phone).trim();
-
-    phoneLink = phoneLink.replace(/[^\d+]/g, '');
-
-    buttons.push([
-        {
-            text: '📞 Qo‘ng‘iroq qilish',
-            url: 'tel:' + phoneLink
-        }
-    ]);
-}
     
 if (
     settings.telegram &&
