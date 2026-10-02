@@ -1159,127 +1159,102 @@ async function telegramSendHomes(chatId) {
 
 async function telegramContact(chatId) {
 
-    const result = await pool.query(`
-        SELECT
-            phone,
-            telegram,
-            whatsapp,
-            instagram,
-            address
-        FROM site_settings
-        WHERE id = 1
-    `);
+    try {
 
-    const settings = result.rows[0];
+        const result = await pool.query(`
+            SELECT
+                phone,
+                telegram,
+                address
+            FROM site_settings
+            WHERE id = 1
+        `);
 
-    if (!settings) {
+        const settings = result.rows[0];
+
+        if (!settings) {
+
+            await telegramApi(
+                'sendMessage',
+                {
+                    chat_id: chatId,
+                    text: '📞 Bog‘lanish ma’lumotlari mavjud emas.'
+                }
+            );
+
+            return;
+        }
+
+        let text = '📞 Bog‘lanish\n\n';
+
+        if (settings.phone) {
+            text += `📱 Telefon: ${settings.phone}\n`;
+        }
+
+        if (settings.address) {
+            text += `📍 ${settings.address}\n`;
+        }
+
+        const buttons = [];
+
+        // Telegram orqali yozish
+        if (settings.telegram) {
+
+            let telegramLink =
+                String(settings.telegram).trim();
+
+            if (telegramLink.startsWith('@')) {
+                telegramLink =
+                    'https://t.me/' +
+                    telegramLink.slice(1);
+            } else if (
+                !telegramLink.startsWith('http://') &&
+                !telegramLink.startsWith('https://')
+            ) {
+                telegramLink =
+                    'https://t.me/' +
+                    telegramLink;
+            }
+
+            buttons.push([
+                {
+                    text: '✈️ Telegram orqali yozish',
+                    url: telegramLink
+                }
+            ]);
+        }
+
         await telegramApi(
             'sendMessage',
             {
                 chat_id: chatId,
-                text: '📞 Aloqa ma’lumotlari mavjud emas.'
+                text: text,
+                reply_markup:
+                    buttons.length
+                        ? {
+                            inline_keyboard:
+                                buttons
+                        }
+                        : undefined
             }
         );
 
-        return;
-    }
+    } catch (error) {
 
-    let text = '📞 Bog‘lanish\n\n';
+        console.error(
+            'Telegram contact xatosi:',
+            error.message
+        );
 
-    if (settings.phone) {
-        text += `📱 ${settings.phone}\n`;
-    }
-
-    if (settings.address) {
-        text += `📍 ${settings.address}\n`;
-    }
-
-    const buttons = [];
-
-    // Telegram
-    if (settings.telegram) {
-
-        let telegramLink =
-            String(settings.telegram).trim();
-
-        if (telegramLink.startsWith('@')) {
-            telegramLink =
-                'https://t.me/' +
-                telegramLink.slice(1);
-        }
-
-        if (!telegramLink.startsWith('http')) {
-            telegramLink =
-                'https://t.me/' +
-                telegramLink;
-        }
-
-        buttons.push([
+        await telegramApi(
+            'sendMessage',
             {
-                text: '✈️ Telegram',
-                url: telegramLink
+                chat_id: chatId,
+                text:
+                    '❌ Bog‘lanish ma’lumotlarini olishda xatolik yuz berdi.'
             }
-        ]);
+        );
     }
-
-    // WhatsApp
-    if (settings.whatsapp) {
-
-        let whatsappLink =
-            String(settings.whatsapp).trim();
-
-        if (!whatsappLink.startsWith('http')) {
-            whatsappLink =
-                'https://' + whatsappLink;
-        }
-
-        buttons.push([
-            {
-                text: '💬 WhatsApp',
-                url: whatsappLink
-            }
-        ]);
-    }
-
-    // Instagram
-    if (settings.instagram) {
-
-        let instagramLink =
-            String(settings.instagram).trim();
-
-        if (instagramLink.startsWith('@')) {
-            instagramLink =
-                'https://instagram.com/' +
-                instagramLink.slice(1);
-        }
-
-        if (!instagramLink.startsWith('http')) {
-            instagramLink =
-                'https://instagram.com/' +
-                instagramLink;
-        }
-
-        buttons.push([
-            {
-                text: '📸 Instagram',
-                url: instagramLink
-            }
-        ]);
-    }
-
-    await telegramApi(
-        'sendMessage',
-        {
-            chat_id: chatId,
-            text: text,
-            reply_markup:
-                buttons.length > 0
-                    ? {
-                        inline_keyboard: buttons
-                    }
-                    : undefined
-        }
-    );
 }
 
 // -----------------------------------------------------
