@@ -1195,20 +1195,31 @@ async function telegramContact(chatId) {
         text += `📍 ${settings.address}\n`;
     }
 
-    const buttons = [];
+  const buttons = [];
 
-    if (
-        settings.telegram &&
-        settings.telegram !== 'https://t.me/'
-    ) {
-        buttons.push([
-            {
-                text: '✈️ Telegram',
-                url: settings.telegram
-            }
-        ]);
+if (
+    settings.telegram &&
+    settings.telegram !== 'https://t.me/'
+) {
+    let telegramLink = String(settings.telegram).trim();
+
+    if (telegramLink.startsWith('@')) {
+        telegramLink =
+            'https://t.me/' + telegramLink.slice(1);
     }
 
+    if (!telegramLink.startsWith('http')) {
+        telegramLink =
+            'https://t.me/' + telegramLink;
+    }
+
+    buttons.push([
+        {
+            text: '✈️ Telegram',
+            url: telegramLink
+        }
+    ]);
+}
     if (
         settings.whatsapp &&
         settings.whatsapp !== 'https://wa.me/'
