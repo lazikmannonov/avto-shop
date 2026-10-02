@@ -864,13 +864,7 @@ async function recordDailyStat(type) {
 const TELEGRAM_BOT_TOKEN =
     String(process.env.TELEGRAM_BOT_TOKEN || '').trim();
 
-const SITE_URL =
-    String(
-        process.env.SITE_URL ||
-        ''
-    )
-        .trim()
-        .replace(/\/+$/, '');
+const SITE_URL = 'https://avto-shop.onrender.com';
 
 let telegramOffset = 0;
 let telegramRunning = false;
