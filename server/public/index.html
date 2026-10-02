@@ -2142,7 +2142,26 @@ updateCurrencyButtons();
 
 trackView();
 loadSettings();
-load();
+
+load().then(() => {
+
+    const params = new URLSearchParams(
+        window.location.search
+    );
+
+    const houseId = params.get("house");
+
+    if (!houseId) return;
+
+    const house = allCars.find(
+        car => String(car.id) === String(houseId)
+    );
+
+    if (house) {
+        openDetails(house);
+    }
+
+});
 
 </script>
 
