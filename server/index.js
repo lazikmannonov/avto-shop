@@ -3431,19 +3431,21 @@ async function start() {
                 process.env.PORT
             ) || 3000;
 
-        server.listen(
-            PORT,
-            () => {
+      server.listen(
+    PORT,
+    () => {
 
-                console.log(
-                    `Server ${PORT}-portda ishlayapti`
-                );
-
-                console.log(
-                    'Admin password tekshiruvi faol'
-                );
-            }
+        console.log(
+            `Server ${PORT}-portda ishlayapti`
         );
+
+        console.log(
+            'Admin password tekshiruvi faol'
+        );
+
+        telegramPolling();
+    }
+);
 
     } catch (error) {
 
