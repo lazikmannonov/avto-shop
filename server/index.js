@@ -3444,7 +3444,7 @@ async function start() {
             'Admin password tekshiruvi faol'
         );
 
-     // telegramPolling();     
+       telegramPolling();  
     }
 );
 
