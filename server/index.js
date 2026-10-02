@@ -1381,15 +1381,35 @@ async function telegramCallback(query) {
         // RASM
         // =========================
 
-        const images =
-            Array.isArray(car.images)
-                ? car.images
-                : [];
+      let images = [];
 
-        const firstImage =
-            images.length
-                ? images[0]
-                : '';
+if (Array.isArray(car.images)) {
+
+    images = car.images;
+
+} else if (
+    typeof car.images === 'string'
+) {
+
+    try {
+
+        const parsed =
+            JSON.parse(car.images);
+
+        if (Array.isArray(parsed)) {
+            images = parsed;
+        }
+
+    } catch (e) {
+
+        images = [];
+    }
+}
+
+const firstImage =
+    images.length
+        ? images[0]
+        : '';
 
         if (
             firstImage &&
