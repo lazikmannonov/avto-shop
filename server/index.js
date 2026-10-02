@@ -1370,6 +1370,10 @@ async function telegramCallback(query) {
         }
     );
 
+    // =========================
+    // UYLARNI KO‘RISH
+    // =========================
+
     if (
         query.data === 'homes'
     ) {
@@ -1381,6 +1385,10 @@ async function telegramCallback(query) {
         return;
     }
 
+    // =========================
+    // BOG‘LANISH
+    // =========================
+
     if (
         query.data === 'contact'
     ) {
@@ -1391,8 +1399,222 @@ async function telegramCallback(query) {
 
         return;
     }
-}
 
+    // =========================
+    // TANLANGAN UY
+    // =========================
+
+    if (
+        query.data &&
+        query.data.startsWith('house_')
+    ) {
+
+        const houseId =
+            query.data.replace(
+                'house_',
+                ''
+            );
+
+        const result =
+            await pool.query(
+                `
+                SELECT
+                    id,
+                    name,
+                    price,
+                    description,
+                    images,
+                    sold,
+                    currency,
+                    type,
+                    types,
+                    location,
+                    address,
+                    rooms,
+                    area,
+                    phone
+                FROM cars
+                WHERE id = $1
+                LIMIT 1
+                `,
+                [houseId]
+            );
+
+        const car =
+            result.rows[0];
+
+        if (!car) {
+
+            await telegramApi(
+                'sendMessage',
+                {
+                    chat_id: chatId,
+
+                    text:
+                        '❌ Bu uy topilmadi.'
+                }
+            );
+
+            return;
+        }
+
+        // =========================
+        // UY MA'LUMOTLARI
+        // =========================
+
+        let text =
+            `🏠 *${car.name || 'Uy'}*\n\n`;
+
+        text +=
+            `💰 *${telegramPrice(car)}*\n`;
+
+        if (
+            car.types &&
+            Array.isArray(car.types) &&
+            car.types.length
+        ) {
+
+            text +=
+                `🏠 Turi: ${car.types.join(', ')}\n`;
+        }
+
+        if (car.rooms > 0) {
+
+            text +=
+                `🚪 Xonalar: ${car.rooms} ta\n`;
+        }
+
+        if (car.area > 0) {
+
+            text +=
+                `📐 Maydon: ${car.area} m²\n`;
+        }
+
+        if (car.address) {
+
+            text +=
+                `📍 Manzil: ${car.address}\n`;
+        }
+
+        if (car.description) {
+
+            const description =
+                String(car.description)
+                    .replace(/\s+/g, ' ')
+                    .trim();
+
+            if (description) {
+
+                text +=
+                    `\n📝 *Tavsif:*\n`;
+
+                text +=
+                    description.slice(
+                        0,
+                        500
+                    );
+
+                if (
+                    description.length > 500
+                ) {
+                    text += '...';
+                }
+            }
+        }
+
+        // =========================
+        // TUGMALAR
+        // =========================
+
+        const buttons = [];
+
+        if (SITE_URL) {
+
+            buttons.push([
+                {
+                    text:
+                        '🌐 Saytda ko‘rish',
+
+                    url:
+                        `${SITE_URL}/?house=${car.id}`
+                }
+            ]);
+        }
+
+        buttons.push([
+            {
+                text:
+                    '📞 Bog‘lanish',
+
+                callback_data:
+                    'contact'
+            }
+        ]);
+
+        // =========================
+        // RASM
+        // =========================
+
+        const images =
+            Array.isArray(car.images)
+                ? car.images
+                : [];
+
+        const firstImage =
+            images.length
+                ? images[0]
+                : '';
+
+        if (
+            firstImage &&
+            SITE_URL
+        ) {
+
+            const imageUrl =
+                `${SITE_URL}/uploads/${encodeURIComponent(firstImage)}`;
+
+            await telegramApi(
+                'sendPhoto',
+                {
+                    chat_id: chatId,
+
+                    photo: imageUrl,
+
+                    caption: text,
+
+                    parse_mode:
+                        'Markdown',
+
+                    reply_markup: {
+                        inline_keyboard:
+                            buttons
+                    }
+                }
+            );
+
+        } else {
+
+            await telegramApi(
+                'sendMessage',
+                {
+                    chat_id: chatId,
+
+                    text: text,
+
+                    parse_mode:
+                        'Markdown',
+
+                    reply_markup: {
+                        inline_keyboard:
+                            buttons
+                    }
+                }
+            );
+        }
+
+        return;
+    }
+}
 // -----------------------------------------------------
 // UPDATE
 // -----------------------------------------------------
