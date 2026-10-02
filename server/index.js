@@ -1348,6 +1348,100 @@ async function telegramCallback(query) {
             }
         }
 
+        // =========================
+        // TUGMALAR
+        // =========================
+
+        const buttons = [];
+
+        if (SITE_URL) {
+
+            buttons.push([
+                {
+                    text:
+                        '🌐 Saytda ko‘rish',
+
+                    url:
+                        `${SITE_URL}/?house=${car.id}`
+                }
+            ]);
+        }
+
+        buttons.push([
+            {
+                text:
+                    '📞 Bog‘lanish',
+
+                callback_data:
+                    'contact'
+            }
+        ]);
+
+        // =========================
+        // RASM
+        // =========================
+
+        const images =
+            Array.isArray(car.images)
+                ? car.images
+                : [];
+
+        const firstImage =
+            images.length
+                ? images[0]
+                : '';
+
+        if (
+            firstImage &&
+            SITE_URL
+        ) {
+
+            const imageUrl =
+                `${SITE_URL}/uploads/${encodeURIComponent(firstImage)}`;
+
+            await telegramApi(
+                'sendPhoto',
+                {
+                    chat_id: chatId,
+
+                    photo: imageUrl,
+
+                    caption: text,
+
+                    parse_mode:
+                        'Markdown',
+
+                    reply_markup: {
+                        inline_keyboard:
+                            buttons
+                    }
+                }
+            );
+
+        } else {
+
+            await telegramApi(
+                'sendMessage',
+                {
+                    chat_id: chatId,
+
+                    text: text,
+
+                    parse_mode:
+                        'Markdown',
+
+                    reply_markup: {
+                        inline_keyboard:
+                            buttons
+                    }
+                }
+            );
+        }
+
+        return;
+    }
+}
+        
 // -----------------------------------------------------
 // UPDATE
 // -----------------------------------------------------
