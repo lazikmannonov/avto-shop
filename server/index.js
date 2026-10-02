@@ -1022,58 +1022,112 @@ async function telegramSendHomes(chatId) {
         return;
     }
 
+    // E'lonlar soni
     await telegramApi(
         'sendMessage',
         {
             chat_id: chatId,
 
             text:
-                `🏠 *Yangi uylar*\\n\\n` +
-                `${cars.length} ta e'lon topildi.`,
+                `🏠 *UY E'LONLARI*\n\n` +
+                `📋 Jami: *${cars.length} ta e'lon*\n\n` +
+                `Quyidagi uylar hozirda sotuvda.`,
 
             parse_mode: 'Markdown'
         }
     );
 
     for (
-        const car of cars
+        let i = 0;
+        i < cars.length;
+        i++
     ) {
 
+        const car = cars[i];
+
+        // =========================
+        // E'LON MATNI
+        // =========================
+
         let text =
-            `🏠 *${car.name}*\\n\\n`;
+            `🏠 *UY E'LONI #${i + 1}*\n`;
 
         text +=
-            `💰 ${telegramPrice(car)}\\n`;
+            `━━━━━━━━━━━━━━━━\n\n`;
 
-        if (car.types && car.types.length) {
+        // Nomi
+        if (car.name) {
 
             text +=
-                `🏷 ${car.types.join(', ')}\\n`;
+                `🏷 *${car.name}*\n\n`;
         }
 
+        // Narxi
+        text +=
+            `💰 *${telegramPrice(car)}*\n`;
+
+        // Turi
+        if (
+            car.types &&
+            Array.isArray(car.types) &&
+            car.types.length
+        ) {
+
+            text +=
+                `🏠 Turi: ${car.types.join(', ')}\n`;
+        }
+
+        // Xonalar
         if (car.rooms > 0) {
 
             text +=
-                `🚪 ${car.rooms} xona\\n`;
+                `🚪 Xonalar: ${car.rooms} ta\n`;
         }
 
+        // Maydon
         if (car.area > 0) {
 
             text +=
-                `📐 ${car.area} m²\\n`;
+                `📐 Maydon: ${car.area} m²\n`;
         }
 
+        // Manzil
         if (car.address) {
 
             text +=
-                `📍 ${car.address}\\n`;
+                `📍 Manzil: ${car.address}\n`;
         }
 
+        // Tavsif
         if (car.description) {
 
-            text +=
-                `\\n${car.description.slice(0, 500)}`;
+            const description =
+                String(car.description)
+                    .replace(/\s+/g, ' ')
+                    .trim();
+
+            if (description) {
+
+                text +=
+                    `\n📝 *Tavsif:*\n`;
+
+                text +=
+                    `${description.slice(0, 400)}`;
+
+                if (description.length > 400) {
+                    text += '...';
+                }
+
+                text += '\n';
+            }
         }
+
+        text +=
+            `\n━━━━━━━━━━━━━━━━`;
+
+        // =========================
+        // TUGMALAR
+        // =========================
 
         const keyboard = {
 
@@ -1085,7 +1139,7 @@ async function telegramSendHomes(chatId) {
                         url:
                             SITE_URL
                                 ? `${SITE_URL}/?house=${car.id}`
-                                : 'https://pul.zarill'
+                                : 'https://avto-shop.onrender.com'
                     }
                 ],
 
@@ -1099,6 +1153,10 @@ async function telegramSendHomes(chatId) {
 
             ]
         };
+
+        // =========================
+        // RASM
+        // =========================
 
         const images =
             Array.isArray(car.images)
@@ -1150,6 +1208,15 @@ async function telegramSendHomes(chatId) {
                 }
             );
         }
+
+        // Telegramga ketma-ket juda tez yuborib yubormaslik
+        await new Promise(
+            resolve =>
+                setTimeout(
+                    resolve,
+                    300
+                )
+        );
     }
 }
 
