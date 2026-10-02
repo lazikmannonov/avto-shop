@@ -1173,7 +1173,6 @@ async function telegramContact(chatId) {
     const settings = result.rows[0];
 
     if (!settings) {
-
         await telegramApi(
             'sendMessage',
             {
@@ -1196,50 +1195,74 @@ async function telegramContact(chatId) {
     }
 
     const buttons = [];
-    
-if (
-    settings.telegram &&
-    settings.telegram !== 'https://t.me/'
-) {
-    let telegramLink = String(settings.telegram).trim();
 
-    if (telegramLink.startsWith('@')) {
-        telegramLink =
-            'https://t.me/' + telegramLink.slice(1);
-    }
+    // Telegram
+    if (settings.telegram) {
 
-    if (!telegramLink.startsWith('http')) {
-        telegramLink =
-            'https://t.me/' + telegramLink;
-    }
+        let telegramLink =
+            String(settings.telegram).trim();
 
-    buttons.push([
-        {
-            text: '✈️ Telegram',
-            url: telegramLink
+        if (telegramLink.startsWith('@')) {
+            telegramLink =
+                'https://t.me/' +
+                telegramLink.slice(1);
         }
-    ]);
-}
-    if (
-        settings.whatsapp &&
-        settings.whatsapp !== 'https://wa.me/'
-    ) {
+
+        if (!telegramLink.startsWith('http')) {
+            telegramLink =
+                'https://t.me/' +
+                telegramLink;
+        }
+
         buttons.push([
             {
-                text: '💬 WhatsApp',
-                url: settings.whatsapp
+                text: '✈️ Telegram',
+                url: telegramLink
             }
         ]);
     }
 
-    if (
-        settings.instagram &&
-        settings.instagram !== 'https://instagram.com/'
-    ) {
+    // WhatsApp
+    if (settings.whatsapp) {
+
+        let whatsappLink =
+            String(settings.whatsapp).trim();
+
+        if (!whatsappLink.startsWith('http')) {
+            whatsappLink =
+                'https://' + whatsappLink;
+        }
+
+        buttons.push([
+            {
+                text: '💬 WhatsApp',
+                url: whatsappLink
+            }
+        ]);
+    }
+
+    // Instagram
+    if (settings.instagram) {
+
+        let instagramLink =
+            String(settings.instagram).trim();
+
+        if (instagramLink.startsWith('@')) {
+            instagramLink =
+                'https://instagram.com/' +
+                instagramLink.slice(1);
+        }
+
+        if (!instagramLink.startsWith('http')) {
+            instagramLink =
+                'https://instagram.com/' +
+                instagramLink;
+        }
+
         buttons.push([
             {
                 text: '📸 Instagram',
-                url: settings.instagram
+                url: instagramLink
             }
         ]);
     }
@@ -1248,9 +1271,9 @@ if (
         'sendMessage',
         {
             chat_id: chatId,
-            text,
+            text: text,
             reply_markup:
-                buttons.length
+                buttons.length > 0
                     ? {
                         inline_keyboard: buttons
                     }
