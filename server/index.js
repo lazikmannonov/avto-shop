@@ -1013,7 +1013,6 @@ async function telegramSendHomes(chatId) {
             'sendMessage',
             {
                 chat_id: chatId,
-
                 text:
                     '🏠 Hozircha sotuvda uylar mavjud emas.'
             }
@@ -1035,14 +1034,12 @@ async function telegramSendHomes(chatId) {
 
         const car = cars[i];
 
-        // Faqat nomi va narxi
         text +=
             `*${i + 1}.* 🏠 ${car.name || 'Uy'}\n`;
 
         text +=
             `💰 ${telegramPrice(car)}\n\n`;
 
-        // Tanlash tugmasi
         buttons.push([
             {
                 text:
