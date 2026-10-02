@@ -1535,34 +1535,36 @@ async function telegramPolling() {
                     }
                 }
 
-        } catch (error) {
+            } catch (error) {
 
-    console.error(
-        'Telegram polling xatosi:',
-        error.message
-    );
+                console.error(
+                    'Telegram polling xatosi:',
+                    error.message
+                );
 
-    if (
-        error.message &&
-        error.message.includes('Conflict')
-    ) {
-        console.error(
-            'Telegram Conflict: boshqa polling mavjud. Bot 30 soniyaga to‘xtatiladi.'
-        );
+                if (
+                    error.message &&
+                    error.message.includes('Conflict')
+                ) {
 
-        telegramStopped = true;
+                    console.error(
+                        'Telegram Conflict: boshqa polling mavjud. Bot to‘xtatildi.'
+                    );
 
-        break;
-    }
+                    telegramStopped = true;
 
-    await new Promise(
-        resolve =>
-            setTimeout(
-                resolve,
-                5000
-            )
-    );
-}  
+                    break;
+                }
+
+                await new Promise(
+                    resolve =>
+                        setTimeout(
+                            resolve,
+                            5000
+                        )
+                );
+            }
+        }
 
     } catch (error) {
 
