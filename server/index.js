@@ -1022,20 +1022,10 @@ async function telegramSendHomes(chatId) {
         return;
     }
 
-    // E'lonlar soni
-    await telegramApi(
-        'sendMessage',
-        {
-            chat_id: chatId,
+    let text =
+        '🏠 *UYLAR*\n\n';
 
-            text:
-                `🏠 *UY E'LONLARI*\n\n` +
-                `📋 Jami: *${cars.length} ta e'lon*\n\n` +
-                `Quyidagi uylar hozirda sotuvda.`,
-
-            parse_mode: 'Markdown'
-        }
-    );
+    const buttons = [];
 
     for (
         let i = 0;
@@ -1045,6 +1035,41 @@ async function telegramSendHomes(chatId) {
 
         const car = cars[i];
 
+        // Faqat nomi va narxi
+        text +=
+            `*${i + 1}.* 🏠 ${car.name || 'Uy'}\n`;
+
+        text +=
+            `💰 ${telegramPrice(car)}\n\n`;
+
+        // Tanlash tugmasi
+        buttons.push([
+            {
+                text:
+                    `${i + 1}-uy`,
+
+                callback_data:
+                    `house_${car.id}`
+            }
+        ]);
+    }
+
+    await telegramApi(
+        'sendMessage',
+        {
+            chat_id: chatId,
+
+            text: text,
+
+            parse_mode: 'Markdown',
+
+            reply_markup: {
+                inline_keyboard:
+                    buttons
+            }
+        }
+    );
+}
         // =========================
         // E'LON MATNI
         // =========================
