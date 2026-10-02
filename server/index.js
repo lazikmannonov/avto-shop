@@ -1159,20 +1159,18 @@ async function telegramSendHomes(chatId) {
 
 async function telegramContact(chatId) {
 
-    const result =
-        await pool.query(`
-            SELECT
-                phone,
-                telegram,
-                whatsapp,
-                instagram,
-                address
-            FROM site_settings
-            WHERE id = 1
-        `);
+    const result = await pool.query(`
+        SELECT
+            phone,
+            telegram,
+            whatsapp,
+            instagram,
+            address
+        FROM site_settings
+        WHERE id = 1
+    `);
 
-    const settings =
-        result.rows[0];
+    const settings = result.rows[0];
 
     if (!settings) {
 
@@ -1180,28 +1178,21 @@ async function telegramContact(chatId) {
             'sendMessage',
             {
                 chat_id: chatId,
-
-                text:
-                    '📞 Aloqa ma’lumotlari mavjud emas.'
+                text: '📞 Aloqa ma’lumotlari mavjud emas.'
             }
         );
 
         return;
     }
 
-    let text =
-        '📞 *Bog‘lanish*\\n\\n';
+    let text = '📞 Bog‘lanish\n\n';
 
     if (settings.phone) {
-
-        text +=
-            `📱 ${settings.phone}\\n`;
+        text += `📱 ${settings.phone}\n`;
     }
 
     if (settings.address) {
-
-        text +=
-            `📍 ${settings.address}\\n`;
+        text += `📍 ${settings.address}\n`;
     }
 
     const buttons = [];
@@ -1210,7 +1201,6 @@ async function telegramContact(chatId) {
         settings.telegram &&
         settings.telegram !== 'https://t.me/'
     ) {
-
         buttons.push([
             {
                 text: '✈️ Telegram',
@@ -1223,7 +1213,6 @@ async function telegramContact(chatId) {
         settings.whatsapp &&
         settings.whatsapp !== 'https://wa.me/'
     ) {
-
         buttons.push([
             {
                 text: '💬 WhatsApp',
@@ -1236,7 +1225,6 @@ async function telegramContact(chatId) {
         settings.instagram &&
         settings.instagram !== 'https://instagram.com/'
     ) {
-
         buttons.push([
             {
                 text: '📸 Instagram',
@@ -1249,16 +1237,11 @@ async function telegramContact(chatId) {
         'sendMessage',
         {
             chat_id: chatId,
-
             text,
-
-            parse_mode: 'Markdown',
-
             reply_markup:
                 buttons.length
                     ? {
-                        inline_keyboard:
-                            buttons
+                        inline_keyboard: buttons
                     }
                     : undefined
         }
