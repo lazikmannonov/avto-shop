@@ -5,274 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Uy-Joy — Uylar</title>
 
-/* =====================================================
-   PREMIUM TELEGRAM BOT
-===================================================== */
-
-.telegram-bot-card{
-    position:relative;
-    overflow:hidden;
-    margin:8px 0 12px;
-    padding:20px;
-    border-radius:22px;
-    border:1px solid rgba(25,214,107,.20);
-    background:
-        radial-gradient(circle at 90% 0%,rgba(25,214,107,.18),transparent 34%),
-        linear-gradient(135deg,
-            rgba(25,214,107,.075),
-            var(--card) 52%,
-            rgba(25,214,107,.035)
-        );
-    box-shadow:
-        0 14px 40px rgba(9,20,13,.09),
-        inset 0 1px 0 rgba(255,255,255,.35);
-    transition:
-        transform .28s ease,
-        box-shadow .28s ease,
-        border-color .28s ease;
-}
-
-.telegram-bot-card:hover{
-    transform:translateY(-3px);
-    border-color:rgba(25,214,107,.42);
-    box-shadow:
-        0 20px 50px rgba(9,20,13,.14),
-        0 0 0 1px rgba(25,214,107,.05);
-}
-
-body.dark .telegram-bot-card{
-    background:
-        radial-gradient(circle at 90% 0%,rgba(32,220,112,.14),transparent 34%),
-        linear-gradient(135deg,
-            rgba(32,220,112,.08),
-            var(--card) 52%,
-            rgba(32,220,112,.035)
-        );
-    box-shadow:
-        0 18px 50px rgba(0,0,0,.30),
-        inset 0 1px 0 rgba(255,255,255,.04);
-}
-
-.telegram-bot-glow{
-    position:absolute;
-    width:150px;
-    height:150px;
-    right:-60px;
-    top:-70px;
-    border-radius:50%;
-    background:var(--green);
-    filter:blur(65px);
-    opacity:.14;
-    pointer-events:none;
-}
-
-.telegram-bot-top{
-    position:relative;
-    z-index:1;
-    display:flex;
-    align-items:center;
-    gap:13px;
-}
-
-.telegram-bot-icon{
-    width:52px;
-    height:52px;
-    flex:0 0 52px;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    border-radius:17px;
-    color:#fff;
-    background:linear-gradient(145deg,#2aabee,#168dcc);
-    box-shadow:
-        0 10px 25px rgba(42,171,238,.25),
-        inset 0 1px 0 rgba(255,255,255,.25);
-}
-
-.telegram-bot-icon .icon{
-    width:27px;
-    height:27px;
-    stroke-width:1.9;
-}
-
-.telegram-bot-info{
-    min-width:0;
-    flex:1;
-}
-
-.telegram-bot-title{
-    color:var(--text);
-    font-size:16px;
-    font-weight:950;
-    letter-spacing:-.3px;
-    line-height:1.25;
-    margin-bottom:4px;
-}
-
-.telegram-bot-sub{
-    color:var(--muted);
-    font-size:12px;
-    line-height:1.45;
-    max-width:540px;
-}
-
-.telegram-bot-status{
-    flex:0 0 auto;
-    display:flex;
-    align-items:center;
-    gap:5px;
-    padding:6px 9px;
-    border-radius:999px;
-    background:rgba(25,214,107,.08);
-    border:1px solid rgba(25,214,107,.14);
-    color:var(--green2);
-    font-size:8px;
-    font-weight:950;
-    letter-spacing:.45px;
-}
-
-.telegram-bot-status span{
-    width:6px;
-    height:6px;
-    border-radius:50%;
-    background:var(--green);
-    box-shadow:0 0 10px var(--green);
-    animation:telegramPulse 1.8s infinite;
-}
-
-@keyframes telegramPulse{
-    0%,100%{opacity:1;transform:scale(1)}
-    50%{opacity:.45;transform:scale(.75)}
-}
-
-.telegram-bot-features{
-    position:relative;
-    z-index:1;
-    margin:15px 0 14px;
-    padding:10px 12px;
-    border-radius:12px;
-    background:rgba(25,214,107,.055);
-    border:1px solid rgba(25,214,107,.09);
-    color:var(--muted);
-    font-size:11px;
-    font-weight:750;
-    line-height:1.5;
-}
-
-.telegram-bot-button{
-    position:relative;
-    z-index:1;
-    width:100%;
-    min-height:45px;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    gap:8px;
-    border-radius:13px;
-    text-decoration:none;
-    color:#fff;
-    background:linear-gradient(135deg,#229ed9,#168dcc);
-    box-shadow:
-        0 9px 24px rgba(34,158,217,.20),
-        inset 0 1px 0 rgba(255,255,255,.18);
-    font-size:13px;
-    font-weight:900;
-    transition:
-        transform .2s ease,
-        box-shadow .2s ease,
-        filter .2s ease;
-}
-
-.telegram-bot-button:hover{
-    transform:translateY(-2px);
-    filter:brightness(1.06);
-    box-shadow:
-        0 13px 30px rgba(34,158,217,.28),
-        inset 0 1px 0 rgba(255,255,255,.20);
-}
-
-.telegram-bot-button:active{
-    transform:scale(.985);
-}
-
-.telegram-bot-button .icon{
-    width:18px;
-    height:18px;
-}
-
-.telegram-bot-arrow{
-    transform:rotate(180deg);
-    margin-left:3px;
-}
-
-@media(max-width:650px){
-
-    .telegram-bot-card{
-        margin:7px 0 10px;
-        padding:15px;
-        border-radius:18px;
-    }
-
-    .telegram-bot-top{
-        gap:10px;
-    }
-
-    .telegram-bot-icon{
-        width:44px;
-        height:44px;
-        flex-basis:44px;
-        border-radius:14px;
-    }
-
-    .telegram-bot-icon .icon{
-        width:23px;
-        height:23px;
-    }
-
-    .telegram-bot-title{
-        font-size:14px;
-    }
-
-    .telegram-bot-sub{
-        font-size:10px;
-    }
-
-    .telegram-bot-status{
-        display:none;
-    }
-
-    .telegram-bot-features{
-        margin:12px 0;
-        padding:9px 10px;
-        font-size:9.5px;
-    }
-
-    .telegram-bot-button{
-        min-height:42px;
-        font-size:11px;
-        border-radius:11px;
-    }
-}
-
-@media(max-width:380px){
-
-    .telegram-bot-card{
-        padding:13px;
-    }
-
-    .telegram-bot-title{
-        font-size:13px;
-    }
-
-    .telegram-bot-sub{
-        font-size:9px;
-    }
-
-    .telegram-bot-features{
-        font-size:8.5px;
-    }
-}
-    
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 
@@ -921,62 +653,6 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid var(-
                 <svg class="icon icon-lg"><use href="#i-home"></use></svg>
             </div>
 
-          <!-- TELEGRAM BOT PREMIUM -->
-<div class="telegram-bot-card">
-
-    <div class="telegram-bot-glow"></div>
-
-    <div class="telegram-bot-top">
-
-        <div class="telegram-bot-icon">
-            <svg class="icon">
-                <use href="#i-telegram"></use>
-            </svg>
-        </div>
-
-        <div class="telegram-bot-info">
-            <div class="telegram-bot-title" id="menuTelegramBotTitle">
-                Uy-Joy Telegram Bot
-            </div>
-
-            <div class="telegram-bot-sub" id="menuTelegramBotSub">
-                Uylarni Telegram orqali tez va qulay toping
-            </div>
-        </div>
-
-        <div class="telegram-bot-status">
-            <span></span>
-            ONLINE
-        </div>
-
-    </div>
-
-    <div class="telegram-bot-features" id="menuTelegramBotFeatures">
-        🏠 Uylar &nbsp; • &nbsp; 🔎 Qidiruv &nbsp; • &nbsp; ⭐ Saqlanganlar
-    </div>
-
-    <a
-        id="menuTelegramBot"
-        class="telegram-bot-button"
-        href="https://t.me/pulzarill_uylar_bot"
-        target="_blank"
-        rel="noopener noreferrer"
-    >
-        <svg class="icon">
-            <use href="#i-telegram"></use>
-        </svg>
-
-        <span id="menuTelegramBotOpen">
-            Telegram botni ochish
-        </span>
-
-        <svg class="icon telegram-bot-arrow">
-            <use href="#i-arrow-left"></use>
-        </svg>
-    </a>
-
-</div>
-            
             <div class="menu-item social-menu-item" data-social="whatsapp" role="link" tabindex="0"
                  onclick="openSocialMenu('whatsapp', event)"
                  onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openSocialMenu('whatsapp',event)}">
@@ -1132,7 +808,6 @@ let currentCurrency=(function(){
 let siteSettings={
     phone:"+998 88 950 00 05",
     telegram:"https://t.me/",
-    telegramBot:"https://t.me/pulzarill_uylar_bot",
     whatsapp:"https://wa.me/",
     instagram:"https://instagram.com/",
     address:"Toshkent, O‘zbekiston"
@@ -1150,13 +825,7 @@ const translations={
         new:"YANGI",
         soldBadge:"SOTILDI",
         photos:"rasm",
-        categories:{
-            all:"Barchasi",
-            hovli:"Hovli",
-            kvartira:"Kvartira",
-            yer:"Yer",
-            yangi:"Yangi qurilish"
-        },
+        categories:{all:"Barchasi",hovli:"Hovli",kvartira:"Kvartira",yer:"Yer",yangi:"Yangi qurilish"},
         searchTitle:"Qidiruv",
         priceFilter:"💰 Narx bo‘yicha",
         addressFilter:"📍 Manzil bo‘yicha",
@@ -1166,38 +835,26 @@ const translations={
         favorites:"Sevimlilar",
         menu:"Menyu",
         platform:"Uy-joy platformasi",
-
         phone:"Telefon",
         phoneSub:"Biz bilan bog‘lanish",
-
         telegram:"Telegram",
         telegramSub:"Telegram orqali bog‘lanish",
-
-        telegramBot:"Uy-Joy Telegram Bot",
-        telegramBotSub:"Uylarni Telegram orqali tez va qulay toping",
-        telegramBotFeatures:"🏠 Uylar  •  🔎 Qidiruv  •  ⭐ Saqlanganlar",
-        telegramBotOpen:"Telegram botni ochish",
-
         whatsapp:"WhatsApp",
         whatsappSub:"WhatsApp orqali bog‘lanish",
-
         instagram:"Instagram",
         instagramSub:"Instagram sahifamiz",
-
         address:"Manzil",
         language:"Til",
         languageSub:"UZ / RU / EN",
         appearance:"Ko‘rinish",
         appearanceSub:"Light / Dark",
         open:"Ochish",
-
         empty:"Hozircha uy topilmadi",
         emptyText:"Boshqa uy yoki manzilni qidirib ko‘ring.",
         noFavorites:"Sevimli uylar yo‘q",
         noFavoritesText:"Uy kartasidagi yurak tugmasini bosing.",
         loadingError:"Ma'lumot yuklanmadi",
         serverError:"Server bilan bog‘lanishda xatolik yuz berdi.",
-
         type:"Turi",
         rooms:"Xonalar",
         area:"Maydon",
@@ -1221,15 +878,7 @@ const translations={
         new:"НОВИНКА",
         soldBadge:"ПРОДАНО",
         photos:"фото",
-
-        categories:{
-            all:"Все",
-            hovli:"Частный дом",
-            kvartira:"Квартира",
-            yer:"Земля",
-            yangi:"Новостройка"
-        },
-
+        categories:{all:"Все",hovli:"Частный дом",kvartira:"Квартира",yer:"Земля",yangi:"Новостройка"},
         searchTitle:"Поиск",
         priceFilter:"💰 По цене",
         addressFilter:"📍 По адресу",
@@ -1239,38 +888,26 @@ const translations={
         favorites:"Избранное",
         menu:"Меню",
         platform:"Платформа недвижимости",
-
         phone:"Телефон",
         phoneSub:"Связаться с нами",
-
         telegram:"Telegram",
         telegramSub:"Связаться через Telegram",
-
-        telegramBot:"Telegram-бот Uy-Joy",
-        telegramBotSub:"Находите недвижимость быстро и удобно в Telegram",
-        telegramBotFeatures:"🏠 Жильё  •  🔎 Поиск  •  ⭐ Избранное",
-        telegramBotOpen:"Открыть Telegram-бот",
-
         whatsapp:"WhatsApp",
         whatsappSub:"Связаться через WhatsApp",
-
         instagram:"Instagram",
         instagramSub:"Наша страница в Instagram",
-
         address:"Адрес",
         language:"Язык",
         languageSub:"UZ / RU / EN",
         appearance:"Внешний вид",
         appearanceSub:"Светлая / Тёмная",
         open:"Открыть",
-
         empty:"Жильё не найдено",
         emptyText:"Попробуйте поискать другой вариант.",
         noFavorites:"Нет избранного жилья",
         noFavoritesText:"Нажмите на сердечко на карточке.",
         loadingError:"Не удалось загрузить данные",
         serverError:"Ошибка соединения с сервером.",
-
         type:"Тип",
         rooms:"Комнаты",
         area:"Площадь",
@@ -1294,15 +931,7 @@ const translations={
         new:"NEW",
         soldBadge:"SOLD",
         photos:"photos",
-
-        categories:{
-            all:"All",
-            hovli:"House",
-            kvartira:"Apartment",
-            yer:"Land",
-            yangi:"New building"
-        },
-
+        categories:{all:"All",hovli:"House",kvartira:"Apartment",yer:"Land",yangi:"New building"},
         searchTitle:"Search",
         priceFilter:"💰 By price",
         addressFilter:"📍 By address",
@@ -1312,38 +941,26 @@ const translations={
         favorites:"Favorites",
         menu:"Menu",
         platform:"Real estate platform",
-
         phone:"Phone",
         phoneSub:"Contact us",
-
         telegram:"Telegram",
         telegramSub:"Contact via Telegram",
-
-        telegramBot:"Uy-Joy Telegram Bot",
-        telegramBotSub:"Find properties quickly and easily through Telegram",
-        telegramBotFeatures:"🏠 Properties  •  🔎 Search  •  ⭐ Favorites",
-        telegramBotOpen:"Open Telegram Bot",
-
         whatsapp:"WhatsApp",
         whatsappSub:"Contact via WhatsApp",
-
         instagram:"Instagram",
         instagramSub:"Our Instagram page",
-
         address:"Address",
         language:"Language",
         languageSub:"UZ / RU / EN",
         appearance:"Appearance",
         appearanceSub:"Light / Dark",
         open:"Open",
-
         empty:"No property found",
         emptyText:"Try searching for another property.",
         noFavorites:"No favorite properties",
         noFavoritesText:"Press the heart button on a property card.",
         loadingError:"Failed to load data",
         serverError:"Could not connect to the server.",
-
         type:"Type",
         rooms:"Rooms",
         area:"Area",
@@ -1358,7 +975,8 @@ const translations={
     }
 
 };
-    
+
+
 function T(){
     return translations[currentLang]||translations.uz;
 }
@@ -1517,19 +1135,6 @@ function applySettings(){
     if(instagram)
         instagram.href=socialHref(siteSettings.instagram,"instagram");
 
-    const telegramBot=document.getElementById("menuTelegramBot");
-
-    if(telegramBot){
-    telegramBot.href=socialHref(
-        siteSettings.telegramBot ||
-        "https://t.me/pulzarill_uylar_bot",
-        "telegram"
-    );
-
-    telegramBot.target="_blank";
-    telegramBot.rel="noopener noreferrer";
-}
-    
     [telegram,whatsapp,instagram].filter(Boolean).forEach(link=>{
         link.target="_blank";
         link.rel="noopener noreferrer";
@@ -1611,11 +1216,6 @@ function applyLang(){
     setText("menuTelegramTitle",t.telegram);
     setText("menuTelegramSub",t.telegramSub);
 
-    setText("menuTelegramBotTitle",t.telegramBot);
-    setText("menuTelegramBotSub",t.telegramBotSub);
-    setText("menuTelegramBotFeatures",t.telegramBotFeatures);
-    setText("menuTelegramBotOpen",t.telegramBotOpen);
-     
     setText("menuWhatsappTitle",t.whatsapp);
     setText("menuWhatsappSub",t.whatsappSub);
 
@@ -1999,32 +1599,64 @@ function showSkeleton(){
 
 function imageUrl(filename){
 
-    if(!filename)
+    if(filename===undefined||filename===null)
         return "";
 
-    if(String(filename).startsWith("http"))
-        return filename;
+    // Backend yoki eski bazadagi image obyektlarini ham qo‘llab-quvvatlaymiz.
+    if(typeof filename === "object") {
+        filename = filename.url || filename.src || filename.path || filename.name || filename.filename || "";
+    }
 
-    if(String(filename).startsWith("/"))
-        return filename;
+    let value=String(filename).trim();
 
-    return "/uploads/"+filename;
+    if(!value)
+        return "";
+
+    if(/^data:image\//i.test(value))
+        return value;
+
+    if(/^https?:\/\//i.test(value))
+        return value;
+
+    if(value.startsWith("/uploads/"))
+        return value;
+
+    if(value.startsWith("uploads/"))
+        return "/"+value;
+
+    if(value.startsWith("/"))
+        return value;
+
+    return "/uploads/"+value.replace(/^\/+/,"");
 }
 
 function getImages(car){
 
-    if(Array.isArray(car.images))
-        return car.images;
+    if(!car)
+        return [];
 
-    if(typeof car.images==="string"){
+    let raw=car.images;
+
+    if(Array.isArray(raw))
+        return raw.filter(Boolean);
+
+    if(typeof raw==="string"){
+
+        const value=raw.trim();
+
+        if(!value)
+            return [];
 
         try{
-            const parsed=JSON.parse(car.images);
+            const parsed=JSON.parse(value);
             if(Array.isArray(parsed))
-                return parsed;
+                return parsed.filter(Boolean);
         }catch(e){}
 
-        return car.images.split(",").map(x=>x.trim()).filter(Boolean);
+        return value
+            .split(",")
+            .map(x=>x.trim())
+            .filter(Boolean);
     }
 
     return [];
@@ -2114,7 +1746,7 @@ class="car-image"
 src="${image}"
 alt="${escapeHtml(field(car,"name")||t.house)}"
 loading="lazy"
-onerror="this.style.display='none'"
+onerror="this.onerror=null;this.src='data:image/svg+xml;charset=UTF-8,'+encodeURIComponent('<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"800\" height=\"500\"><rect width=\"100%\" height=\"100%\" fill=\"#111\"/><text x=\"50%\" y=\"50%\" fill=\"#19d66b\" text-anchor=\"middle\" font-size=\"30\" font-family=\"Arial\">Uy-Joy</text></svg>')"
 >
 
 ${
@@ -2285,7 +1917,7 @@ function openDetails(car){
 
 ${
     firstImage
-    ?`<img id="detailsMainImage" class="details-image" src="${firstImage}" alt="${escapeHtml(field(car,"name"))}" onclick="openLightbox(0)">`
+    ?`<img id="detailsMainImage" class="details-image" src="${escapeHtml(firstImage)}" alt="${escapeHtml(field(car,"name"))}" onclick="openLightbox(0)">`
     :`<div class="details-image" style="background:#111;display:flex;align-items:center;justify-content:center;color:#19d66b">
 <svg class="icon" style="width:70px;height:70px"><use href="#i-home"></use></svg>
 </div>`
@@ -2294,7 +1926,7 @@ ${
 <div class="thumbnails">
 ${
     images.map((img,i)=>`
-<img class="thumb ${i===0?"active":""}" src="${imageUrl(img)}" onclick="selectDetailImage(${i})" alt="">
+<img class="thumb ${i===0?"active":""}" src="${escapeHtml(imageUrl(img))}" onclick="selectDetailImage(${i})" alt="">
 `).join("")
 }
 </div>
@@ -2352,6 +1984,18 @@ ${t.call}
 `;
 
     applySettings();
+
+    const mainImage=document.getElementById("detailsMainImage");
+    if(mainImage){
+        mainImage.onerror=function(){
+            this.onerror=null;
+            this.src="data:image/svg+xml;charset=UTF-8,"+encodeURIComponent("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"800\" height=\"560\"><rect width=\"100%\" height=\"100%\" fill=\"#111\"/><text x=\"50%\" y=\"50%\" fill=\"#19d66b\" text-anchor=\"middle\" font-size=\"30\" font-family=\"Arial\">Uy-Joy</text></svg>");
+        };
+    }
+
+    document.querySelectorAll(".thumb").forEach(thumb=>{
+        thumb.onerror=function(){ this.style.opacity=".35"; };
+    });
 }
 
 function selectDetailImage(index){
@@ -2554,7 +2198,7 @@ load().then(() => {
     if (!houseId) return;
 
     const house = allCars.find(
-        car => String(car.id) === String(houseId)
+        car => String(car.id ?? car._id) === String(houseId)
     );
 
     if (house) {
