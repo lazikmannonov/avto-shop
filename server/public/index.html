@@ -656,6 +656,21 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid var(-
                 <svg class="icon icon-lg"><use href="#i-home"></use></svg>
             </div>
 
+            <div class="menu-item social-menu-item" role="link" tabindex="0"
+                 onclick="window.open('https://t.me/pulzarill_uylar_bot','_blank','noopener')"
+                 onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();window.open('https://t.me/pulzarill_uylar_bot','_blank','noopener')}">
+                <div class="menu-item-left">
+                    <span class="menu-item-title">
+                        <svg class="icon"><use href="#i-telegram"></use></svg>
+                        <span>Telegram Bot</span>
+                    </span>
+                    <span class="menu-item-sub">Uy-Joy bot orqali bog‘lanish</span>
+                </div>
+                <a href="https://t.me/pulzarill_uylar_bot" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()">
+                    <span>Ochish</span>
+                </a>
+            </div>
+
             <div class="menu-item social-menu-item" data-social="whatsapp" role="link" tabindex="0"
                  onclick="openSocialMenu('whatsapp', event)"
                  onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openSocialMenu('whatsapp',event)}">
