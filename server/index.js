@@ -1969,41 +1969,7 @@ async function telegramContact(
             ]);
         }
 
-        // =================================================
-        // WHATSAPP
-        // =================================================
-
-        if (settings.whatsapp) {
-
-            let whatsapp =
-                String(
-                    settings.whatsapp
-                ).trim();
-
-            if (
-                !whatsapp.startsWith('http://') &&
-                !whatsapp.startsWith('https://')
-            ) {
-
-                whatsapp =
-                    'https://wa.me/' +
-                    whatsapp.replace(
-                        /\D/g,
-                        ''
-                    );
-            }
-
-            buttons.push([
-                {
-                    text:
-                        '💬 WhatsApp orqali yozish',
-
-                    url:
-                        whatsapp
-                }
-            ]);
-        }
-
+       
         // =================================================
         // SAYT
         // =================================================
