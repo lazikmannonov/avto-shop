@@ -385,6 +385,9 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid var(-
 @media(prefers-reduced-motion:reduce){
     *,*:before,*:after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
 }
+
+/* ================= TELEGRAM BOT ================= */
+.telegram-bot-float{position:fixed;right:18px;bottom:88px;z-index:9998;display:flex;align-items:center;gap:10px;padding:11px 15px 11px 11px;border:1px solid rgba(255,255,255,.18);border-radius:18px;background:linear-gradient(135deg,#229ed9,#168dcc);color:#fff;text-decoration:none;box-shadow:0 12px 30px rgba(20,145,205,.32);transition:transform .2s ease,box-shadow .2s ease;-webkit-tap-highlight-color:transparent}.telegram-bot-float:hover{transform:translateY(-3px);box-shadow:0 16px 36px rgba(20,145,205,.42)}.telegram-bot-icon{width:34px;height:34px;border-radius:12px;background:rgba(255,255,255,.16);display:grid;place-items:center;flex:0 0 34px}.telegram-bot-icon svg{width:21px;height:21px;fill:currentColor}.telegram-bot-text{display:flex;flex-direction:column;line-height:1.12}.telegram-bot-title{font-size:12px;font-weight:800}.telegram-bot-sub{font-size:10px;opacity:.88;margin-top:3px}@media(max-width:600px){.telegram-bot-float{right:12px;bottom:76px;padding:9px;border-radius:16px}.telegram-bot-text{display:none}.telegram-bot-icon{width:40px;height:40px;border-radius:13px}}
 </style>
 </head>
 
@@ -1599,64 +1602,32 @@ function showSkeleton(){
 
 function imageUrl(filename){
 
-    if(filename===undefined||filename===null)
+    if(!filename)
         return "";
 
-    // Backend yoki eski bazadagi image obyektlarini ham qo‘llab-quvvatlaymiz.
-    if(typeof filename === "object") {
-        filename = filename.url || filename.src || filename.path || filename.name || filename.filename || "";
-    }
+    if(String(filename).startsWith("http"))
+        return filename;
 
-    let value=String(filename).trim();
+    if(String(filename).startsWith("/"))
+        return filename;
 
-    if(!value)
-        return "";
-
-    if(/^data:image\//i.test(value))
-        return value;
-
-    if(/^https?:\/\//i.test(value))
-        return value;
-
-    if(value.startsWith("/uploads/"))
-        return value;
-
-    if(value.startsWith("uploads/"))
-        return "/"+value;
-
-    if(value.startsWith("/"))
-        return value;
-
-    return "/uploads/"+value.replace(/^\/+/,"");
+    return "/uploads/"+filename;
 }
 
 function getImages(car){
 
-    if(!car)
-        return [];
+    if(Array.isArray(car.images))
+        return car.images;
 
-    let raw=car.images;
-
-    if(Array.isArray(raw))
-        return raw.filter(Boolean);
-
-    if(typeof raw==="string"){
-
-        const value=raw.trim();
-
-        if(!value)
-            return [];
+    if(typeof car.images==="string"){
 
         try{
-            const parsed=JSON.parse(value);
+            const parsed=JSON.parse(car.images);
             if(Array.isArray(parsed))
-                return parsed.filter(Boolean);
+                return parsed;
         }catch(e){}
 
-        return value
-            .split(",")
-            .map(x=>x.trim())
-            .filter(Boolean);
+        return car.images.split(",").map(x=>x.trim()).filter(Boolean);
     }
 
     return [];
@@ -1746,7 +1717,7 @@ class="car-image"
 src="${image}"
 alt="${escapeHtml(field(car,"name")||t.house)}"
 loading="lazy"
-onerror="this.onerror=null;this.src='data:image/svg+xml;charset=UTF-8,'+encodeURIComponent('<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"800\" height=\"500\"><rect width=\"100%\" height=\"100%\" fill=\"#111\"/><text x=\"50%\" y=\"50%\" fill=\"#19d66b\" text-anchor=\"middle\" font-size=\"30\" font-family=\"Arial\">Uy-Joy</text></svg>')"
+onerror="this.style.display='none'"
 >
 
 ${
@@ -1917,7 +1888,7 @@ function openDetails(car){
 
 ${
     firstImage
-    ?`<img id="detailsMainImage" class="details-image" src="${escapeHtml(firstImage)}" alt="${escapeHtml(field(car,"name"))}" onclick="openLightbox(0)">`
+    ?`<img id="detailsMainImage" class="details-image" src="${firstImage}" alt="${escapeHtml(field(car,"name"))}" onclick="openLightbox(0)">`
     :`<div class="details-image" style="background:#111;display:flex;align-items:center;justify-content:center;color:#19d66b">
 <svg class="icon" style="width:70px;height:70px"><use href="#i-home"></use></svg>
 </div>`
@@ -1926,7 +1897,7 @@ ${
 <div class="thumbnails">
 ${
     images.map((img,i)=>`
-<img class="thumb ${i===0?"active":""}" src="${escapeHtml(imageUrl(img))}" onclick="selectDetailImage(${i})" alt="">
+<img class="thumb ${i===0?"active":""}" src="${imageUrl(img)}" onclick="selectDetailImage(${i})" alt="">
 `).join("")
 }
 </div>
@@ -1984,18 +1955,6 @@ ${t.call}
 `;
 
     applySettings();
-
-    const mainImage=document.getElementById("detailsMainImage");
-    if(mainImage){
-        mainImage.onerror=function(){
-            this.onerror=null;
-            this.src="data:image/svg+xml;charset=UTF-8,"+encodeURIComponent("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"800\" height=\"560\"><rect width=\"100%\" height=\"100%\" fill=\"#111\"/><text x=\"50%\" y=\"50%\" fill=\"#19d66b\" text-anchor=\"middle\" font-size=\"30\" font-family=\"Arial\">Uy-Joy</text></svg>");
-        };
-    }
-
-    document.querySelectorAll(".thumb").forEach(thumb=>{
-        thumb.onerror=function(){ this.style.opacity=".35"; };
-    });
 }
 
 function selectDetailImage(index){
@@ -2198,7 +2157,7 @@ load().then(() => {
     if (!houseId) return;
 
     const house = allCars.find(
-        car => String(car.id ?? car._id) === String(houseId)
+        car => String(car.id) === String(houseId)
     );
 
     if (house) {
@@ -2209,5 +2168,8 @@ load().then(() => {
 
 </script>
 
+
+<!-- TELEGRAM BOT -->
+<a class="telegram-bot-float" href="https://t.me/pulzarill_uylar_bot" target="_blank" rel="noopener noreferrer" aria-label="Uy-Joy Telegram botini ochish"><span class="telegram-bot-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M21.4 4.6 18.2 20c-.24 1.09-.88 1.36-1.79.85l-4.95-3.65-2.39 2.3c-.26.26-.48.48-.99.48l.35-5.04 9.18-8.29c.4-.35-.09-.55-.62-.2L5.64 13.6.75 12.07c-1.06-.33-1.08-1.06.22-1.58L20.06 3.1c.9-.33 1.69.2 1.34 1.5Z"/></svg></span><span class="telegram-bot-text"><span class="telegram-bot-title">Uy-Joy Bot</span><span class="telegram-bot-sub">Telegram orqali bog‘lanish</span></span></a>
 </body>
 </html>
