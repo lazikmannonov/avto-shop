@@ -1896,7 +1896,9 @@ async function telegramContact(
                     chat_id: chatId,
 
                     text:
-                        '📞 Bog‘lanish ma’lumotlari mavjud emas.'
+                        '📞 <b>Bog‘lanish ma’lumotlari mavjud emas.</b>',
+
+                    parse_mode: 'HTML'
                 }
             );
 
@@ -1906,9 +1908,8 @@ async function telegramContact(
         let text =
             '📞 <b>BOG‘LANISH</b>\n\n';
 
-        if (
-            settings.phone
-        ) {
+        // TELEFON
+        if (settings.phone) {
 
             text +=
                 `📱 Telefon: <b>${telegramEscape(
@@ -1916,9 +1917,8 @@ async function telegramContact(
                 )}</b>\n`;
         }
 
-        if (
-            settings.address
-        ) {
+        // MANZIL
+        if (settings.address) {
 
             text +=
                 `📍 Manzil: ${telegramEscape(
@@ -1926,47 +1926,23 @@ async function telegramContact(
                 )}\n`;
         }
 
+        text +=
+            '\n👇 <b>Kerakli aloqa usulini tanlang:</b>';
+
         const buttons = [];
 
-        if (
-            settings.phone
-        ) {
+        // =================================================
+        // TELEGRAM
+        // =================================================
 
-            const phone =
-                String(
-                    settings.phone
-                )
-                    .replace(
-                        /[^\d+]/g,
-                        ''
-                    );
-
-            if (phone) {
-
-                buttons.push([
-                    {
-                        text:
-                            '📞 Telefon qilish',
-
-                        url:
-                            `tel:${phone}`
-                    }
-                ]);
-            }
-        }
-
-        if (
-            settings.telegram
-        ) {
+        if (settings.telegram) {
 
             let link =
                 String(
                     settings.telegram
                 ).trim();
 
-            if (
-                link.startsWith('@')
-            ) {
+            if (link.startsWith('@')) {
 
                 link =
                     'https://t.me/' +
@@ -1993,9 +1969,11 @@ async function telegramContact(
             ]);
         }
 
-        if (
-            settings.whatsapp
-        ) {
+        // =================================================
+        // WHATSAPP
+        // =================================================
+
+        if (settings.whatsapp) {
 
             let whatsapp =
                 String(
@@ -2018,7 +1996,7 @@ async function telegramContact(
             buttons.push([
                 {
                     text:
-                        '💬 WhatsApp',
+                        '💬 WhatsApp orqali yozish',
 
                     url:
                         whatsapp
@@ -2026,15 +2004,23 @@ async function telegramContact(
             ]);
         }
 
+        // =================================================
+        // SAYT
+        // =================================================
+
         buttons.push([
             {
                 text:
-                    '🌐 Sayt',
+                    '🌐 Saytga kirish',
 
                 url:
                     SITE_URL
             }
         ]);
+
+        // =================================================
+        // MENYU
+        // =================================================
 
         buttons.push([
             {
@@ -2066,7 +2052,7 @@ async function telegramContact(
 
         console.error(
             'Telegram contact xatosi:',
-            error.message
+            error
         );
 
         await telegramApi(
@@ -2075,7 +2061,8 @@ async function telegramContact(
                 chat_id: chatId,
 
                 text:
-                    '❌ Bog‘lanish ma’lumotlarini olishda xatolik yuz berdi.'
+                    '❌ Bog‘lanish ma’lumotlarini olishda xatolik yuz berdi.\n\n' +
+                    'Iltimos, keyinroq qayta urinib ko‘ring.'
             }
         );
     }
