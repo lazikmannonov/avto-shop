@@ -858,17 +858,41 @@ async function recordDailyStat(type) {
 }
 
 // =====================================================
-// TELEGRAM BOT
+// TELEGRAM BOT — PREMIUM UY-JOY BOT
 // =====================================================
 
 const TELEGRAM_BOT_TOKEN =
-    String(process.env.TELEGRAM_BOT_TOKEN || '').trim();
+    String(
+        process.env.TELEGRAM_BOT_TOKEN || ''
+    ).trim();
 
-const SITE_URL = 'https://avto-shop.onrender.com';
+// Render'dagi hozirgi manzil saqlanadi.
+// Keyinchalik domen o'zgarsa SITE_URL env orqali almashtirish mumkin.
+const SITE_URL =
+    String(
+        process.env.SITE_URL ||
+        'https://avto-shop.onrender.com'
+    )
+        .trim()
+        .replace(/\/+$/, '');
 
 let telegramOffset = 0;
 let telegramRunning = false;
 let telegramStopped = false;
+
+// =====================================================
+// TELEGRAM USER STATE
+// =====================================================
+
+const telegramSearchMode = new Map();
+const telegramFavorites = new Map();
+
+// Bir foydalanuvchiga nechta uy ko'rsatilishi
+const TELEGRAM_PAGE_SIZE = 5;
+
+// =====================================================
+// TELEGRAM API
+// =====================================================
 
 async function telegramApi(method, body = {}) {
 
@@ -876,41 +900,68 @@ async function telegramApi(method, body = {}) {
         return null;
     }
 
-    const response =
-        await fetch(
-            `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/${method}`,
-            {
-                method: 'POST',
+    try {
 
-                headers: {
-                    'Content-Type':
-                        'application/json'
-                },
+        const response =
+            await fetch(
+                `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/${method}`,
+                {
+                    method: 'POST',
 
-                body:
-                    JSON.stringify(body)
-            }
-        );
+                    headers: {
+                        'Content-Type':
+                            'application/json'
+                    },
 
-    const data =
-        await response.json();
+                    body:
+                        JSON.stringify(body)
+                }
+            );
 
-    if (!data.ok) {
+        const data =
+            await response.json();
+
+        if (!data.ok) {
+
+            console.error(
+                'Telegram API ERROR:',
+                data.description
+            );
+
+            return null;
+        }
+
+        return data.result;
+
+    } catch (error) {
 
         console.error(
-            'Telegram API ERROR:',
-            data.description
+            'Telegram API NETWORK ERROR:',
+            error.message
         );
 
         return null;
     }
-
-    return data.result;
 }
 
-// -----------------------------------------------------
-// FORMAT PRICE
-// -----------------------------------------------------
+// =====================================================
+// HTML ESCAPE
+// =====================================================
+
+function telegramEscape(value) {
+
+    return String(
+        value ?? ''
+    )
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+}
+
+// =====================================================
+// PRICE
+// =====================================================
 
 function telegramPrice(car) {
 
@@ -918,7 +969,7 @@ function telegramPrice(car) {
         Number(car.price) || 0;
 
     if (
-        car.currency === 'USD'
+        normalizeCurrency(car.currency) === 'USD'
     ) {
 
         return '$ ' +
@@ -929,9 +980,97 @@ function telegramPrice(car) {
         " so'm";
 }
 
-// -----------------------------------------------------
-// GET SITE CARS
-// -----------------------------------------------------
+// =====================================================
+// TYPES
+// =====================================================
+
+function telegramTypes(car) {
+
+    const types =
+        parseTypes(car);
+
+    if (
+        types.length
+    ) {
+
+        return types
+            .map(
+                telegramEscape
+            )
+            .join(', ');
+    }
+
+    return 'Ko‘rsatilmagan';
+}
+
+// =====================================================
+// FAVORITES
+// =====================================================
+
+function telegramGetFavorites(chatId) {
+
+    if (
+        !telegramFavorites.has(
+            String(chatId)
+        )
+    ) {
+
+        telegramFavorites.set(
+            String(chatId),
+            new Set()
+        );
+    }
+
+    return telegramFavorites.get(
+        String(chatId)
+    );
+}
+
+function telegramIsFavorite(
+    chatId,
+    houseId
+) {
+
+    const favorites =
+        telegramGetFavorites(
+            chatId
+        );
+
+    return favorites.has(
+        Number(houseId)
+    );
+}
+
+function telegramToggleFavorite(
+    chatId,
+    houseId
+) {
+
+    const favorites =
+        telegramGetFavorites(
+            chatId
+        );
+
+    const id =
+        Number(houseId);
+
+    if (
+        favorites.has(id)
+    ) {
+
+        favorites.delete(id);
+
+        return false;
+    }
+
+    favorites.add(id);
+
+    return true;
+}
+
+// =====================================================
+// GET ALL AVAILABLE HOMES
+// =====================================================
 
 async function telegramGetCars() {
 
@@ -941,7 +1080,6 @@ async function telegramGetCars() {
             FROM cars
             WHERE sold = false
             ORDER BY id DESC
-            LIMIT 20
         `);
 
     return result.rows.map(
@@ -949,46 +1087,130 @@ async function telegramGetCars() {
     );
 }
 
-// -----------------------------------------------------
-// SEND START
-// -----------------------------------------------------
+// =====================================================
+// GET ONE HOUSE
+// =====================================================
 
-async function telegramStart(chatId) {
+async function telegramGetHouse(
+    houseId
+) {
+
+    const result =
+        await pool.query(
+            `
+            SELECT *
+            FROM cars
+            WHERE id = $1
+            LIMIT 1
+            `,
+            [
+                Number(houseId)
+            ]
+        );
+
+    if (
+        result.rows.length === 0
+    ) {
+
+        return null;
+    }
+
+    return carOut(
+        result.rows[0]
+    );
+}
+
+// =====================================================
+// MAIN MENU
+// =====================================================
+
+async function telegramStart(
+    chatId,
+    firstName = ''
+) {
+
+    const name =
+        String(firstName || '').trim();
+
+    let greeting =
+        '🏠 <b>Uy-Joy</b>';
+
+    if (name) {
+
+        greeting +=
+            `\n\nAssalomu alaykum, <b>${telegramEscape(name)}</b>!`;
+    }
+
+    const text =
+        `${greeting}\n\n` +
+        '🏡 Uy, hovli va yerlarni qulay tarzda toping.\n\n' +
+        'Kerakli bo‘limni tanlang 👇';
 
     await telegramApi(
         'sendMessage',
         {
             chat_id: chatId,
 
-            text:
-                '🏠 *pul.zarill — Uylar*\\n\\n' +
-                'Uylar va hovlilarni topish uchun ' +
-                'qulay Telegram bot.\\n\\n' +
-                'Kerakli bo‘limni tanlang:',
+            text,
 
-            parse_mode: 'Markdown',
+            parse_mode: 'HTML',
 
             reply_markup: {
                 inline_keyboard: [
 
                     [
                         {
-                            text: '🏠 Uylarni ko‘rish',
-                            callback_data: 'homes'
+                            text:
+                                '🏠 Uylarni ko‘rish',
+
+                            callback_data:
+                                'homes'
                         }
                     ],
 
                     [
                         {
-                            text: '📞 Bog‘lanish',
-                            callback_data: 'contact'
+                            text:
+                                '🔎 Uy qidirish',
+
+                            callback_data:
+                                'search'
                         },
 
                         {
-                            text: '🌐 Sayt',
+                            text:
+                                '⭐ Saqlanganlar',
+
+                            callback_data:
+                                'favorites'
+                        }
+                    ],
+
+                    [
+                        {
+                            text:
+                                '📢 Yangi e’lonlar',
+
+                            callback_data:
+                                'newest'
+                        }
+                    ],
+
+                    [
+                        {
+                            text:
+                                '📞 Bog‘lanish',
+
+                            callback_data:
+                                'contact'
+                        },
+
+                        {
+                            text:
+                                '🌐 Sayt',
+
                             url:
-                                SITE_URL ||
-                                'https://pul.zarill'
+                                SITE_URL
                         }
                     ]
 
@@ -998,11 +1220,27 @@ async function telegramStart(chatId) {
     );
 }
 
-// -----------------------------------------------------
-// SEND HOMES
-// -----------------------------------------------------
+// =====================================================
+// MENU MESSAGE
+// =====================================================
 
-async function telegramSendHomes(chatId) {
+async function telegramMenu(
+    chatId
+) {
+
+    await telegramStart(
+        chatId
+    );
+}
+
+// =====================================================
+// HOME LIST MESSAGE
+// =====================================================
+
+async function telegramSendHomes(
+    chatId,
+    page = 0
+) {
 
     const cars =
         await telegramGetCars();
@@ -1013,37 +1251,123 @@ async function telegramSendHomes(chatId) {
             'sendMessage',
             {
                 chat_id: chatId,
+
                 text:
-                    '🏠 Hozircha sotuvda uylar mavjud emas.'
+                    '🏠 <b>Hozircha uylar mavjud emas.</b>\n\n' +
+                    'Yangi e’lonlar qo‘shilganda yana tekshirib ko‘ring.',
+
+                parse_mode: 'HTML',
+
+                reply_markup: {
+                    inline_keyboard: [
+                        [
+                            {
+                                text:
+                                    '🔄 Yangilash',
+
+                                callback_data:
+                                    'homes'
+                            }
+                        ],
+                        [
+                            {
+                                text:
+                                    '🏠 Bosh menyu',
+
+                                callback_data:
+                                    'menu'
+                            }
+                        ]
+                    ]
+                }
             }
         );
 
         return;
     }
 
+    const totalPages =
+        Math.ceil(
+            cars.length /
+            TELEGRAM_PAGE_SIZE
+        );
+
+    let currentPage =
+        Number(page) || 0;
+
+    if (
+        currentPage < 0
+    ) {
+        currentPage = 0;
+    }
+
+    if (
+        currentPage >= totalPages
+    ) {
+        currentPage =
+            totalPages - 1;
+    }
+
+    const start =
+        currentPage *
+        TELEGRAM_PAGE_SIZE;
+
+    const items =
+        cars.slice(
+            start,
+            start + TELEGRAM_PAGE_SIZE
+        );
+
     let text =
-        '🏠 *UYLAR*\n\n';
+        '🏠 <b>UY-JOY KATALOGI</b>\n\n';
+
+    text +=
+        `📊 Jami: <b>${cars.length}</b> ta uy\n`;
+
+    text +=
+        `📄 Sahifa: <b>${currentPage + 1}/${totalPages}</b>\n\n`;
 
     const buttons = [];
 
     for (
         let i = 0;
-        i < cars.length;
+        i < items.length;
         i++
     ) {
 
-        const car = cars[i];
+        const car =
+            items[i];
+
+        const number =
+            start + i + 1;
 
         text +=
-            `*${i + 1}.* 🏠 ${car.name || 'Uy'}\n`;
+            `<b>${number}.</b> 🏠 ` +
+            `<b>${telegramEscape(
+                car.name || 'Uy'
+            )}</b>\n`;
 
         text +=
-            `💰 ${telegramPrice(car)}\n\n`;
+            `💰 ${telegramEscape(
+                telegramPrice(car)
+            )}\n`;
+
+        if (
+            car.address
+        ) {
+
+            text +=
+                `📍 ${telegramEscape(
+                    car.address
+                )}\n`;
+        }
+
+        text += '\n';
 
         buttons.push([
             {
                 text:
-                    `${i + 1}-uy`,
+                    `🏠 ${number}-uy`,
 
                 callback_data:
                     `house_${car.id}`
@@ -1051,14 +1375,83 @@ async function telegramSendHomes(chatId) {
         ]);
     }
 
+    const navigation = [];
+
+    if (
+        currentPage > 0
+    ) {
+
+        navigation.push({
+            text:
+                '◀️ Oldingi',
+
+            callback_data:
+                `homes_${currentPage - 1}`
+        });
+    }
+
+    navigation.push({
+        text:
+            `📄 ${currentPage + 1}/${totalPages}`,
+
+        callback_data:
+            'noop'
+    });
+
+    if (
+        currentPage <
+        totalPages - 1
+    ) {
+
+        navigation.push({
+            text:
+                'Keyingi ▶️',
+
+            callback_data:
+                `homes_${currentPage + 1}`
+        });
+    }
+
+    buttons.push(
+        navigation
+    );
+
+    buttons.push([
+        {
+            text:
+                '🔎 Qidirish',
+
+            callback_data:
+                'search'
+        },
+
+        {
+            text:
+                '⭐ Saqlangan',
+
+            callback_data:
+                'favorites'
+        }
+    ]);
+
+    buttons.push([
+        {
+            text:
+                '🏠 Bosh menyu',
+
+            callback_data:
+                'menu'
+        }
+    ]);
+
     await telegramApi(
         'sendMessage',
         {
             chat_id: chatId,
 
-            text: text,
+            text,
 
-            parse_mode: 'Markdown',
+            parse_mode: 'HTML',
 
             reply_markup: {
                 inline_keyboard:
@@ -1068,24 +1461,432 @@ async function telegramSendHomes(chatId) {
     );
 }
 
-// -----------------------------------------------------
-// CONTACT
-// -----------------------------------------------------
+// =====================================================
+// NEWEST HOMES
+// =====================================================
 
-async function telegramContact(chatId) {
+async function telegramNewest(
+    chatId
+) {
+
+    await telegramSendHomes(
+        chatId,
+        0
+    );
+}
+
+// =====================================================
+// SEARCH START
+// =====================================================
+
+async function telegramSearchStart(
+    chatId
+) {
+
+    telegramSearchMode.set(
+        String(chatId),
+        true
+    );
+
+    await telegramApi(
+        'sendMessage',
+        {
+            chat_id: chatId,
+
+            text:
+                '🔎 <b>Uy qidirish</b>\n\n' +
+                'Uy nomi, turi, manzili yoki tavsifidan ' +
+                'biror so‘z yozing.\n\n' +
+                'Masalan:\n' +
+                '• Chilonzor\n' +
+                '• hovli\n' +
+                '• 4 xona\n' +
+                '• Toshkent\n\n' +
+                '❌ Bekor qilish uchun /menu yozing.',
+
+            parse_mode: 'HTML'
+        }
+    );
+}
+
+// =====================================================
+// SEARCH
+// =====================================================
+
+async function telegramSearch(
+    chatId,
+    query
+) {
+
+    const q =
+        String(query || '')
+            .trim();
+
+    if (!q) {
+
+        await telegramSearchStart(
+            chatId
+        );
+
+        return;
+    }
+
+    telegramSearchMode.delete(
+        String(chatId)
+    );
+
+    const like =
+        `%${q}%`;
+
+    const result =
+        await pool.query(
+            `
+            SELECT *
+            FROM cars
+            WHERE sold = false
+              AND (
+                    name ILIKE $1
+                    OR description ILIKE $1
+                    OR location ILIKE $1
+                    OR address ILIKE $1
+                    OR type ILIKE $1
+                    OR types ILIKE $1
+              )
+            ORDER BY id DESC
+            LIMIT 20
+            `,
+            [like]
+        );
+
+    const cars =
+        result.rows.map(
+            carOut
+        );
+
+    if (!cars.length) {
+
+        await telegramApi(
+            'sendMessage',
+            {
+                chat_id: chatId,
+
+                text:
+                    `🔎 <b>"${telegramEscape(q)}"</b> bo‘yicha uy topilmadi.\n\n` +
+                    'Boshqa so‘z bilan qayta urinib ko‘ring.',
+
+                parse_mode: 'HTML',
+
+                reply_markup: {
+                    inline_keyboard: [
+                        [
+                            {
+                                text:
+                                    '🔎 Qayta qidirish',
+
+                                callback_data:
+                                    'search'
+                            }
+                        ],
+                        [
+                            {
+                                text:
+                                    '🏠 Uylar',
+
+                                callback_data:
+                                    'homes'
+                            }
+                        ]
+                    ]
+                }
+            }
+        );
+
+        return;
+    }
+
+    let text =
+        `🔎 <b>Qidiruv natijalari</b>\n\n`;
+
+    text +=
+        `"<b>${telegramEscape(q)}</b>" bo‘yicha ` +
+        `<b>${cars.length}</b> ta natija.\n\n`;
+
+    const buttons = [];
+
+    cars.forEach(
+        (car, index) => {
+
+            text +=
+                `<b>${index + 1}.</b> ` +
+                `🏠 ${telegramEscape(
+                    car.name || 'Uy'
+                )}\n`;
+
+            text +=
+                `💰 ${telegramEscape(
+                    telegramPrice(car)
+                )}\n`;
+
+            if (
+                car.address
+            ) {
+
+                text +=
+                    `📍 ${telegramEscape(
+                        car.address
+                    )}\n`;
+            }
+
+            text += '\n';
+
+            buttons.push([
+                {
+                    text:
+                        `🏠 ${index + 1}-uy`,
+
+                    callback_data:
+                        `house_${car.id}`
+                }
+            ]);
+        }
+    );
+
+    buttons.push([
+        {
+            text:
+                '🔎 Yana qidirish',
+
+            callback_data:
+                'search'
+        }
+    ]);
+
+    buttons.push([
+        {
+            text:
+                '🏠 Bosh menyu',
+
+            callback_data:
+                'menu'
+        }
+    ]);
+
+    await telegramApi(
+        'sendMessage',
+        {
+            chat_id: chatId,
+
+            text,
+
+            parse_mode: 'HTML',
+
+            reply_markup: {
+                inline_keyboard:
+                    buttons
+            }
+        }
+    );
+}
+
+// =====================================================
+// FAVORITES LIST
+// =====================================================
+
+async function telegramFavoritesList(
+    chatId
+) {
+
+    const favorites =
+        telegramGetFavorites(
+            chatId
+        );
+
+    const ids =
+        Array.from(
+            favorites
+        );
+
+    if (!ids.length) {
+
+        await telegramApi(
+            'sendMessage',
+            {
+                chat_id: chatId,
+
+                text:
+                    '⭐ <b>Saqlangan uylar</b>\n\n' +
+                    'Hozircha saqlangan uylar yo‘q.\n\n' +
+                    'Yoqtirgan uyingizni ochib, ' +
+                    '⭐ Saqlash tugmasini bosing.',
+
+                parse_mode: 'HTML',
+
+                reply_markup: {
+                    inline_keyboard: [
+                        [
+                            {
+                                text:
+                                    '🏠 Uylarni ko‘rish',
+
+                                callback_data:
+                                    'homes'
+                            }
+                        ],
+                        [
+                            {
+                                text:
+                                    '🏠 Bosh menyu',
+
+                                callback_data:
+                                    'menu'
+                            }
+                        ]
+                    ]
+                }
+            }
+        );
+
+        return;
+    }
+
+    const result =
+        await pool.query(
+            `
+            SELECT *
+            FROM cars
+            WHERE id = ANY($1::int[])
+              AND sold = false
+            ORDER BY id DESC
+            `,
+            [ids]
+        );
+
+    const cars =
+        result.rows.map(
+            carOut
+        );
+
+    if (!cars.length) {
+
+        favorites.clear();
+
+        await telegramApi(
+            'sendMessage',
+            {
+                chat_id: chatId,
+
+                text:
+                    '⭐ Saqlangan uylar hozircha mavjud emas.',
+
+                reply_markup: {
+                    inline_keyboard: [
+                        [
+                            {
+                                text:
+                                    '🏠 Uylarni ko‘rish',
+
+                                callback_data:
+                                    'homes'
+                            }
+                        ]
+                    ]
+                }
+            }
+        );
+
+        return;
+    }
+
+    let text =
+        '⭐ <b>SAQLANGAN UYLAR</b>\n\n';
+
+    const buttons = [];
+
+    cars.forEach(
+        (car, index) => {
+
+            text +=
+                `<b>${index + 1}.</b> ` +
+                `🏠 ${telegramEscape(
+                    car.name || 'Uy'
+                )}\n`;
+
+            text +=
+                `💰 ${telegramEscape(
+                    telegramPrice(car)
+                )}\n\n`;
+
+            buttons.push([
+                {
+                    text:
+                        `🏠 ${index + 1}-uy`,
+
+                    callback_data:
+                        `house_${car.id}`
+                }
+            ]);
+        }
+    );
+
+    buttons.push([
+        {
+            text:
+                '🏠 Uylar',
+
+            callback_data:
+                'homes'
+        },
+
+        {
+            text:
+                '🏠 Bosh menyu',
+
+            callback_data:
+                'menu'
+        }
+    ]);
+
+    await telegramApi(
+        'sendMessage',
+        {
+            chat_id: chatId,
+
+            text,
+
+            parse_mode: 'HTML',
+
+            reply_markup: {
+                inline_keyboard:
+                    buttons
+            }
+        }
+    );
+}
+
+// =====================================================
+// CONTACT
+// =====================================================
+
+async function telegramContact(
+    chatId
+) {
 
     try {
 
-        const result = await pool.query(`
-            SELECT
-                phone,
-                telegram,
-                address
-            FROM site_settings
-            WHERE id = 1
-        `);
+        const result =
+            await pool.query(`
+                SELECT
+                    phone,
+                    telegram,
+                    whatsapp,
+                    instagram,
+                    address
+                FROM site_settings
+                WHERE id = 1
+            `);
 
-        const settings = result.rows[0];
+        const settings =
+            result.rows[0];
 
         if (!settings) {
 
@@ -1093,64 +1894,171 @@ async function telegramContact(chatId) {
                 'sendMessage',
                 {
                     chat_id: chatId,
-                    text: '📞 Bog‘lanish ma’lumotlari mavjud emas.'
+
+                    text:
+                        '📞 Bog‘lanish ma’lumotlari mavjud emas.'
                 }
             );
 
             return;
         }
 
-        let text = '📞 Bog‘lanish\n\n';
+        let text =
+            '📞 <b>BOG‘LANISH</b>\n\n';
 
-        if (settings.phone) {
-            text += `📱 Telefon: ${settings.phone}\n`;
+        if (
+            settings.phone
+        ) {
+
+            text +=
+                `📱 Telefon: <b>${telegramEscape(
+                    settings.phone
+                )}</b>\n`;
         }
 
-        if (settings.address) {
-            text += `📍 ${settings.address}\n`;
+        if (
+            settings.address
+        ) {
+
+            text +=
+                `📍 Manzil: ${telegramEscape(
+                    settings.address
+                )}\n`;
         }
 
         const buttons = [];
 
-        // Telegram orqali yozish
-        if (settings.telegram) {
+        if (
+            settings.phone
+        ) {
 
-            let telegramLink =
-                String(settings.telegram).trim();
+            const phone =
+                String(
+                    settings.phone
+                )
+                    .replace(
+                        /[^\d+]/g,
+                        ''
+                    );
 
-            if (telegramLink.startsWith('@')) {
-                telegramLink =
-                    'https://t.me/' +
-                    telegramLink.slice(1);
-            } else if (
-                !telegramLink.startsWith('http://') &&
-                !telegramLink.startsWith('https://')
+            if (phone) {
+
+                buttons.push([
+                    {
+                        text:
+                            '📞 Telefon qilish',
+
+                        url:
+                            `tel:${phone}`
+                    }
+                ]);
+            }
+        }
+
+        if (
+            settings.telegram
+        ) {
+
+            let link =
+                String(
+                    settings.telegram
+                ).trim();
+
+            if (
+                link.startsWith('@')
             ) {
-                telegramLink =
+
+                link =
                     'https://t.me/' +
-                    telegramLink;
+                    link.slice(1);
+
+            } else if (
+                !link.startsWith('http://') &&
+                !link.startsWith('https://')
+            ) {
+
+                link =
+                    'https://t.me/' +
+                    link;
             }
 
             buttons.push([
                 {
-                    text: '✈️ Telegram orqali yozish',
-                    url: telegramLink
+                    text:
+                        '✈️ Telegram orqali yozish',
+
+                    url:
+                        link
                 }
             ]);
         }
+
+        if (
+            settings.whatsapp
+        ) {
+
+            let whatsapp =
+                String(
+                    settings.whatsapp
+                ).trim();
+
+            if (
+                !whatsapp.startsWith('http://') &&
+                !whatsapp.startsWith('https://')
+            ) {
+
+                whatsapp =
+                    'https://wa.me/' +
+                    whatsapp.replace(
+                        /\D/g,
+                        ''
+                    );
+            }
+
+            buttons.push([
+                {
+                    text:
+                        '💬 WhatsApp',
+
+                    url:
+                        whatsapp
+                }
+            ]);
+        }
+
+        buttons.push([
+            {
+                text:
+                    '🌐 Sayt',
+
+                url:
+                    SITE_URL
+            }
+        ]);
+
+        buttons.push([
+            {
+                text:
+                    '🏠 Bosh menyu',
+
+                callback_data:
+                    'menu'
+            }
+        ]);
 
         await telegramApi(
             'sendMessage',
             {
                 chat_id: chatId,
-                text: text,
-                reply_markup:
-                    buttons.length
-                        ? {
-                            inline_keyboard:
-                                buttons
-                        }
-                        : undefined
+
+                text,
+
+                parse_mode: 'HTML',
+
+                reply_markup: {
+                    inline_keyboard:
+                        buttons
+                }
             }
         );
 
@@ -1165,6 +2073,7 @@ async function telegramContact(chatId) {
             'sendMessage',
             {
                 chat_id: chatId,
+
                 text:
                     '❌ Bog‘lanish ma’lumotlarini olishda xatolik yuz berdi.'
             }
@@ -1172,11 +2081,257 @@ async function telegramContact(chatId) {
     }
 }
 
-// -----------------------------------------------------
-// CALLBACK
-// -----------------------------------------------------
+// =====================================================
+// HOUSE DETAILS
+// =====================================================
 
-async function telegramCallback(query) {
+async function telegramHouse(
+    chatId,
+    houseId
+) {
+
+    const car =
+        await telegramGetHouse(
+            houseId
+        );
+
+    if (!car) {
+
+        await telegramApi(
+            'sendMessage',
+            {
+                chat_id: chatId,
+
+                text:
+                    '❌ Bu uy topilmadi.'
+            }
+        );
+
+        return;
+    }
+
+    let text =
+        `🏠 <b>${telegramEscape(
+            car.name || 'Uy'
+        )}</b>\n\n`;
+
+    text +=
+        `💰 <b>${telegramEscape(
+            telegramPrice(car)
+        )}</b>\n`;
+
+    text +=
+        `🏷 Turi: ${telegramTypes(car)}\n`;
+
+    if (
+        car.rooms > 0
+    ) {
+
+        text +=
+            `🚪 Xonalar: <b>${car.rooms}</b> ta\n`;
+    }
+
+    if (
+        car.area > 0
+    ) {
+
+        text +=
+            `📐 Maydon: <b>${car.area}</b> m²\n`;
+    }
+
+    if (
+        car.address
+    ) {
+
+        text +=
+            `📍 Manzil: ${telegramEscape(
+                car.address
+            )}\n`;
+    }
+
+    if (
+        car.phone
+    ) {
+
+        text +=
+            `📞 Telefon: ${telegramEscape(
+                car.phone
+            )}\n`;
+    }
+
+    if (
+        car.description
+    ) {
+
+        let description =
+            String(
+                car.description
+            )
+                .replace(
+                    /\s+/g,
+                    ' '
+                )
+                .trim();
+
+        if (
+            description
+        ) {
+
+            text +=
+                `\n📝 <b>Tavsif</b>\n`;
+
+            text +=
+                telegramEscape(
+                    description.slice(
+                        0,
+                        700
+                    )
+                );
+
+            if (
+                description.length > 700
+            ) {
+
+                text +=
+                    '...';
+            }
+
+            text += '\n';
+        }
+    }
+
+    const favorite =
+        telegramIsFavorite(
+            chatId,
+            car.id
+        );
+
+    const favoriteText =
+        favorite
+            ? '💛 Saqlangan'
+            : '⭐ Saqlash';
+
+    const buttons = [];
+
+    buttons.push([
+        {
+            text:
+                favoriteText,
+
+            callback_data:
+                `fav_${car.id}`
+        }
+    ]);
+
+    buttons.push([
+        {
+            text:
+                '🌐 Saytda ko‘rish',
+
+            url:
+                `${SITE_URL}/?house=${car.id}`
+        }
+    ]);
+
+    buttons.push([
+        {
+            text:
+                '📞 Bog‘lanish',
+
+            callback_data:
+                'contact'
+        }
+    ]);
+
+    buttons.push([
+        {
+            text:
+                '🏠 Uylar',
+
+            callback_data:
+                'homes'
+        },
+
+        {
+            text:
+                '🏠 Bosh menyu',
+
+            callback_data:
+                'menu'
+        }
+    ]);
+
+    const images =
+        Array.isArray(
+            car.images
+        )
+            ? car.images
+            : [];
+
+    const firstImage =
+        images.length
+            ? images[0]
+            : '';
+
+    if (
+        firstImage &&
+        SITE_URL
+    ) {
+
+        const imageUrl =
+            `${SITE_URL}/uploads/${encodeURIComponent(
+                firstImage
+            )}`;
+
+        await telegramApi(
+            'sendPhoto',
+            {
+                chat_id: chatId,
+
+                photo:
+                    imageUrl,
+
+                caption:
+                    text,
+
+                parse_mode:
+                    'HTML',
+
+                reply_markup: {
+                    inline_keyboard:
+                        buttons
+                }
+            }
+        );
+
+    } else {
+
+        await telegramApi(
+            'sendMessage',
+            {
+                chat_id: chatId,
+
+                text,
+
+                parse_mode:
+                    'HTML',
+
+                reply_markup: {
+                    inline_keyboard:
+                        buttons
+                }
+            }
+        );
+    }
+}
+
+// =====================================================
+// CALLBACK
+// =====================================================
+
+async function telegramCallback(
+    query
+) {
 
     const chatId =
         query.message &&
@@ -1196,27 +2351,129 @@ async function telegramCallback(query) {
         }
     );
 
-    // =========================
-    // UYLARNI KO‘RISH
-    // =========================
+    const data =
+        String(
+            query.data || ''
+        );
+
+    // -----------------------------------------------
+    // NOOP
+    // -----------------------------------------------
 
     if (
-        query.data === 'homes'
+        data === 'noop'
+    ) {
+        return;
+    }
+
+    // -----------------------------------------------
+    // MENU
+    // -----------------------------------------------
+
+    if (
+        data === 'menu'
     ) {
 
-        await telegramSendHomes(
+        await telegramMenu(
             chatId
         );
 
         return;
     }
 
-    // =========================
-    // BOG‘LANISH
-    // =========================
+    // -----------------------------------------------
+    // HOMES
+    // -----------------------------------------------
 
     if (
-        query.data === 'contact'
+        data === 'homes'
+    ) {
+
+        await telegramSendHomes(
+            chatId,
+            0
+        );
+
+        return;
+    }
+
+    // -----------------------------------------------
+    // PAGINATION
+    // -----------------------------------------------
+
+    if (
+        data.startsWith('homes_')
+    ) {
+
+        const page =
+            Number(
+                data.replace(
+                    'homes_',
+                    ''
+                )
+            );
+
+        await telegramSendHomes(
+            chatId,
+            Number.isFinite(page)
+                ? page
+                : 0
+        );
+
+        return;
+    }
+
+    // -----------------------------------------------
+    // SEARCH
+    // -----------------------------------------------
+
+    if (
+        data === 'search'
+    ) {
+
+        await telegramSearchStart(
+            chatId
+        );
+
+        return;
+    }
+
+    // -----------------------------------------------
+    // FAVORITES
+    // -----------------------------------------------
+
+    if (
+        data === 'favorites'
+    ) {
+
+        await telegramFavoritesList(
+            chatId
+        );
+
+        return;
+    }
+
+    // -----------------------------------------------
+    // NEWEST
+    // -----------------------------------------------
+
+    if (
+        data === 'newest'
+    ) {
+
+        await telegramNewest(
+            chatId
+        );
+
+        return;
+    }
+
+    // -----------------------------------------------
+    // CONTACT
+    // -----------------------------------------------
+
+    if (
+        data === 'contact'
     ) {
 
         await telegramContact(
@@ -1226,247 +2483,98 @@ async function telegramCallback(query) {
         return;
     }
 
-    // =========================
-    // TANLANGAN UY
-    // =========================
+    // -----------------------------------------------
+    // FAVORITE TOGGLE
+    // -----------------------------------------------
 
     if (
-        query.data &&
-        query.data.startsWith('house_')
+        data.startsWith('fav_')
     ) {
 
         const houseId =
-            query.data.replace(
-                'house_',
-                ''
+            Number(
+                data.replace(
+                    'fav_',
+                    ''
+                )
             );
 
-        const result =
-            await pool.query(
-                `
-                SELECT
-                    id,
-                    name,
-                    price,
-                    description,
-                    images,
-                    sold,
-                    currency,
-                    type,
-                    types,
-                    location,
-                    address,
-                    rooms,
-                    area,
-                    phone
-                FROM cars
-                WHERE id = $1
-                LIMIT 1
-                `,
-                [houseId]
-            );
-
-        const car =
-            result.rows[0];
-
-        if (!car) {
-
-            await telegramApi(
-                'sendMessage',
-                {
-                    chat_id: chatId,
-
-                    text:
-                        '❌ Bu uy topilmadi.'
-                }
-            );
-
+        if (
+            !Number.isInteger(
+                houseId
+            )
+        ) {
             return;
         }
 
-        // =========================
-        // UY MA'LUMOTLARI
-        // =========================
+        const state =
+            telegramToggleFavorite(
+                chatId,
+                houseId
+            );
 
-        let text =
-            `🏠 *${car.name || 'Uy'}*\n\n`;
-
-        text +=
-            `💰 *${telegramPrice(car)}*\n`;
-
-        if (
-            car.types &&
-            Array.isArray(car.types) &&
-            car.types.length
-        ) {
-
-            text +=
-                `🏠 Turi: ${car.types.join(', ')}\n`;
-        }
-
-        if (car.rooms > 0) {
-
-            text +=
-                `🚪 Xonalar: ${car.rooms} ta\n`;
-        }
-
-        if (car.area > 0) {
-
-            text +=
-                `📐 Maydon: ${car.area} m²\n`;
-        }
-
-        if (car.address) {
-
-            text +=
-                `📍 Manzil: ${car.address}\n`;
-        }
-
-        if (car.description) {
-
-            const description =
-                String(car.description)
-                    .replace(/\s+/g, ' ')
-                    .trim();
-
-            if (description) {
-
-                text +=
-                    `\n📝 *Tavsif:*\n`;
-
-                text +=
-                    description.slice(
-                        0,
-                        500
-                    );
-
-                if (
-                    description.length > 500
-                ) {
-                    text += '...';
-                }
-            }
-        }
-
-        // =========================
-        // TUGMALAR
-        // =========================
-
-        const buttons = [];
-
-        if (SITE_URL) {
-
-            buttons.push([
-                {
-                    text:
-                        '🌐 Saytda ko‘rish',
-
-                    url:
-                        `${SITE_URL}/?house=${car.id}`
-                }
-            ]);
-        }
-
-        buttons.push([
+        await telegramApi(
+            'answerCallbackQuery',
             {
+                callback_query_id:
+                    query.id,
+
                 text:
-                    '📞 Bog‘lanish',
+                    state
+                        ? '⭐ Uy saqlandi'
+                        : '🗑 Saqlanganlardan olib tashlandi',
 
-                callback_data:
-                    'contact'
+                show_alert: false
             }
-        ]);
+        );
 
-        // =========================
-        // RASM
-        // =========================
-
-      let images = [];
-
-if (Array.isArray(car.images)) {
-
-    images = car.images;
-
-} else if (
-    typeof car.images === 'string'
-) {
-
-    try {
-
-        const parsed =
-            JSON.parse(car.images);
-
-        if (Array.isArray(parsed)) {
-            images = parsed;
-        }
-
-    } catch (e) {
-
-        images = [];
+        return;
     }
-}
 
-const firstImage =
-    images.length
-        ? images[0]
-        : '';
+    // -----------------------------------------------
+    // HOUSE
+    // -----------------------------------------------
+
+    if (
+        data.startsWith('house_')
+    ) {
+
+        const houseId =
+            Number(
+                data.replace(
+                    'house_',
+                    ''
+                )
+            );
 
         if (
-            firstImage &&
-            SITE_URL
+            !Number.isInteger(
+                houseId
+            )
         ) {
-
-            const imageUrl =
-                `${SITE_URL}/uploads/${encodeURIComponent(firstImage)}`;
-
-            await telegramApi(
-                'sendPhoto',
-                {
-                    chat_id: chatId,
-
-                    photo: imageUrl,
-
-                    caption: text,
-
-                    parse_mode:
-                        'Markdown',
-
-                    reply_markup: {
-                        inline_keyboard:
-                            buttons
-                    }
-                }
-            );
-
-        } else {
-
-            await telegramApi(
-                'sendMessage',
-                {
-                    chat_id: chatId,
-
-                    text: text,
-
-                    parse_mode:
-                        'Markdown',
-
-                    reply_markup: {
-                        inline_keyboard:
-                            buttons
-                    }
-                }
-            );
+            return;
         }
+
+        await telegramHouse(
+            chatId,
+            houseId
+        );
 
         return;
     }
 }
-        
-// -----------------------------------------------------
-// UPDATE
-// -----------------------------------------------------
 
-async function telegramHandleUpdate(update) {
+// =====================================================
+// UPDATE HANDLER
+// =====================================================
+
+async function telegramHandleUpdate(
+    update
+) {
+
+    // -----------------------------------------------
+    // CALLBACK
+    // -----------------------------------------------
 
     if (
         update.callback_query
@@ -1489,12 +2597,58 @@ async function telegramHandleUpdate(update) {
     const chatId =
         message.chat.id;
 
-    const text =
+    const firstName =
+        message.from &&
+        message.from.first_name
+            ? message.from.first_name
+            : '';
+
+    const originalText =
         String(
             message.text || ''
+        ).trim();
+
+    const text =
+        originalText.toLowerCase();
+
+    // -----------------------------------------------
+    // SEARCH MODE
+    // -----------------------------------------------
+
+    if (
+        telegramSearchMode.has(
+            String(chatId)
         )
-            .trim()
-            .toLowerCase();
+    ) {
+
+        if (
+            text === '/menu' ||
+            text === '/start'
+        ) {
+
+            telegramSearchMode.delete(
+                String(chatId)
+            );
+
+            await telegramStart(
+                chatId,
+                firstName
+            );
+
+            return;
+        }
+
+        await telegramSearch(
+            chatId,
+            originalText
+        );
+
+        return;
+    }
+
+    // -----------------------------------------------
+    // START
+    // -----------------------------------------------
 
     if (
         text === '/start' ||
@@ -1502,11 +2656,16 @@ async function telegramHandleUpdate(update) {
     ) {
 
         await telegramStart(
-            chatId
+            chatId,
+            firstName
         );
 
         return;
     }
+
+    // -----------------------------------------------
+    // UYLAR
+    // -----------------------------------------------
 
     if (
         text === '/uylar' ||
@@ -1514,11 +2673,49 @@ async function telegramHandleUpdate(update) {
     ) {
 
         await telegramSendHomes(
+            chatId,
+            0
+        );
+
+        return;
+    }
+
+    // -----------------------------------------------
+    // QIDIRUV
+    // -----------------------------------------------
+
+    if (
+        text === '/qidiruv' ||
+        text === '/qidirish' ||
+        text === 'qidiruv'
+    ) {
+
+        await telegramSearchStart(
             chatId
         );
 
         return;
     }
+
+    // -----------------------------------------------
+    // SAQLANGAN
+    // -----------------------------------------------
+
+    if (
+        text === '/saqlangan' ||
+        text === 'saqlangan'
+    ) {
+
+        await telegramFavoritesList(
+            chatId
+        );
+
+        return;
+    }
+
+    // -----------------------------------------------
+    // ALOQA
+    // -----------------------------------------------
 
     if (
         text === '/aloqa' ||
@@ -1532,28 +2729,69 @@ async function telegramHandleUpdate(update) {
         return;
     }
 
+    // -----------------------------------------------
+    // FALLBACK
+    // -----------------------------------------------
+
     await telegramApi(
         'sendMessage',
         {
             chat_id: chatId,
 
             text:
-                '🏠 Menyudan kerakli bo‘limni tanlang:',
+                '🏠 <b>Uy-Joy</b>\n\n' +
+                'Kerakli bo‘limni tanlang 👇',
+
+            parse_mode: 'HTML',
 
             reply_markup: {
                 inline_keyboard: [
 
                     [
                         {
-                            text: '🏠 Uylarni ko‘rish',
-                            callback_data: 'homes'
+                            text:
+                                '🏠 Uylarni ko‘rish',
+
+                            callback_data:
+                                'homes'
                         }
                     ],
 
                     [
                         {
-                            text: '📞 Bog‘lanish',
-                            callback_data: 'contact'
+                            text:
+                                '🔎 Uy qidirish',
+
+                            callback_data:
+                                'search'
+                        },
+
+                        {
+                            text:
+                                '⭐ Saqlangan',
+
+                            callback_data:
+                                'favorites'
+                        }
+                    ],
+
+                    [
+                        {
+                            text:
+                                '📞 Bog‘lanish',
+
+                            callback_data:
+                                'contact'
+                        }
+                    ],
+
+                    [
+                        {
+                            text:
+                                '🏠 Bosh menyu',
+
+                            callback_data:
+                                'menu'
                         }
                     ]
 
@@ -1563,9 +2801,71 @@ async function telegramHandleUpdate(update) {
     );
 }
 
-// -----------------------------------------------------
+// =====================================================
+// BOT COMMANDS
+// =====================================================
+
+async function telegramSetCommands() {
+
+    await telegramApi(
+        'setMyCommands',
+        {
+            commands: [
+                {
+                    command:
+                        'start',
+
+                    description:
+                        '🏠 Bosh menyu'
+                },
+
+                {
+                    command:
+                        'uylar',
+
+                    description:
+                        '🏠 Uylarni ko‘rish'
+                },
+
+                {
+                    command:
+                        'qidiruv',
+
+                    description:
+                        '🔎 Uy qidirish'
+                },
+
+                {
+                    command:
+                        'saqlangan',
+
+                    description:
+                        '⭐ Saqlangan uylar'
+                },
+
+                {
+                    command:
+                        'aloqa',
+
+                    description:
+                        '📞 Bog‘lanish'
+                },
+
+                {
+                    command:
+                        'menu',
+
+                    description:
+                        '🏠 Menyu'
+                }
+            ]
+        }
+    );
+}
+
+// =====================================================
 // POLLING
-// -----------------------------------------------------
+// =====================================================
 
 async function telegramPolling() {
 
@@ -1574,24 +2874,37 @@ async function telegramPolling() {
         telegramStopped ||
         !TELEGRAM_BOT_TOKEN
     ) {
+
+        if (
+            !TELEGRAM_BOT_TOKEN
+        ) {
+
+            console.log(
+                'TELEGRAM_BOT_TOKEN mavjud emas. Telegram bot ishga tushirilmadi.'
+            );
+        }
+
         return;
     }
 
     telegramRunning = true;
 
     console.log(
-        'Telegram bot ishga tushmoqda...'
+        'Telegram premium bot ishga tushmoqda...'
     );
 
     try {
 
+        // Eski webhook bo'lsa olib tashlaymiz
         await telegramApi(
             'deleteWebhook',
             {
-                drop_pending_updates: false
+                drop_pending_updates:
+                    false
             }
         );
 
+        // Bot ma'lumotlari
         const me =
             await telegramApi(
                 'getMe'
@@ -1603,6 +2916,13 @@ async function telegramPolling() {
                 `Telegram bot: @${me.username}`
             );
         }
+
+        // Command menu
+        await telegramSetCommands();
+
+        console.log(
+            'Telegram bot komandalar o‘rnatildi'
+        );
 
         while (
             !telegramStopped
@@ -1617,7 +2937,8 @@ async function telegramPolling() {
                             offset:
                                 telegramOffset,
 
-                            timeout: 25,
+                            timeout:
+                                25,
 
                             allowed_updates: [
                                 'message',
@@ -1677,7 +2998,9 @@ async function telegramPolling() {
 
                 if (
                     error.message &&
-                    error.message.includes('Conflict')
+                    error.message.includes(
+                        'Conflict'
+                    )
                 ) {
 
                     console.error(
