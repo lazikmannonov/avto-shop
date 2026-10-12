@@ -2182,35 +2182,35 @@ function focusSearch(){
 }
 
 
-function trackCall(event){
-
-    if(event){
+function trackCall(event) {
+    if (event) {
         event.stopPropagation();
 
-        const link=event.currentTarget;
+        const link = event.currentTarget;
 
-        if(link && !/^tel:/i.test(
-            link.getAttribute("href")||""
-        )){
+        if (link && !/^tel:/i.test(
+            link.getAttribute("href") || ""
+        )) {
             event.preventDefault();
             return;
         }
+    }
 
-    fetch("/api/stats/call",{
-        method:"POST",
-        keepalive:true,
-        cache:"no-store"
-    }).catch(()=>{});
+    fetch("/api/stats/call", {
+        method: "POST",
+        keepalive: true,
+        cache: "no-store"
+    }).catch(() => {});
 }
 
-function trackView(){
-
-    fetch("/api/stats/view",{
-        method:"POST",
-        keepalive:true,
-        cache:"no-store"
-    }).catch(()=>{});
+function trackView() {
+    fetch("/api/stats/view", {
+        method: "POST",
+        keepalive: true,
+        cache: "no-store"
+    }).catch(() => {});
 }
+
 
 document.addEventListener("keydown",function(event){
 
