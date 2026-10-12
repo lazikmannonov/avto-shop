@@ -1178,15 +1178,15 @@ function applySettings(){
     const href=phoneHref(phone);
 
     const headerPhone=document.getElementById("headerPhone");
-    if(headerPhone){
-        headerPhone.textContent=phone;
-        headerPhone.href=href;
-    }
+   if(headerPhone){
+    headerPhone.textContent=phone;
+    setCallLink(headerPhone,phone);
+}
 
     const menuPhone=document.getElementById("menuPhone");
-    if(menuPhone){
-        menuPhone.textContent=phone;
-        menuPhone.href=href;
+   if(menuPhone){
+    menuPhone.textContent=phone;
+    setCallLink(menuPhone,phone);
     }
 
     const telegram=document.getElementById("menuTelegram");
@@ -1214,13 +1214,23 @@ function applySettings(){
         address.textContent=custom||((!raw||raw==="Toshkent, O‘zbekiston")?tt.defaultAddress:raw);
     }
 
-    document.querySelectorAll(".call-btn").forEach(button=>{
-        button.href=href;
-    });
+   // Har bir e'lon uchun alohida telefon raqami.
+document.querySelectorAll(".call-btn").forEach(button=>{
+    const house=allCars.find(
+        car=>String(car.id)===String(button.dataset.houseId)
+    );
 
-    const detailsCall=document.querySelector(".details-call");
-    if(detailsCall)
-        detailsCall.href=href;
+    setCallLink(button,getCallPhone(house));
+});
+
+// Batafsil sahifasidagi qo‘ng‘iroq tugmasi.
+const detailsCall=document.querySelector(".details-call");
+
+if(detailsCall){
+    setCallLink(
+        detailsCall,
+        getCallPhone(currentDetailsCar)
+    );
 }
 
 function setLang(lang){
@@ -1829,7 +1839,7 @@ ${escapeHtml(address)}
 
 <button class="detail-btn">${t.detail}</button>
 
-<a class="call-btn" href="${phoneHref(siteSettings.phone)}">
+
 <svg class="icon"><use href="#i-phone"></use></svg>
 <span>${t.callShort}</span>
 </a>
@@ -1838,7 +1848,9 @@ ${escapeHtml(address)}
 
 </div>
 `;
-
+ <a class="call-btn"
+   data-house-id="${escapeHtml(car.id)}"
+   href="${phoneHref(getCallPhone(car))}">
     article.querySelector(".favorite").addEventListener("click",function(event){
         event.stopPropagation();
         toggleFavorite(car.id);
@@ -2007,7 +2019,9 @@ ${escapeHtml(field(car,"address")||"—")}
 
 <div class="details-description">${escapeHtml(field(car,"description"))}</div>
 
-<a class="details-call" href="${phoneHref(siteSettings.phone)}" onclick="trackCall(event)">
+<a class="details-call"
+   href="${phoneHref(getCallPhone(car))}"
+   onclick="trackCall(event)">
 <svg class="icon"><use href="#i-phone"></use></svg>
 ${t.call}
 </a>
@@ -2152,10 +2166,20 @@ function focusSearch(){
     },200);
 }
 
+
 function trackCall(event){
 
-    if(event)
+    if(event){
         event.stopPropagation();
+
+        const link=event.currentTarget;
+
+        if(link && !/^tel:/i.test(
+            link.getAttribute("href")||""
+        )){
+            event.preventDefault();
+            return;
+        }
 
     fetch("/api/stats/call",{
         method:"POST",
