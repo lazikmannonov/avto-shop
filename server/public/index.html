@@ -233,6 +233,16 @@ body.dark .filter-toggle.open{background:#fff;color:#111}
 .menu-card{width:100%;max-width:850px;margin:10px auto 0;background:var(--card);border:1px solid var(--border);border-radius:25px;padding:8px 20px;box-shadow:var(--shadow-lg)}
 .menu-item{min-width:0;display:flex;justify-content:space-between;align-items:center;gap:15px;padding:18px 5px;border-bottom:1px solid var(--border);transition:.2s ease}
 .menu-item:last-child{border-bottom:none}
+.language-menu-item{gap:12px}
+.language-menu-item .menu-item-left{flex:1;max-width:none}
+.language-options{display:flex;align-items:center;gap:6px;flex:0 0 auto}
+/* Menu controls must stay visible in both Light and Dark themes. */
+.language-options .lang-btn,#themeBtnMenu{color:var(--text);background:var(--card2);border:1px solid var(--border);box-shadow:none;flex-shrink:0}
+.language-options .lang-btn{min-width:43px;min-height:38px;padding:8px 10px;font-size:12px;font-weight:850}
+.language-options .lang-btn.active{background:var(--green);color:#041009;border-color:var(--green);box-shadow:0 5px 18px rgba(25,214,107,.18)}
+#themeBtnMenu{color:var(--text);background:var(--card2);border-color:var(--border)}
+#themeBtnMenu:hover,.language-options .lang-btn:not(.active):hover{border-color:var(--green2);background:var(--green-soft)}
+@media(max-width:650px){.language-menu-item{gap:8px}.language-options{gap:4px}.language-options .lang-btn{min-width:35px;min-height:34px;padding:6px 7px;font-size:11px}}
 .social-menu-item{cursor:pointer;border-radius:13px;padding-left:10px;padding-right:10px}
 .social-menu-item:hover{background:var(--soft)}
 .social-menu-item:hover .menu-item-title .icon{color:var(--green2);transform:scale(1.08)}
@@ -523,10 +533,6 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid var(-
                 <button type="button" class="currency-btn" data-cur="USD" onclick="setCurrency('USD')">USD</button>
             </div>
 
-            <button class="lang-btn active" onclick="setLang('uz')">UZ</button>
-            <button class="lang-btn" onclick="setLang('ru')">RU</button>
-            <button class="lang-btn" onclick="setLang('en')">EN</button>
-
             <button class="theme-btn" onclick="toggleTheme()" id="themeBtn"></button>
 
         </div>
@@ -756,15 +762,19 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid var(-
                 <svg class="icon icon-lg"><use href="#i-location"></use></svg>
             </div>
 
-            <div class="menu-item">
+            <div class="menu-item language-menu-item">
                 <div class="menu-item-left">
                     <span class="menu-item-title">
                         <svg class="icon"><use href="#i-globe"></use></svg>
                         <span id="menuLanguageTitle">Til</span>
                     </span>
-                    <span class="menu-item-sub" id="menuLanguageSub">UZ / RU / EN</span>
+                    <span class="menu-item-sub" id="menuLanguageSub">Tilni tanlang</span>
                 </div>
-                <svg class="icon icon-lg"><use href="#i-globe"></use></svg>
+                <div class="language-options" role="group" aria-label="Tilni tanlash">
+                    <button type="button" class="lang-btn active" onclick="setLang('uz')" aria-label="O‘zbek tili">UZ</button>
+                    <button type="button" class="lang-btn" onclick="setLang('ru')" aria-label="Русский язык">RU</button>
+                    <button type="button" class="lang-btn" onclick="setLang('en')" aria-label="English">EN</button>
+                </div>
             </div>
 
             <div class="menu-item">
