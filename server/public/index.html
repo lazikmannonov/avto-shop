@@ -1960,26 +1960,39 @@ function openDetails(car){
 
 <div class="details-main">
 
-<div>
+    <div>
+        ${
+            firstImage
+            ? `<img
+                id="detailsMainImage"
+                class="details-image"
+                src="${firstImage}"
+                alt="${escapeHtml(field(car,"name"))}"
+                onclick="openLightbox(0)"
+            >`
+            : `<div class="details-image"
+                style="background:#111;display:flex;align-items:center;justify-content:center;color:#19d66b">
+                <svg class="icon" style="width:70px;height:70px">
+                    <use href="#i-home"></use>
+                </svg>
+            </div>`
+        }
 
-${
-    firstImage
-    ?`<img id="detailsMainImage" class="details-image" src="${firstImage}" alt="${escapeHtml(field(car,"name"))}" onclick="openLightbox(0)">`
- ${
-    firstImage
-    ? ``
-    : `DIL0`
-}
+        <div class="thumbnails">
+            ${
+                images.map((img,i) => `
+                    <img
+                        class="thumb ${i===0?"active":""}"
+                        src="${imageUrl(img)}"
+                        onclick="selectDetailImage(${i})"
+                        alt=""
+                    >
+                `).join("")
+            }
+        </div>
+    </div>
 
-<div class="thumbnails">
-${
-    images.map((img,i)=>`
-<img class="thumb ${i===0?"active":""}" src="${imageUrl(img)}" onclick="selectDetailImage(${i})" alt="">
-`).join("")
-}
-</div>
-
-<div class="details-info">
+    <div class="details-info">
 
 </div>
 
