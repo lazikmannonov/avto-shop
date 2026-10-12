@@ -1053,10 +1053,42 @@ function typeLabel(car){
     return String(raw).split(",").map(x=>translateType(x.trim())).join(", ");
 }
 
+
 function phoneHref(phone){
     const value=String(phone||"").trim();
     const cleaned=value.replace(/[^\d+]/g,"");
-    return cleaned?"tel:"+cleaned:"#";
+    return cleaned ? "tel:"+cleaned : "";
+}
+
+// Uy raqami bo‘lsa — uy raqami.
+// Aks holda — sayt sozlamalaridagi umumiy raqam.
+function getCallPhone(house){
+    const housePhone=String(house?.phone||"").trim();
+
+    if(housePhone){
+        return housePhone;
+    }
+
+    return String(siteSettings.phone||"").trim();
+}
+
+// Raqam mavjud bo‘lsagina qo‘ng‘iroq havolasini yoqadi.
+function setCallLink(element, phone){
+    if(!element) return;
+
+    const href=phoneHref(phone);
+
+    if(href){
+        element.setAttribute("href",href);
+        element.removeAttribute("aria-disabled");
+        element.style.opacity="";
+        element.style.cursor="";
+    }else{
+        element.removeAttribute("href");
+        element.setAttribute("aria-disabled","true");
+        element.style.opacity="0.55";
+        element.style.cursor="not-allowed";
+    }
 }
 
 function socialHref(value,type){
