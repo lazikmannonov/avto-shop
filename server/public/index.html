@@ -1754,121 +1754,98 @@ function renderEmpty(title,text){
         count.textContent=countText(0);
 }
 
-function createCarCard(car,index){
 
-    const article=document.createElement("article");
+function createCarCard(car, index) {
+    const article = document.createElement("article");
+    article.className = "car-card";
 
-    article.className="car-card";
+    const images = getImages(car);
+    const firstImage = images.length ? imageUrl(images[0]) : "";
+    const isFavorite = favorites.includes(String(car.id));
+    const t = translations[currentLang];
+    const type = typeLabel(car);
+    const rooms = car.rooms || "—";
+    const area = car.area ? car.area + " " + t.sqm : "—";
+    const address = field(car, "address") || t.noAddress;
 
-    const images=getImages(car);
+    const image = firstImage ||
+        "data:image/svg+xml;charset=UTF-8," +
+        encodeURIComponent(
+            '<svg xmlns="http://www.w3.org/2000/svg" width="800" height="500"><rect width="100%" height="100%" fill="#111"/><text x="50%" y="50%" fill="#19d66b" text-anchor="middle" font-size="30" font-family="Arial">Uy-Joy</text></svg>'
+        );
 
-    const firstImage=images.length?imageUrl(images[0]):"";
+    article.innerHTML = `
+        <div class="car-image-box">
+            <img class="car-image"
+                 src="${image}"
+                 alt="${escapeHtml(field(car, "name") || t.house)}"
+                 loading="lazy"
+                 onerror="this.style.display='none'">
 
-    const isFavorite=favorites.includes(String(car.id));
+            ${
+                car.sold
+                ? `<span class="badge sold-badge">${t.soldBadge}</span>`
+                : `<span class="badge">${t.new}</span>`
+            }
 
-    const t=translations[currentLang];
+            <button class="favorite ${isFavorite ? "active" : ""}" aria-label="Favorite">
+                <svg class="icon ${isFavorite ? "icon-fill" : ""}">
+                    <use href="#i-heart"></use>
+                </svg>
+            </button>
+        </div>
 
-    const image=
-        firstImage||
-        "data:image/svg+xml;charset=UTF-8,"+
-        encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" width="800" height="500"><rect width="100%" height="100%" fill="#111"/><text x="50%" y="50%" fill="#19d66b" text-anchor="middle" font-size="30" font-family="Arial">Uy-Joy</text></svg>`);
+        <div class="car-content">
+            <div class="car-name">${escapeHtml(field(car, "name") || t.house)}</div>
 
-    const type=typeLabel(car);
+            <div class="car-price"
+                 data-price="${escapeHtml(car.price || "")}"
+                 data-cur="${escapeHtml(car.currency || "")}">
+                ${formatPrice(car.price, car.currency)}
+            </div>
 
-    const rooms=car.rooms||"—";
+            <div class="property-meta">
+                <span class="meta-item">${escapeHtml(type)}</span>
+                <span class="meta-item">🛏️ ${escapeHtml(rooms)} ${t.rooms.toLowerCase()}</span>
+                <span class="meta-item">📐 ${escapeHtml(area)}</span>
+            </div>
 
-    const area=car.area?car.area+" "+t.sqm:"—";
+            <div class="car-address">
+                <svg class="icon icon-sm"><use href="#i-location"></use></svg>
+                ${escapeHtml(address)}
+            </div>
 
-    const address=field(car,"address")||t.noAddress;
+            <div class="car-description">${escapeHtml(field(car, "description"))}</div>
 
-    article.innerHTML=`
+            <div class="card-bottom">
+                <button class="detail-btn">${t.detail}</button>
+                <a class="call-btn"
+                   data-house-id="${escapeHtml(car.id)}"
+                   href="${phoneHref(getCallPhone(car))}">
+                    <svg class="icon"><use href="#i-phone"></use></svg>
+                    <span>${t.callShort}</span>
+                </a>
+            </div>
+        </div>
+    `;
 
-<div class="car-image-box">
-
-<img
-class="car-image"
-src="${image}"
-alt="${escapeHtml(field(car,"name")||t.house)}"
-loading="lazy"
-onerror="this.style.display='none'"
->
-
-${
-    car.sold
-    ?`<span class="badge sold-badge">${t.soldBadge}</span>`
-    :`<span class="badge">${t.new}</span>`
-}
-
-<button class="favorite ${isFavorite?"active":""}" aria-label="Favorite">
-<svg class="icon ${isFavorite?"icon-fill":""}"><use href="#i-heart"></use></svg>
-</button>
-
-<a class="call-btn"
-   data-house-id="${escapeHtml(car.id)}"
-   href="${phoneHref(getCallPhone(car))}">
-    <svg class="icon">
-        <use href="#i-phone"></use>
-    </svg>
-    <span>${t.callShort}</span>
-</a>
-
-</div>
-
-<div class="car-content">
-
-<div class="car-name">${escapeHtml(field(car,"name")||t.house)}</div>
-
-<div class="car-price" data-price="${escapeHtml(car.price||"")}" data-cur="${escapeHtml(car.currency||"")}">
-${formatPrice(car.price,car.currency)}
-</div>
-
-<div class="property-meta">
-<span class="meta-item">${escapeHtml(type)}</span>
-<span class="meta-item">🛏️ ${escapeHtml(rooms)} ${t.rooms.toLowerCase()}</span>
-<span class="meta-item">📐 ${escapeHtml(area)}</span>
-</div>
-
-<div class="car-address">
-<svg class="icon icon-sm"><use href="#i-location"></use></svg>
-${escapeHtml(address)}
-</div>
-
-<div class="car-description">${escapeHtml(field(car,"description"))}</div>
-
-<div class="card-bottom">
-
-<button class="detail-btn">${t.detail}</button>
-
-
-<svg class="icon"><use href="#i-phone"></use></svg>
-<span>${t.callShort}</span>
-</a>
-
-</div>
-
-</div>
-
- <a class="call-btn"
-   data-house-id="${escapeHtml(car.id)}"
-   href="${phoneHref(getCallPhone(car))}">
-    article.querySelector(".favorite").addEventListener("click",function(event){
+    article.querySelector(".favorite").addEventListener("click", function(event) {
         event.stopPropagation();
         toggleFavorite(car.id);
     });
 
-    article.querySelector(".detail-btn").addEventListener("click",function(event){
+    article.querySelector(".detail-btn").addEventListener("click", function(event) {
         event.stopPropagation();
         openDetails(car);
     });
 
-    article.querySelector(".call-btn").addEventListener("click",function(event){
+    article.querySelector(".call-btn").addEventListener("click", function(event) {
         event.stopPropagation();
         trackCall(event);
     });
 
-    article.querySelector(".car-image-box").addEventListener("click",function(event){
-        if(event.target.closest(".favorite"))
-            return;
+    article.querySelector(".car-image-box").addEventListener("click", function(event) {
+        if (event.target.closest(".favorite")) return;
         openDetails(car);
     });
 
@@ -1941,110 +1918,93 @@ function showFavorites(){
     setActiveNav("navFavorites");
 }
 
-function openDetails(car){
 
-    currentDetailsCar=car;
-
+function openDetails(car) {
+    currentDetailsCar = car;
     showPage("details");
 
-    const images=getImages(car);
+    const images = getImages(car);
+    const t = translations[currentLang];
+    const firstImage = images.length ? imageUrl(images[0]) : "";
+    const details = document.getElementById("detailsCard");
 
-    const t=translations[currentLang];
+    details.innerHTML = `
+        <div class="details-main">
+            <div>
+                ${
+                    firstImage
+                    ? `<img id="detailsMainImage"
+                            class="details-image"
+                            src="${firstImage}"
+                            alt="${escapeHtml(field(car, "name"))}"
+                            onclick="openLightbox(0)">`
+                    : `<div class="details-image" style="background:#111;display:flex;align-items:center;justify-content:center;color:#19d66b">
+                           <svg class="icon" style="width:70px;height:70px">
+                               <use href="#i-home"></use>
+                           </svg>
+                       </div>`
+                }
 
-    const firstImage=images.length?imageUrl(images[0]):"";
+                <div class="thumbnails">
+                    ${
+                        images.map((img, i) => `
+                            <img class="thumb ${i === 0 ? "active" : ""}"
+                                 src="${imageUrl(img)}"
+                                 onclick="selectDetailImage(${i})"
+                                 alt="">
+                        `).join("")
+                    }
+                </div>
+            </div>
 
-    const details=document.getElementById("detailsCard");
+            <div class="details-info">
+                ${
+                    car.sold
+                    ? `<span class="badge sold-badge" style="position:static;display:inline-block;width:max-content;margin-bottom:15px">${t.soldBadge}</span>`
+                    : ""
+                }
 
-    details.innerHTML=
-    </div>
+                <h1>${escapeHtml(field(car, "name") || t.house)}</h1>
 
-<div class="details-main">
+                <div class="details-price"
+                     data-price="${escapeHtml(car.price || "")}"
+                     data-cur="${escapeHtml(car.currency || "")}">
+                    ${formatPrice(car.price, car.currency)}
+                </div>
 
-    <div>
-        ${
-            firstImage
-            ? `<img
-                id="detailsMainImage"
-                class="details-image"
-                src="${firstImage}"
-                alt="${escapeHtml(field(car,"name"))}"
-                onclick="openLightbox(0)"
-            >`
-            : `<div class="details-image"
-                style="background:#111;display:flex;align-items:center;justify-content:center;color:#19d66b">
-                <svg class="icon" style="width:70px;height:70px">
-                    <use href="#i-home"></use>
-                </svg>
-            </div>`
-        }
+                <div class="details-meta">
+                    <div class="details-meta-item">
+                        <b>${t.type}</b>
+                        ${escapeHtml(typeLabel(car))}
+                    </div>
 
-        <div class="thumbnails">
-            ${
-                images.map((img,i) => `
-                    <img
-                        class="thumb ${i===0?"active":""}"
-                        src="${imageUrl(img)}"
-                        onclick="selectDetailImage(${i})"
-                        alt=""
-                    >
-                `).join("")
-            }
+                    <div class="details-meta-item">
+                        <b>${t.rooms}</b>
+                        ${escapeHtml(car.rooms || "—")}
+                    </div>
+
+                    <div class="details-meta-item">
+                        <b>${t.area}</b>
+                        ${car.area ? escapeHtml(car.area) + " " + t.sqm : "—"}
+                    </div>
+
+                    <div class="details-meta-item">
+                        <b>${t.addressLabel}</b>
+                        ${escapeHtml(field(car, "address") || "—")}
+                    </div>
+                </div>
+
+                <div class="details-description">${escapeHtml(field(car, "description"))}</div>
+
+                <a class="details-call"
+                   href="${phoneHref(getCallPhone(car))}"
+                   onclick="trackCall(event)">
+                    <svg class="icon"><use href="#i-phone"></use></svg>
+                    ${t.call}
+                </a>
+            </div>
         </div>
-    </div>
-
-    <div class="details-info">
-
-</div>
-
-${
-    car.sold
-    ?`<span class="badge sold-badge" style="position:static;display:inline-block;width:max-content;margin-bottom:15px">${t.soldBadge}</span>`
-    :""
-}
-
-<h1>${escapeHtml(field(car,"name")||t.house)}</h1>
-
-<div class="details-price" data-price="${escapeHtml(car.price||"")}" data-cur="${escapeHtml(car.currency||"")}">
-${formatPrice(car.price,car.currency)}
-</div>
-
-<div class="details-meta">
-
-<div class="details-meta-item">
-<b>${t.type}</b>
-${escapeHtml(typeLabel(car))}
-</div>
-
-<div class="details-meta-item">
-<b>${t.rooms}</b>
-${escapeHtml(car.rooms||"—")}
-</div>
-
-<div class="details-meta-item">
-<b>${t.area}</b>
-${car.area?escapeHtml(car.area)+" "+t.sqm:"—"}
-</div>
-
-<div class="details-meta-item">
-<b>${t.addressLabel}</b>
-${escapeHtml(field(car,"address")||"—")}
-</div>
-
-</div>
-
-<div class="details-description">${escapeHtml(field(car,"description"))}</div>
-
-<a class="details-call"
-   href="${phoneHref(getCallPhone(car))}"
-   onclick="trackCall(event)">
-<svg class="icon"><use href="#i-phone"></use></svg>
-${t.call}
-</a>
-
-</div>
-
-</div>
-`;
+    `;
 
     applySettings();
 }
