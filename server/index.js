@@ -3768,99 +3768,71 @@ const server =
                             );
                         }
 
+                       
                         // -----------------------------------------
                         // IMAGES
                         // -----------------------------------------
 
                         const incomingImages =
-                            Array.isArray(
-                                body.images
-                            )
+                            Array.isArray(body.images)
                                 ? body.images
                                 : null;
 
-                        await client.query(
-                            'BEGIN'
-                        );
+                        await client.query('BEGIN');
 
-                        let finalImages =
-                            parseImages(
-                                oldCar
-                            );
+                        let finalImages = parseImages(oldCar);
 
-                        if (
-                            incomingImages !== null
-                        ) {
-
-                            if (
-                                incomingImages.length >
-                                8
-                            ) {
-
+                        if (incomingImages !== null) {
+                            if (incomingImages.length > 8) {
                                 throw new Error(
                                     "Ko'pi bilan 8 ta rasm"
                                 );
                             }
 
-                            const preparedImages =
-                                incomingImages.map(
-                                    prepareImage
-                                );
-
                             const savedNames = [];
+                            const oldImageSet = new Set(finalImages);
 
-                            for (
-                                const image
-                                of preparedImages
-                                ) {
+                            for (const item of incomingImages) {
+                                if (typeof item !== 'string' || !item.trim()) {
+                                    throw new Error("Rasm ma'lumoti noto'g'ri");
+                                }
 
-                                await client.query(
-                                    `
-                                    INSERT INTO image_files (
-                                        name,
-                                        data
-                                    )
-                                    VALUES (
-                                        $1,
-                                        $2
-                                    )
-                                    `,
-                                    [
-                                        image.name,
-                                        image.buffer
-                                    ]
-                                );
+                                // Eski rasm nomi bo'lsa, uni saqlab qolamiz.
+                                if (!item.startsWith('data:image/')) {
+                                    if (!oldImageSet.has(item)) {
+                                        throw new Error(
+                                            "Noma'lum eski rasm: " + item
+                                        );
+                                    }
 
-                                savedNames.push(
-                                    image.name
-                                );
-                            }
+                                    if (!savedNames.includes(item)) {
+                                        savedNames.push(item);
+                                    }
 
-                            for (
-                                const oldImage
-                                of finalImages
-                                ) {
-
-                                if (
-                                    typeof oldImage !==
-                                    'string'
-                                ) {
                                     continue;
                                 }
 
+                                // Yangi rasm bo'lsa, JPEG formatini tekshiramiz.
+                                const image = prepareImage(item);
+
                                 await client.query(
-                                    `
-                                    DELETE FROM image_files
-                                    WHERE name = $1
-                                    `,
-                                    [oldImage]
+                                    `INSERT INTO image_files (name, data)
+                                     VALUES ($1, $2)`,
+                                    [image.name, image.buffer]
+                                );
+
+                                savedNames.push(image.name);
+                            }
+
+                            if (savedNames.length > 8) {
+                                throw new Error(
+                                    "Ko'pi bilan 8 ta rasm"
                                 );
                             }
 
-                            finalImages =
-                                savedNames;
+                            finalImages = savedNames;
                         }
-
+                    
                         // -----------------------------------------
                         // UPDATE
                         // -----------------------------------------
