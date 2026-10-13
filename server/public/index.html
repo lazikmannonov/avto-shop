@@ -37,21 +37,6 @@ body{
     min-width:0;
     font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,Helvetica,sans-serif;
     background:
-        radial-gradient(circle at 10% 0%,rgba(43,224,124,.13),transparent 30%),
-        radial-gradient(circle at 90% 15%,rgba(230,201,138,.06),transparent 28%),
-        linear-gradient(160deg,#0b2e24,#051510) fixed;
-    color:var(--text);
-    padding-bottom:105px;
-    -webkit-font-smoothing:antialiased;
-}
-
-html,body{width:100%;max-width:100%;overflow-x:hidden}
-html{scroll-behavior:smooth}
-
-body{
-    min-width:0;
-    font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,Helvetica,sans-serif;
-    background:
         radial-gradient(circle at 10% 0%,rgba(25,214,107,.07),transparent 28%),
         radial-gradient(circle at 90% 15%,rgba(25,214,107,.045),transparent 25%),
         var(--bg);
@@ -147,6 +132,8 @@ body.dark .filter-toggle.open{background:#fff;color:#111}
 @keyframes filterIn{from{opacity:0;transform:translateY(-5px)}to{opacity:1;transform:translateY(0)}}
 .extra-filter{min-height:50px;border:1px solid var(--border);background:var(--card);color:var(--text);border-radius:14px;cursor:pointer;font-size:12px;font-weight:800;transition:.2s ease;box-shadow:var(--shadow-sm)}
 .extra-filter:hover{border-color:rgba(25,214,107,.5);transform:translateY(-1px)}
+.extra-filter.active{background:var(--black);color:#fff;border-color:var(--black)}
+body.dark .extra-filter.active{background:#f3f7f4;color:#0d120f;border-color:#f3f7f4}
 
 /* PROPERTY CATEGORIES */
 .categories{display:flex;gap:8px;overflow-x:auto;padding:2px 0 16px;scrollbar-width:none}
@@ -470,6 +457,11 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid var(-
         <path d="M5.5 9.5v10a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-10"/>
         <path d="M9.5 20.5v-6h5v6"/>
     </symbol>
+    <symbol id="i-menu" viewBox="0 0 24 24">
+        <path d="M4 7h16"/>
+        <path d="M4 12h16"/>
+        <path d="M4 17h16"/>
+    </symbol>
     <symbol id="i-building" viewBox="0 0 24 24">
         <path d="M5 21V4h10v17"/>
         <path d="M15 9h4v12"/>
@@ -634,9 +626,9 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid var(-
         <button class="filter-toggle" id="filterToggle" onclick="toggleExtraFilters()">^</button>
 
         <div class="extra-filters" id="extraFilters">
-            <button class="extra-filter" id="priceFilterText">💰 Narx bo‘yicha</button>
-            <button class="extra-filter" id="addressFilterText">📍 Manzil bo‘yicha</button>
-            <button class="extra-filter" id="roomsFilterText">🛏 Xonalar bo‘yicha</button>
+            <button class="extra-filter" id="priceFilterText" onclick="cyclePriceSort()">💰 Narx bo‘yicha</button>
+            <button class="extra-filter" id="addressFilterText" onclick="toggleAddressOnly()">📍 Manzil bo‘yicha</button>
+            <button class="extra-filter" id="roomsFilterText" onclick="cycleRooms()">🛏 Xonalar bo‘yicha</button>
         </div>
 
         <div class="results-info">
@@ -665,9 +657,7 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid var(-
 
         <div class="menu-card">
 
-            <div class="menu-item social-menu-item" data-social="telegram" role="link" tabindex="0"
-                 onclick="openSocialMenu('telegram', event)"
-                 onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openSocialMenu('telegram',event)}">
+            <div class="menu-item">
                 <div class="menu-item-left">
                     <span class="menu-item-title">
                         <svg class="icon"><use href="#i-home"></use></svg>
@@ -693,9 +683,9 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid var(-
                 </a>
             </div>
 
-            <div class="menu-item social-menu-item" data-social="whatsapp" role="link" tabindex="0"
-                 onclick="openSocialMenu('whatsapp', event)"
-                 onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openSocialMenu('whatsapp',event)}">
+            <div class="menu-item social-menu-item" role="link" tabindex="0"
+                 onclick="callFromMenu(event)"
+                 onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();callFromMenu(event)}">
                 <div class="menu-item-left">
                     <span class="menu-item-title">
                         <svg class="icon"><use href="#i-phone"></use></svg>
@@ -780,7 +770,7 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid var(-
             <div class="menu-item">
                 <div class="menu-item-left">
                     <span class="menu-item-title">
-                        <svg class="icon"><use href="#i-home"></use></svg>
+                        <svg class="icon"><use href="#i-moon"></use></svg>
                         <span id="menuAppearanceTitle">Ko‘rinish</span>
                     </span>
                     <span class="menu-item-sub" id="menuAppearanceSub">Light / Dark</span>
@@ -812,7 +802,7 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid var(-
     </button>
 
     <button id="navMenu" onclick="showMenu()">
-        <span class="bottom-icon"><svg class="icon"><use href="#i-home"></use></svg></span>
+        <span class="bottom-icon"><svg class="icon"><use href="#i-menu"></use></svg></span>
         <span id="navMenuText">Menyu</span>
     </button>
 
@@ -827,13 +817,42 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid var(-
 
 <script>
 
+/* ===== XAVFSIZ localStorage ===== */
+function lsGet(key,fallback){
+    try{
+        const v=localStorage.getItem(key);
+        return v===null?fallback:v;
+    }catch(e){
+        return fallback;
+    }
+}
+
+function lsSet(key,value){
+    try{
+        localStorage.setItem(key,value);
+    }catch(e){}
+}
+
 let allCars=[];
 let filteredCars=[];
 let currentType="all";
 let searchPageType="all";
 
-let favorites=JSON.parse(localStorage.getItem("favorites")||"[]");
-let currentLang=localStorage.getItem("language")||"uz";
+/* Qo‘shimcha filtrlar holati */
+let priceSort="";        // "", "asc", "desc"
+let roomsFilter="all";   // all, 1, 2, 3, 4
+let addressOnly=false;
+
+let favorites=[];
+try{
+    favorites=JSON.parse(lsGet("favorites","[]"))||[];
+    if(!Array.isArray(favorites))
+        favorites=[];
+}catch(e){
+    favorites=[];
+}
+
+let currentLang=lsGet("language","uz");
 
 let currentDetailsCar=null;
 let currentLightboxIndex=0;
@@ -841,13 +860,7 @@ let currentLightboxIndex=0;
 /* ===== VALYUTA (UZS / USD) ===== */
 const USD_RATE=12000; // 1 $ = 12 000 so‘m
 
-let currentCurrency=(function(){
-    try{
-        return localStorage.getItem("displayCurrency")==="USD"?"USD":"UZS";
-    }catch(e){
-        return "UZS";
-    }
-})();
+let currentCurrency=lsGet("displayCurrency","UZS")==="USD"?"USD":"UZS";
 
 let siteSettings={
     phone:"+998 88 950 00 05",
@@ -1037,19 +1050,30 @@ function field(car,name){
     return car[name]||"";
 }
 
-function translateType(value){
+/* ===== TUR (TYPE) NOMLARI ===== */
+const TYPE_MAP={
+    "hovli":"hovli","частный дом":"hovli","house":"hovli",
+    "kvartira":"kvartira","квартира":"kvartira","apartment":"kvartira",
+    "yer":"yer","земля":"yer","land":"yer",
+    "yangi qurilish":"yangi","новостройка":"yangi","new building":"yangi"
+};
 
+function normalizeType(value){
+    return String(value||"")
+        .replace(/🏡|🏢|🌳|🏗️|🏗/g,"")
+        .replace(/\uFE0F/g,"")
+        .trim()
+        .toLowerCase();
+}
+
+/* Istalgan tildagi tur nomini bitta kalitga keltiradi */
+function typeKey(value){
     const key=normalizeType(value);
+    return TYPE_MAP[key]||key;
+}
 
-    const map={
-        "hovli":"hovli","частный дом":"hovli","house":"hovli",
-        "kvartira":"kvartira","квартира":"kvartira","apartment":"kvartira",
-        "yer":"yer","земля":"yer","land":"yer",
-        "yangi qurilish":"yangi","новостройка":"yangi","new building":"yangi"
-    };
-
-    const found=map[key];
-
+function translateType(value){
+    const found=TYPE_MAP[normalizeType(value)];
     return found?T().categories[found]:String(value||"");
 }
 
@@ -1182,21 +1206,32 @@ function openSocialMenu(type,event){
     link.click();
 }
 
+/* Menyudagi telefon qatori — qatorning istalgan joyi bosilsa qo‘ng‘iroq qiladi */
+function callFromMenu(event){
+
+    if(event&&event.target&&event.target.closest&&event.target.closest("a"))
+        return;
+
+    const link=document.getElementById("menuPhone");
+
+    if(link&&link.getAttribute("href"))
+        link.click();
+}
+
 function applySettings(){
 
     const phone=siteSettings.phone||"";
-    const href=phoneHref(phone);
 
     const headerPhone=document.getElementById("headerPhone");
-   if(headerPhone){
-    headerPhone.textContent=phone;
-    setCallLink(headerPhone,phone);
-}
+    if(headerPhone){
+        headerPhone.textContent=phone;
+        setCallLink(headerPhone,phone);
+    }
 
     const menuPhone=document.getElementById("menuPhone");
-   if(menuPhone){
-    menuPhone.textContent=phone;
-    setCallLink(menuPhone,phone);
+    if(menuPhone){
+        menuPhone.textContent=phone;
+        setCallLink(menuPhone,phone);
     }
 
     const telegram=document.getElementById("menuTelegram");
@@ -1224,27 +1259,27 @@ function applySettings(){
         address.textContent=custom||((!raw||raw==="Toshkent, O‘zbekiston")?tt.defaultAddress:raw);
     }
 
-   // Har bir e'lon uchun alohida telefon raqami.
-document.querySelectorAll(".call-btn").forEach(button=>{
-    const house=allCars.find(
-        car=>String(car.id)===String(button.dataset.houseId)
-    );
+    // Har bir e'lon uchun alohida telefon raqami.
+    document.querySelectorAll(".call-btn").forEach(button=>{
+        const house=allCars.find(
+            car=>String(car.id)===String(button.dataset.houseId)
+        );
 
-    setCallLink(button,getCallPhone(house));
-});
+        setCallLink(button,getCallPhone(house));
+    });
 
-// Batafsil sahifasidagi qo‘ng‘iroq tugmasi.
-const detailsCall=document.querySelector(".details-call");
+    // Batafsil sahifasidagi qo‘ng‘iroq tugmasi.
+    const detailsCall=document.querySelector(".details-call");
 
-if(detailsCall){
-    setCallLink(
-        detailsCall,
-        getCallPhone(currentDetailsCar)
-    );
+    if(detailsCall){
+        setCallLink(
+            detailsCall,
+            getCallPhone(currentDetailsCar)
+        );
+    }
+
 }
-    
-}
-    
+
 function setLang(lang){
 
     if(!translations[lang])
@@ -1252,7 +1287,7 @@ function setLang(lang){
 
     currentLang=lang;
 
-    localStorage.setItem("language",lang);
+    lsSet("language",lang);
 
     document.documentElement.lang=lang;
 
@@ -1287,10 +1322,6 @@ function applyLang(){
     setText("searchCatKvartira",t.categories.kvartira);
     setText("searchCatYer",t.categories.yer);
     setText("searchCatYangi",t.categories.yangi);
-
-    setText("priceFilterText",t.priceFilter);
-    setText("addressFilterText",t.addressFilter);
-    setText("roomsFilterText",t.roomsFilter);
 
     setText("navHomeText",t.home);
     setText("navSearchText",t.searchNav);
@@ -1328,6 +1359,8 @@ function applyLang(){
 
     document.title=t.pageTitle;
 
+    updateExtraButtons();
+
     applySettings();
 }
 
@@ -1343,7 +1376,7 @@ function toggleTheme(){
 
     const isDark=document.body.classList.contains("dark");
 
-    localStorage.setItem("darkMode",isDark);
+    lsSet("darkMode",isDark);
 
     updateThemeIcon();
 }
@@ -1361,6 +1394,8 @@ function updateThemeIcon(){
     });
 }
 
+/* Narxni songa aylantiradi.
+   "1.500.000" (ming ajratgich) to‘g‘ri o‘qiladi, "1.5" esa o‘nlik son bo‘lib qoladi. */
 function parsePrice(value){
 
     if(value===undefined||value===null)
@@ -1372,8 +1407,10 @@ function parsePrice(value){
     const str=String(value)
         .replace(/\s/g,"")
         .replace(/\$/g,"")
-        .replace(/,/g,"")
-        .replace(/\./g,"");
+        .replace(/,/g,"");
+
+    if(/^\d{1,3}(\.\d{3})+$/.test(str))
+        return Number(str.replace(/\./g,""));
 
     const num=Number(str);
 
@@ -1421,6 +1458,12 @@ function formatPrice(value,currency){
     return amount.toLocaleString("en-US").replace(/,/g," ")+" "+T().sum;
 }
 
+/* Saralash uchun narxni so‘mga o‘tkazadi */
+function priceInUZS(car){
+    const n=parsePrice(car.price);
+    return detectCurrency(n,car.currency)==="USD"?n*USD_RATE:n;
+}
+
 function updatePrices(){
     document.querySelectorAll("[data-price]").forEach(el=>{
         el.textContent=formatPrice(el.dataset.price,el.dataset.cur);
@@ -1437,9 +1480,7 @@ function setCurrency(cur){
 
     currentCurrency=cur==="USD"?"USD":"UZS";
 
-    try{
-        localStorage.setItem("displayCurrency",currentCurrency);
-    }catch(e){}
+    lsSet("displayCurrency",currentCurrency);
 
     updateCurrencyButtons();
     updatePrices();
@@ -1451,11 +1492,11 @@ function searchCars(){
 
     filteredCars=allCars.filter(car=>{
 
-        const type=String(car.type||"").toLowerCase();
         const name=String(car.name||"").toLowerCase();
         const description=String(car.description||"").toLowerCase();
         const address=String(car.address||"").toLowerCase();
         const price=String(car.price||"").toLowerCase();
+        const type=String(car.type||"").toLowerCase();
 
         const matchesText=
             !input||
@@ -1467,7 +1508,7 @@ function searchCars(){
 
         const matchesType=
             currentType==="all"||
-            type===currentType.toLowerCase();
+            String(car.type||"").split(",").some(x=>typeKey(x)===typeKey(currentType));
 
         return matchesText&&matchesType;
     });
@@ -1501,14 +1542,6 @@ function toggleExtraFilters(){
     button.classList.toggle("open",isOpen);
 }
 
-function normalizeType(value){
-    return String(value||"")
-        .replace(/🏡|🏢|🌳|🏗️|🏗/g,"")
-        .replace(/\uFE0F/g,"")
-        .trim()
-        .toLowerCase();
-}
-
 function filterSearchPage(type,button){
 
     searchPageType=type;
@@ -1523,6 +1556,50 @@ function filterSearchPage(type,button){
     searchFromSearchPage();
 }
 
+/* ===== NARX / MANZIL / XONALAR FILTRLARI ===== */
+function cyclePriceSort(){
+    priceSort=priceSort===""?"asc":priceSort==="asc"?"desc":"";
+    updateExtraButtons();
+    searchFromSearchPage();
+}
+
+function cycleRooms(){
+    const order=["all","1","2","3","4"];
+    roomsFilter=order[(order.indexOf(roomsFilter)+1)%order.length];
+    updateExtraButtons();
+    searchFromSearchPage();
+}
+
+function toggleAddressOnly(){
+    addressOnly=!addressOnly;
+    updateExtraButtons();
+    searchFromSearchPage();
+}
+
+function updateExtraButtons(){
+
+    const t=T();
+
+    const p=document.getElementById("priceFilterText");
+    const a=document.getElementById("addressFilterText");
+    const r=document.getElementById("roomsFilterText");
+
+    if(p){
+        p.textContent=t.priceFilter+(priceSort==="asc"?" ↑":priceSort==="desc"?" ↓":"");
+        p.classList.toggle("active",!!priceSort);
+    }
+
+    if(a){
+        a.textContent=t.addressFilter;
+        a.classList.toggle("active",addressOnly);
+    }
+
+    if(r){
+        r.textContent=t.roomsFilter+(roomsFilter==="all"?"":": "+(roomsFilter==="4"?"4+":roomsFilter));
+        r.classList.toggle("active",roomsFilter!=="all");
+    }
+}
+
 function searchFromSearchPage(){
 
     const inputElement=document.getElementById("searchPageInput");
@@ -1533,35 +1610,38 @@ function searchFromSearchPage(){
 
         const types=Array.isArray(car.types)?car.types:[];
         const mainType=String(car.type||"");
+        const allTypes=[...types,...mainType.split(",")].map(typeKey).filter(Boolean);
 
         const name=String(car.name||"").toLowerCase();
         const description=String(car.description||"").toLowerCase();
-        const address=String(car.address||"").toLowerCase();
+        const address=(String(car.address||"")+" "+String(field(car,"address")||"")).toLowerCase();
         const price=String(car.price||"").toLowerCase();
-
         const typeText=types.join(" ").toLowerCase()+" "+mainType.toLowerCase();
 
         const matchesText=
             !input||
-            name.includes(input)||
-            description.includes(input)||
-            address.includes(input)||
-            price.includes(input)||
-            typeText.includes(input);
+            (addressOnly
+                ? address.includes(input)
+                : (name.includes(input)||description.includes(input)||address.includes(input)||price.includes(input)||typeText.includes(input)));
 
-        let matchesType=true;
+        const matchesType=
+            searchPageType==="all"||
+            allTypes.includes(typeKey(searchPageType));
 
-        if(searchPageType!=="all"){
+        const r=parseInt(car.rooms)||0;
 
-            const wantedType=normalizeType(searchPageType);
+        const matchesRooms=
+            roomsFilter==="all"||
+            (roomsFilter==="4"?r>=4:r===Number(roomsFilter));
 
-            matchesType=
-                types.some(item=>normalizeType(item)===wantedType)||
-                normalizeType(mainType)===wantedType;
-        }
-
-        return matchesText&&matchesType;
+        return matchesText&&matchesType&&matchesRooms;
     });
+
+    if(priceSort){
+        result.sort((a,b)=>priceSort==="asc"
+            ?priceInUZS(a)-priceInUZS(b)
+            :priceInUZS(b)-priceInUZS(a));
+    }
 
     renderSearchPage(result);
 }
@@ -1573,6 +1653,10 @@ function resetSearchPage(){
         input.value="";
 
     searchPageType="all";
+    priceSort="";
+    roomsFilter="all";
+    addressOnly=false;
+    updateExtraButtons();
 
     document.querySelectorAll(".search-category").forEach((button,index)=>{
         button.classList.toggle("active",index===0);
@@ -1617,11 +1701,6 @@ function renderSearchPage(cars){
     });
 
     applySettings();
-}
-
-function filterType(type){
-    currentType=type;
-    searchCars();
 }
 
 async function load(){
@@ -1789,7 +1868,7 @@ function createCarCard(car, index) {
     article.innerHTML = `
         <div class="car-image-box">
             <img class="car-image"
-                 src="${image}"
+                 src="${escapeHtml(image)}"
                  alt="${escapeHtml(field(car, "name") || t.house)}"
                  loading="lazy"
                  onerror="this.style.display='none'">
@@ -1813,7 +1892,7 @@ function createCarCard(car, index) {
             <div class="car-price"
                  data-price="${escapeHtml(car.price || "")}"
                  data-cur="${escapeHtml(car.currency || "")}">
-                ${formatPrice(car.price, car.currency)}
+                ${escapeHtml(formatPrice(car.price, car.currency))}
             </div>
 
             <div class="property-meta">
@@ -1883,13 +1962,18 @@ function toggleFavorite(id){
         favorites.push(key);
     }
 
-    localStorage.setItem("favorites",JSON.stringify(favorites));
+    lsSet("favorites",JSON.stringify(favorites));
 
     const activePage=document.querySelector(".page.active");
 
     if(activePage&&activePage.id==="searchPage"){
         searchFromSearchPage();
     }else{
+        // Sevimlilar sahifasida bo‘lsak, o‘chirilgan karta ro‘yxatdan yo‘qolsin
+        const favNav=document.getElementById("navFavorites");
+        if(favNav&&favNav.classList.contains("active")){
+            filteredCars=allCars.filter(car=>favorites.includes(String(car.id)));
+        }
         renderFiltered();
     }
 }
@@ -1947,7 +2031,7 @@ function openDetails(car) {
                     firstImage
                     ? `<img id="detailsMainImage"
                             class="details-image"
-                            src="${firstImage}"
+                            src="${escapeHtml(firstImage)}"
                             alt="${escapeHtml(field(car, "name"))}"
                             onclick="openLightbox(0)">`
                     : `<div class="details-image" style="background:#111;display:flex;align-items:center;justify-content:center;color:#19d66b">
@@ -1961,7 +2045,7 @@ function openDetails(car) {
                     ${
                         images.map((img, i) => `
                             <img class="thumb ${i === 0 ? "active" : ""}"
-                                 src="${imageUrl(img)}"
+                                 src="${escapeHtml(imageUrl(img))}"
                                  onclick="selectDetailImage(${i})"
                                  alt="">
                         `).join("")
@@ -1981,7 +2065,7 @@ function openDetails(car) {
                 <div class="details-price"
                      data-price="${escapeHtml(car.price || "")}"
                      data-cur="${escapeHtml(car.currency || "")}">
-                    ${formatPrice(car.price, car.currency)}
+                    ${escapeHtml(formatPrice(car.price, car.currency))}
                 </div>
 
                 <div class="details-meta">
@@ -2207,7 +2291,7 @@ document.getElementById("lightbox").addEventListener("click",function(event){
         closeLightbox();
 });
 
-if(localStorage.getItem("darkMode")==="true"){
+if(lsGet("darkMode","")==="true"){
     document.body.classList.add("dark");
 }
 
@@ -2245,5 +2329,6 @@ load().then(() => {
 
 <!-- TELEGRAM BOT -->
 <a class="telegram-bot-float" href="https://t.me/pulzarill_uylar_bot" target="_blank" rel="noopener noreferrer" aria-label="Uy-Joy Telegram botini ochish"><span class="telegram-bot-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M21.4 4.6 18.2 20c-.24 1.09-.88 1.36-1.79.85l-4.95-3.65-2.39 2.3c-.26.26-.48.48-.99.48l.35-5.04 9.18-8.29c.4-.35-.09-.55-.62-.2L5.64 13.6.75 12.07c-1.06-.33-1.08-1.06.22-1.58L20.06 3.1c.9-.33 1.69.2 1.34 1.5Z"/></svg></span><span class="telegram-bot-text"><span class="telegram-bot-title">Uy-Joy Bot</span><span class="telegram-bot-sub">Telegram orqali bog‘lanish</span></span></a>
+
 </body>
 </html>
