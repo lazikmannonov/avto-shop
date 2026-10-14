@@ -3,6 +3,7 @@ const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
 const { Pool } = require('pg');
+const nodemailer = require('nodemailer');
 
 // =====================================================
 // ADMIN PASSWORD
@@ -21,6 +22,87 @@ if (!ADMIN_PASSWORD) {
     console.error('ADMIN_PASSWORD topilmadi!');
     process.exit(1);
 }
+
+// =====================================================
+// PAROL TIKLASH (GMAIL)
+// =====================================================
+
+const GMAIL_USER = String(process.env.GMAIL_USER || '').trim();
+const GMAIL_APP_PASSWORD = String(process.env.GMAIL_APP_PASSWORD || '').replace(/\s+/g, '');
+const ADMIN_RESET_EMAIL = String(process.env.ADMIN_RESET_EMAIL || '').trim();
+const RESET_SECRET = String(process.env.RESET_SECRET || '').trim();
+
+const RESET_CODE_TTL_MIN = 5;
+const RESET_TOKEN_TTL_MIN = 10;
+const RESET_MAX_ATTEMPTS = 5;
+const MIN_NEW_PASSWORD = 10;
+
+const mailer = (GMAIL_USER && GMAIL_APP_PASSWORD)
+    ? nodemailer.createTransport({
+        service: 'gmail',
+        auth: { user: GMAIL_USER, pass: GMAIL_APP_PASSWORD },
+        connectionTimeout: 10000,
+        greetingTimeout: 10000,
+        socketTimeout: 15000
+    })
+    : null;
+
+// Bazadagi (tiklangan) parol xeshi. Bo'lsa, .env paroli o'rniga shu ishlaydi.
+let adminPasswordHash = null;
+
+function hashPassword(pw) {
+    const salt = crypto.randomBytes(16);
+    const hash = crypto.scryptSync(pw, salt, 64);
+    return 'scrypt$' + salt.toString('hex') + '$' + hash.toString('hex');
+}
+
+function verifyPasswordHash(pw, stored) {
+    const parts = String(stored).split('$');
+    if (parts.length !== 3 || parts[0] !== 'scrypt') return false;
+    const expected = Buffer.from(parts[2], 'hex');
+    const actual = crypto.scryptSync(pw, Buffer.from(parts[1], 'hex'), expected.length);
+    return crypto.timingSafeEqual(actual, expected);
+}
+
+function hashResetCode(code) {
+    return crypto.createHash('sha256')
+        .update(RESET_SECRET + ':' + code).digest('hex');
+}
+
+function hashResetToken(token) {
+    return crypto.createHash('sha256')
+        .update(RESET_SECRET + ':tok:' + token).digest('hex');
+}
+
+function safeHexEqual(a, b) {
+    const x = Buffer.from(String(a), 'hex');
+    const y = Buffer.from(String(b), 'hex');
+    return x.length === y.length && crypto.timingSafeEqual(x, y);
+}
+
+// Oddiy vaqt oynali limit (xotirada)
+const resetRate = new Map();
+
+function rateLimit(key, max, windowMs) {
+    const now = Date.now();
+    const list = (resetRate.get(key) || []).filter(t => now - t < windowMs);
+    if (list.length >= max) {
+        resetRate.set(key, list);
+        return false;
+    }
+    list.push(now);
+    resetRate.set(key, list);
+    return true;
+}
+
+setInterval(() => {
+    const now = Date.now();
+    for (const [k, list] of resetRate) {
+        const fresh = list.filter(t => now - t < 3600000);
+        if (fresh.length) resetRate.set(k, fresh);
+        else resetRate.delete(k);
+    }
+}, 10 * 60 * 1000).unref();
 
 // =====================================================
 // DATABASE
@@ -192,6 +274,47 @@ async function initDatabase() {
         ON CONFLICT (id) DO NOTHING
     `);
 
+    // -------------------------------------------------
+    // ADMIN PAROL TIKLASH
+    // -------------------------------------------------
+
+    await pool.query(`
+        CREATE TABLE IF NOT EXISTS admin_auth (
+            id INTEGER PRIMARY KEY DEFAULT 1,
+            password_hash TEXT,
+            updated_at TIMESTAMPTZ DEFAULT NOW()
+        )
+    `);
+
+    await pool.query(`
+        CREATE TABLE IF NOT EXISTS admin_reset (
+            id SERIAL PRIMARY KEY,
+            code_hash TEXT NOT NULL,
+            expires_at TIMESTAMPTZ NOT NULL,
+            attempts INTEGER NOT NULL DEFAULT 0,
+            used BOOLEAN NOT NULL DEFAULT FALSE,
+            reset_token_hash TEXT,
+            token_expires_at TIMESTAMPTZ,
+            token_used BOOLEAN NOT NULL DEFAULT FALSE,
+            ip TEXT,
+            created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+        )
+    `);
+
+    await pool.query(`
+        DELETE FROM admin_reset
+        WHERE created_at < NOW() - INTERVAL '1 day'
+    `);
+
+    const authRow = await pool.query(
+        'SELECT password_hash FROM admin_auth WHERE id = 1'
+    );
+
+    adminPasswordHash =
+        authRow.rows[0] && authRow.rows[0].password_hash
+            ? authRow.rows[0].password_hash
+            : null;
+    
     console.log('PostgreSQL database tayyor');
 }
 
@@ -366,6 +489,19 @@ function passwordMatches(value) {
 
     if (!input) {
         return false;
+    }
+
+    // Parol tiklangan bo'lsa, faqat bazadagi xesh tekshiriladi
+    if (adminPasswordHash) {
+
+        try {
+            return verifyPasswordHash(
+                input,
+                adminPasswordHash
+            );
+        } catch (e) {
+            return false;
+        }
     }
 
     const a =
@@ -4736,6 +4872,279 @@ const server =
                     );
                 }
 
+                                 // =================================================
+                // PAROL TIKLASH: KOD YUBORISH
+                // =================================================
+
+                if (
+                    url === '/api/admin/forgot' &&
+                    req.method === 'POST'
+                ) {
+
+                    if (!mailer || !ADMIN_RESET_EMAIL || !RESET_SECRET) {
+                        return sendJson(res, 503, {
+                            error: "Parol tiklash sozlanmagan"
+                        });
+                    }
+
+                    const ip = getIp(req);
+
+                    if (
+                        !rateLimit('f:min', 1, 60 * 1000) ||
+                        !rateLimit('f:hour', 5, 60 * 60 * 1000) ||
+                        !rateLimit('f:ip:' + ip, 10, 60 * 60 * 1000)
+                    ) {
+                        return sendJson(res, 429, {
+                            error: "Juda ko'p so'rov. Birozdan keyin urinib ko'ring"
+                        });
+                    }
+
+                    const code = String(
+                        crypto.randomInt(0, 1000000)
+                    ).padStart(6, '0');
+
+                    // Eski kod va tokenlar bekor qilinadi
+                    await pool.query(`
+                        UPDATE admin_reset
+                        SET used = TRUE, token_used = TRUE
+                        WHERE used = FALSE OR token_used = FALSE
+                    `);
+
+                    await pool.query(
+                        `
+                        INSERT INTO admin_reset (code_hash, expires_at, ip)
+                        VALUES ($1, NOW() + ($2 || ' minutes')::interval, $3)
+                        `,
+                        [
+                            hashResetCode(code),
+                            String(RESET_CODE_TTL_MIN),
+                            ip
+                        ]
+                    );
+
+                    try {
+
+                        await mailer.sendMail({
+                            from: `"Uy-Joy" <${GMAIL_USER}>`,
+                            to: ADMIN_RESET_EMAIL,
+                            subject: 'Uy-Joy admin: parolni tiklash kodi',
+                            text:
+                                `Parolni tiklash kodi: ${code}\n\n` +
+                                `Kod ${RESET_CODE_TTL_MIN} daqiqa amal qiladi.\n` +
+                                `Agar buni siz so'ramagan bo'lsangiz, xatni e'tiborsiz qoldiring.`
+                        });
+
+                    } catch (e) {
+
+                        console.error('RESET MAIL ERROR:', e.message);
+
+                        return sendJson(res, 500, {
+                            error: "Xat yuborib bo'lmadi"
+                        });
+                    }
+
+                    return sendJson(res, 200, {
+                        ok: true,
+                        message: "Kod Gmail manzilga yuborildi"
+                    });
+                }
+
+                // =================================================
+                // PAROL TIKLASH: KODNI TEKSHIRISH
+                // =================================================
+
+                if (
+                    url === '/api/admin/verify-code' &&
+                    req.method === 'POST'
+                ) {
+
+                    if (!RESET_SECRET) {
+                        return sendJson(res, 503, {
+                            error: "Parol tiklash sozlanmagan"
+                        });
+                    }
+
+                    const ip = getIp(req);
+
+                    if (!rateLimit('v:ip:' + ip, 20, 60 * 60 * 1000)) {
+                        return sendJson(res, 429, {
+                            error: "Juda ko'p urinish. Keyinroq urinib ko'ring"
+                        });
+                    }
+
+                    let body = {};
+
+                    try {
+                        body = JSON.parse(await readBody(req));
+                    } catch (e) {
+                        return sendJson(res, 400, {
+                            error: "Ma'lumot formati noto'g'ri"
+                        });
+                    }
+
+                    const code = String(body.code || '').trim();
+                    const badMsg = "Kod noto'g'ri yoki muddati o'tgan";
+
+                    if (!/^\d{6}$/.test(code)) {
+                        return sendJson(res, 400, { error: badMsg });
+                    }
+
+                    const active = await pool.query(`
+                        SELECT id, code_hash
+                        FROM admin_reset
+                        WHERE used = FALSE AND expires_at > NOW()
+                        ORDER BY id DESC
+                        LIMIT 1
+                    `);
+
+                    if (!active.rows.length) {
+                        return sendJson(res, 400, { error: badMsg });
+                    }
+
+                    const row = active.rows[0];
+
+                    // Urinishni avval hisoblaymiz (atomik)
+                    const tried = await pool.query(
+                        `
+                        UPDATE admin_reset
+                        SET attempts = attempts + 1
+                        WHERE id = $1 AND used = FALSE AND attempts < $2
+                        RETURNING attempts
+                        `,
+                        [row.id, RESET_MAX_ATTEMPTS]
+                    );
+
+                    if (!tried.rows.length) {
+                        return sendJson(res, 400, { error: badMsg });
+                    }
+
+                    if (!safeHexEqual(hashResetCode(code), row.code_hash)) {
+
+                        if (tried.rows[0].attempts >= RESET_MAX_ATTEMPTS) {
+                            await pool.query(
+                                'UPDATE admin_reset SET used = TRUE WHERE id = $1',
+                                [row.id]
+                            );
+                        }
+
+                        return sendJson(res, 400, { error: badMsg });
+                    }
+
+                    // Kod to'g'ri: kod bekor, bir martalik token beriladi
+                    const token = crypto.randomBytes(32).toString('hex');
+
+                    await pool.query(
+                        `
+                        UPDATE admin_reset
+                        SET used = TRUE,
+                            reset_token_hash = $2,
+                            token_expires_at = NOW() + ($3 || ' minutes')::interval
+                        WHERE id = $1
+                        `,
+                        [
+                            row.id,
+                            hashResetToken(token),
+                            String(RESET_TOKEN_TTL_MIN)
+                        ]
+                    );
+
+                    return sendJson(res, 200, { ok: true, token });
+                }
+
+                // =================================================
+                // PAROL TIKLASH: YANGI PAROL
+                // =================================================
+
+                if (
+                    url === '/api/admin/reset-password' &&
+                    req.method === 'POST'
+                ) {
+
+                    if (!RESET_SECRET) {
+                        return sendJson(res, 503, {
+                            error: "Parol tiklash sozlanmagan"
+                        });
+                    }
+
+                    const ip = getIp(req);
+
+                    if (!rateLimit('r:ip:' + ip, 20, 60 * 60 * 1000)) {
+                        return sendJson(res, 429, {
+                            error: "Juda ko'p urinish. Keyinroq urinib ko'ring"
+                        });
+                    }
+
+                    let body = {};
+
+                    try {
+                        body = JSON.parse(await readBody(req));
+                    } catch (e) {
+                        return sendJson(res, 400, {
+                            error: "Ma'lumot formati noto'g'ri"
+                        });
+                    }
+
+                    const token = String(body.token || '').trim();
+                    const newPassword = normalizePassword(body.newPassword);
+
+                    if (!/^[a-f0-9]{64}$/.test(token)) {
+                        return sendJson(res, 400, {
+                            error: "Tiklash seansi yaroqsiz. Qaytadan boshlang"
+                        });
+                    }
+
+                    if (
+                        newPassword.length < MIN_NEW_PASSWORD ||
+                        newPassword.length > 100
+                    ) {
+                        return sendJson(res, 400, {
+                            error: `Parol kamida ${MIN_NEW_PASSWORD} belgidan iborat bo'lsin`
+                        });
+                    }
+
+                    // Tokenni atomik "yeb qo'yamiz": ikkinchi marta ishlamaydi
+                    const consumed = await pool.query(
+                        `
+                        UPDATE admin_reset
+                        SET token_used = TRUE
+                        WHERE reset_token_hash = $1
+                          AND token_used = FALSE
+                          AND token_expires_at > NOW()
+                        RETURNING id
+                        `,
+                        [hashResetToken(token)]
+                    );
+
+                    if (!consumed.rows.length) {
+                        return sendJson(res, 400, {
+                            error: "Tiklash seansi yaroqsiz yoki muddati o'tgan"
+                        });
+                    }
+
+                    const newHash = hashPassword(newPassword);
+
+                    await pool.query(
+                        `
+                        INSERT INTO admin_auth (id, password_hash, updated_at)
+                        VALUES (1, $1, NOW())
+                        ON CONFLICT (id) DO UPDATE
+                        SET password_hash = EXCLUDED.password_hash,
+                            updated_at = NOW()
+                        `,
+                        [newHash]
+                    );
+
+                    adminPasswordHash = newHash;
+
+                    // Login bloklari tozalanadi
+                    failedAttempts.clear();
+
+                    return sendJson(res, 200, {
+                        ok: true,
+                        message: "Parol yangilandi"
+                    });
+                }
+                
                 // =================================================
                 // ADMIN PAGE
                 // =================================================
