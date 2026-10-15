@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#0B0B0A">
 <title>Uy-Joy — Uylar</title>
 
 <link rel="stylesheet" href="/style.css">
@@ -10,7 +11,7 @@
 
 <body>
 
-<svg width="0" height="0" style="position:absolute">
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
     <symbol id="i-grid" viewBox="0 0 24 24">
         <rect x="3.5" y="3.5" width="7" height="7" rx="1.5"/>
         <rect x="13.5" y="3.5" width="7" height="7" rx="1.5"/>
@@ -88,6 +89,16 @@
     <symbol id="i-arrow-left" viewBox="0 0 24 24">
         <path d="m15 18-6-6 6-6"/>
     </symbol>
+    <symbol id="i-arrow-right" viewBox="0 0 24 24">
+        <path d="m9 6 6 6-6 6"/>
+    </symbol>
+    <symbol id="i-chevron-down" viewBox="0 0 24 24">
+        <path d="m6 9 6 6 6-6"/>
+    </symbol>
+    <symbol id="i-close" viewBox="0 0 24 24">
+        <path d="m6 6 12 12"/>
+        <path d="M18 6 6 18"/>
+    </symbol>
     <symbol id="i-sun" viewBox="0 0 24 24">
         <circle cx="12" cy="12" r="4"/>
         <path d="M12 2.5v1.8"/>
@@ -96,6 +107,8 @@
         <path d="m17.8 17.8 1.3 1.3"/>
         <path d="M2.5 12h1.8"/>
         <path d="M19.7 12h1.8"/>
+        <path d="m4.9 19.1 1.3-1.3"/>
+        <path d="m17.8 6.2 1.3-1.3"/>
     </symbol>
     <symbol id="i-moon" viewBox="0 0 24 24">
         <path d="M20.2 14.1A8.5 8.5 0 0 1 9.9 3.8a8.5 8.5 0 1 0 10.3 10.3Z"/>
@@ -111,6 +124,25 @@
     <symbol id="i-whatsapp" viewBox="0 0 24 24">
         <path d="M20.1 11.4a8.1 8.1 0 0 1-11.9 7L4 20l1.6-4A8.1 8.1 0 1 1 20.1 11.4Z"/>
     </symbol>
+    <symbol id="i-price" viewBox="0 0 24 24">
+        <circle cx="12" cy="12" r="9"/>
+        <path d="M14.8 9.2c-.5-.9-1.5-1.4-2.8-1.4-1.6 0-2.7.8-2.7 2 0 2.9 5.6 1.4 5.6 4.2 0 1.2-1.2 2.1-2.9 2.1-1.4 0-2.5-.6-3-1.6"/>
+        <path d="M12 6.5v1.3"/>
+        <path d="M12 16.3v1.2"/>
+    </symbol>
+    <symbol id="i-bed" viewBox="0 0 24 24">
+        <path d="M3.5 18.5v-11"/>
+        <path d="M3.5 14.5h17v4"/>
+        <path d="M20.5 14.5v-2.5a2.5 2.5 0 0 0-2.5-2.5h-7v5"/>
+        <circle cx="7.2" cy="11.6" r="1.7"/>
+    </symbol>
+    <symbol id="i-area" viewBox="0 0 24 24">
+        <rect x="4" y="4" width="16" height="16" rx="1.5"/>
+        <path d="M4 9h3"/>
+        <path d="M4 14h3"/>
+        <path d="M9 4v3"/>
+        <path d="M14 4v3"/>
+    </symbol>
 </svg>
 
 <header>
@@ -118,12 +150,12 @@
 
         <a class="logo" href="#" onclick="goHome(); return false;" aria-label="Uy-Joy — Bosh sahifa">
             <svg class="logo-icon" viewBox="0 0 48 48" aria-hidden="true">
-                <path d="M5 22 24 6 43 22" fill="none" stroke="#19d66b" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
-                <path d="M11 20v21h26V20" fill="#19d66b" fill-opacity=".14" stroke="#19d66b" stroke-width="3.5" stroke-linejoin="round"/>
-                <path d="M20 41V28h8v13" fill="none" stroke="#19d66b" stroke-width="3" stroke-linejoin="round"/>
-                <path d="M32 12V7h5v9" fill="none" stroke="#19d66b" stroke-width="3" stroke-linejoin="round"/>
+                <path d="M5 22 24 6 43 22" fill="none" stroke="#D4AF67" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M11 20v21h26V20" fill="#D4AF67" fill-opacity=".12" stroke="#D4AF67" stroke-width="3.5" stroke-linejoin="round"/>
+                <path d="M20 41V28h8v13" fill="none" stroke="#A78339" stroke-width="3" stroke-linejoin="round"/>
+                <path d="M32 12V7h5v9" fill="none" stroke="#A78339" stroke-width="3" stroke-linejoin="round"/>
             </svg>
-            <span class="logo-word">Uy<span class="green">-Joy</span></span>
+            <span class="logo-word">Uy<span class="gold">-Joy</span></span>
         </a>
 
         <div class="header-right">
@@ -137,7 +169,7 @@
                 <button type="button" class="currency-btn" data-cur="USD" onclick="setCurrency('USD')">USD</button>
             </div>
 
-            <button class="theme-btn" onclick="toggleTheme()" id="themeBtn"></button>
+            <button class="theme-btn" onclick="toggleTheme()" id="themeBtn" aria-label="Light / Dark"></button>
 
         </div>
     </div>
@@ -150,7 +182,7 @@
 
         <div class="search-box">
             <input id="searchInput" type="text" placeholder="Uy qidirish..." oninput="searchCars()">
-            <button class="search-reset" onclick="resetSearch()">
+            <button class="search-reset" onclick="resetSearch()" aria-label="Search">
                 <svg class="icon"><use href="#i-search"></use></svg>
             </button>
         </div>
@@ -201,7 +233,7 @@
 
         <div class="search-box">
             <input id="searchPageInput" type="text" placeholder="Uy qidirish..." oninput="searchFromSearchPage()">
-            <button class="search-reset" onclick="resetSearchPage()">
+            <button class="search-reset" onclick="resetSearchPage()" aria-label="Reset">
                 <svg class="icon"><use href="#i-search"></use></svg>
             </button>
         </div>
@@ -235,12 +267,14 @@
 
         </div>
 
-        <button class="filter-toggle" id="filterToggle" onclick="toggleExtraFilters()">^</button>
+        <button class="filter-toggle" id="filterToggle" onclick="toggleExtraFilters()" aria-label="Filters">
+            <svg class="icon"><use href="#i-chevron-down"></use></svg>
+        </button>
 
         <div class="extra-filters" id="extraFilters">
-            <button class="extra-filter" id="priceFilterText" onclick="cyclePriceSort()">💰 Narx bo‘yicha</button>
-            <button class="extra-filter" id="addressFilterText" onclick="toggleAddressOnly()">📍 Manzil bo‘yicha</button>
-            <button class="extra-filter" id="roomsFilterText" onclick="cycleRooms()">🛏 Xonalar bo‘yicha</button>
+            <button class="extra-filter" id="priceFilterText" onclick="cyclePriceSort()"></button>
+            <button class="extra-filter" id="addressFilterText" onclick="toggleAddressOnly()"></button>
+            <button class="extra-filter" id="roomsFilterText" onclick="cycleRooms()"></button>
         </div>
 
         <div class="results-info">
@@ -277,7 +311,7 @@
                     </span>
                     <span class="menu-item-sub" id="menuPlatform">Uy-joy platformasi</span>
                 </div>
-                <svg class="icon icon-lg"><use href="#i-home"></use></svg>
+                <svg class="icon icon-lg" style="color:var(--gold-text)"><use href="#i-home"></use></svg>
             </div>
 
             <div class="menu-item social-menu-item" role="link" tabindex="0"
@@ -361,7 +395,7 @@
                     </span>
                     <span class="menu-item-sub" id="menuAddress">Toshkent, O‘zbekiston</span>
                 </div>
-                <svg class="icon icon-lg"><use href="#i-location"></use></svg>
+                <svg class="icon icon-lg" style="color:var(--gold-text)"><use href="#i-location"></use></svg>
             </div>
 
             <div class="menu-item language-menu-item">
@@ -387,7 +421,7 @@
                     </span>
                     <span class="menu-item-sub" id="menuAppearanceSub">Light / Dark</span>
                 </div>
-                <button class="theme-btn" onclick="toggleTheme()" id="themeBtnMenu"></button>
+                <button class="theme-btn" onclick="toggleTheme()" id="themeBtnMenu" aria-label="Light / Dark"></button>
             </div>
 
         </div>
@@ -421,10 +455,16 @@
 </nav>
 
 <div class="lightbox" id="lightbox">
-    <button class="lightbox-close" onclick="closeLightbox()">×</button>
-    <button class="lightbox-prev" onclick="changeLightbox(-1)">‹</button>
+    <button class="lightbox-close" onclick="closeLightbox()" aria-label="Close">
+        <svg class="icon"><use href="#i-close"></use></svg>
+    </button>
+    <button class="lightbox-prev" onclick="changeLightbox(-1)" aria-label="Previous">
+        <svg class="icon"><use href="#i-arrow-left"></use></svg>
+    </button>
     <img id="lightboxImage" src="" alt="">
-    <button class="lightbox-next" onclick="changeLightbox(1)">›</button>
+    <button class="lightbox-next" onclick="changeLightbox(1)" aria-label="Next">
+        <svg class="icon"><use href="#i-arrow-right"></use></svg>
+    </button>
 </div>
 
 <script>
@@ -496,9 +536,9 @@ const translations={
         photos:"rasm",
         categories:{all:"Barchasi",hovli:"Hovli",kvartira:"Kvartira",yer:"Yer",yangi:"Yangi qurilish"},
         searchTitle:"Qidiruv",
-        priceFilter:"💰 Narx bo‘yicha",
-        addressFilter:"📍 Manzil bo‘yicha",
-        roomsFilter:"🛏 Xonalar bo‘yicha",
+        priceFilter:"Narx bo‘yicha",
+        addressFilter:"Manzil bo‘yicha",
+        roomsFilter:"Xonalar bo‘yicha",
         home:"Bosh sahifa",
         searchNav:"Qidiruv",
         favorites:"Sevimlilar",
@@ -549,9 +589,9 @@ const translations={
         photos:"фото",
         categories:{all:"Все",hovli:"Частный дом",kvartira:"Квартира",yer:"Земля",yangi:"Новостройка"},
         searchTitle:"Поиск",
-        priceFilter:"💰 По цене",
-        addressFilter:"📍 По адресу",
-        roomsFilter:"🛏 По комнатам",
+        priceFilter:"По цене",
+        addressFilter:"По адресу",
+        roomsFilter:"По комнатам",
         home:"Главная",
         searchNav:"Поиск",
         favorites:"Избранное",
@@ -602,9 +642,9 @@ const translations={
         photos:"photos",
         categories:{all:"All",hovli:"House",kvartira:"Apartment",yer:"Land",yangi:"New building"},
         searchTitle:"Search",
-        priceFilter:"💰 By price",
-        addressFilter:"📍 By address",
-        roomsFilter:"🛏 By rooms",
+        priceFilter:"By price",
+        addressFilter:"By address",
+        roomsFilter:"By rooms",
         home:"Home",
         searchNav:"Search",
         favorites:"Favorites",
@@ -654,6 +694,11 @@ function countText(n){
     return n+" "+T().unit;
 }
 
+/* SVG ikonka (sprite) */
+function icon(id,cls){
+    return '<svg class="icon '+(cls||"")+'"><use href="#'+id+'"></use></svg>';
+}
+
 /* Bazada name_ru, name_en, description_ru... bo‘lsa shuni ko‘rsatadi, bo‘lmasa asl matn */
 function field(car,name){
     const v=car[name+"_"+currentLang];
@@ -670,6 +715,7 @@ const TYPE_MAP={
     "yangi qurilish":"yangi","новостройка":"yangi","new building":"yangi"
 };
 
+/* Bazada eski emoji belgilari qolgan bo‘lsa, ularni tozalaydi */
 function normalizeType(value){
     return String(value||"")
         .replace(/🏡|🏢|🌳|🏗️|🏗/g,"")
@@ -996,12 +1042,12 @@ function toggleTheme(){
 function updateThemeIcon(){
 
     const isDark=document.body.classList.contains("dark");
-    const icon=isDark?"i-sun":"i-moon";
+    const id=isDark?"i-sun":"i-moon";
 
-    ["themeBtn","themeBtnMenu"].forEach(id=>{
-        const element=document.getElementById(id);
+    ["themeBtn","themeBtnMenu"].forEach(elId=>{
+        const element=document.getElementById(elId);
         if(element){
-            element.innerHTML=`<svg class="icon"><use href="#${icon}"></use></svg>`;
+            element.innerHTML=icon(id);
         }
     });
 }
@@ -1197,17 +1243,17 @@ function updateExtraButtons(){
     const r=document.getElementById("roomsFilterText");
 
     if(p){
-        p.textContent=t.priceFilter+(priceSort==="asc"?" ↑":priceSort==="desc"?" ↓":"");
+        p.innerHTML=icon("i-price","icon-sm")+"<span>"+escapeHtml(t.priceFilter+(priceSort==="asc"?" ↑":priceSort==="desc"?" ↓":""))+"</span>";
         p.classList.toggle("active",!!priceSort);
     }
 
     if(a){
-        a.textContent=t.addressFilter;
+        a.innerHTML=icon("i-location","icon-sm")+"<span>"+escapeHtml(t.addressFilter)+"</span>";
         a.classList.toggle("active",addressOnly);
     }
 
     if(r){
-        r.textContent=t.roomsFilter+(roomsFilter==="all"?"":": "+(roomsFilter==="4"?"4+":roomsFilter));
+        r.innerHTML=icon("i-bed","icon-sm")+"<span>"+escapeHtml(t.roomsFilter+(roomsFilter==="all"?"":": "+(roomsFilter==="4"?"4+":roomsFilter)))+"</span>";
         r.classList.toggle("active",roomsFilter!=="all");
     }
 }
@@ -1474,7 +1520,7 @@ function createCarCard(car, index) {
     const image = firstImage ||
         "data:image/svg+xml;charset=UTF-8," +
         encodeURIComponent(
-            '<svg xmlns="http://www.w3.org/2000/svg" width="800" height="500"><rect width="100%" height="100%" fill="#111"/><text x="50%" y="50%" fill="#19d66b" text-anchor="middle" font-size="30" font-family="Arial">Uy-Joy</text></svg>'
+            '<svg xmlns="http://www.w3.org/2000/svg" width="800" height="500"><rect width="100%" height="100%" fill="#171612"/><text x="50%" y="50%" fill="#D4AF67" text-anchor="middle" font-size="30" font-family="Arial">Uy-Joy</text></svg>'
         );
 
     article.innerHTML = `
@@ -1509,8 +1555,8 @@ function createCarCard(car, index) {
 
             <div class="property-meta">
                 <span class="meta-item">${escapeHtml(type)}</span>
-                <span class="meta-item">🛏️ ${escapeHtml(rooms)} ${t.rooms.toLowerCase()}</span>
-                <span class="meta-item">📐 ${escapeHtml(area)}</span>
+                <span class="meta-item">${icon("i-bed","icon-sm")}${escapeHtml(rooms)} ${t.rooms.toLowerCase()}</span>
+                <span class="meta-item">${icon("i-area","icon-sm")}${escapeHtml(area)}</span>
             </div>
 
             <div class="car-address">
@@ -1646,7 +1692,7 @@ function openDetails(car) {
                             src="${escapeHtml(firstImage)}"
                             alt="${escapeHtml(field(car, "name"))}"
                             onclick="openLightbox(0)">`
-                    : `<div class="details-image" style="background:#111;display:flex;align-items:center;justify-content:center;color:#19d66b">
+                    : `<div class="details-image placeholder">
                            <svg class="icon" style="width:70px;height:70px">
                                <use href="#i-home"></use>
                            </svg>
