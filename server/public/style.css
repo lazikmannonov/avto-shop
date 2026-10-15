@@ -511,3 +511,296 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid var(-
         border-radius:13px;
     }
 }
+
+/* =========================================
+UY-JOY — BLACK & GOLD PREMIUM
+Mavjud CSS oxiriga qo‘shing
+========================================= */
+
+ {
+color-scheme: light;
+--bg: #f5f3ee;
+--card: #ffffff;
+--card2: #f8f6f0;
+--text: #201d17;
+--muted: #817969;
+--border: rgba(150, 117, 54, .20);
+--black: #171612;
+--black2: #242119;
+--green: #c7a45a;
+--green2: #a78339;
+--green-soft: rgba(199, 164, 90, .12);
+--yellow: #d4af67;
+--soft: rgba(199, 164, 90, .08);
+--shadow-sm: 0 4px 16px rgba(25, 22, 15, .05);
+--shadow: 0 10px 30px rgba(25, 22, 15, .07);
+--shadow-lg: 0 18px 48px rgba(25, 22, 15, .11);
+}
+
+body.dark {
+color-scheme: dark;
+--bg: #0b0b0a;
+--card: #141411;
+--card2: #1b1a15;
+--text: #f2eee4;
+--muted: #aaa18e;
+--border: rgba(212, 175, 103, .17);
+--black: #0b0b0a;
+--black2: #171610;
+--green: #d4af67;
+--green2: #b9944b;
+--green-soft: rgba(212, 175, 103, .12);
+--yellow: #e0bd75;
+--soft: rgba(212, 175, 103, .07);
+--shadow-sm: 0 5px 18px rgba(0, 0, 0, .22);
+--shadow: 0 12px 32px rgba(0, 0, 0, .28);
+--shadow-lg: 0 22px 55px rgba(0, 0, 0, .38);
+}
+
+body {
+background:
+radial-gradient(ellipse at 50% -15%, rgba(199,164,90,.09), transparent 48%),
+var(--bg);
+}
+
+body.dark {
+background:
+radial-gradient(ellipse at 50% -15%, rgba(212,175,103,.07), transparent 45%),
+var(--bg);
+}
+
+/* Header and logo */
+header {
+background: rgba(12, 12, 10, .97);
+border-bottom: 1px solid rgba(212,175,103,.24);
+box-shadow: 0 8px 30px rgba(0,0,0,.18);
+}
+
+.logo-icon {
+filter: drop-shadow(0 2px 8px rgba(212,175,103,.16));
+}
+
+.logo .green {
+color: #d4af67;
+}
+
+.logo {
+background: #d4af67;
+opacity: .08;
+}
+
+.logo-icon [fill="#19d66b"],
+.logo-icon [fill="#19D66B"],
+.logo-icon [stroke="#19d66b"],
+.logo-icon [stroke="#19D66B"] {
+fill: #d4af67;
+stroke: #d4af67;
+}
+
+.phone-top {
+color: #d4af67;
+}
+
+.lang-btn,
+.theme-btn {
+border-color: rgba(212,175,103,.65);
+}
+
+.lang-btn.active,
+.currency-btn.active {
+background: #d4af67;
+color: #17140e;
+border-color: #d4af67;
+box-shadow: 0 4px 14px rgba(212,175,103,.15);
+}
+
+/* Search */
+.search-box {
+border-color: #b9944b;
+box-shadow: 0 0 0 3px rgba(199,164,90,.10), var(--shadow-sm);
+}
+
+.search-reset {
+background: #1a1914;
+color: #e0bd75;
+}
+
+.search-reset {
+background: #d4af67;
+color: #17140e;
+}
+
+.search-back,
+.filter-toggle,
+.extra-filter,
+.category-btn,
+.detail-btn,
+.back-btn {
+border-color: #b9944b;
+color: var(--green2);
+}
+
+.search-category.active,
+.extra-filter.active,
+.category-btn.active,
+.filter-toggle.open {
+background: #211f18;
+color: #e0bd75;
+border-color: #9e7b37;
+}
+
+body.dark .search-category.active,
+body.dark .filter-toggle.open,
+body.dark .extra-filter.active {
+background: #d4af67;
+color: #17140e;
+border-color: #d4af67;
+}
+
+body.dark .search-category.active .icon {
+color: #17140e;
+}
+
+/* Cards */
+.car-card {
+border-radius: 20px;
+}
+
+.car-card {
+border-color: rgba(199,164,90,.42);
+}
+
+.car-image-box {
+background: linear-gradient(135deg,#29271f,#171612);
+}
+
+.badge {
+background: #d4af67;
+color: #17140e;
+box-shadow: 0 4px 14px rgba(0,0,0,.16);
+}
+
+.car-address .icon,
+.empty-icon {
+color: var(--green2);
+}
+
+.detail-btn {
+background: var(--card2);
+color: var(--text);
+border-color: var(--border);
+}
+
+.call-btn,
+.details-call {
+background: linear-gradient(135deg,#e0c27e,#bd974c);
+color: #19160f;
+box-shadow: 0 6px 18px rgba(170,130,55,.13);
+}
+
+.call-btn,
+.details-call {
+box-shadow: 0 9px 24px rgba(170,130,55,.20);
+}
+
+.thumb.active {
+border-color: #d4af67;
+box-shadow: 0 3px 12px rgba(199,164,90,.16);
+}
+
+/* Menu controls */
+.language-options .lang-btn.active {
+background: #d4af67;
+color: #17140e;
+border-color: #d4af67;
+}
+
+#themeBtnMenu,
+.language-options .lang-btn(.active) {
+border-color: #b9944b;
+background: var(--green-soft);
+}
+
+.social-menu-item .menu-item-title .icon,
+.menu-item a {
+color: var(--green2);
+}
+
+.social-menu-item {
+outline-color: #d4af67;
+}
+
+/* Bottom navigation */
+.bottom-nav {
+background: rgba(15,15,12,.96);
+border-color: rgba(212,175,103,.22);
+box-shadow: 0 14px 38px rgba(0,0,0,.28);
+}
+
+.bottom-nav button.active {
+color: #e0bd75;
+background: rgba(212,175,103,.10);
+}
+
+.bottom-nav button.active {
+background: #d4af67;
+box-shadow: 0 0 8px rgba(212,175,103,.55);
+}
+
+/* Focus and lightbox */
+button,
+a,
+input {
+outline-color: #d4af67;
+}
+
+.lightbox-close,
+.lightbox-prev,
+.lightbox-next {
+background: #d4af67;
+color: #17140e;
+}
+
+/* Telegram button: premium gold */
+.telegram-bot-float {
+background: linear-gradient(135deg,#28251c,#15140f);
+border-color: rgba(212,175,103,.42);
+color: #e0bd75;
+box-shadow: 0 10px 28px rgba(0,0,0,.24);
+}
+
+.telegram-bot-float {
+box-shadow: 0 14px 32px rgba(0,0,0,.32);
+}
+
+.telegram-bot-icon {
+background: rgba(212,175,103,.12);
+}
+
+/* Small visual refinements */
+.car-card,
+.details-card,
+.menu-card,
+.search-box,
+.search-category,
+.category-btn,
+.extra-filter,
+.empty {
+border-color: var(--border);
+}
+
+::selection {
+background: rgba(212,175,103,.28);
+color: var(--text);
+}
+
+@media (prefers-reduced-motion: reduce) {
+*,
+*::before,
+*::after {
+scroll-behavior: auto !important;
+animation-duration: .01ms !important;
+animation-iteration-count: 1 !important;
+transition-duration: .01ms !important;
+}
+}
