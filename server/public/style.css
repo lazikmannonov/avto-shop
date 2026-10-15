@@ -1,1 +1,126 @@
+/* MOBILE */
+@media(max-width:650px){
+    body{padding-bottom:94px}
+    header{position:sticky}
+    .header-inner{width:100%;min-width:0;min-height:66px;padding:9px 11px;gap:8px;overflow:hidden}
+    .logo{min-width:0;max-width:45vw;overflow:hidden;text-overflow:ellipsis;font-size:27px;letter-spacing:-1.4px}
+    .logo:before{width:150px;height:65px;opacity:.17}
+    .phone-top{display:none}
+    .header-right{min-width:0;flex-shrink:0;gap:5px}
+    .lang-btn,.theme-btn{min-height:35px;padding:6px 8px;font-size:11px;border-radius:10px}
+    .theme-btn{min-width:35px}
+    .currency-switch{margin-right:0;padding:1.5px;border-radius:10px}
+    .currency-btn{min-height:30px;padding:0 6px;font-size:10px;border-radius:8px}
+    .container{width:100%;max-width:100%;min-width:0;padding:16px 10px 92px;overflow-x:hidden}
+    .search-box{margin-bottom:14px;border-radius:16px}
+    .search-box input{height:46px;font-size:14px;padding:0 11px}
+    .search-reset{flex:0 0 45px;width:45px;height:45px;border-radius:12px}
+    .results-info{margin:18px 0 11px}
+    .results-info h2{font-size:18px}
+    .results-count{font-size:11px}
+    .cars-grid{width:100%;min-width:0;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+    .car-card{min-width:0;border-radius:18px;box-shadow:0 7px 22px rgba(8,18,11,.075)}
+    .car-card:hover{transform:none}
+    .car-image-box{height:175px}
+    .car-content{min-width:0;padding:10px}
+    .car-name{font-size:14px;line-height:1.25;margin-bottom:5px}
+    .car-price{font-size:16px;line-height:1.2;margin-bottom:8px}
+    .property-meta{gap:4px;margin-bottom:7px}
+    .meta-item{font-size:8.5px;padding:4px 5px;border-radius:7px}
+    .car-address{font-size:9.5px;line-height:1.35;margin-bottom:6px}
+    .car-address .icon{width:14px;height:14px}
+    .car-description{font-size:10.5px;line-height:1.45;min-height:30px}
+    .card-bottom{flex-direction:column;gap:5px;margin-top:9px}
+    .detail-btn,.call-btn{width:100%;padding:8px 5px;min-height:32px;font-size:10.5px;border-radius:9px}
+    .call-btn .icon{width:15px;height:15px}
+    .favorite{width:34px;height:34px;right:7px;top:7px}
+    .favorite .icon{width:17px;height:17px}
+    .badge{top:7px;left:7px;padding:5px 7px;font-size:8px}
+    .image-count{right:7px;bottom:7px;font-size:9px;padding:5px 7px}
+    .image-count .icon{width:13px;height:13px}
+    .search-page-top{gap:9px;margin-bottom:13px}
+    .search-page-title{font-size:22px}
+    .search-back{width:41px;height:41px;flex-basis:41px}
+    .search-page-categories{width:100%;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
+    .search-category{width:100%;min-width:0;min-height:53px;border-radius:13px;padding:7px 5px;font-size:10px;box-shadow:none;overflow:hidden}
+    .search-category .icon{width:17px;height:17px}
+    .search-category:last-child{grid-column:1/-1}
+    .filter-toggle{height:40px;border-radius:12px;font-size:19px}
+    .extra-filters{grid-template-columns:1fr;gap:7px}
+    .extra-filter{min-height:44px;border-radius:12px}
+    .empty{padding:60px 15px;border-radius:18px}
+    .skeleton{border-radius:18px}
+    .skeleton-img{height:175px}
+    .skeleton-content{padding:10px}
+    .skeleton-line.big{height:18px}
+    .details-card{width:100%;max-width:100%;border-radius:19px}
+    .details-main{display:block;width:100%;max-width:100%}
+    .details-image{width:100%;max-width:100%;height:300px}
+    .details-info{width:100%;max-width:100%;padding:20px 16px;overflow:hidden}
+    .details-info h1{max-width:100%;font-size:25px;line-height:1.18;letter-spacing:-.5px;margin-bottom:11px}
+    .details-price{max-width:100%;font-size:22px;line-height:1.25;margin-bottom:16px}
+    .details-meta{width:100%;max-width:100%;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:18px}
+    .details-meta-item{width:100%;min-width:0;max-width:100%;padding:12px;border-radius:12px;font-size:13px}
+    .details-meta-item b{font-size:9px}
+    .details-description{width:100%;max-width:100%;font-size:15px;line-height:1.6;margin-bottom:20px}
+    .details-call{width:100%;max-width:100%;min-width:0;padding:14px 10px;font-size:15px;white-space:normal;overflow-wrap:anywhere;border-radius:13px}
+    .thumbnails{width:100%;max-width:100%;padding:9px;gap:7px}
+    .thumb{flex:0 0 74px;width:74px;height:58px;border-radius:9px}
+    .back-btn{margin-bottom:11px;padding:9px 13px;font-size:13px;border-radius:12px}
+    .menu-card{width:100%;max-width:100%;margin:0;padding:6px 12px;border-radius:20px}
+    .menu-item{min-width:0;gap:8px;padding:15px 3px}
+    .menu-item-left{min-width:0;max-width:calc(100% - 40px)}
+    .menu-item-title{font-size:14px}
+    .menu-item-sub{font-size:11px}
+    .menu-item a{max-width:45%;font-size:11px;overflow:hidden;text-overflow:ellipsis}
+    .bottom-nav{width:calc(100% - 18px);bottom:9px;padding:6px;border-radius:19px}
+    .bottom-nav button{padding:7px 2px;font-size:9px;border-radius:14px}
+    .bottom-icon{height:20px}
+    .bottom-icon .icon{width:19px;height:19px}
+    .lightbox{padding:12px}
+    .lightbox img{max-width:96%;max-height:82%;border-radius:8px}
+    .lightbox-close{top:12px;right:12px;width:42px;height:42px}
+    .lightbox-prev,.lightbox-next{width:43px;height:43px}
+    .lightbox-prev{left:9px}
+    .lightbox-next{right:9px}
+}
+
+/* VERY SMALL PHONES */
+@media(max-width:380px){
+    .header-inner{padding-left:8px;padding-right:8px}
+    .logo{font-size:23px;max-width:41vw}
+    .lang-btn,.theme-btn{min-height:33px;padding:5px 6px;font-size:10px}
+    .theme-btn{min-width:33px}
+    .currency-btn{padding:0 5px;font-size:9px}
+    .container{padding-left:7px;padding-right:7px}
+    .cars-grid{gap:7px}
+    .car-image-box{height:158px}
+    .car-content{padding:8px}
+    .car-name{font-size:13px}
+    .car-price{font-size:14px}
+    .meta-item{font-size:8px;padding:3px 4px}
+    .car-address{font-size:9px}
+    .car-description{font-size:9.5px}
+    .detail-btn,.call-btn{font-size:9.5px;padding:7px 4px}
+    .skeleton-img{height:158px}
+    .details-info{padding:17px 12px}
+    .details-info h1{font-size:22px}
+    .details-price{font-size:20px}
+    .details-meta{grid-template-columns:1fr}
+    .details-description{font-size:14px}
+    .details-call{font-size:14px}
+    .search-category{font-size:9.5px}
+    .menu-card{padding-left:9px;padding-right:9px}
+    .menu-item-title{font-size:13px}
+    .menu-item-sub{font-size:10px}
+    .bottom-nav{width:calc(100% - 12px)}
+}
+
+/* REDUCED MOTION */
+@media(prefers-reduced-motion:reduce){
+    *,*:before,*:after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+}
+
+/* ================= TELEGRAM BOT ================= */
+.telegram-bot-float{position:fixed;right:18px;bottom:88px;z-index:9998;display:flex;align-items:center;gap:10px;padding:11px 15px 11px 11px;border:1px solid rgba(255,255,255,.18);border-radius:18px;background:linear-gradient(135deg,#229ed9,#168dcc);color:#fff;text-decoration:none;box-shadow:0 12px 30px rgba(20,145,205,.32);transition:transform .2s ease,box-shadow .2s ease;-webkit-tap-highlight-color:transparent}.telegram-bot-float:hover{transform:translateY(-3px);box-shadow:0 16px 36px rgba(20,145,205,.42)}.telegram-bot-icon{width:34px;height:34px;border-radius:12px;background:rgba(255,255,255,.16);display:grid;place-items:center;flex:0 0 34px}.telegram-bot-icon svg{width:21px;height:21px;fill:currentColor}.telegram-bot-text{display:flex;flex-direction:column;line-height:1.12}.telegram-bot-title{font-size:12px;font-weight:800}.telegram-bot-sub{font-size:10px;opacity:.88;margin-top:3px}@media(max-width:600px){.telegram-bot-float{right:12px;bottom:76px;padding:9px;border-radius:16px}.telegram-bot-text{display:none}.telegram-bot-icon{width:40px;height:40px;border-radius:13px}}
 
