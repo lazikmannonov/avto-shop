@@ -202,3 +202,95 @@ body {
 .page.active {
     display: block !important;
 }
+
+/* ===== UY-JOY PREMIUM DIZAYN ===== */
+
+/* Rasmlar o'lchami */
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+.property-card img,
+.house-card img,
+.listing-card img,
+.property-image img,
+.house-image img {
+  display: block;
+  width: 100%;
+  height: 210px;
+  object-fit: cover;
+  border-radius: 14px 14px 0 0;
+}
+
+/* Kartalar */
+.property-card,
+.house-card,
+.listing-card {
+  overflow: hidden;
+  border-radius: 18px;
+  border: 1px solid rgba(180, 145, 75, 0.22);
+  box-shadow: 0 5px 20px rgba(25, 25, 25, 0.07);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.property-card:hover,
+.house-card:hover,
+.listing-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 28px rgba(25, 25, 25, 0.13);
+}
+
+/* Premium tugmalar */
+button,
+.btn,
+.button,
+a.btn {
+  border-radius: 12px;
+  font-weight: 600;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+button:hover,
+.btn:hover,
+.button:hover,
+a.btn:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.05);
+}
+
+button:active,
+.btn:active,
+.button:active {
+  transform: scale(0.98);
+}
+
+/* Asosiy tugmalar */
+.btn-primary,
+.primary-btn,
+button[type="submit"] {
+  background: linear-gradient(135deg, #b89245, #dfc078);
+  color: #17130b;
+  border: 1px solid #b89245;
+  box-shadow: 0 4px 12px rgba(184, 146, 69, 0.22);
+  padding: 11px 20px;
+}
+
+/* Telefon ekranlari */
+@media (max-width: 600px) {
+  .property-card img,
+  .house-card img,
+  .listing-card img,
+  .property-image img,
+  .house-image img {
+    height: 175px;
+  }
+
+  button,
+  .btn,
+  .button,
+  a.btn {
+    max-width: 100%;
+  }
+}
