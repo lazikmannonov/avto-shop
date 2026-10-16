@@ -630,3 +630,60 @@ body.admin-page.dark{
     .admin-page .home-actions{grid-template-columns:1fr}
     .admin-page .login-card{padding:24px;border-radius:22px}
 }
+
+/* ===== INDEX: ikonkalarni tartibga solish (oltin faqat kerakli joyda) ===== */
+
+/* Qidiruv kategoriyalari: ikonka dumaloq neytral "tile" ichida */
+.search-category .icon{
+    width:30px;height:30px;padding:6px;border-radius:50%;
+    background:var(--card2);color:var(--muted);
+    transition:background .2s,color .2s;
+}
+.search-category:hover .icon{color:var(--text)}
+.search-category.active .icon{background:rgba(11,11,10,.14);color:var(--on-gold)}
+
+/* Qo'shimcha filtrlar */
+.extra-filter .icon{color:var(--muted)}
+.extra-filter:hover .icon{color:var(--text)}
+.extra-filter.active .icon{color:var(--on-gold)}
+
+/* Filtr ochish tugmasi, orqaga tugmalari */
+.filter-toggle,
+.search-back,
+.back-btn{color:var(--text)}
+.filter-toggle:hover,
+.search-back:hover,
+.back-btn:hover{color:var(--gold-text)}
+.filter-toggle.open,
+.filter-toggle.open:hover{color:var(--on-gold)}
+
+/* Karta ichidagi belgilar (xona, maydon, tur) */
+.meta-item{background:var(--card2);color:var(--text)}
+.meta-item .icon{color:var(--muted)}
+
+/* Manzil: yumshoq qizil pin, matn kulrang */
+.car-address .icon{color:#D9575C}
+
+/* Bo'sh holat */
+.empty-icon{color:var(--muted);opacity:.7}
+
+/* Menyu sahifasi: ikonkalar neytral tile ichida, havola pill ko'rinishda */
+.menu-item-title .icon{
+    width:34px;height:34px;padding:8px;border-radius:11px;
+    background:var(--card2);color:var(--text);
+    border:1px solid var(--border);
+}
+.menu-item a{
+    color:var(--text);border:1px solid var(--border);
+    background:var(--card2);padding:8px 12px;
+}
+.menu-item a .icon{color:var(--muted)}
+.menu-item a:hover{background:var(--gold-soft);border-color:var(--gold2)}
+.menu-item a:hover .icon{color:var(--gold-text)}
+.social-menu-item:hover .menu-item-title .icon{
+    background:var(--gold-soft);border-color:var(--gold2);color:var(--gold-text);
+}
+
+/* Karta: "Batafsil" tugmasi ikonkasi ham neytral */
+.detail-btn .icon{color:var(--muted)}
+.detail-btn:hover .icon{color:var(--text)}
