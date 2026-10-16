@@ -93,3 +93,89 @@ header .theme-btn:hover{background:rgba(212,175,103,.12);border-color:var(--gold
 .page{display:none;animation:pageIn .28s ease}
 .page.active{display:block}
 @keyframes pageIn{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+
+/* ===== UY-JOY: XAVFSIZ CSS TIKLASH ===== */
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+html {
+    min-height: 100%;
+    background: var(--bg, #F6F3EC);
+}
+
+body {
+    min-height: 100vh;
+    background: var(--bg, #F6F3EC);
+    color: var(--text, #1A1812);
+}
+
+header {
+    width: 100%;
+}
+
+.container {
+    width: 100%;
+    max-width: 1320px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.page {
+    display: none;
+}
+
+.page.active {
+    display: block;
+}
+
+button,
+input,
+select,
+textarea {
+    font: inherit;
+}
+
+img,
+svg {
+    max-width: 100%;
+}
+
+button {
+    cursor: pointer;
+}
+
+@media (max-width: 768px) {
+    .header-inner {
+        flex-wrap: wrap;
+        padding: 10px 14px;
+        gap: 10px;
+    }
+
+    .logo-word {
+        font-size: 26px;
+    }
+
+    .logo-icon {
+        width: 36px;
+        height: 36px;
+        flex-basis: 36px;
+    }
+
+    .header-right {
+        flex-wrap: wrap;
+        gap: 6px;
+    }
+
+    .phone-top {
+        font-size: 12px;
+        padding: 8px;
+    }
+
+    .container {
+        padding: 18px 14px 100px;
+    }
+}
