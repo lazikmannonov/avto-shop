@@ -179,3 +179,26 @@ button {
         padding: 18px 14px 100px;
     }
 }
+
+
+/* VAQTINCHA DIAGNOSTIKA */
+body {
+    min-height: 100vh !important;
+    background: #F6F3EC !important;
+    color: #1A1812 !important;
+}
+
+.container {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+.page {
+    visibility: visible !important;
+}
+
+/* Faqat sahifa kontentini vaqtincha ko'rsatish */
+.page.active {
+    display: block !important;
+}
