@@ -687,3 +687,63 @@ body.admin-page.dark{
 /* Karta: "Batafsil" tugmasi ikonkasi ham neytral */
 .detail-btn .icon{color:var(--muted)}
 .detail-btn:hover .icon{color:var(--text)}
+
+/* ===== INDEX: sevimlilar va ijtimoiy tarmoq ranglari ===== */
+
+/* ---- Sevimlilar (yurak): aktiv bo'lganda qizil ---- */
+.favorite .icon{color:#F2EEE4}
+.favorite:hover .icon{color:#FF6B70}
+.favorite.active{color:#E5484D;border-color:rgba(229,72,77,.65);background:rgba(11,11,10,.78)}
+.favorite.active .icon{color:#E5484D;fill:#E5484D;stroke:#E5484D}
+
+/* Pastki menyudagi "Sevimlilar" tugmasi */
+.bottom-nav button[data-page="favorites"].active,
+.bottom-nav button[data-page="favorite"].active,
+.bottom-nav button[onclick*="favorite" i].active{color:#E5484D;background:rgba(229,72,77,.14)}
+.bottom-nav button[data-page="favorites"]:hover,
+.bottom-nav button[data-page="favorite"]:hover,
+.bottom-nav button[onclick*="favorite" i]:hover{color:#E5484D}
+
+/* ---- Ijtimoiy tarmoqlar: brend ranglari ---- */
+.social-menu-item[onclick*="telegram" i],
+.social-menu-item[onclick*="t.me"],
+.social-menu-item[id*="telegram" i],
+.social-menu-item[data-social*="telegram" i],
+.social-menu-item:has([href*="t.me"]),
+.social-menu-item:has([href*="telegram" i]),
+.social-menu-item:has([id*="telegram" i]){--brand:#229ED9;--brand-soft:rgba(34,158,217,.14)}
+
+.social-menu-item[onclick*="instagram" i],
+.social-menu-item[id*="instagram" i],
+.social-menu-item[data-social*="instagram" i],
+.social-menu-item:has([href*="instagram" i]),
+.social-menu-item:has([id*="instagram" i]){--brand:#E4405F;--brand-soft:rgba(228,64,95,.14)}
+
+.social-menu-item[onclick*="whatsapp" i],
+.social-menu-item[onclick*="wa.me"],
+.social-menu-item[id*="whatsapp" i],
+.social-menu-item[data-social*="whatsapp" i],
+.social-menu-item:has([href*="wa.me"]),
+.social-menu-item:has([href*="whatsapp" i]),
+.social-menu-item:has([id*="whatsapp" i]){--brand:#25D366;--brand-soft:rgba(37,211,102,.15)}
+
+.social-menu-item .menu-item-title .icon{
+    color:var(--brand,var(--text));
+    background:var(--brand-soft,var(--card2));
+    border-color:var(--brand,var(--border));
+}
+.social-menu-item a{color:var(--brand,var(--text))}
+.social-menu-item a .icon{color:var(--brand,var(--muted))}
+.social-menu-item:hover{background:var(--brand-soft,var(--gold-soft))}
+.social-menu-item:hover .menu-item-title .icon{
+    color:var(--brand,var(--gold-text));
+    background:var(--brand-soft,var(--gold-soft));
+    border-color:var(--brand,var(--gold2));
+}
+.social-menu-item a:hover{background:var(--brand-soft,var(--gold-soft));border-color:var(--brand,var(--gold2))}
+.social-menu-item a:hover .icon{color:var(--brand,var(--gold-text))}
+
+/* ---- O'ng pastdagi Telegram bot tugmasi: ko'k ---- */
+.telegram-bot-float{color:#37AEE2;border-color:rgba(55,174,226,.55)}
+.telegram-bot-float:hover{border-color:#37AEE2}
+.telegram-bot-icon{background:rgba(55,174,226,.16)}
