@@ -218,81 +218,184 @@
             </svg>
         </button>
     </div>
-   
-<!-- BOG‘LANISH — OCHILADIGAN BO‘LIM -->
-<div class="contact-accordion">
 
-    <button
-        type="button"
-        class="menu-item contact-accordion-toggle"
-        id="contactAccordionToggle"
-        aria-expanded="false"
-        aria-controls="contactAccordionContent"
-        onclick="toggleContactAccordion()">
+    <div class="site-menu-links">
 
-        <svg class="icon" aria-hidden="true">
-            <use href="#i-phone"></use>
-        </svg>
+        <!-- TIL -->
+        <div class="drawer-setting-row">
+            <div class="drawer-setting-label">
+                <svg class="icon" aria-hidden="true">
+                    <use href="#i-languages"></use>
+                </svg>
+                <span>Til</span>
+            </div>
 
-        <span>Bog‘lanish</span>
+            <div class="drawer-language-wrap">
+                <button
+                    type="button"
+                    class="drawer-language-button"
+                    id="drawerLanguageButton"
+                    aria-expanded="false"
+                    aria-controls="drawerLanguageOptions"
+                    onclick="toggleDrawerLanguages()">
+                    <span id="drawerCurrentLanguage">UZ</span>
+                    <svg class="icon drawer-language-chevron" aria-hidden="true">
+                        <use href="#i-chevron-down"></use>
+                    </svg>
+                </button>
 
-        <svg class="icon contact-chevron" aria-hidden="true"
-             viewBox="0 0 24 24" fill="none"
-             stroke="currentColor" stroke-width="1.8"
-             stroke-linecap="round" stroke-linejoin="round">
-            <path d="m6 9 6 6 6-6"></path>
-        </svg>
-    </button>
+                <div class="drawer-language-options" id="drawerLanguageOptions" hidden>
+                    <button type="button" onclick="selectDrawerLanguage('uz')">O‘zbekcha</button>
+                    <button type="button" onclick="selectDrawerLanguage('ru')">Русский</button>
+                    <button type="button" onclick="selectDrawerLanguage('en')">English</button>
+                </div>
+            </div>
+        </div>
 
-    <div
-        class="contact-accordion-content"
-        id="contactAccordionContent"
-        aria-hidden="true">
+        <!-- KO‘RINISH -->
+        <div class="drawer-setting-row">
+            <div class="drawer-setting-label">
+                <svg class="icon" aria-hidden="true">
+                    <use href="#i-moon"></use>
+                </svg>
+                <span>Ko‘rinish</span>
+            </div>
 
-        <a class="menu-item" id="drawerPhone"
-           href="tel:+998889500005"
-           onclick="trackCall(event)">
+            <button
+                type="button"
+                class="drawer-theme-button"
+                id="drawerThemeButton"
+                onclick="toggleTheme()"
+                aria-label="Ko‘rinishni almashtirish">
+                <svg class="icon" aria-hidden="true">
+                    <use href="#i-moon"></use>
+                </svg>
+            </button>
+        </div>
+
+        <div class="drawer-menu-divider"></div>
+
+        <!-- BOSH SAHIFA -->
+        <button type="button" class="menu-item" onclick="closeSiteMenu(); goHome()">
             <svg class="icon" aria-hidden="true">
-                <use href="#i-phone"></use>
+                <use href="#i-home"></use>
             </svg>
-            <span id="drawerPhoneText">Telefon</span>
-        </a>
+            <span>Bosh sahifa</span>
+        </button>
 
-        <a class="menu-item"
-           href="https://t.me/pulzarill_uylar_bot"
-           target="_blank" rel="noopener noreferrer">
+        <!-- SEVIMLILAR -->
+        <button type="button" class="menu-item" onclick="closeSiteMenu(); showFavorites()">
             <svg class="icon" aria-hidden="true">
-                <use href="#i-telegram"></use>
+                <use href="#i-heart"></use>
             </svg>
-            <span>Telegram bot</span>
-        </a>
+            <span>Sevimlilar</span>
+        </button>
 
-        <a class="menu-item" id="drawerTelegram"
-           href="https://t.me/"
-           target="_blank" rel="noopener noreferrer">
+        <!-- QIDIRUV -->
+        <button type="button" class="menu-item" onclick="closeSiteMenu(); focusSearch()">
             <svg class="icon" aria-hidden="true">
-                <use href="#i-telegram"></use>
+                <use href="#i-search"></use>
             </svg>
-            <span>Telegram</span>
-        </a>
+            <span>Uy va yer qidirish</span>
+        </button>
 
-        <a class="menu-item" id="drawerInstagram"
-           href="https://instagram.com/"
-           target="_blank" rel="noopener noreferrer">
+        <div class="drawer-menu-divider"></div>
+
+        <!-- BOG‘LANISH -->
+        <div class="contact-accordion">
+            <button
+                type="button"
+                class="menu-item contact-accordion-toggle"
+                id="contactAccordionToggle"
+                aria-expanded="false"
+                aria-controls="contactAccordionContent"
+                onclick="toggleContactAccordion()">
+
+                <svg class="icon" aria-hidden="true">
+                    <use href="#i-phone"></use>
+                </svg>
+
+                <span>Bog‘lanish</span>
+
+                <svg class="icon contact-chevron" aria-hidden="true"
+                     viewBox="0 0 24 24" fill="none"
+                     stroke="currentColor" stroke-width="1.8"
+                     stroke-linecap="round" stroke-linejoin="round">
+                    <path d="m6 9 6 6 6-6"></path>
+                </svg>
+            </button>
+
+            <div
+                class="contact-accordion-content"
+                id="contactAccordionContent"
+                aria-hidden="true">
+
+                <a class="menu-item" id="drawerPhone"
+                   href="tel:+998889500005"
+                   onclick="trackCall(event)">
+                    <svg class="icon" aria-hidden="true">
+                        <use href="#i-phone"></use>
+                    </svg>
+                    <span id="drawerPhoneText">Telefon</span>
+                </a>
+
+                <a class="menu-item"
+                   href="https://t.me/pulzarill_uylar_bot"
+                   target="_blank" rel="noopener noreferrer">
+                    <svg class="icon" aria-hidden="true">
+                        <use href="#i-telegram"></use>
+                    </svg>
+                    <span>Telegram bot</span>
+                </a>
+
+                <a class="menu-item" id="drawerTelegram"
+                   href="https://t.me/"
+                   target="_blank" rel="noopener noreferrer">
+                    <svg class="icon" aria-hidden="true">
+                        <use href="#i-telegram"></use>
+                    </svg>
+                    <span>Telegram</span>
+                </a>
+
+                <a class="menu-item" id="drawerInstagram"
+                   href="https://instagram.com/"
+                   target="_blank" rel="noopener noreferrer">
+                    <svg class="icon" aria-hidden="true">
+                        <use href="#i-instagram"></use>
+                    </svg>
+                    <span>Instagram</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- SOZLAMALAR -->
+        <button type="button" class="menu-item" onclick="showSettings()">
             <svg class="icon" aria-hidden="true">
-                <use href="#i-instagram"></use>
+                <use href="#i-settings"></use>
             </svg>
-            <span>Instagram</span>
-        </a>
+            <span>Sozlamalar</span>
+        </button>
+
+        <!-- MANZIL -->
+        <div class="menu-item drawer-address-row">
+            <svg class="icon" aria-hidden="true">
+                <use href="#i-map-pin"></use>
+            </svg>
+            <span id="drawerAddressText">Toshkent, O‘zbekiston</span>
+        </div>
+
+        <div class="drawer-menu-divider"></div>
+
+        <!-- CHIQISH: autentifikatsiya bo‘lmasa, hozircha oddiy menyu bandi -->
+        <div class="menu-item drawer-exit-row" aria-label="Chiqish">
+            <svg class="icon" aria-hidden="true">
+                <use href="#i-log-out"></use>
+            </svg>
+            <span>Chiqish</span>
+        </div>
 
     </div>
-</div>
-
 </aside>
-<!-- UY-JOY YON MENYUSI TUGADI -->
-
-<main class="container">
-
     
 <main class="container">
 
@@ -2265,7 +2368,73 @@ function toggleContactAccordion() {
     content.setAttribute("aria-hidden", String(isOpen));
     content.classList.toggle("open", !isOpen);
 }    
-    
+
+/* UY-JOY — yon menyu til tanlash */
+
+function toggleDrawerLanguages() {
+    const button = document.getElementById("drawerLanguageButton");
+    const options = document.getElementById("drawerLanguageOptions");
+
+    if (!button || !options) return;
+
+    const opening = options.hidden;
+
+    options.hidden = !opening;
+    button.setAttribute("aria-expanded", String(opening));
+}
+
+function selectDrawerLanguage(lang) {
+    if (typeof setLang !== "function") return;
+
+    setLang(lang);
+
+    const labels = {
+        uz: "UZ",
+        ru: "RU",
+        en: "EN"
+    };
+
+    const current = document.getElementById("drawerCurrentLanguage");
+    const options = document.getElementById("drawerLanguageOptions");
+    const button = document.getElementById("drawerLanguageButton");
+
+    if (current) current.textContent = labels[lang] || "UZ";
+    if (options) options.hidden = true;
+    if (button) button.setAttribute("aria-expanded", "false");
+}
+
+/* Mavjud tema funksiyasini saqlagan holda yangi tugma belgisini yangilash */
+const originalUpdateThemeIcon = updateThemeIcon;
+
+updateThemeIcon = function() {
+    originalUpdateThemeIcon();
+
+    const isDark = document.body.classList.contains("dark");
+    const button = document.getElementById("drawerThemeButton");
+
+    if (button) {
+        button.innerHTML = icon(isDark ? "i-sun" : "i-moon");
+        button.setAttribute(
+            "aria-label",
+            isDark ? "Yorug‘ ko‘rinishga o‘tish" : "Qorong‘i ko‘rinishga o‘tish"
+        );
+    }
+
+    const language = document.getElementById("drawerCurrentLanguage");
+    if (language) {
+        language.textContent = ({
+            uz: "UZ",
+            ru: "RU",
+            en: "EN"
+        })[currentLang] || "UZ";
+    }
+};
+
+/* Sahifa ochilganda menyu belgilarini to‘g‘ri ko‘rsatish */
+document.addEventListener("DOMContentLoaded", function() {
+    updateThemeIcon();
+});
+
 </script>   
 </body>
 </html>
