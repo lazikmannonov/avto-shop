@@ -1409,3 +1409,31 @@ body.menu-open {
     border: none;
     box-shadow: none;
 }
+
+
+/* Uy-Joy premium tashqi havola ikonlari */
+.premium-external-icon {
+    display: block;
+    width: 19px;
+    height: 19px;
+    flex: 0 0 19px;
+    color: #D4AF67;
+    opacity: 1;
+    visibility: visible;
+    transition: color 180ms ease, transform 180ms ease;
+}
+
+.site-menu-drawer a:has(.premium-external-icon) {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: none;
+    box-shadow: none;
+    text-decoration: none;
+}
+
+.site-menu-drawer a:hover .premium-external-icon {
+    color: #F0D79B;
+    transform: translate(1px, -1px);
+}
