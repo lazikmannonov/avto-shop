@@ -1444,12 +1444,15 @@ function updateDrawerTranslations() {
 
     if (!drawer) return;
 
-    const labels = drawer.querySelectorAll(".drawer-setting-label span");
-    if (labels.length >= 2) {
-        labels[0].textContent = d.language;
-        labels[1].textContent = d.appearance;
-    }
+    const labels = drawer.querySelectorAll(
+        ".drawer-setting-label span"
+    );
 
+    if (labels[0]) labels[0].textContent = d.language;
+    if (labels[1]) labels[1].textContent = d.appearance;
+
+    // Funksiyaning qolgan mavjud kodi shu yerdan davom etadi.
+    
     const items = drawer.querySelectorAll(".site-menu-links > .menu-item");
 
     items.forEach(function(item) {
