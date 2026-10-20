@@ -921,3 +921,34 @@ body.menu-open {
         transition: none;
     }
 }
+
+
+/* UY-JOY — yuqoridagi menyu tugmasi */
+.header-menu-btn {
+    width: auto;
+    min-width: 44px;
+    height: 42px;
+    flex: 0 0 auto;
+    padding: 0 13px;
+    border-radius: 10px;
+    display: inline-flex;
+    flex-direction: row;
+    gap: 8px;
+    white-space: nowrap;
+    font: inherit;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+/* Menyu ichidagi ikonka */
+.header-menu-btn .icon {
+    width: 20px;
+    height: 20px;
+    flex: 0 0 20px;
+}
+
+/* Pastki sozlamalar ikonkasining o'lchami */
+#navMenu .icon {
+    width: 22px;
+    height: 22px;
+}
