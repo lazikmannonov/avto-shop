@@ -1437,3 +1437,25 @@ body.menu-open {
     color: #F0D79B;
     transform: translate(1px, -1px);
 }
+
+/* WhatsApp va Instagram — tashqi havola ikonkasining ramkasi */
+.menu-item.social-menu-item[data-social="whatsapp"] > .premium-external-icon,
+.menu-item.social-menu-item[data-social="instagram"] > .premium-external-icon {
+    box-sizing: border-box;
+    width: 28px;
+    height: 28px;
+    padding: 5px;
+    flex: 0 0 28px;
+    border: 1px solid #D4AF67;
+    border-radius: 7px;
+    color: #D4AF67;
+    display: block;
+    background: transparent;
+}
+
+/* Sichqoncha bilan ustiga borilganda */
+.menu-item.social-menu-item[data-social="whatsapp"]:hover > .premium-external-icon,
+.menu-item.social-menu-item[data-social="instagram"]:hover > .premium-external-icon {
+    border-color: #E8CC8C;
+    color: #E8CC8C;
+}
