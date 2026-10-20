@@ -1447,9 +1447,23 @@ body.menu-open {
     padding: 5px;
     flex: 0 0 28px;
     border: 1px solid #D4AF67;
-    border-radius: 7px;
+    border-radius: 0;
     color: #D4AF67;
     display: block;
+    background: transparent;
+}
+/* WhatsApp va Instagram — Telegram bilan bir xil kvadrat ramka */
+.menu-item.social-menu-item[data-social="whatsapp"] > .premium-external-icon,
+.menu-item.social-menu-item[data-social="instagram"] > .premium-external-icon {
+    box-sizing: border-box;
+    display: block;
+    width: 28px;
+    height: 28px;
+    padding: 5px;
+    flex: 0 0 28px;
+    border: 1px solid #D4AF67;
+    border-radius: 0;
+    color: #D4AF67;
     background: transparent;
 }
 
