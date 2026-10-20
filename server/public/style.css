@@ -1387,7 +1387,8 @@ body.menu-open {
     color: var(--gold-text);
 }
 
-/* UY-JOY — MINIMAL PREMIUM IJTIMOIY HAVOLALAR */
+
+/* UY-JOY — FAQAT PREMIUM TASHQI HAVOLA IKONI */
 
 #menuOpenInstagram,
 #menuOpenTelegram,
@@ -1396,50 +1397,51 @@ body.menu-open {
     align-items: center;
     justify-content: center;
 
-    width: 32px;
-    height: 32px;
+    width: 28px;
+    height: 28px;
     padding: 0;
+
+    background: transparent;
+    border: none;
+    outline: none;
+    box-shadow: none;
+    border-radius: 0;
 
     font-size: 0;
     color: #D4AF67;
-    background: transparent;
-    border: none;
-    border-bottom: 1px solid #8F733A;
-    border-radius: 0;
-
     text-decoration: none;
-    transition: border-color 180ms ease;
 }
 
-/* Faqat premium belgi ko‘rinadi */
+/* Yozuv o‘rniga faqat ↗ belgisi */
 #menuOpenInstagram::after,
 #menuOpenTelegram::after,
 #menuOpenWhatsapp::after {
-    content: "›";
-    font-size: 24px;
+    content: "↗";
+
+    display: inline-block;
+    font-family: Arial, sans-serif;
+    font-size: 21px;
     font-weight: 400;
     line-height: 1;
+
     color: #D4AF67;
-    transition: transform 180ms ease;
+    transition:
+        color 180ms ease,
+        transform 180ms ease;
 }
 
-/* Sichqoncha bilan ko‘rsatganda */
-#menuOpenInstagram:hover,
-#menuOpenTelegram:hover,
-#menuOpenWhatsapp:hover {
-    border-bottom-color: #D4AF67;
-}
-
+/* Hover effekti — ramkasiz */
 #menuOpenInstagram:hover::after,
 #menuOpenTelegram:hover::after,
 #menuOpenWhatsapp:hover::after {
-    transform: translateX(3px);
+    color: #F0D79B;
+    transform: translate(2px, -2px);
 }
 
-/* Klaviatura orqali foydalanish */
+/* Klaviatura fokusida ramka chiqmasin */
 #menuOpenInstagram:focus-visible,
 #menuOpenTelegram:focus-visible,
 #menuOpenWhatsapp:focus-visible {
-    outline: 2px solid #D4AF67;
-    outline-offset: 3px;
+    outline: none;
+    box-shadow: none;
 }
