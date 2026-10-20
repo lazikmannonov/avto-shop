@@ -1388,77 +1388,24 @@ body.menu-open {
 }
 
 
-/* ========================================
-   UY-JOY — YAGONA PREMIUM TASHQI HAVOLA IKONI
-   ======================================== */
-
+/* Telegram bot va boshqa tashqi havolalar uchun SVG */
 .premium-external-icon {
     display: inline-block;
     width: 19px;
     height: 19px;
-    flex: 0 0 19px;
     color: #D4AF67;
+    flex: 0 0 19px;
     vertical-align: middle;
-    opacity: 1;
-    visibility: visible;
-    transition: color 180ms ease, transform 180ms ease;
 }
 
-/* Tashqi havola ikonlari — ramkasiz va fonsiz */
-#menuOpenInstagram,
-#menuOpenTelegram,
-#menuOpenWhatsapp {
+/* Ikon yo‘qolib qolmasin */
+.site-menu-drawer a:has(.premium-external-icon) {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 28px;
-    height: 28px;
-    padding: 0;
-    border: 0;
-    outline: none;
-    box-shadow: none;
-    background: transparent;
     font-size: 0;
     text-decoration: none;
-    color: #D4AF67;
-}
-
-/* Hover effekti */
-#menuOpenInstagram:hover .premium-external-icon,
-#menuOpenTelegram:hover .premium-external-icon,
-#menuOpenWhatsapp:hover .premium-external-icon {
-    color: #F0D79B;
-    transform: translate(1px, -1px);
-}
-
-/* Harakatni kamaytirish sozlamasi */
-@media (prefers-reduced-motion: reduce) {
-    .premium-external-icon {
-        transition: none;
-    }
-}
-
-
-/* Premium tashqi havola ikoni */
-#menuOpenTelegram,
-#menuOpenInstagram,
-#menuOpenWhatsapp {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 28px;
-    height: 28px;
-    font-size: 0;
-    color: #D4AF67;
     background: transparent;
     border: none;
     box-shadow: none;
-}
-
-.premium-external-icon {
-    display: block;
-    width: 19px;
-    height: 19px;
-    color: #D4AF67;
-    flex-shrink: 0;
 }
