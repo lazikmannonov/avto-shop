@@ -1437,3 +1437,28 @@ body.menu-open {
         transition: none;
     }
 }
+
+
+/* Premium tashqi havola ikoni */
+#menuOpenTelegram,
+#menuOpenInstagram,
+#menuOpenWhatsapp {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    font-size: 0;
+    color: #D4AF67;
+    background: transparent;
+    border: none;
+    box-shadow: none;
+}
+
+.premium-external-icon {
+    display: block;
+    width: 19px;
+    height: 19px;
+    color: #D4AF67;
+    flex-shrink: 0;
+}
