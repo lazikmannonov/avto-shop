@@ -1386,3 +1386,84 @@ body.menu-open {
 .site-menu-drawer .drawer-language-chevron {
     color: var(--gold-text);
 }
+
+
+/* =========================================
+   UY-JOY — PREMIUM IJTIMOIY TARMOQ TUGMALARI
+   4-variant: qora fon + nozik oltin chiziqlar
+   ========================================= */
+
+#menuOpenInstagram,
+#menuOpenTelegram,
+#menuOpenWhatsapp {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+
+    padding: 8px 0;
+    border: none;
+    border-bottom: 1px solid #8F733A;
+    border-radius: 0;
+
+    background: transparent;
+    color: #D4AF67;
+
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    text-decoration: none;
+
+    transition:
+        color 180ms ease,
+        border-color 180ms ease;
+}
+
+/* O'ng tomondagi minimal belgi */
+#menuOpenInstagram::after,
+#menuOpenTelegram::after,
+#menuOpenWhatsapp::after {
+    content: "›";
+    display: inline-block;
+
+    color: #D4AF67;
+    font-size: 20px;
+    font-weight: 400;
+    line-height: 1;
+
+    transition: transform 180ms ease;
+}
+
+/* Sichqoncha olib borilganda */
+#menuOpenInstagram:hover,
+#menuOpenTelegram:hover,
+#menuOpenWhatsapp:hover {
+    color: #F0D79B;
+    border-bottom-color: #D4AF67;
+}
+
+#menuOpenInstagram:hover::after,
+#menuOpenTelegram:hover::after,
+#menuOpenWhatsapp:hover::after {
+    transform: translateX(3px);
+}
+
+/* Klaviatura orqali boshqarish */
+#menuOpenInstagram:focus-visible,
+#menuOpenTelegram:focus-visible,
+#menuOpenWhatsapp:focus-visible {
+    outline: 2px solid #D4AF67;
+    outline-offset: 4px;
+}
+
+/* Harakatni kamaytirish sozlamasi */
+@media (prefers-reduced-motion: reduce) {
+    #menuOpenInstagram,
+    #menuOpenTelegram,
+    #menuOpenWhatsapp,
+    #menuOpenInstagram::after,
+    #menuOpenTelegram::after,
+    #menuOpenWhatsapp::after {
+        transition: none;
+    }
+}
