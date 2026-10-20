@@ -218,40 +218,75 @@
             </svg>
         </button>
     </div>
+   
+<!-- BOG‘LANISH — OCHILADIGAN BO‘LIM -->
+<div class="contact-accordion">
 
-    <nav class="site-menu-links">
-        <button type="button" class="menu-item" onclick="closeSiteMenu(); goHome();">
-            <svg class="icon" aria-hidden="true"><use href="#i-home"></use></svg>
-            <span>Bosh sahifa</span>
-        </button>
+    <button
+        type="button"
+        class="menu-item contact-accordion-toggle"
+        id="contactAccordionToggle"
+        aria-expanded="false"
+        aria-controls="contactAccordionContent"
+        onclick="toggleContactAccordion()">
 
-        <button type="button" class="menu-item" onclick="closeSiteMenu(); showFavorites();">
-            <svg class="icon" aria-hidden="true"><use href="#i-heart"></use></svg>
-            <span>Sevimlilar</span>
-        </button>
+        <svg class="icon" aria-hidden="true">
+            <use href="#i-phone"></use>
+        </svg>
 
-        <a class="menu-item" href="https://t.me/pulzarill_uylar_bot" target="_blank" rel="noopener noreferrer">
-            <svg class="icon" aria-hidden="true"><use href="#i-telegram"></use></svg>
+        <span>Bog‘lanish</span>
+
+        <svg class="icon contact-chevron" aria-hidden="true"
+             viewBox="0 0 24 24" fill="none"
+             stroke="currentColor" stroke-width="1.8"
+             stroke-linecap="round" stroke-linejoin="round">
+            <path d="m6 9 6 6 6-6"></path>
+        </svg>
+    </button>
+
+    <div
+        class="contact-accordion-content"
+        id="contactAccordionContent"
+        aria-hidden="true">
+
+        <a class="menu-item" id="drawerPhone"
+           href="tel:+998889500005"
+           onclick="trackCall(event)">
+            <svg class="icon" aria-hidden="true">
+                <use href="#i-phone"></use>
+            </svg>
+            <span id="drawerPhoneText">Telefon</span>
+        </a>
+
+        <a class="menu-item"
+           href="https://t.me/pulzarill_uylar_bot"
+           target="_blank" rel="noopener noreferrer">
+            <svg class="icon" aria-hidden="true">
+                <use href="#i-telegram"></use>
+            </svg>
             <span>Telegram bot</span>
         </a>
 
-        <a class="menu-item" id="drawerPhone" href="tel:+998889500005" onclick="trackCall(event)">
-            <svg class="icon" aria-hidden="true"><use href="#i-phone"></use></svg>
-            <span id="drawerPhoneText">Telefon orqali bog‘lanish</span>
-        </a>
-
-        <a class="menu-item" id="drawerTelegram" href="https://t.me/" target="_blank" rel="noopener noreferrer">
-            <svg class="icon" aria-hidden="true"><use href="#i-telegram"></use></svg>
+        <a class="menu-item" id="drawerTelegram"
+           href="https://t.me/"
+           target="_blank" rel="noopener noreferrer">
+            <svg class="icon" aria-hidden="true">
+                <use href="#i-telegram"></use>
+            </svg>
             <span>Telegram</span>
         </a>
 
-        <a class="menu-item" id="drawerInstagram" href="https://instagram.com/" target="_blank" rel="noopener noreferrer">
-            <svg class="icon" aria-hidden="true"><use href="#i-instagram"></use></svg>
+        <a class="menu-item" id="drawerInstagram"
+           href="https://instagram.com/"
+           target="_blank" rel="noopener noreferrer">
+            <svg class="icon" aria-hidden="true">
+                <use href="#i-instagram"></use>
+            </svg>
             <span>Instagram</span>
         </a>
-    </nav>
-</aside>
-<!-- UY-JOY YON MENYUSI TUGADI -->
+
+    </div>
+</div>
     
 <main class="container">
 
