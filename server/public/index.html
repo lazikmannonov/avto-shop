@@ -2572,34 +2572,6 @@ function selectDrawerLanguage(lang) {
     if (button) button.setAttribute("aria-expanded", "false");
 }
 
-/* Mavjud tema funksiyasini saqlagan holda yangi tugma belgisini yangilash */
-function toggleDrawerLanguages() {
-    const button = document.getElementById("drawerLanguageButton");
-    const options = document.getElementById("drawerLanguageOptions");
-
-    if (!button || !options) return;
-
-    const opening = options.hidden;
-    options.hidden = !opening;
-    button.setAttribute("aria-expanded", String(opening));
-}
-
-function selectDrawerLanguage(lang) {
-    if (!["uz", "ru", "en"].includes(lang)) return;
-
-    if (typeof setLang === "function") {
-        setLang(lang);
-    }
-
-    const current = document.getElementById("drawerCurrentLanguage");
-    const options = document.getElementById("drawerLanguageOptions");
-    const button = document.getElementById("drawerLanguageButton");
-
-    if (current) current.textContent = lang.toUpperCase();
-    if (options) options.hidden = true;
-    if (button) button.setAttribute("aria-expanded", "false");
-}
-
 function updateDrawerControls() {
     const language = document.getElementById("drawerCurrentLanguage");
     const themeButton = document.getElementById("drawerThemeButton");
@@ -2611,14 +2583,15 @@ function updateDrawerControls() {
 
     if (themeButton) {
         const isDark = document.body.classList.contains("dark");
-        themeButton.innerHTML = icon(isDark ? "i-sun" : "i-moon");
+
+        themeButton.textContent = isDark ? "☀" : "☾";
+
         themeButton.setAttribute(
             "aria-label",
             isDark ? "Yorug‘ ko‘rinishga o‘tish" : "Qorong‘i ko‘rinishga o‘tish"
         );
     }
 }
-
 document.addEventListener("DOMContentLoaded", updateDrawerControls);
 
 document.addEventListener("DOMContentLoaded", function () {
