@@ -109,6 +109,8 @@
         <path d="M19.7 12h1.8"/>
         <path d="m4.9 19.1 1.3-1.3"/>
         <path d="m17.8 6.2 1.3-1.3"/>
+    <symbol id="i-check-language" viewBox="0 0 24 24">
+    <path d="m5 12 4 4L19 6"/>  
     </symbol>
     <symbol id="i-moon" viewBox="0 0 24 24">
         <path d="M20.2 14.1A8.5 8.5 0 0 1 9.9 3.8a8.5 8.5 0 1 0 10.3 10.3Z"/>
@@ -398,21 +400,64 @@
                 <svg class="icon icon-lg" style="color:var(--gold-text)"><use href="#i-location"></use></svg>
             </div>
 
-            <div class="menu-item language-menu-item">
-                <div class="menu-item-left">
-                    <span class="menu-item-title">
-                        <svg class="icon"><use href="#i-globe"></use></svg>
-                        <span id="menuLanguageTitle">Til</span>
-                    </span>
-                    <span class="menu-item-sub" id="menuLanguageSub">Tilni tanlang</span>
-                </div>
-                <div class="language-options" role="group" aria-label="Tilni tanlash">
-                    <button type="button" class="lang-btn active" onclick="setLang('uz')" aria-label="O‘zbek tili">UZ</button>
-                    <button type="button" class="lang-btn" onclick="setLang('ru')" aria-label="Русский язык">RU</button>
-                    <button type="button" class="lang-btn" onclick="setLang('en')" aria-label="English">EN</button>
-                </div>
-            </div>
+            
+<!-- IXCHAM TIL TANLASH PANELI -->
+<div class="menu-item language-menu-item">
+    <div class="menu-item-left">
+        <span class="menu-item-title">
+            <svg class="icon"><use href="#i-globe"></use></svg>
+            <span id="menuLanguageTitle">Til</span>
+        </span>
+        <span class="menu-item-sub" id="menuLanguageSub">Tilni tanlang</span>
+    </div>
 
+    <div class="language-picker" id="languagePicker">
+        <button
+            type="button"
+            class="language-trigger"
+            id="languageTrigger"
+            onclick="toggleLanguageMenu()"
+            aria-label="Tilni tanlash"
+            aria-expanded="false"
+            aria-controls="languageDropdown"
+        >
+            <svg class="icon"><use href="#i-globe"></use></svg>
+            <span id="currentLanguageLabel">UZ</span>
+            <svg class="icon language-chevron">
+                <use href="#i-chevron-down"></use>
+            </svg>
+        </button>
+
+        <div
+            class="language-dropdown"
+            id="languageDropdown"
+            role="group"
+            aria-label="Tilni tanlang"
+            hidden
+        >
+            <button type="button" class="lang-option" data-lang="uz"
+                onclick="setLang('uz')">
+                <span class="lang-code">UZ</span>
+                <span class="lang-name">O‘zbekcha</span>
+                <svg class="icon lang-check"><use href="#i-check-language"></use></svg>
+            </button>
+
+            <button type="button" class="lang-option" data-lang="ru"
+                onclick="setLang('ru')">
+                <span class="lang-code">RU</span>
+                <span class="lang-name">Русский</span>
+                <svg class="icon lang-check"><use href="#i-check-language"></use></svg>
+            </button>
+
+            <button type="button" class="lang-option" data-lang="en"
+                onclick="setLang('en')">
+                <span class="lang-code">EN</span>
+                <span class="lang-name">English</span>
+                <svg class="icon lang-check"><use href="#i-check-language"></use></svg>
+              </button>
+            </div>
+         </div>
+      </div>
             <div class="menu-item">
                 <div class="menu-item-left">
                     <span class="menu-item-title">
@@ -938,12 +983,57 @@ function applySettings(){
 
 }
 
+function toggleLanguageMenu(forceClose = false) {
+    const trigger = document.getElementById("languageTrigger");
+    const dropdown = document.getElementById("languageDropdown");
+
+    if (!trigger || !dropdown) return;
+
+    const shouldOpen =
+        !forceClose &&
+        trigger.getAttribute("aria-expanded") !== "true";
+
+    dropdown.hidden = !shouldOpen;
+    trigger.setAttribute("aria-expanded", String(shouldOpen));
+}
+
+function updateLanguagePicker() {
+    const label = document.getElementById("currentLanguageLabel");
+
+    if (label) {
+        label.textContent = currentLang.toUpperCase();
+    }
+
+    document.querySelectorAll(".lang-option").forEach(button => {
+        const active = button.dataset.lang === currentLang;
+
+        button.classList.toggle("active", active);
+        button.setAttribute("aria-pressed", String(active));
+    });
+}
+
+document.addEventListener("click", function(event) {
+    const picker = document.getElementById("languagePicker");
+
+    if (picker && !picker.contains(event.target)) {
+        toggleLanguageMenu(true);
+    }
+});
+
+document.addEventListener("keydown", function(event) {
+    if (event.key === "Escape") {
+        toggleLanguageMenu(true);
+    }
+});
+    
 function setLang(lang){
 
     if(!translations[lang])
         lang="uz";
 
     currentLang=lang;
+    updateLanguagePicker();
+    toggleLanguageMenu(true);
 
     lsSet("language",lang);
 
@@ -1011,10 +1101,8 @@ function applyLang(){
     setText("menuOpenWhatsapp",t.open);
     setText("menuOpenInstagram",t.open);
 
-    document.querySelectorAll(".lang-btn").forEach(button=>{
-        button.classList.toggle("active",button.textContent.trim().toLowerCase()===currentLang);
-    });
-
+    updateLanguagePicker();
+    
     document.title=t.pageTitle;
 
     updateExtraButtons();
