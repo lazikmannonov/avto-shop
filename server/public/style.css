@@ -973,3 +973,22 @@ body.menu-open {
     margin: 0;
     transform: none;
 }
+
+/* Yuqorida faqat menyu ikonkasini ko‘rsatish */
+.header-menu-btn {
+    width: 42px;
+    min-width: 42px;
+    height: 42px;
+    padding: 0;
+    justify-content: center;
+    gap: 0;
+}
+
+.header-menu-btn span {
+    display: none;
+}
+
+.header-menu-btn .icon {
+    width: 21px;
+    height: 21px;
+}
