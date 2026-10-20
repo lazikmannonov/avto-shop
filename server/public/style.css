@@ -952,3 +952,19 @@ body.menu-open {
     width: 22px;
     height: 22px;
 }
+
+
+/* Pastki Sozlamalar tugmasi — ikonka */
+#navMenu .bottom-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#navMenu .bottom-icon .icon {
+    width: 22px;
+    height: 22px;
+    display: block;
+    color: var(--gold);
+    stroke: currentColor;
+}
