@@ -1394,17 +1394,19 @@ function setText(id,value){
         element.textContent=value;
 }
 
-function toggleTheme(){
+function toggleTheme() {
+    const isDark = document.body.classList.toggle("dark");
 
-    document.body.classList.toggle("dark");
+    try {
+        localStorage.setItem("darkMode", String(isDark));
+    } catch (error) {
+        console.warn("Ko‘rinish holatini saqlab bo‘lmadi:", error);
+    }
 
-    const isDark=document.body.classList.contains("dark");
-
-    lsSet("darkMode",isDark);
-
-    updateThemeIcon();
+    if (typeof updateThemeIcon === "function") {
+        updateThemeIcon();
+    }
 }
-
 
 function updateThemeIcon() {
     const isDark = document.body.classList.contains("dark");
@@ -2515,6 +2517,54 @@ function updateDrawerControls() {
 
 document.addEventListener("DOMContentLoaded", updateDrawerControls);
 
+/* ===== UY-JOY MENYUSI: TIL VA DARK/LIGHT ===== */
+
+function toggleDrawerLanguages() {
+    const options = document.getElementById("drawerLanguageOptions");
+    const button = document.getElementById("drawerLanguageButton");
+
+    if (!options || !button) return;
+
+    const willOpen = options.hidden;
+    options.hidden = !willOpen;
+    button.setAttribute("aria-expanded", String(willOpen));
+}
+
+function selectDrawerLanguage(lang) {
+    if (typeof translations === "undefined" || !translations[lang]) {
+        console.error("Til topilmadi:", lang);
+        return;
+    }
+
+    if (typeof setLang === "function") {
+        setLang(lang);
+    }
+
+    const current = document.getElementById("drawerCurrentLanguage");
+    if (current) current.textContent = lang.toUpperCase();
+
+    const options = document.getElementById("drawerLanguageOptions");
+    const button = document.getElementById("drawerLanguageButton");
+
+    if (options) options.hidden = true;
+    if (button) button.setAttribute("aria-expanded", "false");
+}
+
+/* Sahifa ochilganda menyudagi til va ko‘rinish holatini yangilash */
+function syncDrawerSettings() {
+    const current = document.getElementById("drawerCurrentLanguage");
+
+    if (current && typeof currentLang !== "undefined") {
+        current.textContent = currentLang.toUpperCase();
+    }
+
+    if (typeof updateThemeIcon === "function") {
+        updateThemeIcon();
+    }
+}
+
+document.addEventListener("DOMContentLoaded", syncDrawerSettings);
+    
 </script>   
 </body>
 </html>
