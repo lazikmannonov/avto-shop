@@ -1380,14 +1380,13 @@ function applyLang(){
     setText("menuOpenWhatsapp",t.open);
     setText("menuOpenInstagram",t.open);
 
-    updateLanguagePicker();
-    
-    document.title=t.pageTitle;
+      updateLanguagePicker();
 
-   
-updateExtraButtons();
+    document.title = t.pageTitle;
 
-applySettings();
+    updateExtraButtons();
+    applySettings();
+}
     
 /* Yangi yon menyu tarjimalari */
 const drawerTranslations = {
@@ -2163,7 +2162,6 @@ function showFavorites(){
     setActiveNav("navFavorites");
 }
 
-
 function openDetails(car) {
     currentDetailsCar = car;
     showPage("details");
@@ -2479,7 +2477,6 @@ load().then(() => {
 });
 
 </script>
-
 
 <!-- TELEGRAM BOT -->
 <a class="telegram-bot-float" href="https://t.me/pulzarill_uylar_bot" target="_blank" rel="noopener noreferrer" aria-label="Uy-Joy Telegram botini ochish"><span class="telegram-bot-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M21.4 4.6 18.2 20c-.24 1.09-.88 1.36-1.79.85l-4.95-3.65-2.39 2.3c-.26.26-.48.48-.99.48l.35-5.04 9.18-8.29c.4-.35-.09-.55-.62-.2L5.64 13.6.75 12.07c-1.06-.33-1.08-1.06.22-1.58L20.06 3.1c.9-.33 1.69.2 1.34 1.5Z"/></svg></span><span class="telegram-bot-text"><span class="telegram-bot-title">Uy-Joy Bot</span><span class="telegram-bot-sub">Telegram orqali bog‘lanish</span></span></a>
