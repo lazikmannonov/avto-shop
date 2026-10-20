@@ -1300,3 +1300,56 @@ body.menu-open {
         font-size: 13px;
     }
 }
+
+/* Uy-Joy menyusidagi ikonka va yozuvlarni tartiblash */
+.site-menu-drawer .site-menu-links > .menu-item,
+.site-menu-drawer .contact-accordion-toggle,
+.site-menu-drawer .contact-accordion-content > .menu-item {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 12px;
+    width: 100%;
+    min-height: 46px;
+    padding: 11px 12px;
+    box-sizing: border-box;
+    text-align: left;
+    line-height: 1.4;
+}
+
+/* Barcha ikonkalarning o‘lchami bir xil bo‘lsin */
+.site-menu-drawer .menu-item > .icon {
+    display: block;
+    flex: 0 0 20px;
+    width: 20px;
+    height: 20px;
+    margin: 0;
+    vertical-align: middle;
+}
+
+/* Yozuvlar ikonka yonidan boshlansin */
+.site-menu-drawer .menu-item > span {
+    display: block;
+    flex: 1 1 auto;
+    min-width: 0;
+    margin: 0;
+    text-align: left;
+    overflow-wrap: anywhere;
+}
+
+/* Bog‘lanish strelkasi o‘ng tomonda tursin */
+.site-menu-drawer .contact-accordion-toggle > .contact-chevron {
+    flex: 0 0 16px;
+    width: 16px;
+    height: 16px;
+    margin-left: auto;
+}
+
+/* Manzil yozuvi ham tekis joylashsin */
+.site-menu-drawer .drawer-address-row {
+    align-items: flex-start;
+}
+
+.site-menu-drawer .drawer-address-row > .icon {
+    margin-top: 1px;
+}
