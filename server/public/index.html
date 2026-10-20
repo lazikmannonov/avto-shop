@@ -2246,6 +2246,19 @@ document.addEventListener("keydown", function(event) {
         closeSiteMenu();
     }
 });
+
+function toggleContactAccordion() {
+    const button = document.getElementById("contactAccordionToggle");
+    const content = document.getElementById("contactAccordionContent");
+
+    if (!button || !content) return;
+
+    const isOpen = button.getAttribute("aria-expanded") === "true";
+
+    button.setAttribute("aria-expanded", String(!isOpen));
+    content.setAttribute("aria-hidden", String(isOpen));
+    content.classList.toggle("open", !isOpen);
+}    
     
 </script>   
 </body>
