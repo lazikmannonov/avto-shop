@@ -1305,29 +1305,32 @@ document.addEventListener("keydown", function(event) {
     }
 });
     
-function setLang(lang){
+function setLang(lang) {
+    if (!translations[lang]) {
+        lang = "uz";
+    }
 
-    if(!translations[lang])
-        lang="uz";
+    currentLang = lang;
 
-    currentLang=lang;
-    updateLanguagePicker();
-    toggleLanguageMenu(true);
-
-    lsSet("language",lang);
-
-    document.documentElement.lang=lang;
+    lsSet("language", lang);
+    document.documentElement.lang = lang;
 
     applyLang();
+    updateLanguagePicker();
     updateDrawerTranslations();
+    updateDrawerControls();
+
     renderFiltered();
     searchFromSearchPage();
 
-    if(document.getElementById("detailsPage").classList.contains("active")&&currentDetailsCar){
+    if (
+        document.getElementById("detailsPage")?.classList.contains("active") &&
+        currentDetailsCar
+    ) {
         openDetails(currentDetailsCar);
     }
 }
-
+    
 function applyLang(){
 
     const t=translations[currentLang];
