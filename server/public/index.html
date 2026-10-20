@@ -1492,55 +1492,6 @@ function updateDrawerTranslations() {
     const instagram = document.querySelector("#drawerInstagram span");
     if (instagram) instagram.textContent = d.instagram;
 }
-
-const d = drawerTranslations[currentLang] || drawerTranslations.uz;
-const drawer = document.getElementById("siteMenuDrawer");
-
-if (drawer) {
-    const items = drawer.querySelectorAll(".site-menu-links > .menu-item");
-
-    items.forEach(function(item) {
-        const span = item.querySelector(":scope > span");
-        if (!span) return;
-
-        if (item.classList.contains("drawer-address-row")) {
-            span.textContent = d.address;
-        } else if (item.classList.contains("drawer-exit-row")) {
-            span.textContent = d.logout;
-        } else {
-            const text = span.textContent.trim();
-
-            if (["Bosh sahifa", "Главная", "Home"].includes(text))
-                span.textContent = d.home;
-            else if (["Sevimlilar", "Избранное", "Favorites"].includes(text))
-                span.textContent = d.favorites;
-            else if (["Uy va yer qidirish", "Поиск домов и участков", "Search homes and land"].includes(text))
-                span.textContent = d.search;
-            else if (["Sozlamalar", "Настройки", "Settings"].includes(text))
-                span.textContent = d.settings;
-        }
-    });
-
-    const contactButton = document.getElementById("contactAccordionToggle");
-    if (contactButton) {
-        const span = contactButton.querySelector("span");
-        if (span) span.textContent = d.contact;
-    }
-
-    const phone = document.getElementById("drawerPhoneText");
-    if (phone) phone.textContent = d.phone;
-
-    const bot = drawer.querySelector('a[href*="pulzarill_uylar_bot"] span');
-    if (bot) bot.textContent = d.telegramBot;
-
-    const telegram = document.querySelector("#drawerTelegram span");
-    if (telegram) telegram.textContent = d.telegram;
-
-    const instagram = document.querySelector("#drawerInstagram span");
-    if (instagram) instagram.textContent = d.instagram;
-}
-}
-
 function setText(id,value){
     const element=document.getElementById(id);
     if(element)
