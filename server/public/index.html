@@ -2670,6 +2670,29 @@ function updateDrawerControls() {
 
 document.addEventListener("DOMContentLoaded", updateDrawerControls);
 
+document.addEventListener("DOMContentLoaded", function () {
+    const languageButtons = document.querySelectorAll(
+        "#drawerLanguageOptions button"
+    );
+
+    languageButtons.forEach(function (button, index) {
+        button.addEventListener("click", function () {
+            console.log("Menyu tili bosildi:", index);
+            console.log("currentLang:", currentLang);
+            console.log("drawerTranslations:", typeof drawerTranslations);
+
+            setTimeout(function () {
+                console.log(
+                    "Til yozuvi:",
+                    document.querySelector(
+                        "#siteMenuDrawer .drawer-setting-label span"
+                    )?.textContent
+                );
+            }, 100);
+        });
+    });
+});
+
 /* ===== UY-JOY MENYUSI: TIL VA DARK/LIGHT ===== */
 
 function toggleDrawerLanguages() {
