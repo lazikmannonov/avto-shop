@@ -1148,7 +1148,7 @@ function applyLang(){
     setText("navHomeText",t.home);
     setText("navSearchText",t.searchNav);
     setText("navFavoritesText",t.favorites);
-    setText("navMenuText",t.menu);
+    setText("navMenuText", lang === "ru" ? "Настройки" : lang === "en" ? "Settings" : "Sozlamalar");
 
     setText("menuPlatform",t.platform);
     setText("menuPhoneTitle",t.phone);
