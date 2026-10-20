@@ -947,10 +947,10 @@ body.menu-open {
     flex: 0 0 20px;
 }
 
-/* Pastki sozlamalar ikonkasining o'lchami */
-#navMenu .icon {
+#navMenu .bottom-icon .icon {
     width: 22px;
     height: 22px;
+    display: block;
 }
 
 
