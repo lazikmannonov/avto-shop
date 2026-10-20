@@ -1107,3 +1107,50 @@ body.menu-open {
         transition: none;
     }
 }
+
+
+/* UY-JOY — BOG‘LANISH AKKORDEONI */
+
+.contact-accordion {
+    width: 100%;
+}
+
+.contact-accordion-toggle {
+    width: 100%;
+}
+
+.contact-chevron {
+    width: 18px !important;
+    height: 18px !important;
+    margin-left: auto;
+    transition: transform 0.22s ease;
+}
+
+.contact-accordion-toggle[aria-expanded="true"] .contact-chevron {
+    transform: rotate(180deg);
+}
+
+.contact-accordion-content {
+    display: none;
+    flex-direction: column;
+    gap: 5px;
+    padding: 7px 0 5px 16px;
+    margin-left: 17px;
+    border-left: 1px solid rgba(212, 175, 103, 0.35);
+}
+
+.contact-accordion-content.open {
+    display: flex;
+}
+
+.contact-accordion-content .menu-item {
+    min-height: 45px;
+    padding: 10px 12px;
+    font-size: 13px;
+}
+
+.contact-accordion-content .menu-item .icon {
+    width: 19px;
+    height: 19px;
+    flex-basis: 19px;
+}
