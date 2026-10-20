@@ -1319,6 +1319,7 @@ function setLang(lang){
     document.documentElement.lang=lang;
 
     applyLang();
+    updateDrawerTranslations();
     renderFiltered();
     searchFromSearchPage();
 
@@ -1387,27 +1388,9 @@ function applyLang(){
 updateExtraButtons();
 
 applySettings();
-
+    
 /* Yangi yon menyu tarjimalari */
 const drawerTranslations = {
-    
-/* Til va Ko‘rinish yozuvlarini tarjima qilish */
-const drawerSettingLabels = document.querySelectorAll(
-    "#siteMenuDrawer .drawer-setting-label span"
-);
-
-if (drawerSettingLabels.length >= 2) {
-    const settingText = {
-        uz: ["Til", "Ko‘rinish"],
-        ru: ["Язык", "Тема"],
-        en: ["Language", "Appearance"]
-    };
-
-    const labels = settingText[currentLang] || settingText.uz;
-
-    drawerSettingLabels[0].textContent = labels[0];
-    drawerSettingLabels[1].textContent = labels[1];
-}
     uz: {
         home: "Bosh sahifa",
         favorites: "Sevimlilar",
@@ -1419,7 +1402,9 @@ if (drawerSettingLabels.length >= 2) {
         telegramBot: "Telegram bot",
         telegram: "Telegram",
         instagram: "Instagram",
-        logout: "Chiqish"
+        logout: "Chiqish",
+        language: "Til",
+        appearance: "Ko‘rinish"
     },
     ru: {
         home: "Главная",
@@ -1432,7 +1417,9 @@ if (drawerSettingLabels.length >= 2) {
         telegramBot: "Бот Telegram",
         telegram: "Telegram",
         instagram: "Instagram",
-        logout: "Выход"
+        logout: "Выход",
+        language: "Язык",
+        appearance: "Тема"
     },
     en: {
         home: "Home",
@@ -1445,9 +1432,63 @@ if (drawerSettingLabels.length >= 2) {
         telegramBot: "Telegram bot",
         telegram: "Telegram",
         instagram: "Instagram",
-        logout: "Log out"
+        logout: "Log out",
+        language: "Language",
+        appearance: "Appearance"
     }
 };
+
+function updateDrawerTranslations() {
+    const d = drawerTranslations[currentLang] || drawerTranslations.uz;
+    const drawer = document.getElementById("siteMenuDrawer");
+
+    if (!drawer) return;
+
+    const labels = drawer.querySelectorAll(".drawer-setting-label span");
+    if (labels.length >= 2) {
+        labels[0].textContent = d.language;
+        labels[1].textContent = d.appearance;
+    }
+
+    const items = drawer.querySelectorAll(".site-menu-links > .menu-item");
+
+    items.forEach(function(item) {
+        const span = item.querySelector(":scope > span");
+        if (!span) return;
+
+        if (item.classList.contains("drawer-address-row")) {
+            span.textContent = d.address;
+            return;
+        }
+
+        if (item.classList.contains("drawer-exit-row")) {
+            span.textContent = d.logout;
+            return;
+        }
+
+        const text = span.textContent.trim();
+
+        if (["Bosh sahifa", "Главная", "Home"].includes(text)) span.textContent = d.home;
+        else if (["Sevimlilar", "Избранное", "Favorites"].includes(text)) span.textContent = d.favorites;
+        else if (["Uy va yer qidirish", "Поиск домов и участков", "Search homes and land"].includes(text)) span.textContent = d.search;
+        else if (["Sozlamalar", "Настройки", "Settings"].includes(text)) span.textContent = d.settings;
+    });
+
+    const contact = document.querySelector("#contactAccordionToggle span");
+    if (contact) contact.textContent = d.contact;
+
+    const phone = document.getElementById("drawerPhoneText");
+    if (phone) phone.textContent = d.phone;
+
+    const bot = drawer.querySelector('a[href*="pulzarill_uylar_bot"] span');
+    if (bot) bot.textContent = d.telegramBot;
+
+    const telegram = document.querySelector("#drawerTelegram span");
+    if (telegram) telegram.textContent = d.telegram;
+
+    const instagram = document.querySelector("#drawerInstagram span");
+    if (instagram) instagram.textContent = d.instagram;
+}
 
 const d = drawerTranslations[currentLang] || drawerTranslations.uz;
 const drawer = document.getElementById("siteMenuDrawer");
