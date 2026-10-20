@@ -992,3 +992,118 @@ body.menu-open {
     width: 21px;
     height: 21px;
 }
+
+/* ==========================================
+   UY-JOY — PREMIUM QORA-OLTIN YON PANEL
+   ========================================== */
+
+.site-menu-overlay {
+    background: rgba(0, 0, 0, 0.72);
+    backdrop-filter: blur(3px);
+    -webkit-backdrop-filter: blur(3px);
+}
+
+.site-menu-drawer {
+    background: #0B0B0A;
+    color: #F2EEE4;
+    border-left: 1px solid rgba(212, 175, 103, 0.28);
+    box-shadow: -20px 0 60px rgba(0, 0, 0, 0.45);
+    padding: 26px 20px 36px;
+}
+
+.site-menu-header {
+    padding-bottom: 22px;
+    margin-bottom: 22px;
+    border-bottom: 1px solid rgba(212, 175, 103, 0.24);
+}
+
+.site-menu-title {
+    color: #F5F0E5;
+    font-size: 24px;
+    font-weight: 800;
+    letter-spacing: -0.6px;
+}
+
+.site-menu-close {
+    width: 40px;
+    height: 40px;
+    flex: 0 0 40px;
+    border: 1px solid rgba(212, 175, 103, 0.38);
+    border-radius: 10px;
+    color: #D4AF67;
+    background: rgba(212, 175, 103, 0.05);
+}
+
+.site-menu-close:hover {
+    background: rgba(212, 175, 103, 0.14);
+    border-color: #D4AF67;
+}
+
+.site-menu-links {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.site-menu-links .menu-item {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+    width: 100%;
+    min-height: 52px;
+    padding: 13px 14px;
+    border: 1px solid transparent;
+    border-radius: 11px;
+    background: transparent;
+    color: #E8E2D6;
+    font-size: 14px;
+    font-weight: 500;
+    text-align: left;
+    text-decoration: none;
+    cursor: pointer;
+    transition:
+        background 0.2s ease,
+        border-color 0.2s ease,
+        color 0.2s ease;
+}
+
+.site-menu-links .menu-item:hover {
+    color: #F4D99D;
+    background: rgba(212, 175, 103, 0.08);
+    border-color: rgba(212, 175, 103, 0.22);
+}
+
+.site-menu-links .menu-item .icon {
+    display: block;
+    width: 21px;
+    height: 21px;
+    flex: 0 0 21px;
+    color: #D4AF67;
+}
+
+.site-menu-links .menu-item:focus-visible,
+.site-menu-close:focus-visible {
+    outline: 2px solid #D4AF67;
+    outline-offset: 3px;
+}
+
+@media (max-width: 480px) {
+    .site-menu-drawer {
+        width: min(360px, 88vw);
+        padding: 22px 16px 32px;
+    }
+
+    .site-menu-title {
+        font-size: 22px;
+    }
+
+    .site-menu-links .menu-item {
+        min-height: 50px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .site-menu-links .menu-item {
+        transition: none;
+    }
+}
