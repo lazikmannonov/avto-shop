@@ -1416,7 +1416,7 @@ body.menu-open {
 #menuOpenInstagram::after,
 #menuOpenTelegram::after,
 #menuOpenWhatsapp::after {
-    content: "↗";
+   
 
     display: inline-block;
     font-family: Arial, sans-serif;
@@ -1444,4 +1444,14 @@ body.menu-open {
 #menuOpenWhatsapp:focus-visible {
     outline: none;
     box-shadow: none;
+}
+
+
+.premium-external-icon {
+    display: inline-block;
+    width: 18px;
+    height: 18px;
+    color: #D4AF67;
+    flex: 0 0 18px;
+    vertical-align: middle;
 }
