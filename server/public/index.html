@@ -1361,18 +1361,36 @@ function toggleTheme(){
     updateThemeIcon();
 }
 
-function updateThemeIcon(){
-    updateDrawerControls();
 
-    const isDark=document.body.classList.contains("dark");
-    const id=isDark?"i-sun":"i-moon";
+function updateThemeIcon() {
+    const isDark = document.body.classList.contains("dark");
+    const id = isDark ? "i-sun" : "i-moon";
 
-    ["themeBtn","themeBtnMenu"].forEach(elId=>{
-        const element=document.getElementById(elId);
-        if(element){
-            element.innerHTML=icon(id);
+    ["themeBtn", "themeBtnMenu"].forEach(function(elId) {
+        const element = document.getElementById(elId);
+
+        if (element) {
+            element.innerHTML = icon(id);
         }
     });
+
+    // Yon menyu ikonini ham yangilash
+    const drawerButton = document.getElementById("drawerThemeButton");
+
+    if (drawerButton) {
+        drawerButton.innerHTML = icon(id);
+        drawerButton.setAttribute(
+            "aria-label",
+            isDark ? "Yorug‘ ko‘rinishga o‘tish" : "Qorong‘i ko‘rinishga o‘tish"
+        );
+    }
+
+    // Til belgisi
+    const language = document.getElementById("drawerCurrentLanguage");
+
+    if (language && typeof currentLang !== "undefined") {
+        language.textContent = currentLang.toUpperCase();
+    }
 }
 
 /* Narxni songa aylantiradi.
