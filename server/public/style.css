@@ -1412,40 +1412,55 @@ body.menu-open {
     text-decoration: none;
 }
 
-/* Yozuv o‘rniga faqat ↗ belgisi */
+
+/* UY-JOY — PREMIUM TASHQI HAVOLA IKONI */
+
+#menuOpenInstagram,
+#menuOpenTelegram,
+#menuOpenWhatsapp {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    padding: 0;
+    background: transparent;
+    border: none;
+    outline: none;
+    box-shadow: none;
+    border-radius: 0;
+    font-size: 0;
+    color: #D4AF67;
+    text-decoration: none;
+}
+
+/* Emoji emas — CSS orqali chizilgan strelka */
 #menuOpenInstagram::after,
 #menuOpenTelegram::after,
 #menuOpenWhatsapp::after {
-   
-
-    display: inline-block;
-    font-family: Arial, sans-serif;
-    font-size: 21px;
-    font-weight: 400;
-    line-height: 1;
-
-    color: #D4AF67;
-    transition:
-        color 180ms ease,
-        transform 180ms ease;
+    content: "";
+    display: block;
+    width: 10px;
+    height: 10px;
+    border-top: 1.6px solid #D4AF67;
+    border-right: 1.6px solid #D4AF67;
+    transform: translate(-2px, 2px);
+    transition: border-color 180ms ease, transform 180ms ease;
 }
 
-/* Hover effekti — ramkasiz */
 #menuOpenInstagram:hover::after,
 #menuOpenTelegram:hover::after,
 #menuOpenWhatsapp:hover::after {
-    color: #F0D79B;
-    transform: translate(2px, -2px);
+    border-color: #F0D79B;
+    transform: translate(0, 0);
 }
 
-/* Klaviatura fokusida ramka chiqmasin */
 #menuOpenInstagram:focus-visible,
 #menuOpenTelegram:focus-visible,
 #menuOpenWhatsapp:focus-visible {
     outline: none;
     box-shadow: none;
 }
-
 
 .premium-external-icon {
     display: inline-block;
