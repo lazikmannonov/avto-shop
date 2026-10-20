@@ -631,34 +631,46 @@
                 <a id="menuPhone" href="tel:+998889500005" onclick="trackCall(event)">+998 88 950 00 05</a>
             </div>
 
-            <div class="menu-item social-menu-item" data-social="telegram" role="link" tabindex="0"
-                 onclick="openSocialMenu('telegram', event)"
-                 onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openSocialMenu('telegram',event)}">
-                <div class="menu-item-left">
-                    <span class="menu-item-title">
-                        <svg class="icon"><use href="#i-telegram"></use></svg>
-                        <span id="menuTelegramTitle">Telegram</span>
-                    </span>
-                    <span class="menu-item-sub" id="menuTelegramSub">Telegram orqali bog‘lanish</span>
-                </div>
-                
-      
-<a id="menuTelegram" href="https://t.me/lazikmannonov"
-   target="_blank" rel="noopener noreferrer">
-    <span id="menuOpenTelegram" aria-label="Telegram">
+            <div class="menu-item social-menu-item"
+     data-social="telegram"
+     role="link"
+     tabindex="0"
+     onclick="openSocialMenu('telegram', event)"
+     onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openSocialMenu('telegram',event)}">
+
+    <div class="menu-item-left">
+        <span class="menu-item-title">
+            <svg class="icon">
+                <use href="#i-telegram"></use>
+            </svg>
+            <span id="menuTelegramTitle">Telegram</span>
+        </span>
+
+        <span class="menu-item-sub" id="menuTelegramSub">
+            Telegram orqali bog‘lanish
+        </span>
+    </div>
+
+    <a id="menuTelegram"
+       href="https://t.me/lazikmannonov"
+       target="_blank"
+       rel="noopener noreferrer"
+       aria-label="Telegramni ochish"
+       onclick="event.stopPropagation()">
+
         <svg class="premium-external-icon"
-             viewBox="0 0 24 24" fill="none"
+             viewBox="0 0 24 24"
+             fill="none"
              aria-hidden="true">
             <path d="M7 17L17 7M8 7H17V16"
-                  stroke="currentColor" stroke-width="1.6"
-                  stroke-linecap="round" stroke-linejoin="round"/>
+                  stroke="currentColor"
+                  stroke-width="1.6"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"/>
         </svg>
-    </span>
-</a>
 
-
-            </div>
-
+    </a>
+</div>
             <div class="menu-item social-menu-item" data-social="whatsapp" role="link" tabindex="0"
                  onclick="openSocialMenu('whatsapp', event)"
                  onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openSocialMenu('whatsapp',event)}">
