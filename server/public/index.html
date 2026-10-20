@@ -160,23 +160,95 @@
             <span class="logo-word">Uy<span class="gold">-Joy</span></span>
         </a>
 
-        <div class="header-right">
+      
+<div class="header-right">
 
-            <a class="phone-top" id="headerPhone" href="tel:+998889500005" onclick="trackCall(event)">
-                +998 88 950 00 05
-            </a>
+    <a class="phone-top" id="headerPhone" href="tel:+998889500005" onclick="trackCall(event)">
+        +998 88 950 00 05
+    </a>
 
-            <div class="currency-switch" role="group" aria-label="Currency">
-                <button type="button" class="currency-btn active" data-cur="UZS" onclick="setCurrency('UZS')">UZS</button>
-                <button type="button" class="currency-btn" data-cur="USD" onclick="setCurrency('USD')">USD</button>
-            </div>
-
-            <button class="theme-btn" onclick="toggleTheme()" id="themeBtn" aria-label="Light / Dark"></button>
-
-        </div>
+    <div class="currency-switch" role="group" aria-label="Currency">
+        <button type="button" class="currency-btn active" data-cur="UZS" onclick="setCurrency('UZS')">UZS</button>
+        <button type="button" class="currency-btn" data-cur="USD" onclick="setCurrency('USD')">USD</button>
     </div>
+
+    <button class="theme-btn" onclick="toggleTheme()" id="themeBtn" aria-label="Light / Dark"></button>
+
+    <button
+        type="button"
+        class="header-menu-btn"
+        id="headerMenuBtn"
+        onclick="openSiteMenu()"
+        aria-label="Menyu"
+        aria-expanded="false"
+        aria-controls="siteMenuDrawer">
+        <svg class="icon" aria-hidden="true">
+            <use href="#i-menu"></use>
+        </svg>
+        <span>Menyu</span>
+    </button>
+
+</div>
+</div>
 </header>
 
+<!-- UY-JOY YON MENYUSI -->
+<div class="site-menu-overlay" id="siteMenuOverlay" onclick="closeSiteMenu()"></div>
+
+<aside
+    class="site-menu-drawer"
+    id="siteMenuDrawer"
+    aria-label="Asosiy menyu"
+    aria-hidden="true">
+
+    <div class="site-menu-header">
+        <div class="site-menu-title">Uy-Joy</div>
+
+        <button
+            type="button"
+            class="site-menu-close"
+            onclick="closeSiteMenu()"
+            aria-label="Menyuni yopish">
+            <svg class="icon" aria-hidden="true">
+                <use href="#i-close"></use>
+            </svg>
+        </button>
+    </div>
+
+    <nav class="site-menu-links">
+        <button type="button" class="menu-item" onclick="closeSiteMenu(); goHome();">
+            <svg class="icon" aria-hidden="true"><use href="#i-home"></use></svg>
+            <span>Bosh sahifa</span>
+        </button>
+
+        <button type="button" class="menu-item" onclick="closeSiteMenu(); showFavorites();">
+            <svg class="icon" aria-hidden="true"><use href="#i-heart"></use></svg>
+            <span>Sevimlilar</span>
+        </button>
+
+        <a class="menu-item" href="https://t.me/pulzarill_uylar_bot" target="_blank" rel="noopener noreferrer">
+            <svg class="icon" aria-hidden="true"><use href="#i-telegram"></use></svg>
+            <span>Telegram bot</span>
+        </a>
+
+        <a class="menu-item" id="drawerPhone" href="tel:+998889500005" onclick="trackCall(event)">
+            <svg class="icon" aria-hidden="true"><use href="#i-phone"></use></svg>
+            <span id="drawerPhoneText">Telefon orqali bog‘lanish</span>
+        </a>
+
+        <a class="menu-item" id="drawerTelegram" href="https://t.me/" target="_blank" rel="noopener noreferrer">
+            <svg class="icon" aria-hidden="true"><use href="#i-telegram"></use></svg>
+            <span>Telegram</span>
+        </a>
+
+        <a class="menu-item" id="drawerInstagram" href="https://instagram.com/" target="_blank" rel="noopener noreferrer">
+            <svg class="icon" aria-hidden="true"><use href="#i-instagram"></use></svg>
+            <span>Instagram</span>
+        </a>
+    </nav>
+</aside>
+<!-- UY-JOY YON MENYUSI TUGADI -->
+    
 <main class="container">
 
     <!-- HOME -->
