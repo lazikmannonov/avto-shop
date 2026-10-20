@@ -171,9 +171,7 @@
         <button type="button" class="currency-btn active" data-cur="UZS" onclick="setCurrency('UZS')">UZS</button>
         <button type="button" class="currency-btn" data-cur="USD" onclick="setCurrency('USD')">USD</button>
     </div>
-
-    <button class="theme-btn" onclick="toggleTheme()" id="themeBtn" aria-label="Light / Dark"></button>
-
+    
     <button
         type="button"
         class="header-menu-btn"
@@ -572,7 +570,13 @@
    
 <button id="navMenu" onclick="showSettings()">
     <span class="bottom-icon">
-        <svg class="icon"><use href="#i-menu"></use></svg>
+        <svg class="icon" viewBox="0 0 24 24"
+             fill="none" stroke="currentColor"
+             stroke-width="1.8" stroke-linecap="round"
+             stroke-linejoin="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="3"></circle>
+            <path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1-1.7 2.9- .1 0a1.7 1.7 0 0 0-1.8.6l-.1.1h-3.4l0-.1a1.7 1.7 0 0 0-1.4-1.1h-.1l-1.7-2.9.1-.1a1.7 1.7 0 0 0 .3-1.8l-.1-.1v-3.4l.1 0a1.7 1.7 0 0 0 .3-1.8l-.1-.1 1.7-2.9h.1a1.7 1.7 0 0 0 1.8-.6l.1-.1h3.4l0 .1a1.7 1.7 0 0 0 1.4 1.1h.1l1.7 2.9-.1.1a1.7 1.7 0 0 0-.3 1.8l.1.1v3.4z"></path>
+        </svg>
     </span>
     <span id="navMenuText">Sozlamalar</span>
 </button>
