@@ -1353,3 +1353,36 @@ body.menu-open {
 .site-menu-drawer .drawer-address-row > .icon {
     margin-top: 1px;
 }
+
+/* Uy-Joy menyusi — Dark/Light ranglarini moslashtirish */
+.site-menu-drawer {
+    background: var(--card);
+    color: var(--text);
+    border-color: var(--border);
+}
+
+.site-menu-drawer .site-menu-title,
+.site-menu-drawer .drawer-setting-label,
+.site-menu-drawer .menu-item,
+.site-menu-drawer .drawer-language-button {
+    color: var(--text);
+}
+
+.site-menu-drawer .drawer-language-options {
+    background: var(--card);
+    color: var(--text);
+    border-color: var(--border);
+}
+
+.site-menu-drawer .drawer-language-options button {
+    color: var(--text);
+}
+
+.site-menu-drawer .drawer-menu-divider {
+    background: var(--border);
+}
+
+.site-menu-drawer .drawer-setting-label .icon,
+.site-menu-drawer .drawer-language-chevron {
+    color: var(--gold-text);
+}
