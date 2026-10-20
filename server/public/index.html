@@ -1390,6 +1390,24 @@ applySettings();
 
 /* Yangi yon menyu tarjimalari */
 const drawerTranslations = {
+    
+/* Til va Ko‘rinish yozuvlarini tarjima qilish */
+const drawerSettingLabels = document.querySelectorAll(
+    "#siteMenuDrawer .drawer-setting-label span"
+);
+
+if (drawerSettingLabels.length >= 2) {
+    const settingText = {
+        uz: ["Til", "Ko‘rinish"],
+        ru: ["Язык", "Тема"],
+        en: ["Language", "Appearance"]
+    };
+
+    const labels = settingText[currentLang] || settingText.uz;
+
+    drawerSettingLabels[0].textContent = labels[0];
+    drawerSettingLabels[1].textContent = labels[1];
+}
     uz: {
         home: "Bosh sahifa",
         favorites: "Sevimlilar",
