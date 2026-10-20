@@ -1445,3 +1445,27 @@ body.menu-open {
     outline: none;
     box-shadow: none;
 }
+
+/* Telegram bot — faqat premium ikon */
+
+a[href*="pulzarill_uylar_bot"] {
+    font-size: 0;
+    text-decoration: none;
+}
+
+a[href*="pulzarill_uylar_bot"]::after {
+    content: "↗";
+    display: inline-block;
+    font-family: Arial, sans-serif;
+    font-size: 21px;
+    font-weight: 400;
+    line-height: 1;
+    color: #D4AF67;
+    transition: color 180ms ease, transform 180ms ease;
+}
+
+a[href*="pulzarill_uylar_bot"]:hover::after {
+    color: #F0D79B;
+    transform: translate(2px, -2px);
+}
+
