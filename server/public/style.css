@@ -1388,85 +1388,52 @@ body.menu-open {
 }
 
 
-/* UY-JOY — FAQAT PREMIUM TASHQI HAVOLA IKONI */
-
-#menuOpenInstagram,
-#menuOpenTelegram,
-#menuOpenWhatsapp {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-
-    width: 28px;
-    height: 28px;
-    padding: 0;
-
-    background: transparent;
-    border: none;
-    outline: none;
-    box-shadow: none;
-    border-radius: 0;
-
-    font-size: 0;
-    color: #D4AF67;
-    text-decoration: none;
-}
-
-
-/* UY-JOY — PREMIUM TASHQI HAVOLA IKONI */
-
-#menuOpenInstagram,
-#menuOpenTelegram,
-#menuOpenWhatsapp {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 28px;
-    height: 28px;
-    padding: 0;
-    background: transparent;
-    border: none;
-    outline: none;
-    box-shadow: none;
-    border-radius: 0;
-    font-size: 0;
-    color: #D4AF67;
-    text-decoration: none;
-}
-
-/* Emoji emas — CSS orqali chizilgan strelka */
-#menuOpenInstagram::after,
-#menuOpenTelegram::after,
-#menuOpenWhatsapp::after {
-    content: "";
-    display: block;
-    width: 10px;
-    height: 10px;
-    border-top: 1.6px solid #D4AF67;
-    border-right: 1.6px solid #D4AF67;
-    transform: translate(-2px, 2px);
-    transition: border-color 180ms ease, transform 180ms ease;
-}
-
-#menuOpenInstagram:hover::after,
-#menuOpenTelegram:hover::after,
-#menuOpenWhatsapp:hover::after {
-    border-color: #F0D79B;
-    transform: translate(0, 0);
-}
-
-#menuOpenInstagram:focus-visible,
-#menuOpenTelegram:focus-visible,
-#menuOpenWhatsapp:focus-visible {
-    outline: none;
-    box-shadow: none;
-}
+/* ========================================
+   UY-JOY — YAGONA PREMIUM TASHQI HAVOLA IKONI
+   ======================================== */
 
 .premium-external-icon {
     display: inline-block;
-    width: 18px;
-    height: 18px;
+    width: 19px;
+    height: 19px;
+    flex: 0 0 19px;
     color: #D4AF67;
-    flex: 0 0 18px;
     vertical-align: middle;
+    opacity: 1;
+    visibility: visible;
+    transition: color 180ms ease, transform 180ms ease;
+}
+
+/* Tashqi havola ikonlari — ramkasiz va fonsiz */
+#menuOpenInstagram,
+#menuOpenTelegram,
+#menuOpenWhatsapp {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    padding: 0;
+    border: 0;
+    outline: none;
+    box-shadow: none;
+    background: transparent;
+    font-size: 0;
+    text-decoration: none;
+    color: #D4AF67;
+}
+
+/* Hover effekti */
+#menuOpenInstagram:hover .premium-external-icon,
+#menuOpenTelegram:hover .premium-external-icon,
+#menuOpenWhatsapp:hover .premium-external-icon {
+    color: #F0D79B;
+    transform: translate(1px, -1px);
+}
+
+/* Harakatni kamaytirish sozlamasi */
+@media (prefers-reduced-motion: reduce) {
+    .premium-external-icon {
+        transition: none;
+    }
 }
