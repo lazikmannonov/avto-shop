@@ -2449,21 +2449,21 @@ function toggleDrawerLanguages() {
 }
 
 function selectDrawerLanguage(lang) {
-    if (typeof setLang !== "function") return;
+    if (typeof setLang !== "function") {
+        console.error("setLang() funksiyasi topilmadi");
+        return;
+    }
 
     setLang(lang);
 
-    const labels = {
-        uz: "UZ",
-        ru: "RU",
-        en: "EN"
-    };
-
     const current = document.getElementById("drawerCurrentLanguage");
+    if (current) {
+        current.textContent = lang.toUpperCase();
+    }
+
     const options = document.getElementById("drawerLanguageOptions");
     const button = document.getElementById("drawerLanguageButton");
 
-    if (current) current.textContent = labels[lang] || "UZ";
     if (options) options.hidden = true;
     if (button) button.setAttribute("aria-expanded", "false");
 }
