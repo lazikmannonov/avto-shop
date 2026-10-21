@@ -1537,11 +1537,3 @@ body.menu-open {
     outline: none;
     box-shadow: none !important;
 }
-
-/* Til va Ko‘rinish tugmalari menyu bilan bir xil ko‘rinsin */
-.site-menu-drawer .drawer-setting-row,
-.site-menu-drawer .drawer-language-button,
-.site-menu-drawer .drawer-setting-button {
-    background: transparent !important;
-    border-radius: 0 !important;
-}
