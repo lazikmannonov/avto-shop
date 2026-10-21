@@ -2159,14 +2159,21 @@ function createCarCard(car, index) {
                 ${escapeHtml(field(car, "name") || t.house)}
             </div>
 
-            <div class="car-price-row">
-                <div class="car-price"
-                     data-price="${escapeHtml(car.price || "")}"
-                     data-cur="${escapeHtml(car.currency || "")}">
-                    ${escapeHtml(formatPrice(car.price, car.currency))}
-                </div>
-            </div>
-
+                  <div class="car-price-row">
+              <div class="car-price"
+            data-price="${escapeHtml(car.price || "")}"
+           data-cur="${escapeHtml(car.currency || "")}">
+          ${escapeHtml(formatPrice(car.price, car.currency))}
+          </div>
+          
+      <button type="button"
+            class="price-currency-btn currency-btn"
+            data-cur="${currentCurrency}"
+            aria-label="Valyutani almashtirish"
+            onclick="event.stopPropagation(); setCurrency(currentCurrency === 'UZS' ? 'USD' : 'UZS')">
+             ${currentCurrency}
+            </button>
+         </div>
             <div class="car-address">
                 <svg class="icon icon-sm">
                     <use href="#i-location"></use>
