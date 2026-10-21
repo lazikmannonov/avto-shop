@@ -832,3 +832,20 @@ body.admin-page.dark{
     flex-wrap: nowrap !important;
     border: 1px solid rgba(212, 175, 103, 0.45) !important;
 }
+
+/* Narxning alohida ramkasini bekor qilish */
+.price-currency-control .car-price,
+.price-currency-control div.car-price {
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+    background: transparent !important;
+    padding: 0 !important;
+    border-radius: 0 !important;
+}
+
+/* Narx va valyuta uchun faqat bitta umumiy ramka */
+.price-currency-control .car-price-row {
+    border: 1px solid rgba(212, 175, 103, 0.45) !important;
+    box-shadow: none !important;
+}
