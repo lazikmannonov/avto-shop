@@ -354,7 +354,7 @@ body:not(.dark) .site-menu-drawer .drawer-address-row > span{color:#777064 !impo
 /* Chiqish — faqat ikonka va yozuv atrofida ramka */
 .drawer-exit-row{color:#d94b4b !important}
 .drawer-exit-row .icon{color:#d94b4b !important}
-.site-menu-drawer .site-menu-links > .drawer-exit-row{display:inline-flex !important;flex-direction:row-reverse;align-items:center;justify-content:center;align-self:flex-end;width:max-content !important;max-width:calc(100% - 24px);min-height:auto !important;box-sizing:border-box;gap:8px;margin:15px 12px 0 auto !important;padding:8px 10px;border:1px solid transparent;border-radius:7px;background:transparent;color:#D94B4B;cursor:pointer !important;transition:border-color .18s ease,background .18s ease}
+.site-menu-drawer .site-menu-links > .drawer-exit-row{display:inline-flex !important;flex-direction:row-reverse;align-items:center;justify-content:center;align-self:flex-end;width:max-content !important;max-width:calc(100% - 24px);min-height:auto !important;box-sizing:border-box;gap:8px;margin:25px 12px 0 auto !important;padding:8px 10px;border:1px solid transparent;border-radius:7px;background:transparent;color:#D94B4B;cursor:pointer !important;transition:border-color .18s ease,background .18s ease}
 .site-menu-drawer .site-menu-links > .drawer-exit-row > span{flex:0 0 auto;white-space:nowrap;text-align:right}
 .site-menu-drawer .site-menu-links > .drawer-exit-row > .icon{flex:0 0 20px;width:20px;height:20px;margin:0;color:#D94B4B}
 .site-menu-drawer .site-menu-links > .drawer-exit-row:hover{border-color:#D94B4B;background:rgba(217,75,75,.06)}
