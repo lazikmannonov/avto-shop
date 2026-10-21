@@ -197,27 +197,33 @@
 </header>
 
 <!-- UY-JOY YON MENYUSI -->
-<div class="site-menu-overlay" id="siteMenuOverlay" onclick="closeSiteMenu()"></div>
 
-<aside
-    class="site-menu-drawer"
-    id="siteMenuDrawer"
-    aria-label="Asosiy menyu"
-    aria-hidden="true">
-
-    <div class="site-menu-header">
+<div class="site-menu-header">
+    <div class="site-menu-brand">
         <div class="site-menu-title">Uy-Joy</div>
 
-        <button
-            type="button"
-            class="site-menu-close"
-            onclick="closeSiteMenu()"
-            aria-label="Menyuni yopish">
+        <a
+            class="site-menu-phone"
+            id="siteMenuPhone"
+            href="tel:+998889500005"
+            aria-label="Telefon orqali bog‘lanish">
             <svg class="icon" aria-hidden="true">
-                <use href="#i-close"></use>
+                <use href="#i-phone"></use>
             </svg>
-        </button>
+            <span>+998 88 950 00 05</span>
+        </a>
     </div>
+
+    <button
+        type="button"
+        class="site-menu-close"
+        onclick="closeSiteMenu()"
+        aria-label="Menyuni yopish">
+        <svg class="icon" aria-hidden="true">
+            <use href="#i-close"></use>
+        </svg>
+    </button>
+</div>
 
     <div class="site-menu-links">
 
@@ -1292,6 +1298,8 @@ function applySettings(){
 
     const phone = siteSettings.phone || "";
 
+    updateSiteMenuPhone();
+
     // Eski menyudagi telefon
     const headerPhone = document.getElementById("headerPhone");
 
@@ -1648,6 +1656,30 @@ function updateDrawerTranslations() {
     const instagram = document.querySelector("#drawerInstagram span");
     if (instagram) instagram.textContent = d.instagram;
 }
+
+function updateSiteMenuPhone() {
+    const link = document.getElementById("siteMenuPhone");
+
+    if (!link) return;
+
+    const phone = String(siteSettings.phone || "").trim();
+    const number = link.querySelector("span");
+
+    if (!phone) {
+        link.style.display = "none";
+        return;
+    }
+
+    link.style.display = "flex";
+
+    if (number) {
+        number.textContent = phone;
+    }
+
+    const telNumber = phone.replace(/[^\d+]/g, "");
+    link.href = telNumber ? "tel:" + telNumber : "#";
+}
+    
 function setText(id,value){
     const element=document.getElementById(id);
     if(element)
