@@ -1763,32 +1763,31 @@ function updateCurrencyButtons(){
 
 function setCurrency(cur, button){
 
-    const nextCurrency=cur==="USD"?"USD":"UZS";
+    if(!button) return;
 
-    // Tugma berilmagan bo‘lsa, eski umumiy ishlash tartibi saqlanadi.
-    if(!button){
-        currentCurrency=nextCurrency;
-        lsSet("displayCurrency",currentCurrency);
-        updateCurrencyButtons();
-        updatePrices();
-        return;
-    }
+    const nextCurrency = cur === "USD" ? "USD" : "UZS";
+    const control = button.closest(".price-currency-control");
 
-    // Faqat bosilgan tugmaga tegishli narxni topamiz.
-    const control=button.closest(".price-currency-control");
     if(!control) return;
 
-    const price=control.querySelector("[data-price]");
+    const price = control.querySelector("[data-price]");
+
     if(!price) return;
 
-    button.dataset.cur=nextCurrency;
-    button.textContent=nextCurrency;
+    button.dataset.cur = nextCurrency;
+    button.textContent = nextCurrency;
 
-    const priceCurrency=price.dataset.cur || "UZS";
-    price.textContent=formatPrice(price.dataset.price,priceCurrency);
+    const originalPrice = price.dataset.price;
+    const originalCurrency = price.dataset.cur || "UZS";
 
-    // Umumiy currentCurrency va boshqa uylar o‘zgarmaydi.
+    const previousCurrency = currentCurrency;
+
+    currentCurrency = nextCurrency;
+    price.textContent = formatPrice(originalPrice, originalCurrency);
+    currentCurrency = previousCurrency;
+
 }
+
 function searchCars(){
 
     const input=document.getElementById("searchInput").value.toLowerCase().trim();
@@ -2194,21 +2193,27 @@ function createCarCard(car, index) {
                 ${escapeHtml(field(car, "name") || t.house)}
             </div>
 
-                  <div class="car-price-row">
-              <div class="car-price"
-            data-price="${escapeHtml(car.price || "")}"
-           data-cur="${escapeHtml(car.currency || "")}">
-          ${escapeHtml(formatPrice(car.price, car.currency))}
-          </div>
-          
-      <button type="button"
-            class="price-currency-btn currency-btn"
-            data-cur="${currentCurrency}"
-            aria-label="Valyutani almashtirish"
-            onclick="event.stopPropagation(); setCurrency(currentCurrency === 'UZS' ? 'USD' : 'UZS')">
-             ${currentCurrency}
-            </button>
-         </div>
+            
+<div class="price-currency-control">
+    <div class="car-price-row">
+
+        <div class="car-price"
+             data-price="${escapeHtml(car.price || "")}"
+             data-cur="${escapeHtml(car.currency || "")}">
+            ${escapeHtml(formatPrice(car.price, car.currency))}
+        </div>
+
+        <button type="button"
+                class="price-currency-btn currency-btn"
+                data-cur="${currentCurrency}"
+                aria-label="Valyutani almashtirish"
+                onclick="event.stopPropagation(); setCurrency(this.dataset.cur === 'UZS' ? 'USD' : 'UZS', this)">
+            ${currentCurrency}
+        </button>
+
+    </div>
+</div>
+
             <div class="car-address">
                 <svg class="icon icon-sm">
                     <use href="#i-location"></use>
