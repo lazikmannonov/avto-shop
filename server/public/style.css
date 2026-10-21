@@ -1660,3 +1660,6 @@ body:not(.dark) .site-menu-drawer .drawer-address-row > span {
 .site-menu-drawer .drawer-exit-row {
     margin-top: 20px;
 }
+.site-menu-drawer .drawer-exit-row > span {
+    text-align: right;
+}
