@@ -221,60 +221,6 @@
 
     <div class="site-menu-links">
 
-        <!-- TIL -->
-        <div class="drawer-setting-row">
-            <div class="drawer-setting-label">
-                <svg class="icon" aria-hidden="true">
-                    <use href="#i-languages"></use>
-                </svg>
-                <span>Til</span>
-            </div>
-
-            <div class="drawer-language-wrap">
-                <button
-                    type="button"
-                    class="drawer-language-button"
-                    id="drawerLanguageButton"
-                    aria-expanded="false"
-                    aria-controls="drawerLanguageOptions"
-                    onclick="toggleDrawerLanguages()">
-                    <span id="drawerCurrentLanguage">UZ</span>
-                    <svg class="icon drawer-language-chevron" aria-hidden="true">
-                        <use href="#i-chevron-down"></use>
-                    </svg>
-                </button>
-
-                <div class="drawer-language-options" id="drawerLanguageOptions" hidden>
-                    <button type="button" onclick="selectDrawerLanguage('uz')">O‘zbekcha</button>
-                    <button type="button" onclick="selectDrawerLanguage('ru')">Русский</button>
-                    <button type="button" onclick="selectDrawerLanguage('en')">English</button>
-                </div>
-            </div>
-        </div>
-
-        <!-- KO‘RINISH -->
-        <div class="drawer-setting-row">
-            <div class="drawer-setting-label">
-                <svg class="icon" aria-hidden="true">
-                    <use href="#i-moon"></use>
-                </svg>
-                <span>Ko‘rinish</span>
-            </div>
-
-            <button
-                type="button"
-                class="drawer-theme-button"
-                id="drawerThemeButton"
-                onclick="toggleTheme()"
-                aria-label="Ko‘rinishni almashtirish">
-                <svg class="icon" aria-hidden="true">
-                    <use href="#i-moon"></use>
-                </svg>
-            </button>
-        </div>
-
-        <div class="drawer-menu-divider"></div>
-
         <!-- BOSH SAHIFA -->
         <button type="button" class="menu-item" onclick="closeSiteMenu(); goHome()">
             <svg class="icon" aria-hidden="true">
@@ -283,15 +229,7 @@
             <span>Bosh sahifa</span>
         </button>
 
-        <!-- SEVIMLILAR -->
-        <button type="button" class="menu-item" onclick="closeSiteMenu(); showFavorites()">
-            <svg class="icon" aria-hidden="true">
-                <use href="#i-heart"></use>
-            </svg>
-            <span>Sevimlilar</span>
-        </button>
-
-        <!-- QIDIRUV -->
+         <!-- QIDIRUV -->
         <button type="button" class="menu-item" onclick="closeSiteMenu(); focusSearch()">
             <svg class="icon" aria-hidden="true">
                 <use href="#i-search"></use>
@@ -301,6 +239,14 @@
 
         <div class="drawer-menu-divider"></div>
 
+        <!-- SEVIMLILAR -->
+        <button type="button" class="menu-item" onclick="closeSiteMenu(); showFavorites()">
+            <svg class="icon" aria-hidden="true">
+                <use href="#i-heart"></use>
+            </svg>
+            <span>Sevimlilar</span>
+        </button>
+      
         <!-- BOG‘LANISH -->
         <div class="contact-accordion">
             <button
@@ -388,6 +334,82 @@
             </svg>
             <span>Sozlamalar</span>
         </button>
+
+        <!-- TIL -->
+        <div class="drawer-setting-row">
+            <div class="drawer-setting-label">
+                <svg class="icon" aria-hidden="true">
+                    <use href="#i-languages"></use>
+                </svg>
+                <span>Til</span>
+            </div>
+
+            <div class="drawer-language-wrap">
+                <button
+                    type="button"
+                    class="drawer-language-button"
+                    id="drawerLanguageButton"
+                    aria-expanded="false"
+                    aria-controls="drawerLanguageOptions"
+                    onclick="toggleDrawerLanguages()">
+                    <span id="drawerCurrentLanguage">UZ</span>
+                    <svg class="icon drawer-language-chevron" aria-hidden="true">
+                        <use href="#i-chevron-down"></use>
+                    </svg>
+                </button>
+
+                <div class="drawer-language-options" id="drawerLanguageOptions" hidden>
+                    <button type="button" onclick="selectDrawerLanguage('uz')">O‘zbekcha</button>
+                    <button type="button" onclick="selectDrawerLanguage('ru')">Русский</button>
+                    <button type="button" onclick="selectDrawerLanguage('en')">English</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- KO‘RINISH -->
+        <div class="drawer-setting-row">
+            <div class="drawer-setting-label">
+                <svg class="icon" aria-hidden="true">
+                    <use href="#i-moon"></use>
+                </svg>
+                <span>Ko‘rinish</span>
+            </div>
+
+            <button
+                type="button"
+                class="drawer-theme-button"
+                id="drawerThemeButton"
+                onclick="toggleTheme()"
+                aria-label="Ko‘rinishni almashtirish">
+                <svg class="icon" aria-hidden="true">
+                    <use href="#i-moon"></use>
+                </svg>
+            </button>
+        </div>
+
+        <div class="drawer-menu-divider"></div>
+
+        
+                    <!-- NARX VALYUTASI -->
+                      <button
+                type="button"
+               class="menu-item drawer-currency-row"
+            id="drawerCurrencyButton"
+           onclick="toggleDrawerCurrency()"
+            aria-label="Narx valyutasini o‘zgartirish"
+        >
+         <svg class="icon" viewBox="0 0 24 24" fill="none"
+         stroke="currentColor" stroke-width="1.8"
+         stroke-linecap="round" stroke-linejoin="round"
+         aria-hidden="true">
+        <circle cx="12" cy="12" r="9"></circle>
+        <path d="M16 8.5c-.8-.8-1.8-1.2-3.2-1.2-1.7 0-2.8.8-2.8 2s1 1.8 2.8 2.2 2.8 1 2.8 2.3-1.2 2.2-3 2.2c-1.3 0-2.5-.5-3.4-1.4"></path>
+        <path d="M12 5.5v13"></path>
+    </svg>
+    <span>Narxni o‘zgartirish</span>
+    <span class="drawer-currency-value" id="drawerCurrencyValue">UZS</span>
+</button>
+
 
         <!-- MANZIL -->
         <div class="menu-item drawer-address-row">
