@@ -898,3 +898,61 @@ button.drawer-currency-value:focus-visible {
     outline: 2px solid #D4AF67;
     outline-offset: 3px;
 }
+
+/* UY-JOY — yon menyudagi telefon raqami */
+.site-menu-phone {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    width: fit-content;
+    max-width: 100%;
+    margin-top: 10px;
+    padding: 10px 13px;
+    border: 1px solid rgba(212, 175, 103, 0.28);
+    border-radius: 10px;
+    background: rgba(212, 175, 103, 0.06);
+    color: var(--text);
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.35px;
+    line-height: 1.4;
+    transition:
+        background 0.2s ease,
+        border-color 0.2s ease,
+        color 0.2s ease,
+        transform 0.2s ease;
+}
+
+.site-menu-phone .icon {
+    width: 17px;
+    height: 17px;
+    flex: 0 0 17px;
+    color: var(--gold);
+    fill: none;
+    stroke: currentColor;
+}
+
+.site-menu-phone:hover {
+    background: rgba(212, 175, 103, 0.12);
+    border-color: var(--gold);
+    color: var(--gold);
+    transform: translateY(-1px);
+}
+
+.site-menu-phone:focus-visible {
+    outline: 2px solid var(--gold);
+    outline-offset: 3px;
+}
+
+.site-menu-phone span {
+    white-space: nowrap;
+}
+
+@media (max-width: 360px) {
+    .site-menu-phone {
+        gap: 7px;
+        padding: 9px 10px;
+        font-size: 13px;
+    }
+}
