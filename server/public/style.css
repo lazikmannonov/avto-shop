@@ -1545,11 +1545,3 @@ body.menu-open {
     background: transparent !important;
     border-radius: 0 !important;
 }
-
-/* Bosilganda ham ramka paydo bo‘lmasin */
-.site-menu-drawer .drawer-setting-row:focus,
-.site-menu-drawer .drawer-language-button:focus,
-.site-menu-drawer .drawer-setting-button:focus {
-    outline: none;
-    box-shadow: none !important;
-}
