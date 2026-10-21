@@ -1861,3 +1861,9 @@ body:not(.dark) .site-menu-drawer .drawer-address-row > span {
     outline: 1px solid #D94B4B;
     outline-offset: 2px;
 }
+/* Yon menyudagi manzilni markazga joylashtirish */
+.site-menu-drawer .site-menu-address {
+    width: 100%;
+    text-align: center;
+    box-sizing: border-box;
+}
