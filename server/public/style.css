@@ -815,18 +815,20 @@ body.admin-page.dark{
     border-color: #D4AF67 !important;
 }
 
-/* Narx atrofidagi ramkani butunlay olib tashlash */
-.price-currency-control .car-price,
-.price-currency-control .car-price:hover,
-.price-currency-control .car-price:focus {
-    border: 0 !important;
-    outline: 0 !important;
+/* Narxning o‘z ramkasini olib tashlash */
+.price-currency-control .car-price {
+    border: none !important;
+    outline: none !important;
     box-shadow: none !important;
-    background: none !important;
+    background: transparent !important;
     border-radius: 0 !important;
+    padding: 0 !important;
 }
 
-/* Umumiy ramka faqat narx va valyutani o‘rasin */
+/* Umumiy ramka narx va valyutani o‘rab tursin */
 .price-currency-control .car-price-row {
-    border: 1px solid #D4AF67 !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    flex-wrap: nowrap !important;
+    border: 1px solid rgba(212, 175, 103, 0.45) !important;
 }
