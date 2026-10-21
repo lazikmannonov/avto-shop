@@ -1867,3 +1867,15 @@ body:not(.dark) .site-menu-drawer .drawer-address-row > span {
     text-align: center;
     box-sizing: border-box;
 }
+/* Manzilni yon panel markaziga joylashtirish */
+.site-menu-drawer .drawer-address-row {
+    width: 100%;
+    box-sizing: border-box;
+    justify-content: center !important;
+    text-align: center;
+}
+
+/* Manzil matni */
+.site-menu-drawer .drawer-address-row > span {
+    text-align: center;
+}
