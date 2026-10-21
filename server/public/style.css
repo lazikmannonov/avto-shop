@@ -1669,7 +1669,7 @@ body:not(.dark) .site-menu-drawer .drawer-address-row > span {
     align-items: center;
     justify-content: flex-start;
     gap: 8px;
-    margin-top: 8px;
+    margin-top: 50px;
 }
 
 .site-menu-drawer .drawer-exit-row > span {
