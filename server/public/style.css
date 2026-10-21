@@ -956,3 +956,17 @@ button.drawer-currency-value:focus-visible {
         font-size: 13px;
     }
 }
+
+/* Telefon raqami atrofidagi ramkani olib tashlash */
+.site-menu-phone {
+    border: none !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+}
+
+.site-menu-phone:hover {
+    border: none !important;
+    background: transparent !important;
+    box-shadow: none !important;
+}
