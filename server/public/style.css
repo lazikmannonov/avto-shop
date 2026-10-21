@@ -1879,3 +1879,26 @@ body:not(.dark) .site-menu-drawer .drawer-address-row > span {
 .site-menu-drawer .drawer-address-row > span {
     text-align: center;
 }
+/* Manzil — ikonka va yozuv bir qatorda, markazda */
+.site-menu-drawer .drawer-address-row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center !important;
+    gap: 8px;
+    width: 100%;
+    box-sizing: border-box;
+    text-align: center;
+}
+
+/* Manzil yozuvi */
+.site-menu-drawer .drawer-address-row > span {
+    text-align: left;
+    min-width: 0;
+}
+
+/* Xarita ikonasi yozuvning oldida */
+.site-menu-drawer .drawer-address-row > .icon {
+    flex-shrink: 0;
+    order: -1;
+}
