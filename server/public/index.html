@@ -381,6 +381,19 @@
             </div>
         </div>
 
+        
+<a class="menu-item" id="drawerWhatsapp"
+   href="https://wa.me/"
+   target="_blank"
+   rel="noopener noreferrer">
+
+    <svg class="icon" aria-hidden="true">
+        <use href="#i-whatsapp"></use>
+    </svg>
+
+    <span>WhatsApp</span>
+</a>
+
         <!-- SOZLAMALAR -->
         <button type="button" class="menu-item" onclick="showSettings()">
             <svg class="icon" aria-hidden="true">
@@ -1251,64 +1264,136 @@ function callFromMenu(event){
 
 function applySettings(){
 
-    const phone=siteSettings.phone||"";
+    const phone = siteSettings.phone || "";
 
-    const headerPhone=document.getElementById("headerPhone");
+    // Eski menyudagi telefon
+    const headerPhone = document.getElementById("headerPhone");
+
     if(headerPhone){
-        headerPhone.textContent=phone;
-        setCallLink(headerPhone,phone);
+        headerPhone.textContent = phone;
+        setCallLink(headerPhone, phone);
     }
 
-    const menuPhone=document.getElementById("menuPhone");
+    const menuPhone = document.getElementById("menuPhone");
+
     if(menuPhone){
-        menuPhone.textContent=phone;
-        setCallLink(menuPhone,phone);
+        menuPhone.textContent = phone;
+        setCallLink(menuPhone, phone);
     }
 
-    const telegram=document.getElementById("menuTelegram");
-    if(telegram)
-        telegram.href=socialHref(siteSettings.telegram,"telegram");
+    // Eski menyudagi ijtimoiy havolalar
+    const telegram = document.getElementById("menuTelegram");
+    const whatsapp = document.getElementById("menuWhatsapp");
+    const instagram = document.getElementById("menuInstagram");
 
-    const whatsapp=document.getElementById("menuWhatsapp");
-    if(whatsapp)
-        whatsapp.href=socialHref(siteSettings.whatsapp,"whatsapp");
+    if(telegram){
+        telegram.href = socialHref(siteSettings.telegram, "telegram");
+    }
 
-    const instagram=document.getElementById("menuInstagram");
-    if(instagram)
-        instagram.href=socialHref(siteSettings.instagram,"instagram");
+    if(whatsapp){
+        whatsapp.href = socialHref(siteSettings.whatsapp, "whatsapp");
+    }
 
-    [telegram,whatsapp,instagram].filter(Boolean).forEach(link=>{
-        link.target="_blank";
-        link.rel="noopener noreferrer";
+    if(instagram){
+        instagram.href = socialHref(siteSettings.instagram, "instagram");
+    }
+
+    [telegram, whatsapp, instagram].filter(Boolean).forEach(link => {
+        link.target = "_blank";
+        link.rel = "noopener noreferrer";
     });
 
-    const address=document.getElementById("menuAddress");
+    // Eski menyudagi manzil
+    const address = document.getElementById("menuAddress");
+
     if(address){
-        const tt=T();
-        const custom=siteSettings["address_"+currentLang];
-        const raw=siteSettings.address;
-        address.textContent=custom||((!raw||raw==="Toshkent, O‘zbekiston")?tt.defaultAddress:raw);
+        const tt = T();
+        const custom = siteSettings["address_" + currentLang];
+        const raw = siteSettings.address;
+
+        address.textContent = custom ||
+            ((!raw || raw === "Toshkent, O‘zbekiston")
+                ? tt.defaultAddress
+                : raw);
     }
 
-    // Har bir e'lon uchun alohida telefon raqami.
-    document.querySelectorAll(".call-btn").forEach(button=>{
-        const house=allCars.find(
-            car=>String(car.id)===String(button.dataset.houseId)
+    // Yangi yon menyu
+    const drawerPhone = document.getElementById("drawerPhoneText");
+
+    if(drawerPhone){
+        drawerPhone.textContent = phone;
+    }
+
+    const drawerPhoneLink = document.getElementById("drawerPhone");
+
+    if(drawerPhoneLink){
+        setCallLink(drawerPhoneLink, phone);
+    }
+
+    const drawerTelegram = document.getElementById("drawerTelegram");
+
+    if(drawerTelegram){
+        drawerTelegram.href = socialHref(
+            siteSettings.telegram,
+            "telegram"
         );
 
-        setCallLink(button,getCallPhone(house));
+        drawerTelegram.target = "_blank";
+        drawerTelegram.rel = "noopener noreferrer";
+    }
+
+    const drawerWhatsapp = document.getElementById("drawerWhatsapp");
+
+    if(drawerWhatsapp){
+        drawerWhatsapp.href = socialHref(
+            siteSettings.whatsapp,
+            "whatsapp"
+        );
+
+        drawerWhatsapp.target = "_blank";
+        drawerWhatsapp.rel = "noopener noreferrer";
+    }
+
+    const drawerInstagram = document.getElementById("drawerInstagram");
+
+    if(drawerInstagram){
+        drawerInstagram.href = socialHref(
+            siteSettings.instagram,
+            "instagram"
+        );
+
+        drawerInstagram.target = "_blank";
+        drawerInstagram.rel = "noopener noreferrer";
+    }
+
+    const drawerAddress = document.getElementById("drawerAddressText");
+
+    if(drawerAddress){
+        const tt = T();
+        const custom = siteSettings["address_" + currentLang];
+        const raw = siteSettings.address;
+
+        drawerAddress.textContent = custom ||
+            ((!raw || raw === "Toshkent, O‘zbekiston")
+                ? tt.defaultAddress
+                : raw);
+    }
+
+    // Har bir e'lon uchun alohida telefon raqami
+    document.querySelectorAll(".call-btn").forEach(button => {
+        const house = allCars.find(
+            car => String(car.id) === String(button.dataset.houseId)
+        );
+
+        setCallLink(button, getCallPhone(house));
     });
 
-    // Batafsil sahifasidagi qo‘ng‘iroq tugmasi.
-    const detailsCall=document.querySelector(".details-call");
+    // Batafsil sahifasidagi qo'ng'iroq tugmasi
+    const detailsCall = document.querySelector(".details-call");
 
     if(detailsCall){
-        setCallLink(
-            detailsCall,
-            getCallPhone(currentDetailsCar)
-        );
+        setCallLink(detailsCall, getCallPhone(currentDetailsCar));
     }
-
 }
 
 function toggleLanguageMenu(forceClose = false) {
