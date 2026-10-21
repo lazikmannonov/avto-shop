@@ -814,3 +814,10 @@ body.admin-page.dark{
     background: rgba(212, 175, 103, 0.16);
     border-color: #D4AF67 !important;
 }
+/* Narxning o‘zidagi alohida ramkani olib tashlash */
+.price-currency-control .car-price {
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+    background: transparent !important;
+}
