@@ -1630,3 +1630,28 @@ body.menu-open {
     padding: 14px 16px;
     flex-shrink: 0;
 }
+
+/* Uy-Joy — pastki manzil dizayni */
+.site-menu-drawer .drawer-address-row {
+    color: #B8B2A5 !important;
+}
+
+/* Manzil matni */
+.site-menu-drawer .drawer-address-row > span {
+    color: #B8B2A5 !important;
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 1.6;
+}
+
+/* Xarita belgisi */
+.site-menu-drawer .drawer-address-row > .icon {
+    color: #D4AF67 !important;
+    flex-shrink: 0;
+    opacity: 0.95;
+}
+
+/* Light rejimida ham o‘qilishi yaxshi bo‘lsin */
+body:not(.dark) .site-menu-drawer .drawer-address-row > span {
+    color: #777064 !important;
+}
