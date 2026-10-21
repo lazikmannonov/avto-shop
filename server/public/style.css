@@ -1537,3 +1537,66 @@ body.menu-open {
     outline: none;
     box-shadow: none !important;
 }
+
+
+/* UY-JOY — PREMIUM TIL TANLASH */
+.site-menu-drawer .drawer-language-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    min-height: 32px;
+    padding: 5px 10px;
+    border: 1px solid rgba(212, 175, 103, 0.48) !important;
+    border-radius: 8px !important;
+    background: rgba(212, 175, 103, 0.06) !important;
+    color: var(--gold-text, #D4AF67);
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 1;
+    box-shadow: none !important;
+    transition: border-color 180ms ease,
+                background 180ms ease;
+}
+
+.site-menu-drawer .drawer-language-button:hover {
+    border-color: #D4AF67 !important;
+    background: rgba(212, 175, 103, 0.12) !important;
+}
+
+.site-menu-drawer .drawer-language-chevron {
+    width: 13px;
+    height: 13px;
+    color: #D4AF67;
+    transition: transform 180ms ease;
+}
+
+/* Tillar ro‘yxati */
+.site-menu-drawer .drawer-language-options {
+    margin-top: 7px;
+    padding: 4px;
+    border: 1px solid rgba(212, 175, 103, 0.28) !important;
+    border-radius: 9px !important;
+    background: var(--card);
+    box-shadow: none !important;
+    overflow: hidden;
+}
+
+.site-menu-drawer .drawer-language-options button {
+    display: block;
+    width: 100%;
+    padding: 9px 11px;
+    border: none !important;
+    border-radius: 5px;
+    background: transparent;
+    color: var(--text);
+    font-size: 13px;
+    text-align: left;
+    cursor: pointer;
+    transition: background 160ms ease, color 160ms ease;
+}
+
+.site-menu-drawer .drawer-language-options button:hover {
+    background: rgba(212, 175, 103, 0.10);
+    color: var(--gold-text, #D4AF67);
+}
