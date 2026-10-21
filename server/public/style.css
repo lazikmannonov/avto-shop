@@ -1260,22 +1260,6 @@ body.menu-open {
     height: 19px;
 }
 
-.site-menu-drawer .drawer-menu-divider {
-    height: 1px;
-    margin: 14px 12px;
-    border: none;
-    background: linear-gradient(
-        90deg,
-        transparent 0%,
-        rgba(212, 175, 103, 0.22) 12%,
-        rgba(212, 175, 103, 0.72) 50%,
-        rgba(212, 175, 103, 0.22) 88%,
-        transparent 100%
-    );
-    opacity: 1;
-    flex-shrink: 0;
-}
-
 .site-menu-links > .menu-item {
     width: 100%;
     font: inherit;
@@ -1600,3 +1584,20 @@ body.menu-open {
     background: rgba(212, 175, 103, 0.10);
     color: var(--gold-text, #D4AF67);
 }
+
+/* UY-JOY — YON MENYU AJRATUVCHI CHIZIQLARI */
+.site-menu-drawer .drawer-menu-divider {
+    display: block;
+    width: auto;
+    height: 1px;
+    min-height: 1px;
+    margin: 10px 12px;
+    padding: 0;
+    border: 0;
+    border-radius: 1px;
+    background: rgba(212, 175, 103, 0.42);
+    box-shadow: none;
+    opacity: 1;
+    flex: 0 0 1px;
+}
+
