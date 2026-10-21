@@ -386,29 +386,36 @@
                 </svg>
             </button>
         </div>
-        
-                    <!-- NARX VALYUTASI -->
-                      <button
-                type="button"
-               class="menu-item drawer-currency-row"
-            id="drawerCurrencyButton"
-           onclick="toggleDrawerCurrency()"
-            aria-label="Narx valyutasini o‘zgartirish"
-        >
-         <svg class="icon" viewBox="0 0 24 24" fill="none"
-         stroke="currentColor" stroke-width="1.8"
-         stroke-linecap="round" stroke-linejoin="round"
-         aria-hidden="true">
-        <circle cx="12" cy="12" r="9"></circle>
-        <path d="M16 8.5c-.8-.8-1.8-1.2-3.2-1.2-1.7 0-2.8.8-2.8 2s1 1.8 2.8 2.2 2.8 1 2.8 2.3-1.2 2.2-3 2.2c-1.3 0-2.5-.5-3.4-1.4"></path>
-        <path d="M12 5.5v13"></path>
-    </svg>
-    <span>Narxni o‘zgartirish</span>
-    <span class="drawer-currency-value" id="drawerCurrencyValue">UZS</span>
-</button>
 
-        <div class="drawer-menu-divider"></div>
         
+                              <!-- NARX VALYUTASI -->
+                    <div class="menu-item drawer-currency-row"
+               id="drawerCurrencyButton">
+
+        <svg class="icon" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="1.8"
+              stroke-linecap="round" stroke-linejoin="round"
+              aria-hidden="true">
+          <circle cx="12" cy="12" r="9"></circle>
+              <path d="M16 8.5c-.8-.8-1.8-1.2-3.2-1.2-1.7 0-2.8.8-2.8 2s1 1.8 2.8 2.2 2.8 1 2.8 2.3-1.2 2.2-3 2.2c-1.3 0-2.5-.5-3.4-1.4"></path>
+           <path d="M12 5.5v13"></path>
+      </svg>
+
+                <span class="drawer-currency-title">Narxni o‘zgartirish</span>
+
+               <button
+               type="button"
+                  class="drawer-currency-value"
+                  id="drawerCurrencyValue"
+                    onclick="event.stopPropagation(); toggleDrawerCurrency()"
+                    aria-label="UZS va USD valyutasini almashtirish">
+                          UZS
+                     </button>
+
+                 </div>
+
+         <div class="drawer-menu-divider"></div>
+                   
                      <!-- CHIQISH:  -->
          <div class="menu-item drawer-exit-row" aria-label="Chiqish">
             <svg class="icon" aria-hidden="true">
