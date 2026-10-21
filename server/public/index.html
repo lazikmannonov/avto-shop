@@ -1143,28 +1143,13 @@ function phoneHref(phone){
     return cleaned ? "tel:"+cleaned : "";
 }
 
-
-
 function toggleDrawerCurrency(){
 
-    // UZS va USD ni almashtirish
     currentCurrency = currentCurrency === "UZS" ? "USD" : "UZS";
 
-    // Tanlangan valyutani saqlash
     lsSet("displayCurrency", currentCurrency);
 
-    // Yon paneldagi yozuvni yangilash
-    const label = document.getElementById("drawerCurrencyValue");
-
-    if(label){
-        label.textContent = currentCurrency;
-    }
-
-    // Sahifadagi narxlarni yangilash
     updatePrices();
-
-    // Boshqa valyuta tugmalarini yangilash
-    updateCurrencyButtons();
 }
     
 // Uy raqami bo‘lsa — uy raqami.
@@ -1776,17 +1761,22 @@ function updatePrices(){
 
     document.querySelectorAll("[data-price]").forEach(el=>{
 
-        // Faqat individual valyuta tugmasi bo‘lmagan
-        // narxlarni umumiy valyutada yangilash.
-        if(el.closest(".price-currency-control"))
-            return;
+        const value = el.dataset.price;
+        const currency = el.dataset.cur || "UZS";
 
-        el.textContent=formatPrice(
-            el.dataset.price,
-            el.dataset.cur
-        );
+        el.textContent = formatPrice(value, currency);
+
     });
 
+    // Yon paneldagi valyutani yangilash
+    const label = document.getElementById("drawerCurrencyValue");
+
+    if(label){
+        label.textContent = currentCurrency;
+    }
+
+    // Valyuta tugmalarini yangilash
+    updateCurrencyButtons();
 }
 
 function updateCurrencyButtons(){
