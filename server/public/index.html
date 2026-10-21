@@ -1735,27 +1735,32 @@ function detectCurrency(number,currency){
 
 /* Narx saqlangan valyutadan (car.currency) tanlangan valyutaga o‘tkaziladi.
    Bazadagi qiymat o‘zgarmaydi — faqat ko‘rsatish. */
-function formatPrice(value,currency){
 
-    const number=parsePrice(value);
+function formatPrice(value, currency){
 
-    if(!number)
-        return String(value||"");
+    const number = parsePrice(value);
 
-    const from=detectCurrency(number,currency);
+    if(!number || !Number.isFinite(number))
+        return String(value || "");
 
-    let amount=number;
+    const from = detectCurrency(number, currency);
 
-    if(from!==currentCurrency){
-        amount=from==="USD"?number*USD_RATE:number/USD_RATE;
+    let amount = number;
+
+    if(from !== currentCurrency){
+        amount = from === "USD"
+            ? number * USD_RATE
+            : number / USD_RATE;
     }
 
-    amount=Math.round(amount);
+    amount = Math.round(amount);
 
-    if(currentCurrency==="USD")
-        return "$ "+amount.toLocaleString("en-US");
+    if(currentCurrency === "USD"){
+        return "$ " + amount.toLocaleString("en-US");
+    }
 
-    return amount.toLocaleString("en-US").replace(/,/g," ")+" "+T().sum;
+    return amount.toLocaleString("en-US").replace(/,/g, " ")
+        + " " + T().sum;
 }
 
 /* Saralash uchun narxni so‘mga o‘tkazadi */
