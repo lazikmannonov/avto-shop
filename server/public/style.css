@@ -1679,5 +1679,5 @@ body:not(.dark) .site-menu-drawer .drawer-address-row > span {
 
 .site-menu-drawer .drawer-exit-row > .icon {
     flex: 0 0 20px;
-    margin: 0;
+    margin: 50;
 }
