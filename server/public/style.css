@@ -1681,3 +1681,46 @@ body:not(.dark) .site-menu-drawer .drawer-address-row > span {
     flex: 0 0 20px;
     margin: 50;
 }
+
+/* Chiqish — faqat yozuv va ikonka bosiladigan bo‘lsin */
+.site-menu-drawer .drawer-exit-row {
+    display: flex;
+    flex-direction: row-reverse;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 8px;
+    width: fit-content;
+    max-width: 100%;
+    margin: 8px 12px 0 auto;
+    padding: 8px 10px;
+    border: 1px solid transparent;
+    border-radius: 7px;
+    cursor: pointer;
+    transition: border-color 180ms ease,
+                background 180ms ease;
+}
+
+/* Yozuv o‘lchami bo‘yicha joy egallasin */
+.site-menu-drawer .drawer-exit-row > span {
+    flex: 0 0 auto;
+    text-align: right;
+    white-space: nowrap;
+}
+
+/* Ikonka */
+.site-menu-drawer .drawer-exit-row > .icon {
+    flex: 0 0 20px;
+    margin: 0;
+}
+
+/* Sichqoncha faqat Chiqish ustida bo‘lganda ramka */
+.site-menu-drawer .drawer-exit-row:hover {
+    border-color: rgba(217, 75, 75, 0.65);
+    background: rgba(217, 75, 75, 0.06);
+}
+
+/* Klaviatura orqali tanlanganda ham ramka */
+.site-menu-drawer .drawer-exit-row:focus-visible {
+    outline: 1px solid #D94B4B;
+    outline-offset: 2px;
+}
