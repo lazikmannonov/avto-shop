@@ -1143,6 +1143,30 @@ function phoneHref(phone){
     return cleaned ? "tel:"+cleaned : "";
 }
 
+
+
+function toggleDrawerCurrency(){
+
+    // UZS va USD ni almashtirish
+    currentCurrency = currentCurrency === "UZS" ? "USD" : "UZS";
+
+    // Tanlangan valyutani saqlash
+    lsSet("displayCurrency", currentCurrency);
+
+    // Yon paneldagi yozuvni yangilash
+    const label = document.getElementById("drawerCurrencyValue");
+
+    if(label){
+        label.textContent = currentCurrency;
+    }
+
+    // Sahifadagi narxlarni yangilash
+    updatePrices();
+
+    // Boshqa valyuta tugmalarini yangilash
+    updateCurrencyButtons();
+}
+    
 // Uy raqami bo‘lsa — uy raqami.
 // Aks holda — sayt sozlamalaridagi umumiy raqam.
 function getCallPhone(house){
