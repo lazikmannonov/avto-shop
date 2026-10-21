@@ -417,13 +417,18 @@
          <div class="drawer-menu-divider"></div>
                    
                      <!-- CHIQISH:  -->
-         <div class="menu-item drawer-exit-row" aria-label="Chiqish">
-            <svg class="icon" aria-hidden="true">
-                <use href="#i-log-out"></use>
-            </svg>
-            <span>Chiqish</span>
-        </div>
-    </div>
+     
+          <div class="menu-item drawer-exit-row"
+                 role="button"
+               tabindex="0"
+                  aria-label="Chiqish"
+            onclick="window.location.href='/'"
+         onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();window.location.href='/'}">
+             <svg class="icon" aria-hidden="true">
+              <use href="#i-log-out"></use>
+                  </svg>
+              <span>Chiqish</span>
+           </div>
 
                  <!-- MANZIL -->
         <div class="menu-item drawer-address-row">
