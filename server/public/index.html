@@ -1769,27 +1769,30 @@ function priceInUZS(car){
     return detectCurrency(n,car.currency)==="USD"?n*USD_RATE:n;
 }
 
+
 function updatePrices(){
 
     document.querySelectorAll("[data-price]").forEach(el=>{
 
-        const value = el.dataset.price;
-        const currency = el.dataset.cur || "UZS";
-
-        el.textContent = formatPrice(value, currency);
+        el.textContent = formatPrice(
+            el.dataset.price,
+            el.dataset.cur || "UZS"
+        );
 
     });
 
-    // Yon paneldagi valyutani yangilash
     const label = document.getElementById("drawerCurrencyValue");
 
     if(label){
         label.textContent = currentCurrency;
     }
 
-    // Valyuta tugmalarini yangilash
-    updateCurrencyButtons();
+    document.querySelectorAll(".currency-btn").forEach(btn=>{
+        btn.textContent = currentCurrency;
+        btn.dataset.cur = currentCurrency;
+    });
 }
+
 
 function updateCurrencyButtons(){
 
