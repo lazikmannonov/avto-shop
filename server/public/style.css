@@ -1861,3 +1861,7 @@ body:not(.dark) .site-menu-drawer .drawer-address-row > span {
     outline: 1px solid #D94B4B;
     outline-offset: 2px;
 }
+
+.site-menu-drawer .drawer-exit-row {
+    margin-top: 60px;
+}
