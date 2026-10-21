@@ -1731,29 +1731,64 @@ function priceInUZS(car){
 }
 
 function updatePrices(){
+
     document.querySelectorAll("[data-price]").forEach(el=>{
-        el.textContent=formatPrice(el.dataset.price,el.dataset.cur);
+
+        // Faqat individual valyuta tugmasi bo‘lmagan
+        // narxlarni umumiy valyutada yangilash.
+        if(el.closest(".price-currency-control"))
+            return;
+
+        el.textContent=formatPrice(
+            el.dataset.price,
+            el.dataset.cur
+        );
     });
+
 }
 
-function updateCurrencyButtons() {
-    document.querySelectorAll(".currency-btn").forEach(btn => {
-        btn.dataset.cur = currentCurrency;
-        btn.textContent = currentCurrency;
-        btn.classList.toggle("active", true);
+function updateCurrencyButtons(){
+
+    document.querySelectorAll(".currency-btn").forEach(btn=>{
+
+        // Har bir tugma o‘z valyutasini saqlaydi.
+        const cur=btn.dataset.cur || currentCurrency;
+
+        btn.textContent=cur;
+        btn.classList.toggle("active",true);
+
     });
+
 }
 
-function setCurrency(cur){
+function setCurrency(cur, button){
 
-    currentCurrency=cur==="USD"?"USD":"UZS";
+    const nextCurrency=cur==="USD"?"USD":"UZS";
 
-    lsSet("displayCurrency",currentCurrency);
+    // Tugma berilmagan bo‘lsa, eski umumiy ishlash tartibi saqlanadi.
+    if(!button){
+        currentCurrency=nextCurrency;
+        lsSet("displayCurrency",currentCurrency);
+        updateCurrencyButtons();
+        updatePrices();
+        return;
+    }
 
-    updateCurrencyButtons();
-    updatePrices();
+    // Faqat bosilgan tugmaga tegishli narxni topamiz.
+    const control=button.closest(".price-currency-control");
+    if(!control) return;
+
+    const price=control.querySelector("[data-price]");
+    if(!price) return;
+
+    button.dataset.cur=nextCurrency;
+    button.textContent=nextCurrency;
+
+    const priceCurrency=price.dataset.cur || "UZS";
+    price.textContent=formatPrice(price.dataset.price,priceCurrency);
+
+    // Umumiy currentCurrency va boshqa uylar o‘zgarmaydi.
 }
-
 function searchCars(){
 
     const input=document.getElementById("searchInput").value.toLowerCase().trim();
