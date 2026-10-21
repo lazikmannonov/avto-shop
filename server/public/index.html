@@ -2166,11 +2166,22 @@ function createCarCard(car, index) {
                 ${escapeHtml(formatPrice(car.price, car.currency))}
             </div>
 
-            <div class="property-meta">
-                <span class="meta-item">${escapeHtml(type)}</span>
-                <span class="meta-item">${icon("i-bed","icon-sm")}${escapeHtml(rooms)} ${t.rooms.toLowerCase()}</span>
-                <span class="meta-item">${icon("i-area","icon-sm")}${escapeHtml(area)}</span>
-            </div>
+            
+           <div class="car-price-row">
+              <div class="car-price"
+           data-price="${escapeHtml(car.price || "")}"
+           data-cur="${escapeHtml(car.currency || "")}">
+          ${escapeHtml(formatPrice(car.price, car.currency))}
+      </div>
+
+    <button
+        type="button"
+        class="price-currency-btn currency-btn"
+        data-cur="${currentCurrency === "UZS" ? "USD" : "UZS"}"
+        onclick="event.stopPropagation(); setCurrency('${currentCurrency === "UZS" ? "USD" : "UZS"}')">
+        ${currentCurrency}
+    </button>
+</div>
 
             <div class="car-address">
                 <svg class="icon icon-sm"><use href="#i-location"></use></svg>
