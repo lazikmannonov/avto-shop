@@ -2170,14 +2170,6 @@ function createCarCard(car, index) {
                      data-cur="${escapeHtml(car.currency || "")}">
                     ${escapeHtml(formatPrice(car.price, car.currency))}
                 </div>
-
-                <button type="button"
-                        class="price-currency-btn currency-btn"
-                        data-cur="${currentCurrency}"
-                        aria-label="Valyutani almashtirish"
-                        onclick="event.stopPropagation(); setCurrency(currentCurrency === 'UZS' ? 'USD' : 'UZS')">
-                    ${currentCurrency}
-                </button>
             </div>
 
             <div class="car-address">
