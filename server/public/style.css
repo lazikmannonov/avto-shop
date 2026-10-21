@@ -746,3 +746,39 @@ body.admin-page.dark{
     .admin-page .home-actions{grid-template-columns:1fr}
     .admin-page .login-card{padding:24px;border-radius:22px}
 }
+/* Valyuta tugmasi — premium ramka va bir qator */
+.site-menu-drawer .currency-btn,
+.site-menu-drawer .drawer-currency-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: row;
+    gap: 8px;
+
+    width: fit-content;
+    max-width: 100%;
+    height: auto;
+    min-height: 38px;
+    box-sizing: border-box;
+
+    padding: 8px 12px;
+    border: 1px solid #D4AF67;
+    border-radius: 8px;
+    background: transparent;
+
+    white-space: nowrap;
+    line-height: 1.2;
+}
+
+/* Narx va USD bir qatorda */
+.site-menu-drawer .currency-btn > *,
+.site-menu-drawer .drawer-currency-btn > * {
+    flex-shrink: 0;
+}
+
+/* Oltin ramka — sichqoncha ustiga borganda */
+.site-menu-drawer .currency-btn:hover,
+.site-menu-drawer .drawer-currency-btn:hover {
+    border-color: #D4AF67;
+    background: rgba(212, 175, 103, 0.08);
+}
