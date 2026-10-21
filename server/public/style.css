@@ -1655,3 +1655,8 @@ body.menu-open {
 body:not(.dark) .site-menu-drawer .drawer-address-row > span {
     color: #777064 !important;
 }
+
+/* Chiqish bandini biroz pastga tushirish */
+.site-menu-drawer .drawer-exit-row {
+    margin-top: 8px;
+}
