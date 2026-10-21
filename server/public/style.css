@@ -1,4 +1,3 @@
-
 /* ==========================================================
    UY-JOY — qora-oltin premium dizayn
    Qora #0B0B0A · Grafit #171612 · Oltin #D4AF67 · Oltin 2 #A78339
@@ -70,18 +69,15 @@ header{
 .phone-top{color:var(--gold);text-decoration:none;font-size:14px;font-weight:750;margin-right:6px;padding:10px 12px;border-radius:12px;transition:background .2s ease}
 .phone-top:hover{background:rgba(212,175,103,.12)}
 
-/* Til va tema tugmalari */
-.lang-btn,.theme-btn{
+/* Tema tugmasi */
+.theme-btn{
+    display:inline-flex;align-items:center;justify-content:center;min-width:40px;
     border:1px solid var(--border);background:var(--card2);color:var(--text);
     border-radius:12px;min-height:38px;padding:8px 10px;cursor:pointer;
     transition:transform .2s ease,background .2s ease,border-color .2s ease,color .2s ease;
 }
-.lang-btn:hover,.theme-btn:hover{border-color:var(--gold2)}
-.lang-btn:active,.theme-btn:active{transform:scale(.96)}
-.lang-btn.active{background:var(--gold);color:var(--on-gold);border-color:var(--gold)}
-.theme-btn{display:inline-flex;align-items:center;justify-content:center;min-width:40px}
-header .theme-btn{background:transparent;color:var(--gold);border-color:rgba(212,175,103,.45)}
-header .theme-btn:hover{background:rgba(212,175,103,.12);border-color:var(--gold)}
+.theme-btn:hover{border-color:var(--gold2)}
+.theme-btn:active{transform:scale(.96)}
 
 /* Valyuta */
 .currency-switch{display:inline-flex;flex:none;padding:2px;border:1px solid rgba(212,175,103,.45);border-radius:12px}
@@ -107,27 +103,30 @@ header .theme-btn:hover{background:rgba(212,175,103,.12);border-color:var(--gold
 /* SEARCH PAGE */
 .search-page-top{display:flex;align-items:center;gap:12px;margin-bottom:18px}
 .search-page-title{font-size:28px;font-weight:900;letter-spacing:-.7px}
-.search-back{width:45px;height:45px;flex:0 0 45px;border:1px solid var(--border);background:var(--card);color:var(--gold-text);border-radius:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:border-color .2s ease,transform .2s ease}
-.search-back:hover{transform:translateX(-3px);border-color:var(--gold2)}
+.search-back{width:45px;height:45px;flex:0 0 45px;border:1px solid var(--border);background:var(--card);color:var(--text);border-radius:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:border-color .2s ease,transform .2s ease,color .2s ease}
+.search-back:hover{transform:translateX(-3px);border-color:var(--gold2);color:var(--gold-text)}
 
 .search-page-categories{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;margin-bottom:12px}
 .search-category{min-width:0;min-height:62px;border:1px solid var(--border);background:var(--card);color:var(--text);border-radius:14px;padding:10px 9px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;font-size:12px;font-weight:800;text-align:center;transition:background .2s ease,border-color .2s ease,color .2s ease}
-.search-category .icon{width:19px;height:19px;color:var(--gold-text)}
+/* Qidiruv kategoriyalari: ikonka dumaloq neytral "tile" ichida */
+.search-category .icon{width:30px;height:30px;padding:6px;border-radius:50%;background:var(--card2);color:var(--muted);transition:background .2s,color .2s}
 .search-category:hover{border-color:var(--gold2)}
+.search-category:hover .icon{color:var(--text)}
 .search-category.active{background:var(--gold);color:var(--on-gold);border-color:var(--gold)}
-.search-category.active .icon{color:var(--on-gold)}
+.search-category.active .icon{background:rgba(11,11,10,.14);color:var(--on-gold)}
 
-.filter-toggle{width:100%;height:44px;border:1px solid var(--border);background:var(--card);color:var(--gold-text);border-radius:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;margin-bottom:10px;transition:border-color .2s ease,background .2s ease}
-.filter-toggle:hover{border-color:var(--gold2)}
-.filter-toggle.open{background:var(--gold);color:var(--on-gold);border-color:var(--gold)}
+.filter-toggle{width:100%;height:44px;border:1px solid var(--border);background:var(--card);color:var(--text);border-radius:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;margin-bottom:10px;transition:border-color .2s ease,background .2s ease,color .2s ease}
+.filter-toggle:hover{border-color:var(--gold2);color:var(--gold-text)}
+.filter-toggle.open,.filter-toggle.open:hover{background:var(--gold);color:var(--on-gold);border-color:var(--gold)}
 .filter-toggle.open .icon{transform:rotate(180deg)}
 
 .extra-filters{display:none;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:15px}
 .extra-filters.open{display:grid;animation:filterIn .2s ease}
 @keyframes filterIn{from{opacity:0;transform:translateY(-5px)}to{opacity:1;transform:translateY(0)}}
 .extra-filter{min-height:50px;border:1px solid var(--border);background:var(--card);color:var(--text);border-radius:14px;cursor:pointer;font-size:12px;font-weight:800;display:flex;align-items:center;justify-content:center;gap:7px;transition:background .2s ease,border-color .2s ease,color .2s ease}
-.extra-filter .icon{color:var(--gold-text)}
+.extra-filter .icon{color:var(--muted)}
 .extra-filter:hover{border-color:var(--gold2)}
+.extra-filter:hover .icon{color:var(--text)}
 .extra-filter.active{background:var(--gold);color:var(--on-gold);border-color:var(--gold)}
 .extra-filter.active .icon{color:var(--on-gold)}
 
@@ -147,18 +146,22 @@ header .theme-btn:hover{background:rgba(212,175,103,.12);border-color:var(--gold
 .car-card:hover .car-image{transform:scale(1.05)}
 .badge{position:absolute;top:13px;left:13px;z-index:4;padding:7px 11px;border-radius:999px;font-size:10px;font-weight:900;letter-spacing:.35px;background:var(--gold);color:var(--on-gold)}
 .sold-badge{background:var(--red);color:#fff}
+
+/* Sevimlilar (yurak) */
 .favorite{position:absolute;right:13px;top:13px;z-index:5;width:42px;height:42px;border-radius:50%;border:1px solid rgba(212,175,103,.45);background:rgba(11,11,10,.62);color:#F2EEE4;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:transform .2s ease,background .2s ease,color .2s ease}
 .favorite:hover{transform:scale(1.08);background:rgba(11,11,10,.82)}
-.favorite.active{color:var(--gold)}
-.favorite.active .icon{fill:currentColor}
+.favorite:hover .icon{color:#FF6B70}
+.favorite.active{color:#E5484D;border-color:rgba(229,72,77,.65);background:rgba(11,11,10,.78)}
+.favorite.active .icon{color:#E5484D;fill:#E5484D;stroke:#E5484D}
+
 .car-content{min-width:0;padding:18px}
 .car-name{min-width:0;color:var(--text);font-size:19px;font-weight:850;letter-spacing:-.35px;margin-bottom:7px;overflow-wrap:anywhere;word-break:break-word}
 .car-price{font-size:22px;line-height:1.2;font-weight:900;color:var(--gold-text);margin-bottom:12px;letter-spacing:-.45px}
 .property-meta{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:11px}
-.meta-item{display:inline-flex;align-items:center;gap:5px;background:var(--card2);border:1px solid var(--border);color:var(--muted);border-radius:9px;padding:6px 8px;font-size:11px;font-weight:700}
-.meta-item .icon{color:var(--gold-text)}
+.meta-item{display:inline-flex;align-items:center;gap:5px;background:var(--card2);border:1px solid var(--border);color:var(--text);border-radius:9px;padding:6px 8px;font-size:11px;font-weight:700}
+.meta-item .icon{color:var(--muted)}
 .car-address{color:var(--muted);font-size:12px;margin-bottom:8px;display:flex;align-items:flex-start;gap:5px;line-height:1.4;overflow-wrap:anywhere;word-break:break-word}
-.car-address .icon{margin-top:1px;color:var(--gold-text)}
+.car-address .icon{margin-top:1px;color:#D9575C}
 .car-description{color:var(--muted);font-size:13px;line-height:1.55;min-height:40px;display:-webkit-box;-webkit-line-clamp:2;line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;overflow-wrap:anywhere;word-break:break-word}
 .card-bottom{display:flex;gap:8px;margin-top:15px}
 .detail-btn,.call-btn{flex:1;min-width:0;padding:12px 9px;border-radius:12px;border:none;cursor:pointer;font-weight:850;text-align:center;text-decoration:none;display:flex;align-items:center;justify-content:center;gap:6px;transition:transform .2s ease,background .2s ease,border-color .2s ease}
@@ -169,7 +172,7 @@ header .theme-btn:hover{background:rgba(212,175,103,.12);border-color:var(--gold
 
 /* EMPTY */
 .empty{grid-column:1/-1;text-align:center;padding:80px 20px;background:var(--card);border-radius:20px;border:1px solid var(--border)}
-.empty-icon{margin-bottom:14px;color:var(--gold2)}
+.empty-icon{margin-bottom:14px;color:var(--muted);opacity:.7}
 .empty h3{margin-bottom:7px;font-size:19px}
 .empty p{color:var(--muted);line-height:1.5}
 
@@ -182,8 +185,8 @@ header .theme-btn:hover{background:rgba(212,175,103,.12);border-color:var(--gold
 @keyframes skeleton{0%{background-position:200% 0}100%{background-position:-200% 0}}
 
 /* DETAILS */
-.back-btn{border:1px solid var(--border);background:var(--card);color:var(--gold-text);padding:11px 16px;border-radius:14px;cursor:pointer;margin-bottom:16px;display:inline-flex;align-items:center;gap:7px;font-weight:750;transition:transform .2s ease,border-color .2s ease}
-.back-btn:hover{transform:translateX(-3px);border-color:var(--gold2)}
+.back-btn{border:1px solid var(--border);background:var(--card);color:var(--text);padding:11px 16px;border-radius:14px;cursor:pointer;margin-bottom:16px;display:inline-flex;align-items:center;gap:7px;font-weight:750;transition:transform .2s ease,border-color .2s ease,color .2s ease}
+.back-btn:hover{transform:translateX(-3px);border-color:var(--gold2);color:var(--gold-text)}
 .details-card{width:100%;max-width:100%;min-width:0;background:var(--card);border:1px solid var(--border);border-radius:24px;overflow:hidden;box-shadow:var(--shadow-lg)}
 .details-main{width:100%;max-width:100%;min-width:0;display:grid;grid-template-columns:1.15fr .85fr}
 .details-image{width:100%;height:560px;object-fit:cover;display:block;cursor:pointer}
@@ -203,23 +206,23 @@ header .theme-btn:hover{background:rgba(212,175,103,.12);border-color:var(--gold
 .thumb:hover{opacity:1}
 .thumb.active{border-color:var(--gold);opacity:1}
 
-/* MENU */
+/* MENU SAHIFASI */
 .menu-card{width:100%;max-width:850px;margin:10px auto 0;background:var(--card);border:1px solid var(--border);border-radius:22px;padding:8px 20px;box-shadow:var(--shadow)}
 .menu-item{min-width:0;display:flex;justify-content:space-between;align-items:center;gap:15px;padding:18px 5px;border-bottom:1px solid var(--border)}
 .menu-item:last-child{border-bottom:none}
 .menu-item-left{min-width:0;display:flex;flex-direction:column;gap:5px}
 .menu-item-title{color:var(--text);font-weight:850;display:flex;align-items:center;gap:9px}
-.menu-item-title .icon{color:var(--gold-text)}
+.menu-item-title .icon{width:34px;height:34px;padding:8px;border-radius:11px;background:var(--card2);color:var(--text);border:1px solid var(--border)}
 .menu-item-sub{color:var(--muted);font-size:13px;line-height:1.4;overflow-wrap:anywhere;word-break:break-word}
-.menu-item a{flex:0 0 auto;color:var(--gold-text);font-weight:800;text-decoration:none;display:flex;align-items:center;gap:6px;padding:8px 10px;border-radius:10px;transition:background .2s ease}
-.menu-item a:hover{background:var(--gold-soft)}
+.menu-item a{flex:0 0 auto;color:var(--text);font-weight:800;text-decoration:none;display:flex;align-items:center;gap:6px;padding:8px 12px;border:1px solid var(--border);background:var(--card2);border-radius:10px;transition:background .2s ease,border-color .2s ease}
+.menu-item a .icon{color:var(--muted)}
+.menu-item a:hover{background:var(--gold-soft);border-color:var(--gold2)}
+.menu-item a:hover .icon{color:var(--gold-text)}
 .social-menu-item{cursor:pointer;border-radius:12px;padding-left:10px;padding-right:10px;transition:background .2s ease}
 .social-menu-item:hover{background:var(--gold-soft)}
-.language-menu-item{gap:12px}
+.social-menu-item:hover .menu-item-title .icon{background:var(--gold-soft);border-color:var(--gold2);color:var(--gold-text)}
+.language-menu-item{gap:12px;position:relative;z-index:20}
 .language-menu-item .menu-item-left{flex:1}
-.language-options{display:flex;align-items:center;gap:6px;flex:0 0 auto}
-.language-options .lang-btn{min-width:43px;min-height:38px;padding:8px 10px;font-size:12px;font-weight:850;flex-shrink:0}
-.language-options .lang-btn.active{background:var(--gold);color:var(--on-gold);border-color:var(--gold)}
 
 /* LIGHTBOX */
 .lightbox{position:fixed;inset:0;z-index:3000;background:rgba(11,11,10,.94);display:none;align-items:center;justify-content:center;padding:25px}
@@ -238,7 +241,13 @@ header .theme-btn:hover{background:rgba(212,175,103,.12);border-color:var(--gold
 .bottom-nav button{flex:1;min-width:0;border:none;background:transparent;color:#A89F8B;padding:8px 5px;border-radius:14px;font-size:11px;font-weight:700;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;transition:background .2s ease,color .2s ease}
 .bottom-nav button:hover{color:var(--gold)}
 .bottom-nav button.active{color:var(--gold);background:rgba(212,175,103,.14)}
+.bottom-nav button[onclick*="favorite" i].active{color:#E5484D;background:rgba(229,72,77,.14)}
+.bottom-nav button[onclick*="favorite" i]:hover{color:#E5484D}
 .bottom-icon{height:22px;display:flex;align-items:center;justify-content:center}
+
+/* Pastki "Sozlamalar" tugmasi ikonkasi */
+#navMenu .bottom-icon{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;flex:0 0 24px}
+#navMenu .bottom-icon .icon{display:block;width:22px;height:22px;flex:0 0 22px;margin:0;transform:none}
 
 /* TELEGRAM BOT */
 .telegram-bot-float{position:fixed;right:18px;bottom:88px;z-index:1400;display:flex;align-items:center;gap:10px;padding:11px 15px 11px 11px;border:1px solid rgba(212,175,103,.5);border-radius:16px;background:var(--graphite);color:var(--gold);text-decoration:none;box-shadow:0 12px 30px rgba(0,0,0,.3);transition:transform .2s ease,border-color .2s ease;-webkit-tap-highlight-color:transparent}
@@ -252,6 +261,109 @@ header .theme-btn:hover{background:rgba(212,175,103,.12);border-color:var(--gold
 /* FOCUS */
 button:focus-visible,a:focus-visible,input:focus-visible,.social-menu-item:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
 ::selection{background:rgba(212,175,103,.35);color:var(--text)}
+
+/* ===== TIL TANLASH (Sozlamalar sahifasi) ===== */
+.language-picker{position:relative;flex-shrink:0}
+.language-trigger{display:inline-flex;align-items:center;justify-content:center;gap:7px;min-width:76px;height:36px;padding:0 10px;color:var(--text,#f2eee4);background:var(--card,#171612);border:1px solid var(--gold,#d4af67);border-radius:9px;font:inherit;font-size:12px;font-weight:700;cursor:pointer;transition:border-color .18s ease,background .18s ease}
+.language-trigger:hover{border-color:var(--gold2,#a78339)}
+.language-trigger > .icon:first-child{width:16px;height:16px;color:var(--gold,#d4af67)}
+.language-trigger .language-chevron{width:13px;height:13px;color:var(--gold,#d4af67);transition:transform .18s ease}
+.language-trigger[aria-expanded="true"] .language-chevron{transform:rotate(180deg)}
+.language-dropdown{position:absolute;top:calc(100% + 6px);right:0;z-index:100;width:156px;padding:4px;background:var(--card,#171612);border:1px solid var(--gold,#d4af67);border-radius:10px;box-shadow:0 8px 22px rgba(0,0,0,.20)}
+.language-dropdown[hidden]{display:none !important}
+.lang-option{display:flex;align-items:center;gap:8px;width:100%;min-height:34px;padding:6px 8px;color:var(--text,#f2eee4);background:transparent;border:0;border-radius:6px;text-align:left;font:inherit;font-size:12px;cursor:pointer}
+.lang-option:hover,.lang-option.active{background:rgba(212,175,103,.12)}
+.lang-code{display:inline-flex;align-items:center;justify-content:center;width:27px;height:23px;flex-shrink:0;color:var(--gold,#d4af67);border:1px solid rgba(212,175,103,.3);border-radius:5px;font-size:10px;font-weight:700}
+.lang-name{flex:1;white-space:nowrap}
+.lang-check{width:14px;height:14px;flex-shrink:0;color:var(--gold,#d4af67);opacity:0}
+.lang-option.active .lang-check{opacity:1}
+
+/* ===== YUQORIDAGI MENYU TUGMASI ===== */
+.header-menu-btn{display:inline-flex;flex-direction:row;align-items:center;justify-content:center;gap:0;width:42px;min-width:42px;height:42px;flex:0 0 auto;padding:0;border:1px solid rgba(212,175,103,.4);border-radius:10px;background:transparent;color:var(--gold);font:inherit;font-size:14px;font-weight:600;white-space:nowrap;cursor:pointer;transition:background .2s ease,border-color .2s ease}
+.header-menu-btn:hover{background:rgba(212,175,103,.12);border-color:var(--gold)}
+.header-menu-btn span{display:none}
+.header-menu-btn .icon{width:21px;height:21px;flex:0 0 21px}
+
+/* ===== YON MENYU (DRAWER) ===== */
+.site-menu-overlay{position:fixed;inset:0;z-index:2000;background:rgba(0,0,0,.72);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);opacity:0;visibility:hidden;transition:opacity .25s ease,visibility .25s ease}
+.site-menu-overlay.open{opacity:1;visibility:visible}
+
+.site-menu-drawer{position:fixed;top:0;right:0;z-index:2001;width:min(380px,88vw);height:100%;height:100dvh;overflow-y:auto;display:flex;flex-direction:column;padding:26px 20px 36px;background:var(--card);color:var(--text);border-left:1px solid var(--border);box-shadow:-20px 0 60px rgba(0,0,0,.45);transform:translateX(105%);visibility:hidden;transition:transform .28s ease,visibility .28s ease}
+.site-menu-drawer.open{transform:translateX(0);visibility:visible}
+
+.site-menu-header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:22px;padding-bottom:22px;border-bottom:1px solid rgba(212,175,103,.24)}
+.site-menu-title{color:var(--text);font-size:24px;font-weight:800;letter-spacing:-.6px}
+.site-menu-close{display:inline-flex;align-items:center;justify-content:center;width:40px;height:40px;flex:0 0 40px;border:1px solid rgba(212,175,103,.38);border-radius:10px;background:rgba(212,175,103,.05);color:#D4AF67;cursor:pointer;transition:background .2s ease,border-color .2s ease}
+.site-menu-close:hover{background:rgba(212,175,103,.14);border-color:#D4AF67}
+.site-menu-close:focus-visible{outline:2px solid #D4AF67;outline-offset:3px}
+
+body.menu-open{overflow:hidden}
+
+.site-menu-links{display:flex;flex-direction:column;gap:8px;flex:0 0 auto}
+
+/* Menyu bandlari */
+.site-menu-links .menu-item{border:1px solid transparent;border-radius:11px;background:transparent;color:var(--text);font-size:14px;font-weight:500;text-decoration:none;cursor:pointer;transition:background .2s ease,border-color .2s ease,color .2s ease}
+.site-menu-links .menu-item:hover{color:#F4D99D;background:rgba(212,175,103,.08);border-color:rgba(212,175,103,.22)}
+.site-menu-links .menu-item:focus-visible{outline:2px solid #D4AF67;outline-offset:3px}
+.site-menu-links .menu-item .icon{color:#D4AF67}
+.site-menu-links > .menu-item{font:inherit;text-align:left;cursor:pointer}
+
+.site-menu-drawer .site-menu-links > .menu-item,
+.site-menu-drawer .contact-accordion-toggle,
+.site-menu-drawer .contact-accordion-content > .menu-item{display:flex;align-items:center;justify-content:flex-start;gap:12px;width:100%;min-height:46px;padding:11px 12px;box-sizing:border-box;text-align:left;line-height:1.4}
+
+/* Barcha ikonkalar bir xil o'lchamda */
+.site-menu-drawer .menu-item > .icon{display:block;flex:0 0 20px;width:20px;height:20px;margin:0;vertical-align:middle}
+.site-menu-drawer .menu-item > span{display:block;flex:1 1 auto;min-width:0;margin:0;text-align:left;overflow-wrap:anywhere}
+
+/* Bog'lanish akkordeoni */
+.contact-accordion{width:100%}
+.contact-accordion-toggle{width:100%}
+.contact-chevron{width:18px !important;height:18px !important;margin-left:auto;transition:transform .22s ease}
+.site-menu-drawer .contact-accordion-toggle > .contact-chevron{flex:0 0 16px;margin-left:auto}
+.contact-accordion-toggle[aria-expanded="true"] .contact-chevron{transform:rotate(180deg)}
+.contact-accordion-content{display:none;flex-direction:column;gap:5px;padding:7px 0 5px 16px;margin-left:17px;border-left:1px solid rgba(212,175,103,.35)}
+.contact-accordion-content.open{display:flex}
+.contact-accordion-content .menu-item{font-size:13px}
+
+/* Til va Ko'rinish qatorlari */
+.drawer-setting-row{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:54px;padding:8px 12px;margin-bottom:9px;border:none}
+.drawer-setting-label{display:flex;align-items:center;gap:10px;color:var(--text);font-size:14px;font-weight:500}
+.drawer-setting-label .icon{width:19px;height:19px;color:var(--gold-text)}
+.drawer-language-wrap{position:relative}
+.drawer-language-button{display:inline-flex;align-items:center;justify-content:center;gap:7px;min-width:66px;min-height:32px;padding:5px 10px;border:1px solid rgba(212,175,103,.48);border-radius:8px;background:rgba(212,175,103,.06);color:var(--gold-text,#D4AF67);font-size:12px;font-weight:600;line-height:1;cursor:pointer;transition:border-color .18s ease,background .18s ease}
+.drawer-language-button:hover{border-color:#D4AF67;background:rgba(212,175,103,.12)}
+.drawer-language-chevron{width:13px;height:13px;color:#D4AF67;transition:transform .18s ease}
+.drawer-language-options{position:absolute;top:calc(100% + 7px);right:0;z-index:1002;min-width:132px;padding:4px;border:1px solid rgba(212,175,103,.28);border-radius:9px;background:var(--card);color:var(--text);overflow:hidden}
+.drawer-language-options[hidden]{display:none !important}
+.drawer-language-options button{display:block;width:100%;padding:9px 11px;border:none;border-radius:5px;background:transparent;color:var(--text);font-size:13px;text-align:left;cursor:pointer;transition:background .16s ease,color .16s ease}
+.drawer-language-options button:hover{background:rgba(212,175,103,.10);color:var(--gold-text,#D4AF67)}
+.drawer-theme-button{display:grid;place-items:center;width:35px;height:35px;border:1px solid var(--gold);border-radius:10px;background:transparent;color:var(--gold);cursor:pointer}
+.drawer-theme-button .icon{width:19px;height:19px}
+
+/* Ajratuvchi chiziq */
+.site-menu-drawer .drawer-menu-divider{display:block;width:auto;height:1px;min-height:1px;margin:10px 12px;padding:0;border:0;border-radius:1px;background:rgba(212,175,103,.38);box-shadow:none;flex:0 0 1px}
+
+/* Manzil: pastda, ikonka va yozuv markazda */
+.drawer-address-row{cursor:default !important;overflow-wrap:anywhere}
+.site-menu-drawer .drawer-address-row{display:flex !important;flex-direction:row !important;align-items:center !important;justify-content:center !important;width:100%;box-sizing:border-box;gap:8px;margin-top:auto;padding:14px 16px;flex-shrink:0;text-align:center;color:#B8B2A5 !important}
+.site-menu-drawer .drawer-address-row > span{flex:0 1 auto;text-align:left;color:#B8B2A5 !important;font-size:12px;font-weight:400;line-height:1.6}
+.site-menu-drawer .drawer-address-row > .icon{flex:0 0 auto;margin:0;color:#D4AF67 !important;opacity:.95}
+body:not(.dark) .site-menu-drawer .drawer-address-row > span{color:#777064 !important}
+
+/* Chiqish — faqat ikonka va yozuv atrofida ramka */
+.drawer-exit-row{color:#d94b4b !important}
+.drawer-exit-row .icon{color:#d94b4b !important}
+.site-menu-drawer .site-menu-links > .drawer-exit-row{display:inline-flex !important;flex-direction:row-reverse;align-items:center;justify-content:center;align-self:flex-end;width:max-content !important;max-width:calc(100% - 24px);min-height:auto !important;box-sizing:border-box;gap:8px;margin:60px 12px 0 auto !important;padding:8px 10px;border:1px solid transparent;border-radius:7px;background:transparent;color:#D94B4B;cursor:pointer !important;transition:border-color .18s ease,background .18s ease}
+.site-menu-drawer .site-menu-links > .drawer-exit-row > span{flex:0 0 auto;white-space:nowrap;text-align:right}
+.site-menu-drawer .site-menu-links > .drawer-exit-row > .icon{flex:0 0 20px;width:20px;height:20px;margin:0;color:#D94B4B}
+.site-menu-drawer .site-menu-links > .drawer-exit-row:hover{border-color:#D94B4B;background:rgba(217,75,75,.06)}
+.site-menu-drawer .site-menu-links > .drawer-exit-row:focus-visible{outline:1px solid #D94B4B;outline-offset:2px}
+
+/* Tashqi havola (↗) ikonasi */
+.premium-external-icon{display:block;box-sizing:border-box;width:19px;height:19px;flex:0 0 19px;padding:0;color:#D4AF67;border:none;border-radius:0;background:transparent;opacity:1;visibility:visible;transition:color .18s ease,transform .18s ease}
+.site-menu-drawer a:has(.premium-external-icon){display:inline-flex;align-items:center;justify-content:center;padding:0;font-size:0;text-decoration:none;background:transparent;border:none;box-shadow:none}
+.site-menu-drawer a:hover .premium-external-icon{color:#F0D79B;transform:translate(1px,-1px)}
 
 /* ================= RESPONSIVE ================= */
 @media(max-width:1100px){
@@ -304,7 +416,6 @@ button:focus-visible,a:focus-visible,input:focus-visible,.social-menu-item:focus
     .search-back{width:41px;height:41px;flex-basis:41px}
     .search-page-categories{grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
     .search-category{min-height:53px;border-radius:12px;padding:7px 5px;font-size:11px}
-    .search-category .icon{width:17px;height:17px}
     .search-category:last-child{grid-column:1/-1}
     .filter-toggle{height:40px;border-radius:12px}
     .extra-filters{grid-template-columns:1fr;gap:7px}
@@ -334,8 +445,6 @@ button:focus-visible,a:focus-visible,input:focus-visible,.social-menu-item:focus
     .menu-item-sub{font-size:11px}
     .menu-item a{max-width:45%;font-size:12px;overflow:hidden;text-overflow:ellipsis}
     .language-menu-item{gap:8px}
-    .language-options{gap:4px}
-    .language-options .lang-btn{min-width:35px;min-height:34px;padding:6px 7px;font-size:11px}
     .bottom-nav{width:calc(100% - 18px);bottom:9px;padding:6px;border-radius:18px}
     .bottom-nav button{padding:7px 2px;font-size:10px;border-radius:13px}
     .bottom-icon{height:20px}
@@ -349,6 +458,11 @@ button:focus-visible,a:focus-visible,input:focus-visible,.social-menu-item:focus
     .telegram-bot-float{right:12px;bottom:76px;padding:9px;border-radius:14px}
     .telegram-bot-text{display:none}
     .telegram-bot-icon{width:40px;height:40px;flex-basis:40px;border-radius:12px}
+}
+
+@media(max-width:480px){
+    .site-menu-drawer{width:min(360px,88vw);padding:22px 16px 32px}
+    .site-menu-title{font-size:22px}
 }
 
 @media(max-width:380px){
@@ -379,6 +493,8 @@ button:focus-visible,a:focus-visible,input:focus-visible,.social-menu-item:focus
     .menu-item-title{font-size:13px}
     .menu-item-sub{font-size:10px}
     .bottom-nav{width:calc(100% - 12px)}
+    .drawer-setting-row{padding:8px}
+    .drawer-setting-label{font-size:13px}
 }
 
 @media(prefers-reduced-motion:reduce){
@@ -629,1259 +745,4 @@ body.admin-page.dark{
     .admin-page .page-title{font-size:17px}
     .admin-page .home-actions{grid-template-columns:1fr}
     .admin-page .login-card{padding:24px;border-radius:22px}
-}
-
-/* ===== INDEX: ikonkalarni tartibga solish (oltin faqat kerakli joyda) ===== */
-
-/* Qidiruv kategoriyalari: ikonka dumaloq neytral "tile" ichida */
-.search-category .icon{
-    width:30px;height:30px;padding:6px;border-radius:50%;
-    background:var(--card2);color:var(--muted);
-    transition:background .2s,color .2s;
-}
-.search-category:hover .icon{color:var(--text)}
-.search-category.active .icon{background:rgba(11,11,10,.14);color:var(--on-gold)}
-
-/* Qo'shimcha filtrlar */
-.extra-filter .icon{color:var(--muted)}
-.extra-filter:hover .icon{color:var(--text)}
-.extra-filter.active .icon{color:var(--on-gold)}
-
-/* Filtr ochish tugmasi, orqaga tugmalari */
-.filter-toggle,
-.search-back,
-.back-btn{color:var(--text)}
-.filter-toggle:hover,
-.search-back:hover,
-.back-btn:hover{color:var(--gold-text)}
-.filter-toggle.open,
-.filter-toggle.open:hover{color:var(--on-gold)}
-
-/* Karta ichidagi belgilar (xona, maydon, tur) */
-.meta-item{background:var(--card2);color:var(--text)}
-.meta-item .icon{color:var(--muted)}
-
-/* Manzil: yumshoq qizil pin, matn kulrang */
-.car-address .icon{color:#D9575C}
-
-/* Bo'sh holat */
-.empty-icon{color:var(--muted);opacity:.7}
-
-/* Menyu sahifasi: ikonkalar neytral tile ichida, havola pill ko'rinishda */
-.menu-item-title .icon{
-    width:34px;height:34px;padding:8px;border-radius:11px;
-    background:var(--card2);color:var(--text);
-    border:1px solid var(--border);
-}
-.menu-item a{
-    color:var(--text);border:1px solid var(--border);
-    background:var(--card2);padding:8px 12px;
-}
-.menu-item a .icon{color:var(--muted)}
-.menu-item a:hover{background:var(--gold-soft);border-color:var(--gold2)}
-.menu-item a:hover .icon{color:var(--gold-text)}
-.social-menu-item:hover .menu-item-title .icon{
-    background:var(--gold-soft);border-color:var(--gold2);color:var(--gold-text);
-}
-
-/* Karta: "Batafsil" tugmasi ikonkasi ham neytral */
-.detail-btn .icon{color:var(--muted)}
-.detail-btn:hover .icon{color:var(--text)}
-
-/* ===== INDEX: sevimlilar (yurak) ===== */
-.favorite .icon{color:#F2EEE4}
-.favorite:hover .icon{color:#FF6B70}
-.favorite.active{color:#E5484D;border-color:rgba(229,72,77,.65);background:rgba(11,11,10,.78)}
-.favorite.active .icon{color:#E5484D;fill:#E5484D;stroke:#E5484D}
-
-.bottom-nav button[data-page="favorites"].active,
-.bottom-nav button[data-page="favorite"].active,
-.bottom-nav button[onclick*="favorite" i].active{color:#E5484D;background:rgba(229,72,77,.14)}
-.bottom-nav button[data-page="favorites"]:hover,
-.bottom-nav button[data-page="favorite"]:hover,
-.bottom-nav button[onclick*="favorite" i]:hover{color:#E5484D}
-
-
-/* ===== UY-JOY: IXCHAM PREMIUM TIL TANLASH ===== */
-
-.language-menu-item {
-    position: relative;
-    z-index: 20;
-}
-
-.language-picker {
-    position: relative;
-    flex-shrink: 0;
-}
-
-.language-trigger {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 7px;
-    min-width: 76px;
-    height: 36px;
-    padding: 0 10px;
-    color: var(--text, #f2eee4);
-    background: var(--card, #171612);
-    border: 1px solid var(--gold, #d4af67);
-    border-radius: 9px;
-    font: inherit;
-    font-size: 12px;
-    font-weight: 700;
-    cursor: pointer;
-    transition: border-color .18s ease,
-                background .18s ease;
-}
-
-.language-trigger:hover {
-    border-color: var(--gold2, #a78339);
-}
-
-.language-trigger > .icon:first-child {
-    width: 16px;
-    height: 16px;
-    color: var(--gold, #d4af67);
-}
-
-.language-trigger .language-chevron {
-    width: 13px;
-    height: 13px;
-    color: var(--gold, #d4af67);
-    transition: transform .18s ease;
-}
-
-.language-trigger[aria-expanded="true"] .language-chevron {
-    transform: rotate(180deg);
-}
-
-.language-dropdown {
-    position: absolute;
-    top: calc(100% + 6px);
-    right: 0;
-    z-index: 100;
-    width: 156px;
-    padding: 4px;
-    background: var(--card, #171612);
-    border: 1px solid var(--gold, #d4af67);
-    border-radius: 10px;
-    box-shadow: 0 8px 22px rgba(0, 0, 0, .20);
-}
-
-.language-dropdown[hidden] {
-    display: none !important;
-}
-
-.lang-option {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    width: 100%;
-    min-height: 34px;
-    padding: 6px 8px;
-    color: var(--text, #f2eee4);
-    background: transparent;
-    border: 0;
-    border-radius: 6px;
-    text-align: left;
-    font: inherit;
-    font-size: 12px;
-    cursor: pointer;
-}
-
-.lang-option:hover,
-.lang-option.active {
-    background: rgba(212, 175, 103, .12);
-}
-
-.lang-code {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 27px;
-    height: 23px;
-    flex-shrink: 0;
-    color: var(--gold, #d4af67);
-    border: 1px solid rgba(212, 175, 103, .3);
-    border-radius: 5px;
-    font-size: 10px;
-    font-weight: 700;
-}
-
-.lang-name {
-    flex: 1;
-    white-space: nowrap;
-}
-
-.lang-check {
-    width: 14px;
-    height: 14px;
-    flex-shrink: 0;
-    color: var(--gold, #d4af67);
-    opacity: 0;
-}
-
-.lang-option.active .lang-check {
-    opacity: 1;
-}
-
-@media (prefers-reduced-motion: reduce) {
-    .language-trigger,
-    .language-chevron {
-        transition: none;
-    }
-}
-
-
-/* ===== UY-JOY: YUQORIDAGI YON MENYU ===== */
-
-.site-menu-overlay {
-    position: fixed;
-    inset: 0;
-    z-index: 2000;
-    background: rgba(0, 0, 0, .58);
-    opacity: 0;
-    visibility: hidden;
-    transition: opacity .25s ease, visibility .25s ease;
-}
-
-.site-menu-overlay.open {
-    opacity: 1;
-    visibility: visible;
-}
-
-.site-menu-drawer {
-    position: fixed;
-    top: 0;
-    right: 0;
-    z-index: 2001;
-    width: min(380px, 88vw);
-    height: 100%;
-    height: 100dvh;
-    overflow-y: auto;
-    padding: 22px 18px 100px;
-    background: var(--card);
-    color: var(--text);
-    border-left: 1px solid var(--border);
-    box-shadow: -15px 0 45px rgba(0, 0, 0, .22);
-    transform: translateX(105%);
-    visibility: hidden;
-    transition: transform .28s ease, visibility .28s ease;
-}
-
-.site-menu-drawer.open {
-    transform: translateX(0);
-    visibility: visible;
-}
-
-.site-menu-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-    margin-bottom: 20px;
-    padding-bottom: 16px;
-    border-bottom: 1px solid var(--border);
-}
-
-.site-menu-title {
-    font-size: 21px;
-    font-weight: 900;
-}
-
-.site-menu-close,
-.header-menu-btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 42px;
-    height: 42px;
-    flex: 0 0 42px;
-    border: 1px solid rgba(212, 175, 103, .4);
-    border-radius: 12px;
-    background: transparent;
-    color: var(--gold);
-    cursor: pointer;
-    transition: background .2s ease, border-color .2s ease;
-}
-
-.site-menu-close:hover,
-.header-menu-btn:hover {
-    background: rgba(212, 175, 103, .12);
-    border-color: var(--gold);
-}
-
-body.menu-open {
-    overflow: hidden;
-}
-
-@media (prefers-reduced-motion: reduce) {
-    .site-menu-overlay,
-    .site-menu-drawer {
-        transition: none;
-    }
-}
-
-
-/* UY-JOY — yuqoridagi menyu tugmasi */
-.header-menu-btn {
-    width: auto;
-    min-width: 44px;
-    height: 42px;
-    flex: 0 0 auto;
-    padding: 0 13px;
-    border-radius: 10px;
-    display: inline-flex;
-    flex-direction: row;
-    gap: 8px;
-    white-space: nowrap;
-    font: inherit;
-    font-size: 14px;
-    font-weight: 600;
-}
-
-/* Menyu ichidagi ikonka */
-.header-menu-btn .icon {
-    width: 20px;
-    height: 20px;
-    flex: 0 0 20px;
-}
-
-#navMenu .bottom-icon .icon {
-    width: 22px;
-    height: 22px;
-    display: block;
-}
-
-
-/* Pastki Sozlamalar tugmasi — ikonka */
-
-#navMenu .bottom-icon {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 24px;
-    height: 24px;
-    flex: 0 0 24px;
-}
-
-#navMenu .bottom-icon .icon {
-    display: block;
-    width: 22px;
-    height: 22px;
-    flex: 0 0 22px;
-    margin: 0;
-    transform: none;
-}
-
-/* Yuqorida faqat menyu ikonkasini ko‘rsatish */
-.header-menu-btn {
-    width: 42px;
-    min-width: 42px;
-    height: 42px;
-    padding: 0;
-    justify-content: center;
-    gap: 0;
-}
-
-.header-menu-btn span {
-    display: none;
-}
-
-.header-menu-btn .icon {
-    width: 21px;
-    height: 21px;
-}
-
-/* ==========================================
-   UY-JOY — PREMIUM QORA-OLTIN YON PANEL
-   ========================================== */
-
-.site-menu-overlay {
-    background: rgba(0, 0, 0, 0.72);
-    backdrop-filter: blur(3px);
-    -webkit-backdrop-filter: blur(3px);
-}
-
-.site-menu-drawer {
-    background: #0B0B0A;
-    color: #F2EEE4;
-    border-left: 1px solid rgba(212, 175, 103, 0.28);
-    box-shadow: -20px 0 60px rgba(0, 0, 0, 0.45);
-    padding: 26px 20px 36px;
-}
-
-.site-menu-header {
-    padding-bottom: 22px;
-    margin-bottom: 22px;
-    border-bottom: 1px solid rgba(212, 175, 103, 0.24);
-}
-
-.site-menu-title {
-    color: #F5F0E5;
-    font-size: 24px;
-    font-weight: 800;
-    letter-spacing: -0.6px;
-}
-
-.site-menu-close {
-    width: 40px;
-    height: 40px;
-    flex: 0 0 40px;
-    border: 1px solid rgba(212, 175, 103, 0.38);
-    border-radius: 10px;
-    color: #D4AF67;
-    background: rgba(212, 175, 103, 0.05);
-}
-
-.site-menu-close:hover {
-    background: rgba(212, 175, 103, 0.14);
-    border-color: #D4AF67;
-}
-
-.site-menu-links {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-}
-
-.site-menu-links .menu-item {
-    display: flex;
-    align-items: center;
-    gap: 13px;
-    width: 100%;
-    min-height: 52px;
-    padding: 13px 14px;
-    border: 1px solid transparent;
-    border-radius: 11px;
-    background: transparent;
-    color: #E8E2D6;
-    font-size: 14px;
-    font-weight: 500;
-    text-align: left;
-    text-decoration: none;
-    cursor: pointer;
-    transition:
-        background 0.2s ease,
-        border-color 0.2s ease,
-        color 0.2s ease;
-}
-
-.site-menu-links .menu-item:hover {
-    color: #F4D99D;
-    background: rgba(212, 175, 103, 0.08);
-    border-color: rgba(212, 175, 103, 0.22);
-}
-
-.site-menu-links .menu-item .icon {
-    display: block;
-    width: 21px;
-    height: 21px;
-    flex: 0 0 21px;
-    color: #D4AF67;
-}
-
-.site-menu-links .menu-item:focus-visible,
-.site-menu-close:focus-visible {
-    outline: 2px solid #D4AF67;
-    outline-offset: 3px;
-}
-
-@media (max-width: 480px) {
-    .site-menu-drawer {
-        width: min(360px, 88vw);
-        padding: 22px 16px 32px;
-    }
-
-    .site-menu-title {
-        font-size: 22px;
-    }
-
-    .site-menu-links .menu-item {
-        min-height: 50px;
-    }
-}
-
-@media (prefers-reduced-motion: reduce) {
-    .site-menu-links .menu-item {
-        transition: none;
-    }
-}
-
-
-/* UY-JOY — BOG‘LANISH AKKORDEONI */
-
-.contact-accordion {
-    width: 100%;
-}
-
-.contact-accordion-toggle {
-    width: 100%;
-}
-
-.contact-chevron {
-    width: 18px !important;
-    height: 18px !important;
-    margin-left: auto;
-    transition: transform 0.22s ease;
-}
-
-.contact-accordion-toggle[aria-expanded="true"] .contact-chevron {
-    transform: rotate(180deg);
-}
-
-.contact-accordion-content {
-    display: none;
-    flex-direction: column;
-    gap: 5px;
-    padding: 7px 0 5px 16px;
-    margin-left: 17px;
-    border-left: 1px solid rgba(212, 175, 103, 0.35);
-}
-
-.contact-accordion-content.open {
-    display: flex;
-}
-
-.contact-accordion-content .menu-item {
-    min-height: 45px;
-    padding: 10px 12px;
-    font-size: 13px;
-}
-
-.contact-accordion-content .menu-item .icon {
-    width: 19px;
-    height: 19px;
-    flex-basis: 19px;
-}
-
-/* UY-JOY — premium yon menyu qo‘shimchalari */
-
-.drawer-setting-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-    min-height: 54px;
-    padding: 8px 12px;
-    border: 1px solid rgba(212, 175, 103, 0.18);
-    border-radius: 12px;
-    margin-bottom: 9px;
-}
-
-.drawer-setting-label {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    color: var(--text);
-    font-size: 14px;
-    font-weight: 500;
-}
-
-.drawer-setting-label .icon {
-    width: 19px;
-    height: 19px;
-    color: var(--gold);
-}
-
-.drawer-language-wrap {
-    position: relative;
-}
-
-.drawer-language-button {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    min-width: 66px;
-    padding: 7px 9px;
-    border: 1px solid var(--gold);
-    border-radius: 9px;
-    background: transparent;
-    color: var(--text);
-    font-size: 12px;
-    font-weight: 700;
-    cursor: pointer;
-}
-
-.drawer-language-chevron {
-    width: 14px;
-    height: 14px;
-    color: var(--gold);
-}
-
-.drawer-language-options {
-    position: absolute;
-    top: calc(100% + 7px);
-    right: 0;
-    z-index: 1002;
-    min-width: 132px;
-    padding: 5px;
-    border: 1px solid rgba(212, 175, 103, 0.4);
-    border-radius: 10px;
-    background: var(--card);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
-}
-
-.drawer-language-options[hidden] {
-    display: none !important;
-}
-
-.drawer-language-options button {
-    display: block;
-    width: 100%;
-    padding: 10px;
-    border: 0;
-    border-radius: 7px;
-    background: transparent;
-    color: var(--text);
-    text-align: left;
-    cursor: pointer;
-}
-
-.drawer-language-options button:hover {
-    background: rgba(212, 175, 103, 0.12);
-}
-
-.drawer-theme-button {
-    display: grid;
-    place-items: center;
-    width: 35px;
-    height: 35px;
-    border: 1px solid var(--gold);
-    border-radius: 10px;
-    background: transparent;
-    color: var(--gold);
-    cursor: pointer;
-}
-
-.drawer-theme-button .icon {
-    width: 19px;
-    height: 19px;
-}
-
-.site-menu-links > .menu-item {
-    width: 100%;
-    font: inherit;
-    text-align: left;
-    cursor: pointer;
-}
-
-.drawer-address-row {
-    cursor: default !important;
-    overflow-wrap: anywhere;
-}
-
-.drawer-exit-row {
-    color: #d94b4b !important;
-    cursor: default !important;
-}
-
-.drawer-exit-row .icon {
-    color: #d94b4b !important;
-}
-
-.site-menu-drawer .menu-item .icon {
-    flex-shrink: 0;
-}
-
-@media (max-width: 380px) {
-    .drawer-setting-row {
-        padding: 8px;
-    }
-
-    .drawer-setting-label {
-        font-size: 13px;
-    }
-}
-
-/* Uy-Joy menyusidagi ikonka va yozuvlarni tartiblash */
-.site-menu-drawer .site-menu-links > .menu-item,
-.site-menu-drawer .contact-accordion-toggle,
-.site-menu-drawer .contact-accordion-content > .menu-item {
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-    gap: 12px;
-    width: 100%;
-    min-height: 46px;
-    padding: 11px 12px;
-    box-sizing: border-box;
-    text-align: left;
-    line-height: 1.4;
-}
-
-/* Barcha ikonkalarning o‘lchami bir xil bo‘lsin */
-.site-menu-drawer .menu-item > .icon {
-    display: block;
-    flex: 0 0 20px;
-    width: 20px;
-    height: 20px;
-    margin: 0;
-    vertical-align: middle;
-}
-
-/* Yozuvlar ikonka yonidan boshlansin */
-.site-menu-drawer .menu-item > span {
-    display: block;
-    flex: 1 1 auto;
-    min-width: 0;
-    margin: 0;
-    text-align: left;
-    overflow-wrap: anywhere;
-}
-
-/* Bog‘lanish strelkasi o‘ng tomonda tursin */
-.site-menu-drawer .contact-accordion-toggle > .contact-chevron {
-    flex: 0 0 16px;
-    width: 16px;
-    height: 16px;
-    margin-left: auto;
-}
-
-/* Manzil yozuvi ham tekis joylashsin */
-.site-menu-drawer .drawer-address-row {
-    align-items: flex-start;
-}
-
-.site-menu-drawer .drawer-address-row > .icon {
-    margin-top: 1px;
-}
-
-/* Uy-Joy menyusi — Dark/Light ranglarini moslashtirish */
-.site-menu-drawer {
-    background: var(--card);
-    color: var(--text);
-    border-color: var(--border);
-}
-
-.site-menu-drawer .site-menu-title,
-.site-menu-drawer .drawer-setting-label,
-.site-menu-drawer .menu-item,
-.site-menu-drawer .drawer-language-button {
-    color: var(--text);
-}
-
-.site-menu-drawer .drawer-language-options {
-    background: var(--card);
-    color: var(--text);
-    border-color: var(--border);
-}
-
-.site-menu-drawer .drawer-language-options button {
-    color: var(--text);
-}
-
-.site-menu-drawer .drawer-setting-label .icon,
-.site-menu-drawer .drawer-language-chevron {
-    color: var(--gold-text);
-}
-
-
-/* Telegram bot va boshqa tashqi havolalar uchun SVG */
-.premium-external-icon {
-    display: inline-block;
-    width: 19px;
-    height: 19px;
-    color: #D4AF67;
-    flex: 0 0 19px;
-    vertical-align: middle;
-}
-
-/* Ikon yo‘qolib qolmasin */
-.site-menu-drawer a:has(.premium-external-icon) {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 0;
-    text-decoration: none;
-    background: transparent;
-    border: none;
-    box-shadow: none;
-}
-
-
-/* Uy-Joy premium tashqi havola ikonlari */
-.premium-external-icon {
-    display: block;
-    width: 19px;
-    height: 19px;
-    flex: 0 0 19px;
-    color: #D4AF67;
-    opacity: 1;
-    visibility: visible;
-    transition: color 180ms ease, transform 180ms ease;
-}
-
-.site-menu-drawer a:has(.premium-external-icon) {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    background: transparent;
-    border: none;
-    box-shadow: none;
-    text-decoration: none;
-}
-
-.site-menu-drawer a:hover .premium-external-icon {
-    color: #F0D79B;
-    transform: translate(1px, -1px);
-}
-
-/* Uy-Joy — premium tashqi havola ikonasi */
-.premium-external-icon {
-    display: block;
-    box-sizing: border-box;
-    width: 19px;
-    height: 19px;
-    flex: 0 0 19px;
-    padding: 0;
-    color: #D4AF67;
-    border: none;
-    border-radius: 0;
-    background: transparent;
-    opacity: 1;
-    visibility: visible;
-    transition: color 180ms ease, transform 180ms ease;
-}
-
-/* Havola tugmasi */
-.site-menu-drawer a:has(.premium-external-icon) {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0;
-    font-size: 0;
-    text-decoration: none;
-    background: transparent;
-    border: none;
-    box-shadow: none;
-}
-
-/* WhatsApp va Instagram ikonkalari */
-.menu-item.social-menu-item[data-social="whatsapp"] > .premium-external-icon,
-.menu-item.social-menu-item[data-social="instagram"] > .premium-external-icon {
-    width: 19px;
-    height: 19px;
-    flex: 0 0 19px;
-    padding: 0;
-    border: none;
-    background: transparent;
-}
-
-/* Nozik premium effekt */
-.site-menu-drawer a:hover .premium-external-icon,
-.menu-item.social-menu-item:hover > .premium-external-icon {
-    color: #F0D79B;
-    transform: translate(1px, -1px);
-}
-
-/* Uy kartasida narx va valyuta tugmasi */
-.car-price-row {
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-    flex-wrap: nowrap;
-    gap: 8px;
-    min-width: 0;
-}
-
-.car-price-row .car-price {
-    flex: 0 1 auto;
-    min-width: 0;
-    margin: 0;
-    overflow-wrap: anywhere;
-}
-
-.car-price-row .price-currency-btn {
-    flex: 0 0 auto;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    min-width: 40px;
-    height: 23px;
-    padding: 0 5px;
-    border: 1px solid #D4AF67;
-    border-radius: 6px;
-    background: transparent;
-    color: #D4AF67;
-    font-size: 10px;
-    font-weight: 600;
-    line-height: 1;
-    cursor: pointer;
-    white-space: nowrap;
-}
-
-/* Uy-Joy — Til va Ko‘rinish ramkalarini olib tashlash */
-.site-menu-drawer .drawer-setting-row,
-.site-menu-drawer .drawer-language-button,
-.site-menu-drawer .drawer-setting-button,
-.site-menu-drawer .drawer-language-options {
-    border: none !important;
-    outline: none;
-    box-shadow: none !important;
-}
-
-
-/* UY-JOY — PREMIUM TIL TANLASH */
-.site-menu-drawer .drawer-language-button {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 7px;
-    min-height: 32px;
-    padding: 5px 10px;
-    border: 1px solid rgba(212, 175, 103, 0.48) !important;
-    border-radius: 8px !important;
-    background: rgba(212, 175, 103, 0.06) !important;
-    color: var(--gold-text, #D4AF67);
-    font-size: 12px;
-    font-weight: 600;
-    line-height: 1;
-    box-shadow: none !important;
-    transition: border-color 180ms ease,
-                background 180ms ease;
-}
-
-.site-menu-drawer .drawer-language-button:hover {
-    border-color: #D4AF67 !important;
-    background: rgba(212, 175, 103, 0.12) !important;
-}
-
-.site-menu-drawer .drawer-language-chevron {
-    width: 13px;
-    height: 13px;
-    color: #D4AF67;
-    transition: transform 180ms ease;
-}
-
-/* Tillar ro‘yxati */
-.site-menu-drawer .drawer-language-options {
-    margin-top: 7px;
-    padding: 4px;
-    border: 1px solid rgba(212, 175, 103, 0.28) !important;
-    border-radius: 9px !important;
-    background: var(--card);
-    box-shadow: none !important;
-    overflow: hidden;
-}
-
-.site-menu-drawer .drawer-language-options button {
-    display: block;
-    width: 100%;
-    padding: 9px 11px;
-    border: none !important;
-    border-radius: 5px;
-    background: transparent;
-    color: var(--text);
-    font-size: 13px;
-    text-align: left;
-    cursor: pointer;
-    transition: background 160ms ease, color 160ms ease;
-}
-
-.site-menu-drawer .drawer-language-options button:hover {
-    background: rgba(212, 175, 103, 0.10);
-    color: var(--gold-text, #D4AF67);
-}
-
-/* UY-JOY — YON MENYU AJRATUVCHI CHIZIQLARI */
-.site-menu-drawer .drawer-menu-divider {
-    display: block;
-    width: auto;
-    height: 1px;
-    min-height: 1px;
-    margin: 10px 12px;
-    padding: 0;
-    border: 0;
-    border-radius: 1px;
-    background: rgba(212, 175, 103, 0.42);
-    box-shadow: none;
-    opacity: 1;
-    flex: 0 0 1px;
-}
-
-/* Uy-Joy — menyu chiziqlari */
-.site-menu-drawer .drawer-menu-divider {
-    display: block;
-    width: auto;
-    height: 1px;
-    min-height: 1px;
-    margin: 10px 12px;
-    padding: 0;
-    border: 0;
-    background: rgba(212, 175, 103, 0.38);
-    box-shadow: none;
-    flex: 0 0 1px;
-}
-
-/* Uy-Joy — manzilni menyu pastiga joylashtirish */
-.site-menu-drawer {
-    display: flex;
-    flex-direction: column;
-}
-
-.site-menu-drawer .site-menu-links {
-    flex: 0 0 auto;
-}
-
-.site-menu-drawer .drawer-address-row {
-    margin-top: auto;
-    padding: 14px 16px;
-    flex-shrink: 0;
-}
-
-/* Uy-Joy — pastki manzil dizayni */
-.site-menu-drawer .drawer-address-row {
-    color: #B8B2A5 !important;
-}
-
-/* Manzil matni */
-.site-menu-drawer .drawer-address-row > span {
-    color: #B8B2A5 !important;
-    font-size: 12px;
-    font-weight: 400;
-    line-height: 1.6;
-}
-
-/* Xarita belgisi */
-.site-menu-drawer .drawer-address-row > .icon {
-    color: #D4AF67 !important;
-    flex-shrink: 0;
-    opacity: 0.95;
-}
-
-/* Light rejimida ham o‘qilishi yaxshi bo‘lsin */
-body:not(.dark) .site-menu-drawer .drawer-address-row > span {
-    color: #777064 !important;
-}
-
-/* Chiqish — faqat yozuv va ikonka bosiladigan bo‘lsin */
-.site-menu-drawer .drawer-exit-row {
-    display: flex;
-    flex-direction: row-reverse;
-    align-items: center;
-    justify-content: flex-start;
-    gap: 8px;
-    width: fit-content;
-    max-width: 100%;
-    margin: 8px 12px 0 auto;
-    padding: 8px 10px;
-    border: 1px solid transparent;
-    border-radius: 7px;
-    cursor: pointer;
-    transition: border-color 180ms ease,
-                background 180ms ease;
-}
-
-/* Yozuv o‘lchami bo‘yicha joy egallasin */
-.site-menu-drawer .drawer-exit-row > span {
-    flex: 0 0 auto;
-    text-align: right;
-    white-space: nowrap;
-}
-
-/* Ikonka */
-.site-menu-drawer .drawer-exit-row > .icon {
-    flex: 0 0 20px;
-    margin: 0;
-}
-
-/* Sichqoncha faqat Chiqish ustida bo‘lganda ramka */
-.site-menu-drawer .drawer-exit-row:hover {
-    border-color: rgba(217, 75, 75, 0.65);
-    background: rgba(217, 75, 75, 0.06);
-}
-
-/* Klaviatura orqali tanlanganda ham ramka */
-.site-menu-drawer .drawer-exit-row:focus-visible {
-    outline: 1px solid #D94B4B;
-    outline-offset: 2px;
-}
-
-
-/* Chiqish — ixcham tugma, faqat o‘z maydoni bosiladi */
-.site-menu-drawer .drawer-exit-row {
-    display: inline-flex;
-    flex-direction: row-reverse;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-
-    width: fit-content;
-    max-width: 100%;
-    box-sizing: border-box;
-
-    margin: 8px 12px 0 auto;
-    padding: 8px 10px;
-
-    border: 1px solid transparent;
-    border-radius: 7px;
-    background: transparent;
-
-    cursor: pointer;
-    transition: border-color 180ms ease,
-                background 180ms ease;
-}
-
-/* Yozuv o‘ng tomonda, ikonka uning oldida */
-.site-menu-drawer .drawer-exit-row > span {
-    flex: 0 0 auto;
-    white-space: nowrap;
-    text-align: right;
-}
-
-.site-menu-drawer .drawer-exit-row > .icon {
-    flex: 0 0 20px;
-    width: 20px;
-    height: 20px;
-    margin: 0;
-}
-
-/* Ramka faqat tugma ustida */
-.site-menu-drawer .drawer-exit-row:hover {
-    border-color: rgba(217, 75, 75, 0.8);
-    background: rgba(217, 75, 75, 0.06);
-}
-
-/* Bosilganda ham ingichka ramka */
-.site-menu-drawer .drawer-exit-row:active {
-    border-color: #D94B4B;
-}
-
-/* Klaviatura bilan boshqarish */
-.site-menu-drawer .drawer-exit-row:focus-visible {
-    outline: 1px solid #D94B4B;
-    outline-offset: 2px;
-}
-
-/* Chiqish — ixcham tugma, faqat o‘z maydoni bosiladi */
-.site-menu-drawer .drawer-exit-row {
-    display: inline-flex;
-    flex-direction: row-reverse;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-
-    width: fit-content;
-    max-width: 100%;
-    box-sizing: border-box;
-
-    margin: 8px 12px 0 auto;
-    padding: 8px 10px;
-
-    border: 1px solid transparent;
-    border-radius: 7px;
-    background: transparent;
-
-    cursor: pointer;
-    transition: border-color 180ms ease,
-                background 180ms ease;
-}
-
-/* Yozuv o‘ng tomonda, ikonka uning oldida */
-.site-menu-drawer .drawer-exit-row > span {
-    flex: 0 0 auto;
-    white-space: nowrap;
-    text-align: right;
-}
-
-.site-menu-drawer .drawer-exit-row > .icon {
-    flex: 0 0 20px;
-    width: 20px;
-    height: 20px;
-    margin: 0;
-}
-
-/* Ramka faqat tugma ustida */
-.site-menu-drawer .drawer-exit-row:hover {
-    border-color: rgba(217, 75, 75, 0.8);
-    background: rgba(217, 75, 75, 0.06);
-}
-
-/* Bosilganda ham ingichka ramka */
-.site-menu-drawer .drawer-exit-row:active {
-    border-color: #D94B4B;
-}
-
-/* Klaviatura bilan boshqarish */
-.site-menu-drawer .drawer-exit-row:focus-visible {
-    outline: 1px solid #D94B4B;
-    outline-offset: 2px;
-}
-
-/* CHIQISH — faqat ikonka va yozuv atrofida ramka */
-.site-menu-drawer .site-menu-links > .drawer-exit-row {
-    display: inline-flex !important;
-    flex-direction: row-reverse;
-    align-items: center;
-    justify-content: center;
-    align-self: flex-end;
-
-    width: max-content !important;
-    max-width: calc(100% - 24px);
-    min-height: auto !important;
-    box-sizing: border-box;
-
-    gap: 8px;
-    margin: 60px 12px 0 auto !important;
-    padding: 8px 10px;
-
-    border: 1px solid transparent;
-    border-radius: 7px;
-    background: transparent;
-
-    color: #D94B4B;
-    cursor: pointer !important;
-
-    transition: border-color 180ms ease,
-                background 180ms ease;
-}
-
-.site-menu-drawer .site-menu-links > .drawer-exit-row > span {
-    flex: 0 0 auto;
-    white-space: nowrap;
-    text-align: right;
-}
-
-.site-menu-drawer .site-menu-links > .drawer-exit-row > .icon {
-    flex: 0 0 20px;
-    width: 20px;
-    height: 20px;
-    margin: 0;
-    color: #D94B4B;
-}
-
-.site-menu-drawer .site-menu-links > .drawer-exit-row:hover {
-    border-color: #D94B4B;
-    background: rgba(217, 75, 75, 0.06);
-}
-
-.site-menu-drawer .site-menu-links > .drawer-exit-row:focus-visible {
-    outline: 1px solid #D94B4B;
-    outline-offset: 2px;
-}
-/* Manzil: ikonka va yozuv birgalikda markazda */
-.site-menu-drawer .drawer-address-row {
-    display: flex !important;
-    flex-direction: row !important;
-    align-items: center !important;
-    justify-content: center !important;
-
-    width: 100%;
-    box-sizing: border-box;
-    gap: 8px;
-    text-align: center;
-}
-
-/* Manzil yozuvi */
-.site-menu-drawer .drawer-address-row > span {
-    flex: 0 1 auto;
-    text-align: left;
-}
-
-/* Xarita ikonasi yozuvning oldida */
-.site-menu-drawer .drawer-address-row > .icon {
-    flex: 0 0 auto;
-    margin: 0;
 }
