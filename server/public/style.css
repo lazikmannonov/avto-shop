@@ -1601,3 +1601,32 @@ body.menu-open {
     flex: 0 0 1px;
 }
 
+/* Uy-Joy — menyu chiziqlari */
+.site-menu-drawer .drawer-menu-divider {
+    display: block;
+    width: auto;
+    height: 1px;
+    min-height: 1px;
+    margin: 10px 12px;
+    padding: 0;
+    border: 0;
+    background: rgba(212, 175, 103, 0.38);
+    box-shadow: none;
+    flex: 0 0 1px;
+}
+
+/* Uy-Joy — manzilni menyu pastiga joylashtirish */
+.site-menu-drawer {
+    display: flex;
+    flex-direction: column;
+}
+
+.site-menu-drawer .site-menu-links {
+    flex: 0 0 auto;
+}
+
+.site-menu-drawer .drawer-address-row {
+    margin-top: auto;
+    padding: 14px 16px;
+    flex-shrink: 0;
+}
