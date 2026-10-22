@@ -2665,24 +2665,124 @@ function changeLightbox(direction) {
 
     let startX = 0;
     let startY = 0;
+    let currentX = 0;
+    let dragging = false;
+    let horizontalSwipe = false;
+
+    const threshold = 65;
+
+    image.style.touchAction = "pan-y";
 
     image.addEventListener("touchstart", function(event) {
         if (event.touches.length !== 1) return;
 
         startX = event.touches[0].clientX;
         startY = event.touches[0].clientY;
+        currentX = 0;
+        dragging = true;
+        horizontalSwipe = false;
+
+        image.style.transition = "none";
+    }, { passive: true });
+
+    image.addEventListener("touchmove", function(event) {
+        if (!dragging || event.touches.length !== 1) return;
+
+        const diffX = event.touches[0].clientX - startX;
+        const diffY = event.touches[0].clientY - startY;
+
+        if (!horizontalSwipe) {
+            if (Math.abs(diffY) > Math.abs(diffX)) {
+                dragging = false;
+                return;
+            }
+
+            if (Math.abs(diffX) > 8) {
+                horizontalSwipe = true;
+            }
+        }
+
+        if (!horizontalSwipe) return;
+
+        currentX = diffX;
+
+        image.style.transform =
+            `translate3d(${diffX}px, 0, 0)`;
+
+        image.style.opacity =
+            String(Math.max(0.55, 1 - Math.abs(diffX) / 500));
     }, { passive: true });
 
     image.addEventListener("touchend", function(event) {
-        if (event.changedTouches.length !== 1) return;
+        if (!dragging) return;
 
-        const diffX = event.changedTouches[0].clientX - startX;
-        const diffY = event.changedTouches[0].clientY - startY;
+        dragging = false;
 
-        if (Math.abs(diffX) < 45) return;
-        if (Math.abs(diffX) <= Math.abs(diffY)) return;
+        const diffX = currentX;
+        const diffY = event.changedTouches.length
+            ? event.changedTouches[0].clientY - startY
+            : 0;
 
-        changeLightbox(diffX < 0 ? 1 : -1);
+        if (
+            !horizontalSwipe ||
+            Math.abs(diffX) < threshold ||
+            Math.abs(diffX) <= Math.abs(diffY)
+        ) {
+            image.style.transition =
+                "transform 260ms ease, opacity 260ms ease";
+            image.style.transform = "translate3d(0,0,0)";
+            image.style.opacity = "1";
+            return;
+        }
+
+        const direction = diffX < 0 ? 1 : -1;
+        const exitX = direction > 0
+            ? -window.innerWidth
+            : window.innerWidth;
+
+        image.style.transition =
+            "transform 220ms cubic-bezier(.22,.61,.36,1), opacity 220ms ease";
+        image.style.transform = `translate3d(${exitX}px,0,0)`;
+        image.style.opacity = "0.4";
+
+        image.addEventListener("transitionend", function finishSwipe() {
+            image.removeEventListener("transitionend", finishSwipe);
+
+            const images = getImages(currentDetailsCar);
+
+            if (!images.length) return;
+
+            currentLightboxIndex =
+                (currentLightboxIndex + direction + images.length) %
+                images.length;
+
+            image.style.transition = "none";
+            image.src = imageUrl(images[currentLightboxIndex]);
+
+            const enterX = direction > 0
+                ? window.innerWidth
+                : -window.innerWidth;
+
+            image.style.transform = `translate3d(${enterX}px,0,0)`;
+            image.style.opacity = "0.4";
+
+            requestAnimationFrame(function() {
+                requestAnimationFrame(function() {
+                    image.style.transition =
+                        "transform 380ms cubic-bezier(.22,.61,.36,1), opacity 380ms ease";
+                    image.style.transform = "translate3d(0,0,0)";
+                    image.style.opacity = "1";
+                });
+            });
+        }, { once: true });
+    }, { passive: true });
+
+    image.addEventListener("touchcancel", function() {
+        dragging = false;
+        horizontalSwipe = false;
+        image.style.transition = "transform 200ms ease, opacity 200ms ease";
+        image.style.transform = "translate3d(0,0,0)";
+        image.style.opacity = "1";
     }, { passive: true });
 })();
 
