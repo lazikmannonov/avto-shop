@@ -2660,6 +2660,37 @@ function changeLightbox(direction){
         image.classList.remove("slide-next", "slide-prev");
     };
 }
+    
+(function setupLightboxSwipe() {
+    const lightbox = document.getElementById("lightbox");
+    const image = document.getElementById("lightboxImage");
+
+    if (!lightbox || !image || lightbox.dataset.swipeReady) return;
+
+    lightbox.dataset.swipeReady = "true";
+
+    let startX = 0;
+    let startY = 0;
+
+    image.addEventListener("touchstart", function(event) {
+        if (event.touches.length !== 1) return;
+
+        startX = event.touches[0].clientX;
+        startY = event.touches[0].clientY;
+    }, { passive: true });
+
+    image.addEventListener("touchend", function(event) {
+        if (event.changedTouches.length !== 1) return;
+
+        const diffX = event.changedTouches[0].clientX - startX;
+        const diffY = event.changedTouches[0].clientY - startY;
+
+        if (Math.abs(diffX) < 45) return;
+        if (Math.abs(diffX) <= Math.abs(diffY)) return;
+
+        changeLightbox(diffX < 0 ? 1 : -1);
+    }, { passive: true });
+})();
 
 function showPage(page){
 
