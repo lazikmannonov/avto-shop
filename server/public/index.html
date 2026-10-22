@@ -2536,157 +2536,69 @@ function selectDetailImage(index){
 function setupDetailImageSwipe() {
     const main = document.getElementById("detailsMainImage");
 
-    if (!main || main.dataset.swipeReady === "true") return;
-
-    main.dataset.swipeReady = "true";
+    if (!main) return;
 
     let startX = 0;
     let startY = 0;
-    let currentX = 0;
-    let dragging = false;
-    let horizontalSwipe = false;
-    let startIndex = 0;
-
-    const threshold = 45;
+    let swiped = false;
 
     main.style.touchAction = "pan-y";
     main.style.cursor = "pointer";
-    main.style.willChange = "transform, opacity";
 
     main.addEventListener("touchstart", function(event) {
-        if (event.touches.length !== 1) return;
+        if (!event.touches || event.touches.length !== 1) return;
 
-        const thumbs = document.querySelectorAll(
-            "#detailsCard .thumb"
+        startX = event.touches[0].clientX;
+        startY = event.touches[0].clientY;
+        swiped = false;
+    }, { passive: true });
+
+    main.addEventListener("touchend", function(event) {
+        if (!event.changedTouches || event.changedTouches.length !== 1) return;
+
+        const endX = event.changedTouches[0].clientX;
+        const endY = event.changedTouches[0].clientY;
+
+        const diffX = endX - startX;
+        const diffY = endY - startY;
+
+        // Faqat gorizontal surishni aniqlash
+        if (Math.abs(diffX) < 45 || Math.abs(diffX) < Math.abs(diffY)) {
+            return;
+        }
+
+        const thumbs = Array.from(
+            document.querySelectorAll("#detailsCard .thumb")
         );
 
         if (thumbs.length < 2) return;
 
-        startX = event.touches[0].clientX;
-        startY = event.touches[0].clientY;
-        currentX = 0;
-        dragging = true;
-        horizontalSwipe = false;
-
-        const active = Array.from(thumbs).findIndex(
+        const activeIndex = thumbs.findIndex(
             thumb => thumb.classList.contains("active")
         );
 
-        startIndex = active >= 0 ? active : 0;
+        const currentIndex = activeIndex >= 0 ? activeIndex : 0;
 
-        main.style.transition = "none";
-        main.dataset.detailSwiped = "false";
-    }, { passive: true });
+        // Chapga — keyingi, o‘ngga — oldingi rasm
+        const nextIndex = diffX < 0
+            ? (currentIndex + 1) % thumbs.length
+            : (currentIndex - 1 + thumbs.length) % thumbs.length;
 
-    main.addEventListener("touchmove", function(event) {
-        if (!dragging || event.touches.length !== 1) return;
-
-        const diffX = event.touches[0].clientX - startX;
-        const diffY = event.touches[0].clientY - startY;
-
-        if (!horizontalSwipe) {
-            if (Math.abs(diffY) > 10 &&
-                Math.abs(diffY) > Math.abs(diffX)) {
-                dragging = false;
-                return;
-            }
-
-            if (Math.abs(diffX) > 8 &&
-                Math.abs(diffX) > Math.abs(diffY)) {
-                horizontalSwipe = true;
-            }
-        }
-
-        if (!horizontalSwipe) return;
-
-        currentX = diffX;
-
-        main.style.transform =
-            `translate3d(${diffX}px, 0, 0)`;
-
-        main.style.opacity =
-            String(Math.max(0.65, 1 - Math.abs(diffX) / 600));
-    }, { passive: true });
-
-    main.addEventListener("touchend", function() {
-        if (!dragging) return;
-
-        dragging = false;
-
-        if (!horizontalSwipe || Math.abs(currentX) < threshold) {
-            main.style.transition =
-                "transform 250ms ease, opacity 250ms ease";
-            main.style.transform = "translate3d(0,0,0)";
-            main.style.opacity = "1";
-            return;
-        }
-
-        const thumbs = document.querySelectorAll(
-            "#detailsCard .thumb"
-        );
-
-        if (thumbs.length < 2) {
-            resetImage();
-            return;
-        }
-
-        const direction = currentX < 0 ? 1 : -1;
-        const nextIndex =
-            (startIndex + direction + thumbs.length) % thumbs.length;
-
+        swiped = true;
         main.dataset.detailSwiped = "true";
 
-        const exitX = direction > 0
-            ? -main.clientWidth
-            : main.clientWidth;
-
-        main.style.transition =
-            "transform 180ms ease, opacity 180ms ease";
-
-        main.style.transform =
-            `translate3d(${exitX}px,0,0)`;
-
-        main.style.opacity = "0.35";
-
-        setTimeout(function() {
-            selectDetailImage(nextIndex);
-
-            main.style.transition = "none";
-
-            const enterX = direction > 0
-                ? main.clientWidth
-                : -main.clientWidth;
-
-            main.style.transform =
-                `translate3d(${enterX}px,0,0)`;
-
-            main.style.opacity = "0.35";
-
-            requestAnimationFrame(function() {
-                requestAnimationFrame(function() {
-                    main.style.transition =
-                        "transform 300ms ease, opacity 300ms ease";
-
-                    main.style.transform = "translate3d(0,0,0)";
-                    main.style.opacity = "1";
-                });
-            });
-        }, 180);
-    }, { passive: true });
-
-    main.addEventListener("touchcancel", function() {
-        dragging = false;
-        horizontalSwipe = false;
-        resetImage();
+        selectDetailImage(nextIndex);
     }, { passive: true });
 
     main.addEventListener("click", function(event) {
         if (main.dataset.detailSwiped === "true") {
             event.preventDefault();
             event.stopImmediatePropagation();
+
             main.dataset.detailSwiped = "false";
         }
     }, true);
+}
 
     function resetImage() {
         main.style.transition =
