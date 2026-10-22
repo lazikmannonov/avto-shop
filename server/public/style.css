@@ -970,3 +970,46 @@ button.drawer-currency-value:focus-visible {
     background: transparent !important;
     box-shadow: none !important;
 }
+
+/* Uy-Joy — rasmlar silliq almashishi */
+
+#lightboxImage {
+    will-change: transform, opacity;
+}
+
+#lightboxImage.slide-next {
+    animation: lightboxSlideNext 320ms ease both;
+}
+
+#lightboxImage.slide-prev {
+    animation: lightboxSlidePrev 320ms ease both;
+}
+
+@keyframes lightboxSlideNext {
+    from {
+        opacity: 0.45;
+        transform: translateX(45px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes lightboxSlidePrev {
+    from {
+        opacity: 0.45;
+        transform: translateX(-45px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    #lightboxImage.slide-next,
+    #lightboxImage.slide-prev {
+        animation-duration: 1ms;
+    }
+}
