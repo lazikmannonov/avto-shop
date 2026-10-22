@@ -2626,41 +2626,35 @@ function closeLightbox(){
     document.body.style.overflow="";
 }
 
-function changeLightbox(direction){
-
-    if(!currentDetailsCar) return;
+function changeLightbox(direction) {
+    if (!currentDetailsCar) return;
 
     const images = getImages(currentDetailsCar);
+    if (images.length < 2) return;
 
-    if(!images.length) return;
-
-    currentLightboxIndex += direction;
-
-    if(currentLightboxIndex < 0)
-        currentLightboxIndex = images.length - 1;
-
-    if(currentLightboxIndex >= images.length)
-        currentLightboxIndex = 0;
+    currentLightboxIndex =
+        (currentLightboxIndex + direction + images.length) % images.length;
 
     const image = document.getElementById("lightboxImage");
-
-    if(!image) return;
+    if (!image) return;
 
     image.classList.remove("slide-next", "slide-prev");
 
-    image.src = imageUrl(images[currentLightboxIndex]);
-
+    // Animatsiyani qayta boshlash
     void image.offsetWidth;
+
+    image.src = imageUrl(images[currentLightboxIndex]);
 
     image.classList.add(
         direction > 0 ? "slide-next" : "slide-prev"
     );
 
-    image.onanimationend = function(){
+    image.onanimationend = function() {
         image.classList.remove("slide-next", "slide-prev");
+        image.onanimationend = null;
     };
 }
-    
+
 (function setupLightboxSwipe() {
     const lightbox = document.getElementById("lightbox");
     const image = document.getElementById("lightboxImage");
