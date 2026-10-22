@@ -2720,11 +2720,15 @@ document.getElementById("lightbox").addEventListener("click",function(event){
         closeLightbox();
 });
 
-if(lsGet("darkMode","")==="true"){
+const savedTheme = lsGet("darkMode", "");
+
+if (savedTheme === "true") {
     document.body.classList.add("dark");
+} else {
+    document.body.classList.remove("dark");
 }
 
-document.documentElement.lang=currentLang;
+document.documentElement.lang = currentLang;
 
 applyLang();
 updateThemeIcon();
@@ -2734,11 +2738,7 @@ trackView();
 loadSettings();
 
 load().then(() => {
-
-    const params = new URLSearchParams(
-        window.location.search
-    );
-
+    const params = new URLSearchParams(window.location.search);
     const houseId = params.get("house");
 
     if (!houseId) return;
@@ -2750,7 +2750,6 @@ load().then(() => {
     if (house) {
         openDetails(house);
     }
-
 });
 
 </script>
