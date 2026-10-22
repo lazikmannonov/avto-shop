@@ -2639,8 +2639,10 @@ function changeLightbox(direction) {
     if (!image) return;
 
     image.classList.remove("slide-next", "slide-prev");
+    image.style.transition = "";
+    image.style.transform = "";
+    image.style.opacity = "";
 
-    // Animatsiyani qayta boshlash
     void image.offsetWidth;
 
     image.src = imageUrl(images[currentLightboxIndex]);
@@ -2654,138 +2656,127 @@ function changeLightbox(direction) {
         image.onanimationend = null;
     };
 }
-
-(function setupLightboxSwipe() {
+    
+function setupLightboxSwipe() {
     const lightbox = document.getElementById("lightbox");
     const image = document.getElementById("lightboxImage");
 
     if (!lightbox || !image || lightbox.dataset.swipeReady) return;
-
     lightbox.dataset.swipeReady = "true";
 
     let startX = 0;
     let startY = 0;
-    let currentX = 0;
+    let deltaX = 0;
     let dragging = false;
-    let horizontalSwipe = false;
+    let horizontal = false;
 
-    const threshold = 65;
-
+    lightbox.style.touchAction = "pan-y";
     image.style.touchAction = "pan-y";
 
-    image.addEventListener("touchstart", function(event) {
-        if (event.touches.length !== 1) return;
+    lightbox.addEventListener("touchstart", function(e) {
+        if (!lightbox.classList.contains("active")) return;
+        if (e.touches.length !== 1) return;
 
-        startX = event.touches[0].clientX;
-        startY = event.touches[0].clientY;
-        currentX = 0;
+        startX = e.touches[0].clientX;
+        startY = e.touches[0].clientY;
+        deltaX = 0;
         dragging = true;
-        horizontalSwipe = false;
+        horizontal = false;
 
         image.style.transition = "none";
     }, { passive: true });
 
-    image.addEventListener("touchmove", function(event) {
-        if (!dragging || event.touches.length !== 1) return;
+    lightbox.addEventListener("touchmove", function(e) {
+        if (!dragging || e.touches.length !== 1) return;
 
-        const diffX = event.touches[0].clientX - startX;
-        const diffY = event.touches[0].clientY - startY;
+        const dx = e.touches[0].clientX - startX;
+        const dy = e.touches[0].clientY - startY;
 
-        if (!horizontalSwipe) {
-            if (Math.abs(diffY) > Math.abs(diffX)) {
+        if (!horizontal) {
+            if (Math.abs(dy) > 10 && Math.abs(dy) > Math.abs(dx)) {
                 dragging = false;
                 return;
             }
 
-            if (Math.abs(diffX) > 8) {
-                horizontalSwipe = true;
+            if (Math.abs(dx) > 8 && Math.abs(dx) > Math.abs(dy)) {
+                horizontal = true;
             }
         }
 
-        if (!horizontalSwipe) return;
+        if (!horizontal) return;
 
-        currentX = diffX;
-
-        image.style.transform =
-            `translate3d(${diffX}px, 0, 0)`;
-
-        image.style.opacity =
-            String(Math.max(0.55, 1 - Math.abs(diffX) / 500));
+        deltaX = dx;
+        image.style.transform = `translate3d(${dx}px,0,0)`;
+        image.style.opacity = String(
+            Math.max(0.55, 1 - Math.abs(dx) / 500)
+        );
     }, { passive: true });
 
-    image.addEventListener("touchend", function(event) {
+    lightbox.addEventListener("touchend", function() {
         if (!dragging) return;
-
         dragging = false;
 
-        const diffX = currentX;
-        const diffY = event.changedTouches.length
-            ? event.changedTouches[0].clientY - startY
-            : 0;
-
-        if (
-            !horizontalSwipe ||
-            Math.abs(diffX) < threshold ||
-            Math.abs(diffX) <= Math.abs(diffY)
-        ) {
-            image.style.transition =
-                "transform 260ms ease, opacity 260ms ease";
+        if (!horizontal || Math.abs(deltaX) < 60) {
+            image.style.transition = "transform 250ms ease, opacity 250ms ease";
             image.style.transform = "translate3d(0,0,0)";
             image.style.opacity = "1";
             return;
         }
 
-        const direction = diffX < 0 ? 1 : -1;
-        const exitX = direction > 0
-            ? -window.innerWidth
-            : window.innerWidth;
+        const direction = deltaX < 0 ? 1 : -1;
 
-        image.style.transition =
-            "transform 220ms cubic-bezier(.22,.61,.36,1), opacity 220ms ease";
-        image.style.transform = `translate3d(${exitX}px,0,0)`;
+        image.style.transition = "transform 220ms ease, opacity 220ms ease";
+        image.style.transform =
+            `translate3d(${direction > 0 ? -window.innerWidth : window.innerWidth}px,0,0)`;
         image.style.opacity = "0.4";
 
-        image.addEventListener("transitionend", function finishSwipe() {
-            image.removeEventListener("transitionend", finishSwipe);
+        const finish = function() {
+            image.removeEventListener("transitionend", finish);
 
             const images = getImages(currentDetailsCar);
-
-            if (!images.length) return;
+            if (!images || images.length < 2) {
+                image.style.transform = "";
+                image.style.opacity = "1";
+                return;
+            }
 
             currentLightboxIndex =
-                (currentLightboxIndex + direction + images.length) %
-                images.length;
+                (currentLightboxIndex + direction + images.length) % images.length;
 
-            image.style.transition = "none";
             image.src = imageUrl(images[currentLightboxIndex]);
 
-            const enterX = direction > 0
+            const startFrom = direction > 0
                 ? window.innerWidth
                 : -window.innerWidth;
 
-            image.style.transform = `translate3d(${enterX}px,0,0)`;
+            image.style.transition = "none";
+            image.style.transform = `translate3d(${startFrom}px,0,0)`;
             image.style.opacity = "0.4";
 
             requestAnimationFrame(function() {
                 requestAnimationFrame(function() {
                     image.style.transition =
-                        "transform 380ms cubic-bezier(.22,.61,.36,1), opacity 380ms ease";
+                        "transform 360ms cubic-bezier(.22,.61,.36,1), opacity 360ms ease";
                     image.style.transform = "translate3d(0,0,0)";
                     image.style.opacity = "1";
                 });
             });
-        }, { once: true });
+        };
+
+        image.addEventListener("transitionend", finish);
     }, { passive: true });
 
-    image.addEventListener("touchcancel", function() {
+    lightbox.addEventListener("touchcancel", function() {
         dragging = false;
-        horizontalSwipe = false;
+        horizontal = false;
         image.style.transition = "transform 200ms ease, opacity 200ms ease";
         image.style.transform = "translate3d(0,0,0)";
         image.style.opacity = "1";
     }, { passive: true });
-})();
+}
 
+setupLightboxSwipe();
+    
 function showPage(page){
 
     document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
