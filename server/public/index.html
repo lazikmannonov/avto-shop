@@ -2560,23 +2560,37 @@ function closeLightbox(){
 
 function changeLightbox(direction){
 
-    if(!currentDetailsCar)
-        return;
+    if(!currentDetailsCar) return;
 
-    const images=getImages(currentDetailsCar);
+    const images = getImages(currentDetailsCar);
 
-    if(!images.length)
-        return;
+    if(!images.length) return;
 
-    currentLightboxIndex+=direction;
+    currentLightboxIndex += direction;
 
-    if(currentLightboxIndex<0)
-        currentLightboxIndex=images.length-1;
+    if(currentLightboxIndex < 0)
+        currentLightboxIndex = images.length - 1;
 
-    if(currentLightboxIndex>=images.length)
-        currentLightboxIndex=0;
+    if(currentLightboxIndex >= images.length)
+        currentLightboxIndex = 0;
 
-    document.getElementById("lightboxImage").src=imageUrl(images[currentLightboxIndex]);
+    const image = document.getElementById("lightboxImage");
+
+    if(!image) return;
+
+    image.classList.remove("slide-next", "slide-prev");
+
+    image.src = imageUrl(images[currentLightboxIndex]);
+
+    void image.offsetWidth;
+
+    image.classList.add(
+        direction > 0 ? "slide-next" : "slide-prev"
+    );
+
+    image.onanimationend = function(){
+        image.classList.remove("slide-next", "slide-prev");
+    };
 }
 
 function showPage(page){
