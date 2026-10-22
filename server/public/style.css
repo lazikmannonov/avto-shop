@@ -1929,6 +1929,96 @@ body.admin-page.dark {
     }
 }
 
+.admin-page .input,
+.admin-page .select,
+.admin-page input[type="number"],
+.admin-page select {
+    min-height: 45px;
+    color: #F5F5F5;
+    background: linear-gradient(180deg, #151515, #090909);
+    border: 1px solid #353535;
+    border-radius: 10px;
+    box-shadow: inset 0 1px 2px rgba(255,255,255,.025);
+    transition: border-color .2s, box-shadow .2s, background .2s;
+}
+
+.admin-page .input:focus,
+.admin-page .select:focus,
+.admin-page input[type="number"]:focus,
+.admin-page select:focus {
+    background: #111;
+    border-color: #888;
+    box-shadow: 0 0 0 3px rgba(255,255,255,.06);
+    outline: none;
+}
+
+.admin-page input[type="number"] {
+    color-scheme: dark;
+    accent-color: #D0D0D0;
+}
+
+    min-height: 39px;
+    padding: 9px 15px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+
+    color: #BDBDBD;
+    background: linear-gradient(180deg, #191919, #090909);
+    border: 1px solid #343434;
+    border-radius: 9px;
+
+    font-size: 12px;
+    font-weight: 700;
+    white-space: nowrap;
+
+    box-shadow: inset 0 1px rgba(255,255,255,.045);
+    transition: all .2s ease;
+}
+
+.admin-page .filters .filter:hover,
+.admin-page .filter:hover {
+    color: #FFF;
+    background: linear-gradient(180deg, #303030, #151515);
+    border-color: #666;
+    transform: translateY(-1px);
+}
+
+.admin-page .filters .filter.active,
+.admin-page .filter.active {
+    color: #FFF;
+    background: linear-gradient(180deg, #454545, #1A1A1A);
+    border-color: #898989;
+    box-shadow:
+        inset 0 1px rgba(255,255,255,.17),
+        0 3px 10px rgba(0,0,0,.35);
+}
+
+.admin-page .filters .filter:active,
+.admin-page .filter:active {
+    transform: translateY(0);
+}
+
+.admin-page .filters {
+    gap: 9px;
+    align-items: center;
+}
+
+@media (max-width: 600px) {
+    .admin-page .filters {
+        gap: 7px;
+    }
+
+    .admin-page .filters .filter,
+    .admin-page .filter {
+        min-height: 38px;
+        padding: 8px 11px;
+        font-size: 11px;
+    }
+}
+
+
 /* NARX + VALYUTA — IXCHAM PREMIUM KO‘RINISH */
 .price-currency-control {
     display: inline-flex;
