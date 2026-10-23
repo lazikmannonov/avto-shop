@@ -2572,10 +2572,7 @@ async function telegramHandleUpdate(
         String(
             message.text || ''
         ).trim();
-
-    const text =
-        originalText.toLowerCase();
-
+    
     const text = originalText.toLowerCase();
 
     // MY TELEGRAM ID
