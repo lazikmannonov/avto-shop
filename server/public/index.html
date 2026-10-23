@@ -2688,11 +2688,12 @@ function setupDetailImageSwipe() {
         }
     }, true);
 
-function resetImage() {
-    main.style.transition =
-        "transform 220ms ease, opacity 220ms ease";
-    main.style.transform = "translate3d(0,0,0)";
-    main.style.opacity = "1";
+    function resetImage() {
+        main.style.transition =
+            "transform 220ms ease, opacity 220ms ease";
+        main.style.transform = "translate3d(0,0,0)";
+        main.style.opacity = "1";
+    }
 }
     
 function openLightbox(index){
