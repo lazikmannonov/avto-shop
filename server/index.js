@@ -2576,6 +2576,29 @@ async function telegramHandleUpdate(
     const text =
         originalText.toLowerCase();
 
+    const text = originalText.toLowerCase();
+
+    // MY TELEGRAM ID
+    if (text === '/myid') {
+        if (
+            message.chat.type !== 'private' ||
+            !message.from ||
+            !message.from.id
+        ) {
+            await telegramApi('sendMessage', {
+                chat_id: chatId,
+                text: 'Bu buyruqni bot bilan shaxsiy chatda yuboring.'
+            });
+            return;
+        }
+
+        await telegramApi('sendMessage', {
+            chat_id: chatId,
+            text: `Telegram ID: ${message.from.id}\n\nBu raqam admin tasdiqlashini sozlash uchun kerak.`
+        });
+        return;
+    }
+    
     // -----------------------------------------------
     // SEARCH MODE
     // -----------------------------------------------
