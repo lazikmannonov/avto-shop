@@ -807,8 +807,8 @@ let pendingImages = 0;
 
 const MAX_IMAGES = 8;
 
-let adminPassword = ssGet("admin_panel_password","");
-
+let adminPassword = "";
+let adminSessionToken = ssGet("admin_panel_session", "");
 
 /* =========================================================
    HELPERS
@@ -841,16 +841,17 @@ function jsArg(value){
     return escapeHtml(escapeJs(value));
 }
 
-function adminHeaders(extra = {}){
 
-    const headers = {...extra};
+function adminHeaders(extra = {}) {
+    const headers = { ...extra };
 
-    if(adminPassword){
-        headers["X-Admin-Password"] = adminPassword;
+    if (adminSessionToken) {
+        headers["X-Admin-Session"] = adminSessionToken;
     }
 
     return headers;
 }
+
 
 function showLoading(show=true){
     const loading = $("loading");
@@ -1188,28 +1189,24 @@ function toggleLoginPassword(){
         `<use href="${visible ? "#i-eye" : "#i-eye-off"}"></use>`;
 }
 
-async function loginAdmin(event){
-
+async function loginAdmin(event) {
     event.preventDefault();
 
-    /* Bloklangan bo‘lsa — so‘rov umuman yuborilmaydi */
-    if(isLoginLocked()){
+    if (isLoginLocked()) {
         applyLoginLock();
         return;
     }
 
     const input = $("loginPassword");
     const button = $("loginButton");
+    const password = input ? input.value.trim() : "";
 
-    const password =
-        input ? input.value.trim() : "";
-
-    if(!password){
+    if (!password) {
         setLoginMessage("Admin parolini kiriting.");
         return;
     }
 
-    if(button){
+    if (button) {
         button.disabled = true;
         button.innerHTML = `
             <svg class="icon icon-sm"><use href="#i-refresh"></use></svg>
@@ -1219,101 +1216,152 @@ async function loginAdmin(event){
 
     setLoginMessage("");
 
-    try{
+    try {
+        // 1. Parolni tekshirish va Telegram tasdig‘ini so‘rash
+        const response = await fetch("/api/admin/login", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ password }),
+            cache: "no-store"
+        });
 
-        /*
-         * /api/stats mavjud backendda admin
-         * parolini header orqali tekshiradi.
-         */
-
-        const response =
-            await fetch(
-                "/api/stats",
-                {
-                    method:"GET",
-                    headers:{"X-Admin-Password":password},
-                    cache:"no-store"
-                }
-            );
-
-        if(response.status === 429){
+        if (response.status === 429) {
             await handleServerBlock(response);
             return;
         }
 
-        if(
-            response.status === 401 ||
-            response.status === 403
-        ){
+        if (response.status === 401 || response.status === 403) {
             registerWrongAttempt();
+            setLoginMessage("Admin paroli noto‘g‘ri.");
             return;
         }
 
-        if(!response.ok){
-            throw new Error("Admin panelga kirishda xatolik.");
+        const result = await response.json();
+
+        if (!response.ok) {
+            throw new Error(
+                result.error || "Kirish so‘rovida xatolik."
+            );
         }
 
-        /* To‘g‘ri parol — hisob tozalanadi, darhol kiradi */
+        const requestId = result.requestId;
 
-        clearGuard();
+        if (!requestId) {
+            throw new Error("Kirish so‘rovi identifikatori topilmadi.");
+        }
 
-        adminPassword = password;
-
-        ssSet("admin_panel_password",adminPassword);
-
-        $("loginScreen").classList.add("hidden");
-        $("app").style.display = "flex";
-
-        if(input){
+        if (input) {
             input.value = "";
         }
+
+        setLoginMessage(
+            "Telegram orqali tasdiqlang. Tasdiqlash 5 daqiqa amal qiladi."
+        );
+
+        // 2. Telegram tasdig‘ini kutish
+        const deadline = Date.now() + 5 * 60 * 1000;
+        let sessionToken = "";
+
+        while (Date.now() < deadline) {
+            await new Promise(resolve => setTimeout(resolve, 2000));
+
+            const statusResponse = await fetch(
+                "/api/admin/login-status",
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ requestId }),
+                    cache: "no-store"
+                }
+            );
+
+            const statusResult = await statusResponse.json();
+
+            if (!statusResponse.ok) {
+                throw new Error(
+                    statusResult.error ||
+                    "Tasdiqlash holatini tekshirib bo‘lmadi."
+                );
+            }
+
+            if (statusResult.status === "approved") {
+                sessionToken = statusResult.sessionToken || "";
+                break;
+            }
+
+            if (statusResult.status === "denied") {
+                throw new Error("Telegram orqali kirish rad etildi.");
+            }
+
+            if (
+                statusResult.status === "expired" ||
+                statusResult.status === "not_found" ||
+                statusResult.status === "already_delivered"
+            ) {
+                throw new Error(
+                    statusResult.error || "Tasdiqlash muddati tugadi."
+                );
+            }
+        }
+
+        if (!sessionToken) {
+            throw new Error(
+                "Tasdiqlash vaqti tugadi. Qaytadan urinib ko‘ring."
+            );
+        }
+
+        // 3. Sessiya tokenini saqlash
+        adminSessionToken = sessionToken;
+        ssSet("admin_panel_session", adminSessionToken);
+
+        clearGuard();
+        adminPassword = "";
+
+        // 4. Admin panelini ochish
+        $("loginScreen").classList.add("hidden");
+        $("app").style.display = "flex";
 
         setLoginMessage("");
 
         await loadAll();
 
-    }catch(err){
-
+    } catch (err) {
         console.error(err);
 
-        /* Tarmoq/server xatosi urinish hisobiga qo‘shilmaydi */
-
-        if(err.message === "Failed to fetch"){
+        if (err.message === "Failed to fetch") {
             setLoginMessage("Server bilan ulanishda xatolik.");
-        }else{
+        } else {
             setLoginMessage(
-                err.message ||
-                "Admin panelga kirishda xatolik."
+                err.message || "Admin panelga kirishda xatolik."
             );
         }
 
-    }finally{
-
-        if(button){
-
+    } finally {
+        if (button) {
             button.disabled = isLoginLocked();
-
             button.innerHTML = `
                 <svg class="icon icon-sm"><use href="#i-check"></use></svg>
                 Admin panelga kirish
             `;
-
         }
-
     }
 }
 
-function logoutAdmin(message){
-
+function logoutAdmin(message) {
     adminPassword = "";
+    adminSessionToken = "";
 
     ssDel("admin_panel_password");
+    ssDel("admin_panel_session");
 
     $("app").style.display = "none";
-
     $("loginScreen").classList.remove("hidden");
 
-    if($("loginPassword")){
+    if ($("loginPassword")) {
         $("loginPassword").value = "";
     }
 
@@ -1323,16 +1371,14 @@ function logoutAdmin(message){
             : ""
     );
 
-    /* Agar blok hali davom etayotgan bo‘lsa — qayta ko‘rsatiladi */
     const locked = applyLoginLock();
 
-    if(!locked){
-        setTimeout(()=>{
+    if (!locked) {
+        setTimeout(() => {
             $("loginPassword")?.focus();
-        },100);
+        }, 100);
     }
 }
-
 
 /* =========================================================
    PAGE
@@ -1348,11 +1394,11 @@ const pageTitles = {
 
 function requireAdminPassword(){
 
-    if(adminPassword){
+    if(adminSessionToken){
         return true;
     }
 
-    logoutAdmin();
+    logoutAdmin("Sessiya tugadi. Qayta kiring.");
 
     return false;
 }
@@ -2213,8 +2259,7 @@ async function addHome(event){
             rooms:Number($("homeRooms").value) || 0,
             area:Number($("homeArea").value) || 0,
             phone:$("homePhone").value.trim(),
-            description:$("homeDescription").value.trim(),
-            password:adminPassword
+            description:$("homeDescription").value.trim()
         };
 
         /* ========================= NEW HOME ========================= */
@@ -2342,7 +2387,6 @@ async function addHome(event){
 
     }
 }
-
 
 /* =========================================================
    HOME DATA
@@ -2749,7 +2793,7 @@ async function deleteHome(id){
                 {
                     method:"DELETE",
                     headers:adminHeaders({"Content-Type":"application/json"}),
-                    body:JSON.stringify({password:adminPassword})
+                    body:JSON.stringify({})
                 }
             );
 
@@ -2894,8 +2938,7 @@ async function saveSettings(event){
         telegram:$("settingTelegram").value.trim(),
         whatsapp:$("settingWhatsapp").value.trim(),
         instagram:$("settingInstagram").value.trim(),
-        address:$("settingAddress").value.trim(),
-        password:adminPassword
+        address:$("settingAddress").value.trim()
     };
 
     showLoading(true);
@@ -3220,85 +3263,67 @@ function updateDashboard(){
    LOAD ALL
 ========================================================= */
 
-async function loadAll(){
 
-    if(!adminPassword){
+async function loadAll() {
+    if (!adminSessionToken) {
         logoutAdmin();
         return;
     }
 
     showLoading(true);
 
-    try{
-
-        /*
-         * Aloqa sozlamalari yuklanmasa ham
-         * uylar va statistika ko‘rsatilaveradi.
-         */
-
+    try {
         await Promise.all([
             loadCars(),
             loadStats(),
             loadDailyStats(),
-            loadSettings().catch(error=>{
+            loadSettings().catch(error => {
+                console.error("Settings:", error);
 
-                console.error("Settings:",error);
-
-                if(adminPassword){
-                    showToast(error.message,true);
+                if (adminSessionToken) {
+                    showToast(error.message, true);
                 }
-
             })
         ]);
 
-        /* Sessiya tugab logout bo‘lgan bo‘lsa — davom etmaymiz */
-        if(!adminPassword){
+        if (!adminSessionToken) {
             return;
         }
 
         updateDashboard();
-
         renderHomes();
 
-    }catch(error){
-
+    } catch (error) {
         console.error(error);
 
-        if(
-            !adminPassword ||
+        if (
+            !adminSessionToken ||
             String(error.message).includes("sessiyasi") ||
             String(error.message).includes("Admin paroli")
-        ){
-
-            if(adminPassword){
+        ) {
+            if (adminSessionToken) {
                 logoutAdmin("Sessiya tugadi. Qayta kiring.");
             }
-
-        }else{
-
+        } else {
             showToast(
                 error.message ||
                 "Ma’lumotlarni yuklashda xatolik.",
                 true
             );
-
         }
 
-    }finally{
-
+    } finally {
         showLoading(false);
-
     }
 }
-
 
 /* =========================================================
    INIT
 ========================================================= */
 
-function init(){
 
-    if(lsGet("admin_dark_mode","") === "1"){
+async function init() {
+    if (lsGet("admin_dark_mode", "") === "1") {
         document.body.classList.add("dark");
     }
 
@@ -3306,32 +3331,45 @@ function init(){
     updateTypeSummary();
     renderImagePreview();
 
-    /* Oldingi session mavjud bo‘lsa, qayta parol so‘ramaymiz */
+    // Saqlangan sessiyani server orqali tekshirish
+    if (adminSessionToken) {
+        try {
+            const response = await fetch("/api/stats", {
+                method: "GET",
+                headers: adminHeaders(),
+                cache: "no-store"
+            });
 
-    if(adminPassword){
+            if (response.ok) {
+                $("loginScreen").classList.add("hidden");
+                $("app").style.display = "flex";
 
-        $("loginScreen").classList.add("hidden");
-        $("app").style.display = "flex";
-
-        loadAll();
-
-    }else{
-
-        $("loginScreen").classList.remove("hidden");
-        $("app").style.display = "none";
-
-        /* Sahifa yangilansa ham blok saqlanib qoladi */
-        const locked = applyLoginLock();
-
-        if(!locked){
-            setTimeout(()=>{
-                $("loginPassword")?.focus();
-            },100);
+                await loadAll();
+                return;
+            }
+        } catch (error) {
+            console.error("Admin sessiyasini tekshirishda xatolik:", error);
         }
 
+        // Sessiya yaroqsiz yoki server bilan aloqa yo‘q
+        adminSessionToken = "";
+        ssDel("admin_panel_session");
+    }
+
+    adminPassword = "";
+    ssDel("admin_panel_password");
+
+    $("loginScreen").classList.remove("hidden");
+    $("app").style.display = "none";
+
+    const locked = applyLoginLock();
+
+    if (!locked) {
+        setTimeout(() => {
+            $("loginPassword")?.focus();
+        }, 100);
     }
 }
-
 
 /* =========================================================
    MOBILE SIDEBAR
