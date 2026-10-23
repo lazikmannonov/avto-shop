@@ -2214,70 +2214,82 @@ async function telegramHouse(
         }
     ]);
 
-    const images =
-        Array.isArray(
-            car.images
-        )
-            ? car.images
-            : [];
+    const images = Array.isArray(car.images)
+        ? car.images.filter(Boolean)
+        : [];
 
-    const firstImage =
-        images.length
-            ? images[0]
-            : '';
+    const imageUrls = images
+        .map(image => {
+            const value = String(image);
 
-    if (
-        firstImage &&
-        SITE_URL
-    ) {
-
-        const imageUrl =
-            `${SITE_URL}/uploads/${encodeURIComponent(
-                firstImage
-            )}`;
-
-        await telegramApi(
-            'sendPhoto',
-            {
-                chat_id: chatId,
-
-                photo:
-                    imageUrl,
-
-                caption:
-                    text,
-
-                parse_mode:
-                    'HTML',
-
-                reply_markup: {
-                    inline_keyboard:
-                        buttons
-                }
+            if (value.startsWith("http://") ||
+                value.startsWith("https://")) {
+                return value;
             }
-        );
 
-    } else {
-
-        await telegramApi(
-            'sendMessage',
-            {
-                chat_id: chatId,
-
-                text,
-
-                parse_mode:
-                    'HTML',
-
-                reply_markup: {
-                    inline_keyboard:
-                        buttons
-                }
+            if (value.startsWith("/")) {
+                return `${SITE_URL}${value}`;
             }
-        );
+
+            return `${SITE_URL}/uploads/${encodeURIComponent(value)}`;
+        })
+        .slice(0, 10);
+
+    if (imageUrls.length === 0) {
+        await telegramApi("sendMessage", {
+            chat_id: chatId,
+            text,
+            parse_mode: "HTML",
+            reply_markup: {
+                inline_keyboard: buttons
+            }
+        });
+
+        return;
     }
-}
 
+    if (imageUrls.length === 1) {
+        await telegramApi("sendPhoto", {
+            chat_id: chatId,
+            photo: imageUrls[0],
+            caption: text,
+            parse_mode: "HTML",
+            reply_markup: {
+                inline_keyboard: buttons
+            }
+        });
+
+        return;
+    }
+
+    const media = imageUrls.map((url, index) => {
+        const item = {
+            type: "photo",
+            media: url
+        };
+
+        if (index === 0) {
+            item.caption = text;
+            item.parse_mode = "HTML";
+        }
+
+        return item;
+    });
+
+    await telegramApi("sendMediaGroup", {
+        chat_id: chatId,
+        media
+    });
+
+    await telegramApi("sendMessage", {
+        chat_id: chatId,
+        text: "👇 Uy bo‘yicha amallar:",
+        reply_markup: {
+            inline_keyboard: buttons
+        }
+    });
+}
+    
 // =====================================================
 // CALLBACK
 // =====================================================
