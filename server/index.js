@@ -12,6 +12,10 @@ const ADMIN_PASSWORD = String(
     process.env.ADMIN_PASSWORD || ''
 ).trim();
 
+const ADMIN_TELEGRAM_ID = String(
+    process.env.ADMIN_TELEGRAM_ID || ''
+).trim();
+
 if (!process.env.DATABASE_URL) {
     console.error('DATABASE_URL topilmadi!');
     process.exit(1);
@@ -118,6 +122,193 @@ async function initDatabase() {
             data BYTEA NOT NULL
         )
     `);
+
+                // =================================================
+                // ADMIN LOGIN — TELEGRAM TASDIQLASH SO'ROVI
+                // =================================================
+
+                if (
+                    url === '/api/admin/login' &&
+                    req.method === 'POST'
+                ) {
+                    let body = {};
+
+                    try {
+                        const raw = await readBody(req);
+                        if (raw) {
+                            body = JSON.parse(raw);
+                        }
+                    } catch (e) {
+                        return sendJson(res, 400, {
+                            error: 'So‘rov ma’lumotlari noto‘g‘ri.'
+                        });
+                    }
+
+                    if (!checkPassword(req, body.password)) {
+                        return sendJson(res, 401, {
+                            error: 'Parol noto‘g‘ri.'
+                        });
+                    }
+
+                    if (!ADMIN_TELEGRAM_ID || !TELEGRAM_BOT_TOKEN) {
+                        return sendJson(res, 503, {
+                            error: 'Telegram tasdiqlash sozlamalari to‘liq emas.'
+                        });
+                    }
+
+                    const requestId = crypto
+                        .randomBytes(16)
+                        .toString('hex');
+
+                    const request = {
+                        status: 'pending',
+                        createdAt: Date.now(),
+                        sessionToken: crypto
+                            .randomBytes(32)
+                            .toString('hex'),
+                        sessionDelivered: false
+                    };
+
+                    adminLoginRequests.set(requestId, request);
+
+                    try {
+                        await telegramApi('sendMessage', {
+                            chat_id: ADMIN_TELEGRAM_ID,
+                            text:
+                                '🔐 Uy-Joy admin paneliga kirish so‘rovi\n\n' +
+                                'Admin paneliga kirishga ruxsat berasizmi?\n' +
+                                '⏳ So‘rov 5 daqiqa amal qiladi.',
+                            reply_markup: {
+                                inline_keyboard: [
+                                    [
+                                        {
+                                            text: '✅ Tasdiqlash',
+                                            callback_data: 'admin_approve_' + requestId
+                                        },
+                                        {
+                                            text: '❌ Rad etish',
+                                            callback_data: 'admin_deny_' + requestId
+                                        }
+                                    ]
+                                ]
+                            }
+                        });
+                    } catch (error) {
+                        adminLoginRequests.delete(requestId);
+
+                        console.error(
+                            'Admin Telegram xabari yuborilmadi:',
+                            error.message
+                        );
+
+                        return sendJson(res, 502, {
+                            error: 'Telegramga xabar yuborilmadi. Bot bilan shaxsiy chatni tekshiring.'
+                        });
+                    }
+
+                    return sendJson(res, 200, {
+                        ok: true,
+                        requestId,
+                        status: 'pending'
+                    });
+                }
+
+                // =================================================
+                // ADMIN LOGIN — TASDIQLASH HOLATINI TEKSHIRISH
+                // =================================================
+
+                if (
+                    url === '/api/admin/login-status' &&
+                    req.method === 'POST'
+                ) {
+                    let body = {};
+
+                    try {
+                        const raw = await readBody(req);
+                        if (raw) {
+                            body = JSON.parse(raw);
+                        }
+                    } catch (e) {
+                        return sendJson(res, 400, {
+                            error: 'So‘rov ma’lumotlari noto‘g‘ri.'
+                        });
+                    }
+
+                    const requestId = String(
+                        body.requestId || ''
+                    );
+
+                    if (!/^[a-f0-9]{32}$/.test(requestId)) {
+                        return sendJson(res, 400, {
+                            error: 'So‘rov identifikatori noto‘g‘ri.'
+                        });
+                    }
+
+                    const request =
+                        adminLoginRequests.get(requestId);
+
+                    if (!request) {
+                        return sendJson(res, 404, {
+                            status: 'not_found',
+                            error: 'Kirish so‘rovi topilmadi.'
+                        });
+                    }
+
+                    if (
+                        Date.now() - request.createdAt >
+                        5 * 60 * 1000
+                    ) {
+                        adminLoginRequests.delete(requestId);
+
+                        return sendJson(res, 200, {
+                            status: 'expired',
+                            error: 'Tasdiqlash vaqti tugadi.'
+                        });
+                    }
+
+                    if (request.status === 'denied') {
+                        adminLoginRequests.delete(requestId);
+
+                        return sendJson(res, 200, {
+                            status: 'denied',
+                            error: 'Telegram orqali kirish rad etildi.'
+                        });
+                    }
+
+                    if (request.status !== 'approved') {
+                        return sendJson(res, 200, {
+                            status: 'pending'
+                        });
+                    }
+
+                   
+                    // Sessiya tokeni faqat bir marta beriladi
+                    if (request.sessionDelivered) {
+                        return sendJson(res, 409, {
+                            status: 'already_delivered',
+                            error: 'Sessiya tokeni oldin berilgan.'
+                        });
+                    }
+
+                    request.sessionDelivered = true;
+
+                    adminSessions.set(
+                        request.sessionToken,
+                        {
+                            expiresAt:
+                                Date.now() + 8 * 60 * 60 * 1000
+                        }
+                    );
+
+                    const sessionToken =
+                        request.sessionToken;
+
+                    adminLoginRequests.delete(requestId);
+
+                    return sendJson(res, 200, {
+                        status: 'approved',
+                        sessionToken
+                    });
 
     // -------------------------------------------------
     // TOTAL STATS
@@ -491,18 +682,30 @@ function checkPassword(req, bodyPassword) {
 }
 
 function isAdminHeader(req) {
+    const token = String(
+        req.headers['x-admin-session'] || ''
+    ).trim();
 
-    return checkPassword(req, '');
+    if (!token) {
+        return false;
+    }
+
+    const session = adminSessions.get(token);
+
+    if (!session) {
+        return false;
+    }
+
+    if (Date.now() >= session.expiresAt) {
+        adminSessions.delete(token);
+        return false;
+    }
+
+    return true;
 }
 
 function isAdmin(req, body = null) {
-
-    const bodyPassword =
-        body && typeof body === 'object'
-            ? body.password
-            : '';
-
-    return checkPassword(req, bodyPassword);
+    return isAdminHeader(req);
 }
 
 // =====================================================
@@ -889,6 +1092,9 @@ const telegramFavorites = new Map();
 
 // Bir foydalanuvchiga nechta uy ko'rsatilishi
 const TELEGRAM_PAGE_SIZE = 5;
+
+const adminLoginRequests = new Map();
+const adminSessions = new Map();
 
 // =====================================================
 // TELEGRAM API
@@ -2322,6 +2528,62 @@ async function telegramCallback(
         );
 
     // -----------------------------------------------
+    // ADMIN LOGIN — TASDIQLASH / RAD ETISH
+    // -----------------------------------------------
+
+    if (
+        data.startsWith('admin_approve_') ||
+        data.startsWith('admin_deny_')
+    ) {
+        // Faqat belgilangan admin tasdiqlashi mumkin
+        if (
+            !ADMIN_TELEGRAM_ID ||
+            String(query.from?.id || '') !== ADMIN_TELEGRAM_ID ||
+            String(chatId) !== ADMIN_TELEGRAM_ID ||
+            query.message?.chat?.type !== 'private'
+        ) {
+            await telegramApi('sendMessage', {
+                chat_id: chatId,
+                text: 'Bu amalni bajarishga ruxsatingiz yo‘q.'
+            });
+            return;
+        }
+
+        const approved = data.startsWith('admin_approve_');
+
+        const requestId = data.slice(
+            approved
+                ? 'admin_approve_'.length
+                : 'admin_deny_'.length
+        );
+
+        const request = adminLoginRequests.get(requestId);
+
+        if (
+            !request ||
+            request.status !== 'pending' ||
+            Date.now() - request.createdAt > 5 * 60 * 1000
+        ) {
+            await telegramApi('sendMessage', {
+                chat_id: chatId,
+                text: 'Bu kirish so‘rovi muddati tugagan yoki allaqachon ko‘rib chiqilgan.'
+            });
+            return;
+        }
+
+        request.status = approved ? 'approved' : 'denied';
+
+        await telegramApi('sendMessage', {
+            chat_id: chatId,
+            text: approved
+                ? '✅ Admin paneliga kirish so‘rovi tasdiqlandi.'
+                : '❌ Admin paneliga kirish so‘rovi rad etildi.'
+        });
+
+        return;
+    }
+
+    // -----------------------------------------------
     // NOOP
     // -----------------------------------------------
 
@@ -3047,8 +3309,7 @@ const server =
                             'Access-Control-Allow-Origin': '*',
                             'Access-Control-Allow-Methods':
                                 'GET,POST,PUT,DELETE,OPTIONS',
-                            'Access-Control-Allow-Headers':
-                                'Content-Type,X-Admin-Password'
+                           'Access-Control-Allow-Headers': 'Content-Type,X-Admin-Password,X-Admin-Session'
                         }
                     );
 
