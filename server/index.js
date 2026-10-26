@@ -1,13 +1,601 @@
-const ADMIN_PASSWORD = String(
-    process.env.ADMIN_PASSWORD || ''
-).trim();
+const http = require('http');
+const fs = require('fs');
+const path = require('path');
+const crypto = require('crypto');
+const { Pool } = require('pg');
+
+// =====================================================
+// SOZLAMALAR (Render Environment)
+// =====================================================
+
+const ADMIN_PASSWORD = String(process.env.ADMIN_PASSWORD || '').trim();
+const ADMIN_TELEGRAM_ID = String(process.env.ADMIN_TELEGRAM_ID || '').trim();
+const TELEGRAM_BOT_TOKEN = String(process.env.TELEGRAM_BOT_TOKEN || '').trim();
+
+// Domen o'zgarsa SITE_URL env orqali almashtiriladi
+const SITE_URL = String(process.env.SITE_URL || 'https://avto-shop.onrender.com')
+    .trim()
+    .replace(/\/+$/, '');
+
+// Boshqa domendan API'ga murojaat qilishga ruxsat (odatda kerak emas).
+// Misol: ALLOWED_ORIGINS=https://uy-joy.uz,https://www.uy-joy.uz
+const ALLOWED_ORIGINS = new Set(
+    [SITE_URL]
+        .concat(
+            String(process.env.ALLOWED_ORIGINS || '')
+                .split(',')
+                .map(s => s.trim().replace(/\/+$/, ''))
+        )
+        .filter(Boolean)
+);
+
+if (!process.env.DATABASE_URL) {
+    console.error('DATABASE_URL topilmadi!');
+    process.exit(1);
+}
 
 if (!ADMIN_PASSWORD) {
-    throw new Error(
-        'ADMIN_PASSWORD Render Environment sozlamalarida topilmadi.'
+    console.error('ADMIN_PASSWORD topilmadi!');
+    process.exit(1);
+}
+
+if (ADMIN_PASSWORD.length < 12) {
+    console.warn('OGOHLANTIRISH: ADMIN_PASSWORD 12 belgidan qisqa. Uzunroq parol qo‘ying.');
+}
+
+const ADMIN_TG_OK = /^\d+$/.test(ADMIN_TELEGRAM_ID) && Boolean(TELEGRAM_BOT_TOKEN);
+
+if (!ADMIN_TG_OK) {
+    console.warn(
+        'OGOHLANTIRISH: ADMIN_TELEGRAM_ID (faqat raqam) yoki TELEGRAM_BOT_TOKEN sozlanmagan. ' +
+        'Admin panelga kirish kodi yuborilmaydi!'
     );
 }
-const crypto = require('node:crypto');
+
+// =====================================================
+// DATABASE
+// =====================================================
+
+const pool = new Pool({
+    connectionString: process.env.DATABASE_URL,
+    max: 10,
+    idleTimeoutMillis: 30000,
+    connectionTimeoutMillis: 10000
+});
+
+// Bo'sh turgan ulanish uzilsa server yiqilib tushmasligi uchun
+pool.on('error', error => {
+    console.error('PostgreSQL pool xatosi:', error.message);
+});
+
+async function initDatabase() {
+
+    await pool.query(`
+        CREATE TABLE IF NOT EXISTS cars (
+            id SERIAL PRIMARY KEY,
+            name TEXT NOT NULL,
+            price INTEGER NOT NULL DEFAULT 0,
+            description TEXT DEFAULT '',
+            images TEXT DEFAULT '[]',
+            sold BOOLEAN DEFAULT false,
+            currency TEXT DEFAULT 'UZS',
+            type TEXT DEFAULT '',
+            types TEXT DEFAULT '[]',
+            location TEXT DEFAULT '',
+            address TEXT DEFAULT '',
+            rooms INTEGER DEFAULT 0,
+            area INTEGER DEFAULT 0,
+            phone TEXT DEFAULT ''
+        )
+    `);
+
+    const carColumns = [
+        'sold BOOLEAN DEFAULT false',
+        "currency TEXT DEFAULT 'UZS'",
+        "type TEXT DEFAULT ''",
+        "types TEXT DEFAULT '[]'",
+        "location TEXT DEFAULT ''",
+        "address TEXT DEFAULT ''",
+        'rooms INTEGER DEFAULT 0',
+        'area INTEGER DEFAULT 0',
+        "phone TEXT DEFAULT ''"
+    ];
+
+    for (const column of carColumns) {
+        await pool.query(
+            `ALTER TABLE cars ADD COLUMN IF NOT EXISTS ${column}`
+        );
+    }
+
+    await pool.query(`
+        CREATE TABLE IF NOT EXISTS image_files (
+            id SERIAL PRIMARY KEY,
+            name TEXT UNIQUE NOT NULL,
+            data BYTEA NOT NULL
+        )
+    `);
+
+    await pool.query(`
+        CREATE TABLE IF NOT EXISTS stats (
+            id INTEGER PRIMARY KEY DEFAULT 1,
+            views INTEGER DEFAULT 0,
+            calls INTEGER DEFAULT 0
+        )
+    `);
+
+    await pool.query(`
+        INSERT INTO stats (id, views, calls)
+        VALUES (1, 0, 0)
+        ON CONFLICT (id) DO NOTHING
+    `);
+
+    await pool.query(`
+        CREATE TABLE IF NOT EXISTS daily_stats (
+            stat_date DATE PRIMARY KEY,
+            views INTEGER DEFAULT 0,
+            calls INTEGER DEFAULT 0
+        )
+    `);
+
+    await pool.query(`
+        CREATE TABLE IF NOT EXISTS site_settings (
+            id INTEGER PRIMARY KEY DEFAULT 1,
+            phone TEXT DEFAULT '+998 88 950 00 05',
+            telegram TEXT DEFAULT 'https://t.me/',
+            whatsapp TEXT DEFAULT 'https://wa.me/',
+            instagram TEXT DEFAULT 'https://instagram.com/',
+            address TEXT DEFAULT 'Toshkent, O''zbekiston'
+        )
+    `);
+
+    await pool.query(`
+        INSERT INTO site_settings (id, phone, telegram, whatsapp, instagram, address)
+        VALUES (
+            1,
+            '+998 88 950 00 05',
+            'https://t.me/',
+            'https://wa.me/',
+            'https://instagram.com/',
+            'Toshkent, O''zbekiston'
+        )
+        ON CONFLICT (id) DO NOTHING
+    `);
+
+    console.log('PostgreSQL database tayyor');
+}
+
+// =====================================================
+// YORDAMCHI FUNKSIYALAR
+// =====================================================
+
+// Foydalanuvchiga ko'rsatish mumkin bo'lgan xato (validatsiya)
+class UserError extends Error {}
+
+function sendJson(res, status, data) {
+
+    res.writeHead(status, {
+        'Content-Type': 'application/json; charset=utf-8',
+        'Cache-Control': 'no-store'
+    });
+
+    res.end(JSON.stringify(data));
+}
+
+function sendFile(res, name) {
+
+    const safeName = path.basename(name);
+    const file = path.join(__dirname, 'public', safeName);
+
+    if (!fs.existsSync(file)) {
+
+        res.writeHead(404, {
+            'Content-Type': 'text/plain; charset=utf-8'
+        });
+
+        return res.end('File topilmadi');
+    }
+
+    let contentType = 'text/html; charset=utf-8';
+
+    if (safeName.endsWith('.css')) {
+        contentType = 'text/css; charset=utf-8';
+    }
+
+    if (safeName.endsWith('.js')) {
+        contentType = 'application/javascript; charset=utf-8';
+    }
+
+    if (safeName.endsWith('.json')) {
+        contentType = 'application/json; charset=utf-8';
+    }
+
+    res.writeHead(200, {
+        'Content-Type': contentType,
+        'Cache-Control': 'no-cache'
+    });
+
+    res.end(fs.readFileSync(file));
+}
+
+// Bo'lak-bo'lak kelgan baytlar yig'ilib, oxirida bir marta UTF-8 ga o'giriladi
+// (aks holda o'zbek/rus harflari bo'lak chegarasida buzilishi mumkin edi)
+function readBody(req, limit = 30000000) {
+
+    return new Promise((resolve, reject) => {
+
+        const chunks = [];
+        let total = 0;
+        let finished = false;
+
+        req.on('data', chunk => {
+
+            if (finished) {
+                return;
+            }
+
+            total += chunk.length;
+
+            if (total > limit) {
+
+                finished = true;
+
+                reject(new UserError("Ma'lumot juda katta"));
+
+                req.destroy();
+
+                return;
+            }
+
+            chunks.push(chunk);
+        });
+
+        req.on('end', () => {
+
+            if (!finished) {
+
+                finished = true;
+
+                resolve(Buffer.concat(chunks).toString('utf8'));
+            }
+        });
+
+        req.on('error', error => {
+
+            if (!finished) {
+
+                finished = true;
+
+                reject(error);
+            }
+        });
+
+        req.on('close', () => {
+
+            if (!finished) {
+
+                finished = true;
+
+                reject(new Error('Ulanish uzildi'));
+            }
+        });
+    });
+}
+
+// JSON obyekt bo'lishini kafolatlaydi (null, massiv, son kelsa xato beradi)
+function parseJsonObject(raw, allowEmpty = true) {
+
+    if (!raw) {
+
+        if (allowEmpty) {
+            return {};
+        }
+
+        throw new UserError("Ma'lumot formati noto'g'ri");
+    }
+
+    const value = JSON.parse(raw);
+
+    if (
+        !value ||
+        typeof value !== 'object' ||
+        Array.isArray(value)
+    ) {
+        throw new UserError("Ma'lumot formati noto'g'ri");
+    }
+
+    return value;
+}
+
+function toInteger(value, fallback = 0) {
+
+    const number = Number(value);
+
+    if (
+        !Number.isFinite(number) ||
+        !Number.isInteger(number)
+    ) {
+        return fallback;
+    }
+
+    return number;
+}
+
+function normalizeCurrency(value) {
+
+    const currency = String(value || 'UZS')
+        .trim()
+        .toUpperCase();
+
+    return currency === 'USD' ? 'USD' : 'UZS';
+}
+
+function prepareImage(dataUrl) {
+
+    if (typeof dataUrl !== 'string') {
+        throw new UserError("Rasm formati noto'g'ri");
+    }
+
+    const match = /^data:image\/jpeg;base64,(.+)$/i.exec(dataUrl);
+
+    if (!match) {
+        throw new UserError("Rasm JPEG formatda bo'lishi kerak");
+    }
+
+    const buffer = Buffer.from(match[1], 'base64');
+
+    if (!buffer.length) {
+        throw new UserError("Rasm bo'sh");
+    }
+
+    if (buffer.length > 3000000) {
+        throw new UserError("Bitta rasm 3 MB dan katta bo'lmasligi kerak");
+    }
+
+    // Haqiqiy JPEG faylning boshi: FF D8 FF
+    if (
+        buffer.length < 4 ||
+        buffer[0] !== 0xFF ||
+        buffer[1] !== 0xD8 ||
+        buffer[2] !== 0xFF
+    ) {
+        throw new UserError("Rasm JPEG formatda bo'lishi kerak");
+    }
+
+    return {
+        name: crypto.randomBytes(16).toString('hex') + '.jpg',
+        buffer
+    };
+}
+
+function parseImages(row) {
+
+    if (!row || !row.images) {
+        return [];
+    }
+
+    if (Array.isArray(row.images)) {
+        return row.images;
+    }
+
+    try {
+
+        const images = JSON.parse(row.images);
+
+        if (Array.isArray(images)) {
+            return images.filter(x => typeof x === 'string');
+        }
+
+    } catch (e) {}
+
+    return [];
+}
+
+function parseTypes(row) {
+
+    if (!row) {
+        return [];
+    }
+
+    if (
+        row.types === null ||
+        row.types === undefined ||
+        row.types === ''
+    ) {
+        return row.type ? [String(row.type)] : [];
+    }
+
+    try {
+
+        const types = JSON.parse(row.types);
+
+        if (Array.isArray(types)) {
+
+            return types
+                .map(x => String(x).trim())
+                .filter(Boolean)
+                .slice(0, 3);
+        }
+
+    } catch (e) {}
+
+    return row.type ? [String(row.type)] : [];
+}
+
+function carOut(row) {
+
+    const types = parseTypes(row);
+    const currency = normalizeCurrency(row.currency);
+
+    return {
+        id: Number(row.id),
+        name: row.name || '',
+        title: row.name || '',
+        price: Number(row.price) || 0,
+        currency,
+        type: row.type || types[0] || '',
+        types,
+        location: row.location || row.address || '',
+        address: row.address || row.location || '',
+        rooms: Number(row.rooms) || 0,
+        area: Number(row.area) || 0,
+        phone: row.phone || '',
+        description: row.description || '',
+        images: parseImages(row),
+        sold: Boolean(row.sold),
+        status: row.sold ? 'sold' : 'available'
+    };
+}
+
+function settingsOut(row) {
+
+    return {
+        phone: row.phone || '',
+        telegram: row.telegram || '',
+        whatsapp: row.whatsapp || '',
+        instagram: row.instagram || '',
+        address: row.address || ''
+    };
+}
+
+// Qo'shish va tahrirlash uchun umumiy maydonlarni yig'ish va tekshirish.
+// old === null bo'lsa yangi uy, aks holda mavjud uy tahriri.
+function buildCarFields(body, old) {
+
+    const has = key =>
+        body[key] !== undefined &&
+        body[key] !== null;
+
+    const oldTypes = old ? parseTypes(old) : [];
+
+    const name = String(
+        has('name')
+            ? body.name
+            : (has('title') ? body.title : (old ? old.name : ''))
+    ).trim().slice(0, 300);
+
+    const price = has('price')
+        ? toInteger(body.price, -1)
+        : (old ? toInteger(old.price, -1) : -1);
+
+    const currency = has('currency')
+        ? normalizeCurrency(body.currency)
+        : normalizeCurrency(old ? old.currency : undefined);
+
+    const type = String(
+        has('type')
+            ? body.type
+            : (old ? (old.type || oldTypes[0] || '') : '')
+    ).trim().slice(0, 100);
+
+    let types;
+
+    if (Array.isArray(body.types)) {
+
+        types = body.types
+            .map(x => String(x).trim().slice(0, 100))
+            .filter(Boolean)
+            .slice(0, 3);
+
+    } else {
+
+        types = type ? [type] : oldTypes;
+    }
+
+    const location = String(
+        has('location')
+            ? body.location
+            : (has('address') ? body.address : (old ? old.location || '' : ''))
+    ).trim().slice(0, 500);
+
+    const address = String(
+        has('address')
+            ? body.address
+            : (has('location') ? body.location : (old ? old.address || '' : ''))
+    ).trim().slice(0, 500);
+
+    const rooms = has('rooms')
+        ? toInteger(body.rooms, 0)
+        : (old ? toInteger(old.rooms, 0) : 0);
+
+    const area = has('area')
+        ? toInteger(body.area, 0)
+        : (old ? toInteger(old.area, 0) : 0);
+
+    const phone = String(
+        has('phone') ? body.phone : (old ? old.phone || '' : '')
+    ).trim().slice(0, 100);
+
+    const description = String(
+        has('description') ? body.description : (old ? old.description || '' : '')
+    ).trim().slice(0, 2000);
+
+    // PostgreSQL INTEGER chegarasidan oshib ketmasligi uchun yuqori chegaralar
+    if (!name || price <= 0 || price > 2000000000) {
+        throw new UserError("Nom va narxni to'g'ri kiriting");
+    }
+
+    if (
+        rooms < 0 || rooms > 10000 ||
+        area < 0 || area > 100000000
+    ) {
+        throw new UserError("Xona yoki maydon noto'g'ri");
+    }
+
+    return {
+        name,
+        price,
+        currency,
+        type: types[0] || '',
+        types,
+        location,
+        address,
+        rooms,
+        area,
+        phone,
+        description
+    };
+}
+
+async function recordDailyStat(type) {
+
+    if (type !== 'views' && type !== 'calls') {
+        return;
+    }
+
+    await pool.query(
+        `
+        INSERT INTO daily_stats (stat_date, views, calls)
+        VALUES (CURRENT_DATE, $1, $2)
+        ON CONFLICT (stat_date)
+        DO UPDATE SET
+            views = daily_stats.views + EXCLUDED.views,
+            calls = daily_stats.calls + EXCLUDED.calls
+        `,
+        [
+            type === 'views' ? 1 : 0,
+            type === 'calls' ? 1 : 0
+        ]
+    );
+}
+
+// =====================================================
+// ADMIN: PAROL + TELEGRAM KOD + SESSIYA
+// =====================================================
+
+const MAX_FAILS = 3;                       // IP uchun xato urinishlar
+const BLOCK_MS = 15 * 60 * 1000;           // blok muddati: 15 daqiqa
+const GLOBAL_MAX_FAILS = 12;               // barcha IP'lar bo'yicha umumiy chegara
+const CODE_TTL_MS = 5 * 60 * 1000;         // Telegram kodi: 5 daqiqa
+const CODE_MAX_TRIES = 3;                  // bitta kodga urinishlar
+const CODE_RESEND_MS = 30 * 1000;          // kodni qayta so'rash oralig'i
+const SESSION_TTL_MS = 8 * 60 * 60 * 1000; // sessiya: 8 soat
+
+const failedAttempts = new Map();          // ip -> { count, first, blockedUntil }
+let globalFails = [];
+let globalBlockedUntil = 0;
+
+const adminLoginRequests = new Map();      // requestId -> { codeHash, createdAt, tries, ip, name }
+const adminSessions = new Map();           // token -> { expiresAt }
 
 const UNAUTHORIZED = {
     error: 'Ruxsat yo‘q yoki sessiya muddati tugagan. Qaytadan kiring.'
@@ -21,9 +609,6 @@ function sha256(value) {
         .digest();
 }
 
-// PostgreSQL'dagi parol xeshi mavjud bo'lsa, u ENV parolidan ustun turadi.
-let activeAdminPasswordHash = sha256(ADMIN_PASSWORD);
-
 function normalizePassword(value) {
 
     if (value === undefined || value === null) {
@@ -34,19 +619,18 @@ function normalizePassword(value) {
 }
 
 // Uzunlikdan qat'i nazar bir xil vaqtda solishtiriladi
- 
 function passwordMatches(value) {
+
     const input = normalizePassword(value);
-    if (!input) return false;
 
-    const expected = activeAdminPasswordHash || sha256(ADMIN_PASSWORD);
-    const actual = sha256(input);
-
-    if (!Buffer.isBuffer(expected) || expected.length !== actual.length) {
+    if (!input) {
         return false;
     }
 
-    return crypto.timingSafeEqual(actual, expected);
+    return crypto.timingSafeEqual(
+        sha256(input),
+        sha256(ADMIN_PASSWORD)
+    );
 }
 
 function cleanAdminName(value) {
@@ -195,12 +779,6 @@ setInterval(() => {
             adminLoginRequests.delete(id);
         }
     }
-
-    for (const [id, request] of adminPasswordChangeRequests) {
-    if (now - request.createdAt >= ADMIN_PASSWORD_CHANGE_TTL_MS) {
-        adminPasswordChangeRequests.delete(id);
-    }
-}
 
     for (const [token, session] of adminSessions) {
 
@@ -633,7 +1211,8 @@ async function telegramFavoritesList(chatId) {
             '⭐ Saqlangan uylar hozircha mavjud emas.',
             [[btn('🏠 Uylarni ko‘rish', 'homes')]]
         );
-            return;
+
+        return;
     }
 
     let text = '⭐ <b>SAQLANGAN UYLAR</b>\n\n';
@@ -1251,7 +1830,8 @@ const server = http.createServer(async (req, res) => {
         // =================================================
 
         if (req.method === 'OPTIONS') {
-                        const origin = req.headers.origin;
+
+            const origin = req.headers.origin;
 
             if (origin && ALLOWED_ORIGINS.has(origin)) {
 
@@ -1551,142 +2131,6 @@ const server = http.createServer(async (req, res) => {
         }
 
         // =================================================
-        // ADMIN PAROLINI O'ZGARTIRISH — TELEGRAM KODINI SO'RASH
-        // =================================================
-
-        if (url === '/api/admin/password/change/request' && req.method === 'POST') {
-
-            if (!isAdminHeader(req)) {
-                return sendJson(res, 401, UNAUTHORIZED);
-            }
-
-            let body;
-            try {
-                body = parseJsonObject(await readBody(req, 10000));
-            } catch (e) {
-                return sendJson(res, 400, { error: 'So‘rov ma’lumotlari noto‘g‘ri.' });
-            }
-
-            const newPassword = normalizePassword(body.newPassword);
-            const confirmPassword = normalizePassword(body.confirmPassword);
-
-            if (newPassword.length < 12) {
-                return sendJson(res, 400, { error: 'Yangi parol kamida 12 ta belgidan iborat bo‘lsin.' });
-            }
-            if (newPassword.length > 200) {
-                return sendJson(res, 400, { error: 'Parol juda uzun.' });
-            }
-            if (newPassword !== confirmPassword) {
-                return sendJson(res, 400, { error: 'Yangi parollar bir-biriga mos emas.' });
-            }
-            if (passwordMatches(newPassword)) {
-                return sendJson(res, 400, { error: 'Yangi parol hozirgi paroldan farq qilishi kerak.' });
-            }
-            if (!ADMIN_TG_OK) {
-                return sendJson(res, 503, { error: 'Telegram tasdiqlash sozlamalari to‘liq emas.' });
-            }
-
-            const sessionToken = String(req.headers['x-admin-session'] || '').trim();
-            const now = Date.now();
-            for (const [id, request] of adminPasswordChangeRequests) {
-                if (request.sessionToken === sessionToken) adminPasswordChangeRequests.delete(id);
-            }
-            if (adminPasswordChangeRequests.size >= 50) {
-                return sendJson(res, 429, { error: 'Hozir so‘rovlar ko‘p. Keyinroq urinib ko‘ring.' });
-            }
-
-            const code = String(crypto.randomInt(0, 1000000)).padStart(6, '0');
-            const requestId = crypto.randomBytes(16).toString('hex');
-            adminPasswordChangeRequests.set(requestId, {
-                codeHash: sha256(code),
-                passwordHash: sha256(newPassword).toString('hex'),
-                createdAt: now,
-                tries: 0,
-                sessionToken
-            });
-
-            const sent = await telegramApi('sendMessage', {
-                chat_id: ADMIN_TELEGRAM_ID,
-                text: '🔐 Uy-Joy admin parolini o‘zgartirish kodi\n\n' +
-                    'Kod: ' + code + '\n\n' +
-                    '⏳ Kod 60 soniya amal qiladi, bir marta ishlaydi.\n' +
-                    'Urinishlar soni: 3.\n\nAgar bu siz bo‘lmasangiz, kodni hech kimga bermang.'
-            });
-
-            if (!sent) {
-                adminPasswordChangeRequests.delete(requestId);
-                console.error('Admin parolni o‘zgartirish kodi Telegramga yuborilmadi');
-                return sendJson(res, 502, { error: 'Telegramga kod yuborilmadi. Bot sozlamalarini tekshiring.' });
-            }
-
-            return sendJson(res, 200, {
-                ok: true,
-                requestId,
-                expiresInSeconds: ADMIN_PASSWORD_CHANGE_TTL_MS / 1000
-            });
-        }
-
-        // =================================================
-        // ADMIN PAROLINI O'ZGARTIRISH — KODNI TEKSHIRISH VA SAQLASH
-        // =================================================
-
-        if (url === '/api/admin/password/change/verify' && req.method === 'POST') {
-
-            if (!isAdminHeader(req)) {
-                return sendJson(res, 401, UNAUTHORIZED);
-            }
-
-            let body;
-            try {
-                body = parseJsonObject(await readBody(req, 10000));
-            } catch (e) {
-                return sendJson(res, 400, { error: 'So‘rov ma’lumotlari noto‘g‘ri.' });
-            }
-
-            const requestId = String(body.requestId || '');
-            const code = String(body.code || '').trim();
-            if (!/^[a-f0-9]{32}$/.test(requestId) || !/^\d{6}$/.test(code)) {
-                return sendJson(res, 400, { error: 'So‘rov yoki 6 xonali kod noto‘g‘ri.' });
-            }
-
-            const request = adminPasswordChangeRequests.get(requestId);
-            const sessionToken = String(req.headers['x-admin-session'] || '').trim();
-            if (!request || request.sessionToken !== sessionToken) {
-                return sendJson(res, 404, { error: 'So‘rov topilmadi. Yangi kod so‘rang.' });
-            }
-            if (Date.now() - request.createdAt >= ADMIN_PASSWORD_CHANGE_TTL_MS) {
-                adminPasswordChangeRequests.delete(requestId);
-                return sendJson(res, 401, { status: 'expired', error: 'Kod muddati tugadi. Yangi kod so‘rang.' });
-            }
-
-            request.tries++;
-            const codeOk = crypto.timingSafeEqual(request.codeHash, sha256(code));
-            if (!codeOk) {
-                if (request.tries >= ADMIN_PASSWORD_CHANGE_MAX_TRIES) {
-                    adminPasswordChangeRequests.delete(requestId);
-                    return sendJson(res, 401, { status: 'failed', error: 'Kod 3 marta noto‘g‘ri kiritildi. Yangi kod so‘rang.' });
-                }
-                return sendJson(res, 401, {
-                    status: 'wrong_code',
-                    error: 'Kod noto‘g‘ri.',
-                    attemptsLeft: ADMIN_PASSWORD_CHANGE_MAX_TRIES - request.tries
-                });
-            }
-
-            await pool.query(`
-                INSERT INTO admin_credentials (id, password_hash, updated_at)
-                VALUES (1, $1, NOW())
-                ON CONFLICT (id) DO UPDATE
-                SET password_hash = EXCLUDED.password_hash, updated_at = NOW()
-            `, [request.passwordHash]);
-
-            activeAdminPasswordHash = Buffer.from(request.passwordHash, 'hex');
-            adminPasswordChangeRequests.delete(requestId);
-
-            return sendJson(res, 200, { ok: true, message: 'Admin paroli muvaffaqiyatli o‘zgartirildi.' });
-        }
-
-        // =================================================
         // GET CARS
         // =================================================
 
@@ -1871,7 +2315,7 @@ const server = http.createServer(async (req, res) => {
 
                     if (incomingImages.length > 8) {
                         throw new UserError("Ko'pi bilan 8 ta rasm");
-                                            }
+                    }
 
                     const savedNames = [];
                     const oldImageSet = new Set(finalImages);
@@ -2150,7 +2594,8 @@ const server = http.createServer(async (req, res) => {
                     `SELECT images FROM cars WHERE id = $1`,
                     [id]
                 );
-                               if (result.rows.length === 0) {
+
+                if (result.rows.length === 0) {
 
                     await client.query('ROLLBACK');
 
@@ -2425,5 +2870,4 @@ process.on('SIGINT', () => shutdown('SIGINT'));
 
 process.on('unhandledRejection', reason => {
     console.error('UNHANDLED REJECTION:', reason);
-}); 
-                        
+});
