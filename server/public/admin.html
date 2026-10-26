@@ -370,11 +370,33 @@
 
 <div class="dashboard-grid">
 
-    <div class="panel">
+<div class="panel">
 
-        <div class="panel-header">
-            <div class="panel-title">So‘nggi faollik</div>
+    <div class="panel-header">
+        <div class="panel-title">Kirgan foydalanuvchilar</div>
+    </div>
+
+    <div class="panel-body">
+
+        <div class="stats-grid" style="grid-template-columns:repeat(2,minmax(0,1fr));margin-bottom:18px">
+
+            <div class="stat-card">
+                <div class="stat-value" id="dashboardTotalUsers">0</div>
+                <div class="stat-label">Jami foydalanuvchilar</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-value" id="dashboardTodayLogins">0</div>
+                <div class="stat-label">Bugungi kirishlar</div>
+            </div>
+
         </div>
+
+        <div id="dashboardRecentUsers"></div>
+
+    </div>
+
+</div>
 
         <div class="panel-body">
             <div class="activity-list">
@@ -795,6 +817,28 @@
   ></div>
 </div>
     </section>
+
+    
+   <!-- FAOL FOYDALANUVCHILAR -->
+<section class="page" id="page-active-users">
+
+  <div class="panel">
+
+    <div class="panel-header">
+      <div class="panel-title">Faol foydalanuvchilar</div>
+    </div>
+
+    <div class="panel-body">
+
+      <div id="activeUsersList">
+        <!-- Faol foydalanuvchilar serverdan yuklanadi -->
+      </div>
+
+    </div>
+
+  </div>
+
+</section>
 
 <!-- ========================= SETTINGS ========================= -->
 
