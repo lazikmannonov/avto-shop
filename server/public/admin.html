@@ -149,6 +149,18 @@
                 </div>
 
                 <div class="login-input-wrap">
+                     <input
+                       class="login-input"
+                      id="loginPhone"
+                     type="tel"
+                     placeholder="Telefon raqamingiz (+998...)"
+                     maxlength="20"
+                    autocomplete="tel"
+                    inputmode="tel"
+                     >
+                     </div>
+
+                <div class="login-input-wrap">
 
                     <input
                         class="login-input"
@@ -255,6 +267,12 @@
         <button data-page="password" onclick="showPage('password')">
             <svg class="icon"><use href="#i-settings"></use></svg>
             <span>Sessiya</span>
+        </button>
+
+        
+        <button data-page="active-users" onclick="showPage('active-users')">
+            <svg class="icon"><use href="#i-dashboard"></use></svg>
+            <span>Foydalanuvchilar</span>
         </button>
 
     </nav>
@@ -1468,14 +1486,36 @@ async function loginAdmin(event) {
 /* 1-bosqich */
 async function requestLoginCode() {
 
-    const name = $("loginName") ? $("loginName").value.trim() : "";
-    const password = $("loginPassword") ? $("loginPassword").value.trim() : "";
+   const name = $("loginName")
+    ? $("loginName").value.trim()
+    : "";
 
+const phone = $("loginPhone")
+    ? $("loginPhone").value.trim()
+    : "";
+
+const password = $("loginPassword")
+    ? $("loginPassword").value
+    : "";
+    
     if (!name) {
         setLoginMessage("Ismingizni kiriting.");
         $("loginName")?.focus();
         return;
     }
+    if (!phone) {
+    setLoginMessage("Telefon raqamingizni kiriting.");
+    $("loginPhone")?.focus();
+    return;
+}
+
+const normalizedPhone = phone.replace(/[\s()-]/g, "");
+
+if (!/^\+?[0-9]{9,15}$/.test(normalizedPhone)) {
+    setLoginMessage("Telefon raqamini to‘g‘ri kiriting.");
+    $("loginPhone")?.focus();
+    return;
+}
 
     if (!password) {
         setLoginMessage("Admin parolini kiriting.");
@@ -1493,7 +1533,11 @@ async function requestLoginCode() {
             headers: {
                 "Content-Type": "application/json"
             },
-            body: JSON.stringify({ name, password }),
+            body: JSON.stringify({
+             name,
+            phone: normalizedPhone,
+            password
+            }),
             cache: "no-store"
         });
 
@@ -1730,12 +1774,14 @@ function logoutAdmin(message) {
 ========================================================= */
 
 const pageTitles = {
-    dashboard:"Dashboard",
-    add:"Uy qo‘shish",
-    homes:"Uylar",
-    settings:"Aloqa sozlamalari",
-    password:"Sessiya"
+    dashboard: "Dashboard",
+    add: "Uy qo‘shish",
+    homes: "Uylar",
+    settings: "Aloqa sozlamalari",
+    password: "Sessiya",
+    "active-users": "Foydalanuvchilar"
 };
+
 
 function requireAdminPassword(){
 
@@ -3621,6 +3667,13 @@ async function loadAll() {
             loadCars(),
             loadStats(),
             loadDailyStats(),
+                        loadAdminSessionHistory().catch(error => {
+                console.error('Foydalanuvchilar:', error);
+
+                if (adminSessionToken) {
+                    showToast(error.message, true);
+                }
+            }),
             loadSettings().catch(error => {
                 console.error("Settings:", error);
 
@@ -3658,6 +3711,152 @@ async function loadAll() {
 
     } finally {
         showLoading(false);
+    }
+}
+    
+async function loadAdminSessionHistory() {
+    if (!adminSessionToken) return;
+
+    const response = await fetch('/api/admin/session-history', {
+        method: 'GET',
+        headers: adminHeaders()
+    });
+
+    const data = await response.json();
+
+    if (response.status === 401) {
+        logoutAdmin('Sessiya tugadi. Qayta kiring.');
+        return;
+    }
+
+    if (!response.ok || !data.ok) {
+        throw new Error(
+            data.error || 'Foydalanuvchilarni yuklab bo‘lmadi.'
+        );
+    }
+
+    // Dashboard hisoblagichlari
+    const totalElement = document.getElementById(
+        'dashboardTotalUsers'
+    );
+
+    const todayElement = document.getElementById(
+        'dashboardTodayLogins'
+    );
+
+    if (totalElement) {
+        totalElement.textContent = data.totalLogins ?? 0;
+    }
+
+    if (todayElement) {
+        todayElement.textContent = data.todayLogins ?? 0;
+    }
+
+    // Sana-vaqtni ko‘rsatish
+    function formatSessionDate(value) {
+        if (!value) return '—';
+
+        const date = new Date(value);
+
+        if (Number.isNaN(date.getTime())) return '—';
+
+        return date.toLocaleString('uz-UZ', {
+            timeZone: 'Asia/Tashkent',
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+    }
+
+    // Faol sessiyalar ro‘yxati
+    const activeList = document.getElementById(
+        'activeUsersList'
+    );
+
+    if (activeList) {
+        const sessions = Array.isArray(data.activeSessions)
+            ? data.activeSessions
+            : [];
+
+        if (sessions.length === 0) {
+            activeList.textContent =
+                'Hozir faol admin sessiyalari yo‘q.';
+        } else {
+            activeList.replaceChildren();
+
+            sessions.forEach(session => {
+                const item = document.createElement('div');
+
+                item.style.cssText =
+                    'padding:12px 0;border-bottom:1px solid var(--border,#ddd)';
+
+                const title = document.createElement('div');
+                title.style.fontWeight = '600';
+                title.textContent =
+                    'Faol admin sessiyasi #' + session.id;
+
+                const details = document.createElement('div');
+                details.style.cssText =
+                    'font-size:13px;opacity:.75;margin-top:5px';
+
+                details.textContent =
+                    'Kirish vaqti: ' +
+                    formatSessionDate(session.login_at);
+
+                item.append(title, details);
+                activeList.appendChild(item);
+            });
+        }
+    }
+
+    // Dashboard: oxirgi kirishlar
+    const recentList = document.getElementById(
+        'dashboardRecentUsers'
+    );
+
+    if (recentList) {
+        const recent = Array.isArray(data.recentSessions)
+            ? data.recentSessions.slice(0, 5)
+            : [];
+
+        if (recent.length === 0) {
+            recentList.textContent =
+                'Hozircha kirishlar tarixi yo‘q.';
+        } else {
+            recentList.replaceChildren();
+
+            recent.forEach(session => {
+                const item = document.createElement('div');
+
+                item.style.cssText =
+                    'padding:10px 0;border-bottom:1px solid var(--border,#ddd)';
+
+                const title = document.createElement('div');
+                title.style.fontWeight = '600';
+                title.textContent =
+                    'Admin sessiyasi #' + session.id;
+
+                const details = document.createElement('div');
+                details.style.cssText =
+                    'font-size:13px;opacity:.75;margin-top:4px';
+
+                const statusLabels = {
+                    active: 'Faol',
+                    logged_out: 'Chiqilgan',
+                    expired: 'Muddati tugagan'
+                };
+
+                details.textContent =
+                    formatSessionDate(session.login_at) +
+                    ' · ' +
+                    (statusLabels[session.status] || 'Noma’lum');
+
+                item.append(title, details);
+                recentList.appendChild(item);
+            });
+        }
     }
 }
 
