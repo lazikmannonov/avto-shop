@@ -2151,16 +2151,28 @@ if (req.method === 'POST' && url === '/api/admin/password/change/request') {
     }
 
     try {
-        const body = parseJsonObject(await readBody(req));
-        const newPassword = String(body.newPassword || '');
-        const confirmPassword = String(body.confirmPassword || '');
+       
+const body = parseJsonObject(await readBody(req));
 
-        if (newPassword.length < 12 || newPassword.length > 200) {
-            return sendJson(res, 400, {
-                ok: false,
-                error: 'Parol 12–200 ta belgidan iborat bo‘lishi kerak.'
-            });
-        }
+const currentPassword = String(body.currentPassword || '');
+const newPassword = String(body.newPassword || '');
+const confirmPassword = String(body.confirmPassword || '');
+
+if (!currentPassword ||
+    !(await passwordMatches(currentPassword))) {
+    return sendJson(res, 400, {
+        ok: false,
+        error: 'Joriy parol noto‘g‘ri.'
+    });
+}
+
+        
+if (newPassword.length < 1 || newPassword.length > 200) {
+    return sendJson(res, 400, {
+        ok: false,
+        error: 'Yangi parol 1–200 ta belgidan iborat bo‘lishi kerak.'
+    });
+}
 
         if (newPassword !== confirmPassword) {
             return sendJson(res, 400, {
