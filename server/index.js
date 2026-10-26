@@ -5,16 +5,29 @@ const crypto = require('crypto');
 const { Pool } = require('pg');
 
 // =====================================================
-// ADMIN PASSWORD
+// SOZLAMALAR (Render Environment)
 // =====================================================
 
-const ADMIN_PASSWORD = String(
-    process.env.ADMIN_PASSWORD || ''
-).trim();
+const ADMIN_PASSWORD = String(process.env.ADMIN_PASSWORD || '').trim();
+const ADMIN_TELEGRAM_ID = String(process.env.ADMIN_TELEGRAM_ID || '').trim();
+const TELEGRAM_BOT_TOKEN = String(process.env.TELEGRAM_BOT_TOKEN || '').trim();
 
-const ADMIN_TELEGRAM_ID = String(
-    process.env.ADMIN_TELEGRAM_ID || ''
-).trim();
+// Domen o'zgarsa SITE_URL env orqali almashtiriladi
+const SITE_URL = String(process.env.SITE_URL || 'https://avto-shop.onrender.com')
+    .trim()
+    .replace(/\/+$/, '');
+
+// Boshqa domendan API'ga murojaat qilishga ruxsat (odatda kerak emas).
+// Misol: ALLOWED_ORIGINS=https://uy-joy.uz,https://www.uy-joy.uz
+const ALLOWED_ORIGINS = new Set(
+    [SITE_URL]
+        .concat(
+            String(process.env.ALLOWED_ORIGINS || '')
+                .split(',')
+                .map(s => s.trim().replace(/\/+$/, ''))
+        )
+        .filter(Boolean)
+);
 
 if (!process.env.DATABASE_URL) {
     console.error('DATABASE_URL topilmadi!');
@@ -24,6 +37,19 @@ if (!process.env.DATABASE_URL) {
 if (!ADMIN_PASSWORD) {
     console.error('ADMIN_PASSWORD topilmadi!');
     process.exit(1);
+}
+
+if (ADMIN_PASSWORD.length < 12) {
+    console.warn('OGOHLANTIRISH: ADMIN_PASSWORD 12 belgidan qisqa. Uzunroq parol qo‘ying.');
+}
+
+const ADMIN_TG_OK = /^\d+$/.test(ADMIN_TELEGRAM_ID) && Boolean(TELEGRAM_BOT_TOKEN);
+
+if (!ADMIN_TG_OK) {
+    console.warn(
+        'OGOHLANTIRISH: ADMIN_TELEGRAM_ID (faqat raqam) yoki TELEGRAM_BOT_TOKEN sozlanmagan. ' +
+        'Admin panelga kirish kodi yuborilmaydi!'
+    );
 }
 
 // =====================================================
@@ -37,15 +63,12 @@ const pool = new Pool({
     connectionTimeoutMillis: 10000
 });
 
-// =====================================================
-// DATABASE INIT
-// =====================================================
+// Bo'sh turgan ulanish uzilsa server yiqilib tushmasligi uchun
+pool.on('error', error => {
+    console.error('PostgreSQL pool xatosi:', error.message);
+});
 
 async function initDatabase() {
-
-    // -------------------------------------------------
-    // CARS
-    // -------------------------------------------------
 
     await pool.query(`
         CREATE TABLE IF NOT EXISTS cars (
@@ -66,54 +89,23 @@ async function initDatabase() {
         )
     `);
 
-    await pool.query(`
-        ALTER TABLE cars
-        ADD COLUMN IF NOT EXISTS sold BOOLEAN DEFAULT false
-    `);
+    const carColumns = [
+        'sold BOOLEAN DEFAULT false',
+        "currency TEXT DEFAULT 'UZS'",
+        "type TEXT DEFAULT ''",
+        "types TEXT DEFAULT '[]'",
+        "location TEXT DEFAULT ''",
+        "address TEXT DEFAULT ''",
+        'rooms INTEGER DEFAULT 0',
+        'area INTEGER DEFAULT 0',
+        "phone TEXT DEFAULT ''"
+    ];
 
-    await pool.query(`
-        ALTER TABLE cars
-        ADD COLUMN IF NOT EXISTS currency TEXT DEFAULT 'UZS'
-    `);
-
-    await pool.query(`
-        ALTER TABLE cars
-        ADD COLUMN IF NOT EXISTS type TEXT DEFAULT ''
-    `);
-
-    await pool.query(`
-        ALTER TABLE cars
-        ADD COLUMN IF NOT EXISTS types TEXT DEFAULT '[]'
-    `);
-
-    await pool.query(`
-        ALTER TABLE cars
-        ADD COLUMN IF NOT EXISTS location TEXT DEFAULT ''
-    `);
-
-    await pool.query(`
-        ALTER TABLE cars
-        ADD COLUMN IF NOT EXISTS address TEXT DEFAULT ''
-    `);
-
-    await pool.query(`
-        ALTER TABLE cars
-        ADD COLUMN IF NOT EXISTS rooms INTEGER DEFAULT 0
-    `);
-
-    await pool.query(`
-        ALTER TABLE cars
-        ADD COLUMN IF NOT EXISTS area INTEGER DEFAULT 0
-    `);
-
-    await pool.query(`
-        ALTER TABLE cars
-        ADD COLUMN IF NOT EXISTS phone TEXT DEFAULT ''
-    `);
-
-    // -------------------------------------------------
-    // IMAGE FILES
-    // -------------------------------------------------
+    for (const column of carColumns) {
+        await pool.query(
+            `ALTER TABLE cars ADD COLUMN IF NOT EXISTS ${column}`
+        );
+    }
 
     await pool.query(`
         CREATE TABLE IF NOT EXISTS image_files (
@@ -122,197 +114,6 @@ async function initDatabase() {
             data BYTEA NOT NULL
         )
     `);
-
-                // =================================================
-                // ADMIN LOGIN — TELEGRAM TASDIQLASH SO'ROVI
-                // =================================================
-
-                if (
-                    url === '/api/admin/login' &&
-                    req.method === 'POST'
-                ) {
-                    let body = {};
-
-                    try {
-                        const raw = await readBody(req);
-                        if (raw) {
-                            body = JSON.parse(raw);
-                        }
-                    } catch (e) {
-                        return sendJson(res, 400, {
-                            error: 'So‘rov ma’lumotlari noto‘g‘ri.'
-                        });
-                    }
-
-                    if (!checkPassword(req, body.password)) {
-                        return sendJson(res, 401, {
-                            error: 'Parol noto‘g‘ri.'
-                        });
-                    }
-
-                    if (!ADMIN_TELEGRAM_ID || !TELEGRAM_BOT_TOKEN) {
-                        return sendJson(res, 503, {
-                            error: 'Telegram tasdiqlash sozlamalari to‘liq emas.'
-                        });
-                    }
-
-                    const requestId = crypto
-                        .randomBytes(16)
-                        .toString('hex');
-
-                    const request = {
-                        status: 'pending',
-                        createdAt: Date.now(),
-                        sessionToken: crypto
-                            .randomBytes(32)
-                            .toString('hex'),
-                        sessionDelivered: false
-                    };
-
-                   
-adminLoginRequests.set(requestId, request);
-
-const telegramMessage = await telegramApi('sendMessage', {
-    chat_id: ADMIN_TELEGRAM_ID,
-    text:
-        '🔐 Uy-Joy admin paneliga kirish so‘rovi\n\n' +
-        'Admin paneliga kirishga ruxsat berasizmi?\n' +
-        '⏳ So‘rov 5 daqiqa amal qiladi.',
-    reply_markup: {
-        inline_keyboard: [
-            [
-                {
-                    text: '✅ Tasdiqlash',
-                    callback_data: 'admin_approve_' + requestId
-                },
-                {
-                    text: '❌ Rad etish',
-                    callback_data: 'admin_deny_' + requestId
-                }
-            ]
-        ]
-    }
-});
-
-if (!telegramMessage) {
-    adminLoginRequests.delete(requestId);
-
-    console.error('Admin Telegram xabari yuborilmadi');
-
-    return sendJson(res, 502, {
-        error: 'Telegramga xabar yuborilmadi. Bot bilan shaxsiy chatni tekshiring.'
-    });
-}
-
-return sendJson(res, 200, {
-    ok: true,
-    requestId,
-    status: 'pending'
-});
-}
-
-
-                // =================================================
-                // ADMIN LOGIN — TASDIQLASH HOLATINI TEKSHIRISH
-                // =================================================
-
-                if (
-                    url === '/api/admin/login-status' &&
-                    req.method === 'POST'
-                ) {
-                    let body = {};
-
-                    try {
-                        const raw = await readBody(req);
-                        if (raw) {
-                            body = JSON.parse(raw);
-                        }
-                    } catch (e) {
-                        return sendJson(res, 400, {
-                            error: 'So‘rov ma’lumotlari noto‘g‘ri.'
-                        });
-                    }
-
-                    const requestId = String(
-                        body.requestId || ''
-                    );
-
-                    if (!/^[a-f0-9]{32}$/.test(requestId)) {
-                        return sendJson(res, 400, {
-                            error: 'So‘rov identifikatori noto‘g‘ri.'
-                        });
-                    }
-
-                    const request =
-                        adminLoginRequests.get(requestId);
-
-                    if (!request) {
-                        return sendJson(res, 404, {
-                            status: 'not_found',
-                            error: 'Kirish so‘rovi topilmadi.'
-                        });
-                    }
-
-                    if (
-                        Date.now() - request.createdAt >
-                        5 * 60 * 1000
-                    ) {
-                        adminLoginRequests.delete(requestId);
-
-                        return sendJson(res, 200, {
-                            status: 'expired',
-                            error: 'Tasdiqlash vaqti tugadi.'
-                        });
-                    }
-
-                    if (request.status === 'denied') {
-                        adminLoginRequests.delete(requestId);
-
-                        return sendJson(res, 200, {
-                            status: 'denied',
-                            error: 'Telegram orqali kirish rad etildi.'
-                        });
-                    }
-
-                    if (request.status !== 'approved') {
-                        return sendJson(res, 200, {
-                            status: 'pending'
-                        });
-                    }
-
-                   
-                    // Sessiya tokeni faqat bir marta beriladi
-                    if (request.sessionDelivered) {
-                        return sendJson(res, 409, {
-                            status: 'already_delivered',
-                            error: 'Sessiya tokeni oldin berilgan.'
-                        });
-                    }
-
-                    request.sessionDelivered = true;
-
-                    adminSessions.set(
-                        request.sessionToken,
-                        {
-                            expiresAt:
-                                Date.now() + 8 * 60 * 60 * 1000
-                        }
-                    );
-
-                    const sessionToken =
-                        request.sessionToken;
-
-                    adminLoginRequests.delete(requestId);
-
-                    return sendJson(res, 200, {
-                        status: 'approved',
-                        sessionToken
-                    });
-                }
-
-    // -------------------------------------------------
-    // TOTAL STATS
-    // -------------------------------------------------
 
     await pool.query(`
         CREATE TABLE IF NOT EXISTS stats (
@@ -323,22 +124,10 @@ return sendJson(res, 200, {
     `);
 
     await pool.query(`
-        INSERT INTO stats (
-            id,
-            views,
-            calls
-        )
-        VALUES (
-            1,
-            0,
-            0
-        )
+        INSERT INTO stats (id, views, calls)
+        VALUES (1, 0, 0)
         ON CONFLICT (id) DO NOTHING
     `);
-
-    // -------------------------------------------------
-    // DAILY STATS
-    // -------------------------------------------------
 
     await pool.query(`
         CREATE TABLE IF NOT EXISTS daily_stats (
@@ -347,10 +136,6 @@ return sendJson(res, 200, {
             calls INTEGER DEFAULT 0
         )
     `);
-
-    // -------------------------------------------------
-    // SITE SETTINGS
-    // -------------------------------------------------
 
     await pool.query(`
         CREATE TABLE IF NOT EXISTS site_settings (
@@ -364,14 +149,7 @@ return sendJson(res, 200, {
     `);
 
     await pool.query(`
-        INSERT INTO site_settings (
-            id,
-            phone,
-            telegram,
-            whatsapp,
-            instagram,
-            address
-        )
+        INSERT INTO site_settings (id, phone, telegram, whatsapp, instagram, address)
         VALUES (
             1,
             '+998 88 950 00 05',
@@ -387,35 +165,26 @@ return sendJson(res, 200, {
 }
 
 // =====================================================
-// JSON RESPONSE
+// YORDAMCHI FUNKSIYALAR
 // =====================================================
+
+// Foydalanuvchiga ko'rsatish mumkin bo'lgan xato (validatsiya)
+class UserError extends Error {}
 
 function sendJson(res, status, data) {
 
     res.writeHead(status, {
         'Content-Type': 'application/json; charset=utf-8',
-        'Cache-Control': 'no-store',
-        'Access-Control-Allow-Origin': '*'
+        'Cache-Control': 'no-store'
     });
 
-    res.end(
-        JSON.stringify(data)
-    );
+    res.end(JSON.stringify(data));
 }
-
-// =====================================================
-// FILE RESPONSE
-// =====================================================
 
 function sendFile(res, name) {
 
     const safeName = path.basename(name);
-
-    const file = path.join(
-        __dirname,
-        'public',
-        safeName
-    );
+    const file = path.join(__dirname, 'public', safeName);
 
     if (!fs.existsSync(file)) {
 
@@ -423,30 +192,21 @@ function sendFile(res, name) {
             'Content-Type': 'text/plain; charset=utf-8'
         });
 
-        return res.end(
-            'File topilmadi'
-        );
+        return res.end('File topilmadi');
     }
 
-    let contentType =
-        'text/html; charset=utf-8';
+    let contentType = 'text/html; charset=utf-8';
 
     if (safeName.endsWith('.css')) {
-
-        contentType =
-            'text/css; charset=utf-8';
+        contentType = 'text/css; charset=utf-8';
     }
 
     if (safeName.endsWith('.js')) {
-
-        contentType =
-            'application/javascript; charset=utf-8';
+        contentType = 'application/javascript; charset=utf-8';
     }
 
     if (safeName.endsWith('.json')) {
-
-        contentType =
-            'application/json; charset=utf-8';
+        contentType = 'application/json; charset=utf-8';
     }
 
     res.writeHead(200, {
@@ -454,147 +214,441 @@ function sendFile(res, name) {
         'Cache-Control': 'no-cache'
     });
 
-    res.end(
-        fs.readFileSync(file)
-    );
+    res.end(fs.readFileSync(file));
 }
 
-// =====================================================
-// READ BODY
-// =====================================================
+// Bo'lak-bo'lak kelgan baytlar yig'ilib, oxirida bir marta UTF-8 ga o'giriladi
+// (aks holda o'zbek/rus harflari bo'lak chegarasida buzilishi mumkin edi)
+function readBody(req, limit = 30000000) {
 
-function readBody(req) {
+    return new Promise((resolve, reject) => {
 
-    return new Promise(
-        (resolve, reject) => {
+        const chunks = [];
+        let total = 0;
+        let finished = false;
 
-            let data = '';
-            let totalLength = 0;
-            let finished = false;
+        req.on('data', chunk => {
 
-            req.on(
-                'data',
-                chunk => {
+            if (finished) {
+                return;
+            }
 
-                    if (finished) {
-                        return;
-                    }
+            total += chunk.length;
 
-                    totalLength += chunk.length;
+            if (total > limit) {
 
-                    if (totalLength > 30000000) {
+                finished = true;
 
-                        finished = true;
+                reject(new UserError("Ma'lumot juda katta"));
 
-                        reject(
-                            new Error(
-                                "Ma'lumot juda katta"
-                            )
-                        );
+                req.destroy();
 
-                        req.destroy();
+                return;
+            }
 
-                        return;
-                    }
+            chunks.push(chunk);
+        });
 
-                    data += chunk.toString();
-                }
-            );
+        req.on('end', () => {
 
-            req.on(
-                'end',
-                () => {
+            if (!finished) {
 
-                    if (!finished) {
+                finished = true;
 
-                        finished = true;
+                resolve(Buffer.concat(chunks).toString('utf8'));
+            }
+        });
 
-                        resolve(data);
-                    }
-                }
-            );
+        req.on('error', error => {
 
-            req.on(
-                'error',
-                error => {
+            if (!finished) {
 
-                    if (!finished) {
+                finished = true;
 
-                        finished = true;
+                reject(error);
+            }
+        });
 
-                        reject(error);
-                    }
-                }
-            );
+        req.on('close', () => {
+
+            if (!finished) {
+
+                finished = true;
+
+                reject(new Error('Ulanish uzildi'));
+            }
+        });
+    });
+}
+
+// JSON obyekt bo'lishini kafolatlaydi (null, massiv, son kelsa xato beradi)
+function parseJsonObject(raw, allowEmpty = true) {
+
+    if (!raw) {
+
+        if (allowEmpty) {
+            return {};
         }
+
+        throw new UserError("Ma'lumot formati noto'g'ri");
+    }
+
+    const value = JSON.parse(raw);
+
+    if (
+        !value ||
+        typeof value !== 'object' ||
+        Array.isArray(value)
+    ) {
+        throw new UserError("Ma'lumot formati noto'g'ri");
+    }
+
+    return value;
+}
+
+function toInteger(value, fallback = 0) {
+
+    const number = Number(value);
+
+    if (
+        !Number.isFinite(number) ||
+        !Number.isInteger(number)
+    ) {
+        return fallback;
+    }
+
+    return number;
+}
+
+function normalizeCurrency(value) {
+
+    const currency = String(value || 'UZS')
+        .trim()
+        .toUpperCase();
+
+    return currency === 'USD' ? 'USD' : 'UZS';
+}
+
+function prepareImage(dataUrl) {
+
+    if (typeof dataUrl !== 'string') {
+        throw new UserError("Rasm formati noto'g'ri");
+    }
+
+    const match = /^data:image\/jpeg;base64,(.+)$/i.exec(dataUrl);
+
+    if (!match) {
+        throw new UserError("Rasm JPEG formatda bo'lishi kerak");
+    }
+
+    const buffer = Buffer.from(match[1], 'base64');
+
+    if (!buffer.length) {
+        throw new UserError("Rasm bo'sh");
+    }
+
+    if (buffer.length > 3000000) {
+        throw new UserError("Bitta rasm 3 MB dan katta bo'lmasligi kerak");
+    }
+
+    // Haqiqiy JPEG faylning boshi: FF D8 FF
+    if (
+        buffer.length < 4 ||
+        buffer[0] !== 0xFF ||
+        buffer[1] !== 0xD8 ||
+        buffer[2] !== 0xFF
+    ) {
+        throw new UserError("Rasm JPEG formatda bo'lishi kerak");
+    }
+
+    return {
+        name: crypto.randomBytes(16).toString('hex') + '.jpg',
+        buffer
+    };
+}
+
+function parseImages(row) {
+
+    if (!row || !row.images) {
+        return [];
+    }
+
+    if (Array.isArray(row.images)) {
+        return row.images;
+    }
+
+    try {
+
+        const images = JSON.parse(row.images);
+
+        if (Array.isArray(images)) {
+            return images.filter(x => typeof x === 'string');
+        }
+
+    } catch (e) {}
+
+    return [];
+}
+
+function parseTypes(row) {
+
+    if (!row) {
+        return [];
+    }
+
+    if (
+        row.types === null ||
+        row.types === undefined ||
+        row.types === ''
+    ) {
+        return row.type ? [String(row.type)] : [];
+    }
+
+    try {
+
+        const types = JSON.parse(row.types);
+
+        if (Array.isArray(types)) {
+
+            return types
+                .map(x => String(x).trim())
+                .filter(Boolean)
+                .slice(0, 3);
+        }
+
+    } catch (e) {}
+
+    return row.type ? [String(row.type)] : [];
+}
+
+function carOut(row) {
+
+    const types = parseTypes(row);
+    const currency = normalizeCurrency(row.currency);
+
+    return {
+        id: Number(row.id),
+        name: row.name || '',
+        title: row.name || '',
+        price: Number(row.price) || 0,
+        currency,
+        type: row.type || types[0] || '',
+        types,
+        location: row.location || row.address || '',
+        address: row.address || row.location || '',
+        rooms: Number(row.rooms) || 0,
+        area: Number(row.area) || 0,
+        phone: row.phone || '',
+        description: row.description || '',
+        images: parseImages(row),
+        sold: Boolean(row.sold),
+        status: row.sold ? 'sold' : 'available'
+    };
+}
+
+function settingsOut(row) {
+
+    return {
+        phone: row.phone || '',
+        telegram: row.telegram || '',
+        whatsapp: row.whatsapp || '',
+        instagram: row.instagram || '',
+        address: row.address || ''
+    };
+}
+
+// Qo'shish va tahrirlash uchun umumiy maydonlarni yig'ish va tekshirish.
+// old === null bo'lsa yangi uy, aks holda mavjud uy tahriri.
+function buildCarFields(body, old) {
+
+    const has = key =>
+        body[key] !== undefined &&
+        body[key] !== null;
+
+    const oldTypes = old ? parseTypes(old) : [];
+
+    const name = String(
+        has('name')
+            ? body.name
+            : (has('title') ? body.title : (old ? old.name : ''))
+    ).trim().slice(0, 300);
+
+    const price = has('price')
+        ? toInteger(body.price, -1)
+        : (old ? toInteger(old.price, -1) : -1);
+
+    const currency = has('currency')
+        ? normalizeCurrency(body.currency)
+        : normalizeCurrency(old ? old.currency : undefined);
+
+    const type = String(
+        has('type')
+            ? body.type
+            : (old ? (old.type || oldTypes[0] || '') : '')
+    ).trim().slice(0, 100);
+
+    let types;
+
+    if (Array.isArray(body.types)) {
+
+        types = body.types
+            .map(x => String(x).trim().slice(0, 100))
+            .filter(Boolean)
+            .slice(0, 3);
+
+    } else {
+
+        types = type ? [type] : oldTypes;
+    }
+
+    const location = String(
+        has('location')
+            ? body.location
+            : (has('address') ? body.address : (old ? old.location || '' : ''))
+    ).trim().slice(0, 500);
+
+    const address = String(
+        has('address')
+            ? body.address
+            : (has('location') ? body.location : (old ? old.address || '' : ''))
+    ).trim().slice(0, 500);
+
+    const rooms = has('rooms')
+        ? toInteger(body.rooms, 0)
+        : (old ? toInteger(old.rooms, 0) : 0);
+
+    const area = has('area')
+        ? toInteger(body.area, 0)
+        : (old ? toInteger(old.area, 0) : 0);
+
+    const phone = String(
+        has('phone') ? body.phone : (old ? old.phone || '' : '')
+    ).trim().slice(0, 100);
+
+    const description = String(
+        has('description') ? body.description : (old ? old.description || '' : '')
+    ).trim().slice(0, 2000);
+
+    // PostgreSQL INTEGER chegarasidan oshib ketmasligi uchun yuqori chegaralar
+    if (!name || price <= 0 || price > 2000000000) {
+        throw new UserError("Nom va narxni to'g'ri kiriting");
+    }
+
+    if (
+        rooms < 0 || rooms > 10000 ||
+        area < 0 || area > 100000000
+    ) {
+        throw new UserError("Xona yoki maydon noto'g'ri");
+    }
+
+    return {
+        name,
+        price,
+        currency,
+        type: types[0] || '',
+        types,
+        location,
+        address,
+        rooms,
+        area,
+        phone,
+        description
+    };
+}
+
+async function recordDailyStat(type) {
+
+    if (type !== 'views' && type !== 'calls') {
+        return;
+    }
+
+    await pool.query(
+        `
+        INSERT INTO daily_stats (stat_date, views, calls)
+        VALUES (CURRENT_DATE, $1, $2)
+        ON CONFLICT (stat_date)
+        DO UPDATE SET
+            views = daily_stats.views + EXCLUDED.views,
+            calls = daily_stats.calls + EXCLUDED.calls
+        `,
+        [
+            type === 'views' ? 1 : 0,
+            type === 'calls' ? 1 : 0
+        ]
     );
 }
 
 // =====================================================
-// PASSWORD
+// ADMIN: PAROL + TELEGRAM KOD + SESSIYA
 // =====================================================
+
+const MAX_FAILS = 3;                       // IP uchun xato urinishlar
+const BLOCK_MS = 15 * 60 * 1000;           // blok muddati: 15 daqiqa
+const GLOBAL_MAX_FAILS = 12;               // barcha IP'lar bo'yicha umumiy chegara
+const CODE_TTL_MS = 5 * 60 * 1000;         // Telegram kodi: 5 daqiqa
+const CODE_MAX_TRIES = 3;                  // bitta kodga urinishlar
+const CODE_RESEND_MS = 30 * 1000;          // kodni qayta so'rash oralig'i
+const SESSION_TTL_MS = 8 * 60 * 60 * 1000; // sessiya: 8 soat
+
+const failedAttempts = new Map();          // ip -> { count, first, blockedUntil }
+let globalFails = [];
+let globalBlockedUntil = 0;
+
+const adminLoginRequests = new Map();      // requestId -> { codeHash, createdAt, tries, ip, name }
+const adminSessions = new Map();           // token -> { expiresAt }
+
+const UNAUTHORIZED = {
+    error: 'Ruxsat yo‘q yoki sessiya muddati tugagan. Qaytadan kiring.'
+};
+
+function sha256(value) {
+
+    return crypto
+        .createHash('sha256')
+        .update(String(value))
+        .digest();
+}
 
 function normalizePassword(value) {
 
-    if (
-        value === undefined ||
-        value === null
-    ) {
+    if (value === undefined || value === null) {
         return '';
     }
 
     return String(value).trim();
 }
 
-// =====================================================
-// SAFE PASSWORD COMPARE
-// =====================================================
-
+// Uzunlikdan qat'i nazar bir xil vaqtda solishtiriladi
 function passwordMatches(value) {
 
-    const input =
-        normalizePassword(value);
+    const input = normalizePassword(value);
 
     if (!input) {
         return false;
     }
 
-    const a =
-        Buffer.from(input);
-
-    const b =
-        Buffer.from(ADMIN_PASSWORD);
-
-    if (a.length !== b.length) {
-        return false;
-    }
-
-    try {
-
-        return crypto.timingSafeEqual(
-            a,
-            b
-        );
-
-    } catch (e) {
-
-        return false;
-    }
+    return crypto.timingSafeEqual(
+        sha256(input),
+        sha256(ADMIN_PASSWORD)
+    );
 }
 
-// =====================================================
-// ADMIN HEADER
-// =====================================================
+function cleanAdminName(value) {
 
-// =====================================================
-// ADMIN (3 TA URINISH)
-// =====================================================
-
-const MAX_FAILS = 3;
-const BLOCK_MS = 15 * 60 * 1000;
-const failedAttempts = new Map();
+    return String(value || '')
+        .replace(/[\u0000-\u001f\u007f]/g, ' ')
+        .trim()
+        .slice(0, 40);
+}
 
 function getIp(req) {
+
+    // Render/Cloudflare o'zi qo'yadigan sarlavhalar birinchi o'rinda
+    const cf = req.headers['cf-connecting-ip'] || req.headers['true-client-ip'];
+
+    if (cf) {
+        return String(cf).trim();
+    }
 
     const fwd = req.headers['x-forwarded-for'];
 
@@ -605,83 +659,76 @@ function getIp(req) {
     return req.socket.remoteAddress || 'unknown';
 }
 
-function isBlocked(req) {
+// Bloklanish tugashiga qolgan millisekund (0 bo'lsa bloklanmagan)
+function blockRemainingMs(req) {
 
-    const ip = getIp(req);
-    const rec = failedAttempts.get(ip);
+    const now = Date.now();
+    let remaining = 0;
 
-    if (!rec) {
-        return false;
+    if (globalBlockedUntil > now) {
+        remaining = globalBlockedUntil - now;
     }
 
-    if (Date.now() - rec.first > BLOCK_MS) {
+    const rec = failedAttempts.get(getIp(req));
 
-        failedAttempts.delete(ip);
-
-        return false;
+    if (rec && rec.blockedUntil > now) {
+        remaining = Math.max(remaining, rec.blockedUntil - now);
     }
 
-    return rec.count >= MAX_FAILS;
+    return remaining;
 }
 
 function registerFail(req) {
 
     const ip = getIp(req);
-    const rec = failedAttempts.get(ip);
+    const now = Date.now();
 
-    if (!rec || Date.now() - rec.first > BLOCK_MS) {
+    let rec = failedAttempts.get(ip);
 
-        failedAttempts.set(ip, { count: 1, first: Date.now() });
+    const expired =
+        !rec ||
+        (rec.blockedUntil > 0 && now >= rec.blockedUntil) ||
+        (rec.blockedUntil === 0 && now - rec.first > BLOCK_MS);
 
-    } else {
+    if (expired) {
+        rec = { count: 0, first: now, blockedUntil: 0 };
+    }
 
-        rec.count++;
+    rec.count++;
+
+    if (rec.count >= MAX_FAILS) {
+        rec.blockedUntil = now + BLOCK_MS;
+    }
+
+    failedAttempts.set(ip, rec);
+
+    // Umumiy himoya: IP almashtirib urinib ko'rishga qarshi
+    globalFails = globalFails.filter(t => now - t < BLOCK_MS);
+    globalFails.push(now);
+
+    if (globalFails.length >= GLOBAL_MAX_FAILS) {
+
+        globalBlockedUntil = now + BLOCK_MS;
+        globalFails = [];
     }
 }
 
-setInterval(() => {
+function sendBlocked(res, ms) {
 
-    const now = Date.now();
+    const minutes = Math.max(1, Math.ceil(ms / 60000));
 
-    for (const [ip, rec] of failedAttempts) {
-
-        if (now - rec.first > BLOCK_MS) {
-            failedAttempts.delete(ip);
-        }
-    }
-
-}, 60 * 1000).unref();
-
-function checkPassword(req, bodyPassword) {
-
-    if (isBlocked(req)) {
-        return false;
-    }
-
-    const headerPassword = req.headers['x-admin-password'];
-
-    if (
-        passwordMatches(headerPassword) ||
-        passwordMatches(bodyPassword)
-    ) {
-
-        failedAttempts.delete(getIp(req));
-
-        return true;
-    }
-
-    // Parol umuman yuborilmagan bo'lsa, xato hisoblanmaydi
-    if (
-        normalizePassword(headerPassword) ||
-        normalizePassword(bodyPassword)
-    ) {
-        registerFail(req);
-    }
-
-    return false;
+    return sendJson(res, 429, {
+        status: 'blocked',
+        error:
+            'Juda ko‘p noto‘g‘ri urinish. ' +
+            minutes +
+            ' daqiqadan keyin qayta urinib ko‘ring.',
+        retryAfterSeconds: Math.ceil(ms / 1000)
+    });
 }
 
 function isAdminHeader(req) {
+
     const token = String(
         req.headers['x-admin-session'] || ''
     ).trim();
@@ -697,408 +744,63 @@ function isAdminHeader(req) {
     }
 
     if (Date.now() >= session.expiresAt) {
+
         adminSessions.delete(token);
+
         return false;
     }
 
     return true;
 }
 
-function isAdmin(req, body = null) {
+function isAdmin(req) {
     return isAdminHeader(req);
 }
 
-// =====================================================
-// INTEGER
-// =====================================================
+// Eskirgan yozuvlarni tozalash
+setInterval(() => {
 
-function toInteger(value, fallback = 0) {
+    const now = Date.now();
 
-    const number =
-        Number(value);
+    for (const [ip, rec] of failedAttempts) {
 
-    if (
-        !Number.isFinite(number) ||
-        !Number.isInteger(number)
-    ) {
-        return fallback;
-    }
+        const done = rec.blockedUntil > 0
+            ? now >= rec.blockedUntil
+            : now - rec.first > BLOCK_MS;
 
-    return number;
-}
-
-// =====================================================
-// CURRENCY
-// =====================================================
-
-function normalizeCurrency(value) {
-
-    const currency =
-        String(
-            value || 'UZS'
-        )
-            .trim()
-            .toUpperCase();
-
-    if (
-        currency === 'USD'
-    ) {
-        return 'USD';
-    }
-
-    return 'UZS';
-}
-
-// =====================================================
-// IMAGE PREPARE
-// =====================================================
-
-function prepareImage(dataUrl) {
-
-    if (
-        typeof dataUrl !== 'string'
-    ) {
-
-        throw new Error(
-            "Rasm formati noto'g'ri"
-        );
-    }
-
-    const match =
-        /^data:image\/jpeg;base64,(.+)$/i
-            .exec(dataUrl);
-
-    if (!match) {
-
-        throw new Error(
-            "Rasm JPEG formatda bo'lishi kerak"
-        );
-    }
-
-    let buffer;
-
-    try {
-
-        buffer =
-            Buffer.from(
-                match[1],
-                'base64'
-            );
-
-    } catch (e) {
-
-        throw new Error(
-            "Rasmni o'qib bo'lmadi"
-        );
-    }
-
-    if (!buffer.length) {
-
-        throw new Error(
-            "Rasm bo'sh"
-        );
-    }
-
-    if (
-        buffer.length >
-        3000000
-    ) {
-
-        throw new Error(
-            "Bitta rasm 3 MB dan katta bo'lmasligi kerak"
-        );
-    }
-
-    const imageName =
-        crypto
-            .randomBytes(16)
-            .toString('hex') +
-        '.jpg';
-
-    return {
-        name: imageName,
-        buffer
-    };
-}
-
-// =====================================================
-// PARSE IMAGES
-// =====================================================
-
-function parseImages(row) {
-
-    if (
-        !row ||
-        !row.images
-    ) {
-        return [];
-    }
-
-    if (
-        Array.isArray(row.images)
-    ) {
-        return row.images;
-    }
-
-    try {
-
-        const images =
-            JSON.parse(
-                row.images
-            );
-
-        if (
-            Array.isArray(images)
-        ) {
-
-            return images
-                .filter(
-                    x =>
-                        typeof x === 'string'
-                );
+        if (done) {
+            failedAttempts.delete(ip);
         }
-
-    } catch (e) {}
-
-    return [];
-}
-
-// =====================================================
-// PARSE TYPES
-// =====================================================
-
-function parseTypes(row) {
-
-    if (!row) {
-        return [];
     }
 
-    if (
-        row.types === null ||
-        row.types === undefined ||
-        row.types === ''
-    ) {
+    for (const [id, request] of adminLoginRequests) {
 
-        return row.type
-            ? [String(row.type)]
-            : [];
-    }
-
-    try {
-
-        const types =
-            JSON.parse(
-                row.types
-            );
-
-        if (
-            Array.isArray(types)
-        ) {
-
-            return types
-                .map(
-                    x =>
-                        String(x).trim()
-                )
-                .filter(Boolean)
-                .slice(0, 3);
+        if (now - request.createdAt > CODE_TTL_MS) {
+            adminLoginRequests.delete(id);
         }
-
-    } catch (e) {}
-
-    return row.type
-        ? [String(row.type)]
-        : [];
-}
-
-// =====================================================
-// CAR OUTPUT
-// =====================================================
-
-function carOut(row) {
-
-    const types =
-        parseTypes(row);
-
-    const currency =
-        normalizeCurrency(
-            row.currency
-        );
-
-    return {
-
-        id:
-            Number(row.id),
-
-        name:
-            row.name || '',
-
-        title:
-            row.name || '',
-
-        price:
-            Number(row.price) || 0,
-
-        currency:
-
-        currency,
-
-        type:
-            row.type ||
-            types[0] ||
-            '',
-
-        types:
-
-        types,
-
-        location:
-            row.location ||
-            row.address ||
-            '',
-
-        address:
-            row.address ||
-            row.location ||
-            '',
-
-        rooms:
-            Number(row.rooms) || 0,
-
-        area:
-            Number(row.area) || 0,
-
-        phone:
-            row.phone || '',
-
-        description:
-            row.description || '',
-
-        images:
-            parseImages(row),
-
-        sold:
-            Boolean(row.sold),
-
-        status:
-            row.sold
-                ? 'sold'
-                : 'available'
-    };
-}
-
-// =====================================================
-// SETTINGS OUTPUT
-// =====================================================
-
-function settingsOut(row) {
-
-    return {
-
-        phone:
-            row.phone || '',
-
-        telegram:
-            row.telegram || '',
-
-        whatsapp:
-            row.whatsapp || '',
-
-        instagram:
-            row.instagram || '',
-
-        address:
-            row.address || ''
-    };
-}
-
-// =====================================================
-// DAILY STAT
-// =====================================================
-
-async function recordDailyStat(type) {
-
-    if (
-        type !== 'views' &&
-        type !== 'calls'
-    ) {
-        return;
     }
 
-    await pool.query(
-        `
-        INSERT INTO daily_stats (
-            stat_date,
-            views,
-            calls
-        )
-        VALUES (
-            CURRENT_DATE,
-            $1,
-            $2
-        )
-        ON CONFLICT (stat_date)
-        DO UPDATE SET
+    for (const [token, session] of adminSessions) {
 
-            views =
-                daily_stats.views +
-                EXCLUDED.views,
+        if (now >= session.expiresAt) {
+            adminSessions.delete(token);
+        }
+    }
 
-            calls =
-                daily_stats.calls +
-                EXCLUDED.calls
-        `,
-        [
-            type === 'views'
-                ? 1
-                : 0,
-
-            type === 'calls'
-                ? 1
-                : 0
-        ]
-    );
-}
+}, 60 * 1000).unref();
 
 // =====================================================
-// TELEGRAM BOT — PREMIUM UY-JOY BOT
+// TELEGRAM BOT
 // =====================================================
-
-const TELEGRAM_BOT_TOKEN =
-    String(
-        process.env.TELEGRAM_BOT_TOKEN || ''
-    ).trim();
-
-// Render'dagi hozirgi manzil saqlanadi.
-// Keyinchalik domen o'zgarsa SITE_URL env orqali almashtirish mumkin.
-const SITE_URL =
-    String(
-        process.env.SITE_URL ||
-        'https://avto-shop.onrender.com'
-    )
-        .trim()
-        .replace(/\/+$/, '');
 
 let telegramOffset = 0;
 let telegramRunning = false;
 let telegramStopped = false;
 
-// =====================================================
-// TELEGRAM USER STATE
-// =====================================================
-
 const telegramSearchMode = new Map();
 const telegramFavorites = new Map();
 
-// Bir foydalanuvchiga nechta uy ko'rsatilishi
 const TELEGRAM_PAGE_SIZE = 5;
-
-const adminLoginRequests = new Map();
-const adminSessions = new Map();
-
-// =====================================================
-// TELEGRAM API
-// =====================================================
 
 async function telegramApi(method, body = {}) {
 
@@ -1108,31 +810,20 @@ async function telegramApi(method, body = {}) {
 
     try {
 
-        const response =
-            await fetch(
-                `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/${method}`,
-                {
-                    method: 'POST',
+        const response = await fetch(
+            `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/${method}`,
+            {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(body)
+            }
+        );
 
-                    headers: {
-                        'Content-Type':
-                            'application/json'
-                    },
-
-                    body:
-                        JSON.stringify(body)
-                }
-            );
-
-        const data =
-            await response.json();
+        const data = await response.json();
 
         if (!data.ok) {
 
-            console.error(
-                'Telegram API ERROR:',
-                data.description
-            );
+            console.error('Telegram API ERROR:', data.description);
 
             return null;
         }
@@ -1141,128 +832,82 @@ async function telegramApi(method, body = {}) {
 
     } catch (error) {
 
-        console.error(
-            'Telegram API NETWORK ERROR:',
-            error.message
-        );
+        console.error('Telegram API NETWORK ERROR:', error.message);
 
         return null;
     }
 }
 
-// =====================================================
-// HTML ESCAPE
-// =====================================================
+// Qisqa yordamchilar
+const btn = (text, data) => ({ text, callback_data: data });
+
+function tgSend(chatId, text, keyboard) {
+
+    const body = {
+        chat_id: chatId,
+        text,
+        parse_mode: 'HTML'
+    };
+
+    if (keyboard) {
+        body.reply_markup = { inline_keyboard: keyboard };
+    }
+
+    return telegramApi('sendMessage', body);
+}
 
 function telegramEscape(value) {
 
-    return String(
-        value ?? ''
-    )
+    return String(value ?? '')
         .replace(/&/g, '&amp;')
         .replace(/</g, '&lt;')
         .replace(/>/g, '&gt;')
         .replace(/"/g, '&quot;');
 }
 
-// =====================================================
-// PRICE
-// =====================================================
-
 function telegramPrice(car) {
 
-    const price =
-        Number(car.price) || 0;
+    const price = Number(car.price) || 0;
 
-    if (
-        normalizeCurrency(car.currency) === 'USD'
-    ) {
-
-        return '$ ' +
-            price.toLocaleString('en-US');
+    if (normalizeCurrency(car.currency) === 'USD') {
+        return '$ ' + price.toLocaleString('en-US');
     }
 
-    return price.toLocaleString('uz-UZ') +
-        " so'm";
+    return price.toLocaleString('uz-UZ') + " so'm";
 }
-
-// =====================================================
-// TYPES
-// =====================================================
 
 function telegramTypes(car) {
 
-    const types =
-        parseTypes(car);
+    const types = parseTypes(car);
 
-    if (
-        types.length
-    ) {
-
-        return types
-            .map(
-                telegramEscape
-            )
-            .join(', ');
+    if (types.length) {
+        return types.map(telegramEscape).join(', ');
     }
 
     return 'Ko‘rsatilmagan';
 }
 
-// =====================================================
-// FAVORITES
-// =====================================================
-
 function telegramGetFavorites(chatId) {
 
-    if (
-        !telegramFavorites.has(
-            String(chatId)
-        )
-    ) {
+    const key = String(chatId);
 
-        telegramFavorites.set(
-            String(chatId),
-            new Set()
-        );
+    if (!telegramFavorites.has(key)) {
+        telegramFavorites.set(key, new Set());
     }
 
-    return telegramFavorites.get(
-        String(chatId)
-    );
+    return telegramFavorites.get(key);
 }
 
-function telegramIsFavorite(
-    chatId,
-    houseId
-) {
-
-    const favorites =
-        telegramGetFavorites(
-            chatId
-        );
-
-    return favorites.has(
-        Number(houseId)
-    );
+function telegramIsFavorite(chatId, houseId) {
+    return telegramGetFavorites(chatId).has(Number(houseId));
 }
 
-function telegramToggleFavorite(
-    chatId,
-    houseId
-) {
+function telegramToggleFavorite(chatId, houseId) {
 
-    const favorites =
-        telegramGetFavorites(
-            chatId
-        );
+    const favorites = telegramGetFavorites(chatId);
+    const id = Number(houseId);
 
-    const id =
-        Number(houseId);
-
-    if (
-        favorites.has(id)
-    ) {
+    if (favorites.has(id)) {
 
         favorites.delete(id);
 
@@ -1274,77 +919,44 @@ function telegramToggleFavorite(
     return true;
 }
 
-// =====================================================
-// GET ALL AVAILABLE HOMES
-// =====================================================
-
 async function telegramGetCars() {
 
-    const result =
-        await pool.query(`
-            SELECT *
-            FROM cars
-            WHERE sold = false
-            ORDER BY id DESC
-        `);
+    const result = await pool.query(`
+        SELECT *
+        FROM cars
+        WHERE sold = false
+        ORDER BY id DESC
+    `);
 
-    return result.rows.map(
-        carOut
-    );
+    return result.rows.map(carOut);
 }
 
-// =====================================================
-// GET ONE HOUSE
-// =====================================================
+async function telegramGetHouse(houseId) {
 
-async function telegramGetHouse(
-    houseId
-) {
+    const result = await pool.query(
+        `SELECT * FROM cars WHERE id = $1 LIMIT 1`,
+        [Number(houseId)]
+    );
 
-    const result =
-        await pool.query(
-            `
-            SELECT *
-            FROM cars
-            WHERE id = $1
-            LIMIT 1
-            `,
-            [
-                Number(houseId)
-            ]
-        );
-
-    if (
-        result.rows.length === 0
-    ) {
-
+    if (result.rows.length === 0) {
         return null;
     }
 
-    return carOut(
-        result.rows[0]
-    );
+    return carOut(result.rows[0]);
 }
 
-// =====================================================
-// MAIN MENU
-// =====================================================
+// -----------------------------------------------------
+// BOSH MENYU
+// -----------------------------------------------------
 
-async function telegramStart(
-    chatId,
-    firstName = ''
-) {
+async function telegramStart(chatId, firstName = '') {
 
-    const name =
-        String(firstName || '').trim();
+    const name = String(firstName || '').trim();
 
-    let greeting =
-        '🏠 <b>Uy-Joy</b>';
+    let greeting = '🏠 <b>Uy-Joy</b>';
 
     if (name) {
-
-        greeting +=
-            `\n\nAssalomu alaykum, <b>${telegramEscape(name)}</b>!`;
+        greeting += `\n\nAssalomu alaykum, <b>${telegramEscape(name)}</b>!`;
     }
 
     const text =
@@ -1352,466 +964,179 @@ async function telegramStart(
         '🏡 Uy, hovli va yerlarni qulay tarzda toping.\n\n' +
         'Kerakli bo‘limni tanlang 👇';
 
-    await telegramApi(
-        'sendMessage',
-        {
-            chat_id: chatId,
-
-            text,
-
-            parse_mode: 'HTML',
-
-            reply_markup: {
-                inline_keyboard: [
-
-                    [
-                        {
-                            text:
-                                '🏠 Uylarni ko‘rish',
-
-                            callback_data:
-                                'homes'
-                        }
-                    ],
-
-                    [
-                        {
-                            text:
-                                '🔎 Uy qidirish',
-
-                            callback_data:
-                                'search'
-                        },
-
-                        {
-                            text:
-                                '⭐ Saqlanganlar',
-
-                            callback_data:
-                                'favorites'
-                        }
-                    ],
-
-                    [
-                        {
-                            text:
-                                '📢 Yangi e’lonlar',
-
-                            callback_data:
-                                'newest'
-                        }
-                    ],
-
-                    [
-                        {
-                            text:
-                                '📞 Bog‘lanish',
-
-                            callback_data:
-                                'contact'
-                        },
-
-                        {
-                            text:
-                                '🌐 Sayt',
-
-                            url:
-                                SITE_URL
-                        }
-                    ]
-
-                ]
-            }
-        }
-    );
+    await tgSend(chatId, text, [
+        [btn('🏠 Uylarni ko‘rish', 'homes')],
+        [btn('🔎 Uy qidirish', 'search'), btn('⭐ Saqlanganlar', 'favorites')],
+        [btn('📢 Yangi e’lonlar', 'newest')],
+        [
+            btn('📞 Bog‘lanish', 'contact'),
+            { text: '🌐 Sayt', url: SITE_URL }
+        ]
+    ]);
 }
 
-// =====================================================
-// MENU MESSAGE
-// =====================================================
-
-async function telegramMenu(
-    chatId
-) {
-
-    await telegramStart(
-        chatId
-    );
+async function telegramMenu(chatId) {
+    await telegramStart(chatId);
 }
 
-// =====================================================
-// HOME LIST MESSAGE
-// =====================================================
+// -----------------------------------------------------
+// UYLAR RO'YXATI
+// -----------------------------------------------------
 
-async function telegramSendHomes(
-    chatId,
-    page = 0
-) {
+async function telegramSendHomes(chatId, page = 0) {
 
-    const cars =
-        await telegramGetCars();
+    const cars = await telegramGetCars();
 
     if (!cars.length) {
 
-        await telegramApi(
-            'sendMessage',
-            {
-                chat_id: chatId,
-
-                text:
-                    '🏠 <b>Hozircha uylar mavjud emas.</b>\n\n' +
-                    'Yangi e’lonlar qo‘shilganda yana tekshirib ko‘ring.',
-
-                parse_mode: 'HTML',
-
-                reply_markup: {
-                    inline_keyboard: [
-                        [
-                            {
-                                text:
-                                    '🔄 Yangilash',
-
-                                callback_data:
-                                    'homes'
-                            }
-                        ],
-                        [
-                            {
-                                text:
-                                    '🏠 Bosh menyu',
-
-                                callback_data:
-                                    'menu'
-                            }
-                        ]
-                    ]
-                }
-            }
+        await tgSend(
+            chatId,
+            '🏠 <b>Hozircha uylar mavjud emas.</b>\n\n' +
+            'Yangi e’lonlar qo‘shilganda yana tekshirib ko‘ring.',
+            [
+                [btn('🔄 Yangilash', 'homes')],
+                [btn('🏠 Bosh menyu', 'menu')]
+            ]
         );
 
         return;
     }
 
-    const totalPages =
-        Math.ceil(
-            cars.length /
-            TELEGRAM_PAGE_SIZE
-        );
+    const totalPages = Math.ceil(cars.length / TELEGRAM_PAGE_SIZE);
 
-    let currentPage =
-        Number(page) || 0;
+    let currentPage = Number(page) || 0;
 
-    if (
-        currentPage < 0
-    ) {
+    if (currentPage < 0) {
         currentPage = 0;
     }
 
-    if (
-        currentPage >= totalPages
-    ) {
-        currentPage =
-            totalPages - 1;
+    if (currentPage >= totalPages) {
+        currentPage = totalPages - 1;
     }
 
-    const start =
-        currentPage *
-        TELEGRAM_PAGE_SIZE;
+    const start = currentPage * TELEGRAM_PAGE_SIZE;
+    const items = cars.slice(start, start + TELEGRAM_PAGE_SIZE);
 
-    const items =
-        cars.slice(
-            start,
-            start + TELEGRAM_PAGE_SIZE
-        );
+    let text = '🏠 <b>UY-JOY KATALOGI</b>\n\n';
 
-    let text =
-        '🏠 <b>UY-JOY KATALOGI</b>\n\n';
-
-    text +=
-        `📊 Jami: <b>${cars.length}</b> ta uy\n`;
-
-    text +=
-        `📄 Sahifa: <b>${currentPage + 1}/${totalPages}</b>\n\n`;
+    text += `📊 Jami: <b>${cars.length}</b> ta uy\n`;
+    text += `📄 Sahifa: <b>${currentPage + 1}/${totalPages}</b>\n\n`;
 
     const buttons = [];
 
-    for (
-        let i = 0;
-        i < items.length;
-        i++
-    ) {
+    for (let i = 0; i < items.length; i++) {
 
-        const car =
-            items[i];
+        const car = items[i];
+        const number = start + i + 1;
 
-        const number =
-            start + i + 1;
+        text += `<b>${number}.</b> 🏠 <b>${telegramEscape(car.name || 'Uy')}</b>\n`;
+        text += `💰 ${telegramEscape(telegramPrice(car))}\n`;
 
-        text +=
-            `<b>${number}.</b> 🏠 ` +
-            `<b>${telegramEscape(
-                car.name || 'Uy'
-            )}</b>\n`;
-
-        text +=
-            `💰 ${telegramEscape(
-                telegramPrice(car)
-            )}\n`;
-
-        if (
-            car.address
-        ) {
-
-            text +=
-                `📍 ${telegramEscape(
-                    car.address
-                )}\n`;
+        if (car.address) {
+            text += `📍 ${telegramEscape(car.address)}\n`;
         }
 
         text += '\n';
 
-        buttons.push([
-            {
-                text:
-                    `🏠 ${number}-uy`,
-
-                callback_data:
-                    `house_${car.id}`
-            }
-        ]);
+        buttons.push([btn(`🏠 ${number}-uy`, `house_${car.id}`)]);
     }
 
     const navigation = [];
 
-    if (
-        currentPage > 0
-    ) {
-
-        navigation.push({
-            text:
-                '◀️ Oldingi',
-
-            callback_data:
-                `homes_${currentPage - 1}`
-        });
+    if (currentPage > 0) {
+        navigation.push(btn('◀️ Oldingi', `homes_${currentPage - 1}`));
     }
 
-    navigation.push({
-        text:
-            `📄 ${currentPage + 1}/${totalPages}`,
+    navigation.push(btn(`📄 ${currentPage + 1}/${totalPages}`, 'noop'));
 
-        callback_data:
-            'noop'
-    });
-
-    if (
-        currentPage <
-        totalPages - 1
-    ) {
-
-        navigation.push({
-            text:
-                'Keyingi ▶️',
-
-            callback_data:
-                `homes_${currentPage + 1}`
-        });
+    if (currentPage < totalPages - 1) {
+        navigation.push(btn('Keyingi ▶️', `homes_${currentPage + 1}`));
     }
 
-    buttons.push(
-        navigation
-    );
+    buttons.push(navigation);
+    buttons.push([btn('🔎 Qidirish', 'search'), btn('⭐ Saqlangan', 'favorites')]);
+    buttons.push([btn('🏠 Bosh menyu', 'menu')]);
 
-    buttons.push([
-        {
-            text:
-                '🔎 Qidirish',
-
-            callback_data:
-                'search'
-        },
-
-        {
-            text:
-                '⭐ Saqlangan',
-
-            callback_data:
-                'favorites'
-        }
-    ]);
-
-    buttons.push([
-        {
-            text:
-                '🏠 Bosh menyu',
-
-            callback_data:
-                'menu'
-        }
-    ]);
-
-    await telegramApi(
-        'sendMessage',
-        {
-            chat_id: chatId,
-
-            text,
-
-            parse_mode: 'HTML',
-
-            reply_markup: {
-                inline_keyboard:
-                    buttons
-            }
-        }
-    );
+    await tgSend(chatId, text, buttons);
 }
 
-// =====================================================
-// NEWEST HOMES
-// =====================================================
+async function telegramNewest(chatId) {
+    await telegramSendHomes(chatId, 0);
+}
 
-async function telegramNewest(
-    chatId
-) {
+// -----------------------------------------------------
+// QIDIRUV
+// -----------------------------------------------------
 
-    await telegramSendHomes(
+async function telegramSearchStart(chatId) {
+
+    telegramSearchMode.set(String(chatId), true);
+
+    await tgSend(
         chatId,
-        0
+        '🔎 <b>Uy qidirish</b>\n\n' +
+        'Uy nomi, turi, manzili yoki tavsifidan biror so‘z yozing.\n\n' +
+        'Masalan:\n' +
+        '• Chilonzor\n' +
+        '• hovli\n' +
+        '• 4 xona\n' +
+        '• Toshkent\n\n' +
+        '❌ Bekor qilish uchun /menu yozing.'
     );
 }
 
-// =====================================================
-// SEARCH START
-// =====================================================
+async function telegramSearch(chatId, query) {
 
-async function telegramSearchStart(
-    chatId
-) {
-
-    telegramSearchMode.set(
-        String(chatId),
-        true
-    );
-
-    await telegramApi(
-        'sendMessage',
-        {
-            chat_id: chatId,
-
-            text:
-                '🔎 <b>Uy qidirish</b>\n\n' +
-                'Uy nomi, turi, manzili yoki tavsifidan ' +
-                'biror so‘z yozing.\n\n' +
-                'Masalan:\n' +
-                '• Chilonzor\n' +
-                '• hovli\n' +
-                '• 4 xona\n' +
-                '• Toshkent\n\n' +
-                '❌ Bekor qilish uchun /menu yozing.',
-
-            parse_mode: 'HTML'
-        }
-    );
-}
-
-// =====================================================
-// SEARCH
-// =====================================================
-
-async function telegramSearch(
-    chatId,
-    query
-) {
-
-    const q =
-        String(query || '')
-            .trim();
+    const q = String(query || '').trim().slice(0, 100);
 
     if (!q) {
 
-        await telegramSearchStart(
-            chatId
-        );
+        await telegramSearchStart(chatId);
 
         return;
     }
 
-    telegramSearchMode.delete(
-        String(chatId)
+    telegramSearchMode.delete(String(chatId));
+
+    const like = `%${q}%`;
+
+    const result = await pool.query(
+        `
+        SELECT *
+        FROM cars
+        WHERE sold = false
+          AND (
+                name ILIKE $1
+                OR description ILIKE $1
+                OR location ILIKE $1
+                OR address ILIKE $1
+                OR type ILIKE $1
+                OR types ILIKE $1
+          )
+        ORDER BY id DESC
+        LIMIT 20
+        `,
+        [like]
     );
 
-    const like =
-        `%${q}%`;
-
-    const result =
-        await pool.query(
-            `
-            SELECT *
-            FROM cars
-            WHERE sold = false
-              AND (
-                    name ILIKE $1
-                    OR description ILIKE $1
-                    OR location ILIKE $1
-                    OR address ILIKE $1
-                    OR type ILIKE $1
-                    OR types ILIKE $1
-              )
-            ORDER BY id DESC
-            LIMIT 20
-            `,
-            [like]
-        );
-
-    const cars =
-        result.rows.map(
-            carOut
-        );
+    const cars = result.rows.map(carOut);
 
     if (!cars.length) {
 
-        await telegramApi(
-            'sendMessage',
-            {
-                chat_id: chatId,
-
-                text:
-                    `🔎 <b>"${telegramEscape(q)}"</b> bo‘yicha uy topilmadi.\n\n` +
-                    'Boshqa so‘z bilan qayta urinib ko‘ring.',
-
-                parse_mode: 'HTML',
-
-                reply_markup: {
-                    inline_keyboard: [
-                        [
-                            {
-                                text:
-                                    '🔎 Qayta qidirish',
-
-                                callback_data:
-                                    'search'
-                            }
-                        ],
-                        [
-                            {
-                                text:
-                                    '🏠 Uylar',
-
-                                callback_data:
-                                    'homes'
-                            }
-                        ]
-                    ]
-                }
-            }
+        await tgSend(
+            chatId,
+            `🔎 <b>"${telegramEscape(q)}"</b> bo‘yicha uy topilmadi.\n\n` +
+            'Boshqa so‘z bilan qayta urinib ko‘ring.',
+            [
+                [btn('🔎 Qayta qidirish', 'search')],
+                [btn('🏠 Uylar', 'homes')]
+            ]
         );
 
         return;
     }
 
-    let text =
-        `🔎 <b>Qidiruv natijalari</b>\n\n`;
+    let text = `🔎 <b>Qidiruv natijalari</b>\n\n`;
 
     text +=
         `"<b>${telegramEscape(q)}</b>" bo‘yicha ` +
@@ -1819,621 +1144,253 @@ async function telegramSearch(
 
     const buttons = [];
 
-    cars.forEach(
-        (car, index) => {
+    cars.forEach((car, index) => {
 
-            text +=
-                `<b>${index + 1}.</b> ` +
-                `🏠 ${telegramEscape(
-                    car.name || 'Uy'
-                )}\n`;
+        text += `<b>${index + 1}.</b> 🏠 ${telegramEscape(car.name || 'Uy')}\n`;
+        text += `💰 ${telegramEscape(telegramPrice(car))}\n`;
 
-            text +=
-                `💰 ${telegramEscape(
-                    telegramPrice(car)
-                )}\n`;
-
-            if (
-                car.address
-            ) {
-
-                text +=
-                    `📍 ${telegramEscape(
-                        car.address
-                    )}\n`;
-            }
-
-            text += '\n';
-
-            buttons.push([
-                {
-                    text:
-                        `🏠 ${index + 1}-uy`,
-
-                    callback_data:
-                        `house_${car.id}`
-                }
-            ]);
+        if (car.address) {
+            text += `📍 ${telegramEscape(car.address)}\n`;
         }
-    );
 
-    buttons.push([
-        {
-            text:
-                '🔎 Yana qidirish',
+        text += '\n';
 
-            callback_data:
-                'search'
-        }
-    ]);
+        buttons.push([btn(`🏠 ${index + 1}-uy`, `house_${car.id}`)]);
+    });
 
-    buttons.push([
-        {
-            text:
-                '🏠 Bosh menyu',
+    buttons.push([btn('🔎 Yana qidirish', 'search')]);
+    buttons.push([btn('🏠 Bosh menyu', 'menu')]);
 
-            callback_data:
-                'menu'
-        }
-    ]);
-
-    await telegramApi(
-        'sendMessage',
-        {
-            chat_id: chatId,
-
-            text,
-
-            parse_mode: 'HTML',
-
-            reply_markup: {
-                inline_keyboard:
-                    buttons
-            }
-        }
-    );
+    await tgSend(chatId, text, buttons);
 }
 
-// =====================================================
-// FAVORITES LIST
-// =====================================================
+// -----------------------------------------------------
+// SAQLANGANLAR
+// -----------------------------------------------------
 
-async function telegramFavoritesList(
-    chatId
-) {
+async function telegramFavoritesList(chatId) {
 
-    const favorites =
-        telegramGetFavorites(
-            chatId
-        );
-
-    const ids =
-        Array.from(
-            favorites
-        );
+    const favorites = telegramGetFavorites(chatId);
+    const ids = Array.from(favorites);
 
     if (!ids.length) {
 
-        await telegramApi(
-            'sendMessage',
-            {
-                chat_id: chatId,
-
-                text:
-                    '⭐ <b>Saqlangan uylar</b>\n\n' +
-                    'Hozircha saqlangan uylar yo‘q.\n\n' +
-                    'Yoqtirgan uyingizni ochib, ' +
-                    '⭐ Saqlash tugmasini bosing.',
-
-                parse_mode: 'HTML',
-
-                reply_markup: {
-                    inline_keyboard: [
-                        [
-                            {
-                                text:
-                                    '🏠 Uylarni ko‘rish',
-
-                                callback_data:
-                                    'homes'
-                            }
-                        ],
-                        [
-                            {
-                                text:
-                                    '🏠 Bosh menyu',
-
-                                callback_data:
-                                    'menu'
-                            }
-                        ]
-                    ]
-                }
-            }
+        await tgSend(
+            chatId,
+            '⭐ <b>Saqlangan uylar</b>\n\n' +
+            'Hozircha saqlangan uylar yo‘q.\n\n' +
+            'Yoqtirgan uyingizni ochib, ⭐ Saqlash tugmasini bosing.',
+            [
+                [btn('🏠 Uylarni ko‘rish', 'homes')],
+                [btn('🏠 Bosh menyu', 'menu')]
+            ]
         );
 
         return;
     }
 
-    const result =
-        await pool.query(
-            `
-            SELECT *
-            FROM cars
-            WHERE id = ANY($1::int[])
-              AND sold = false
-            ORDER BY id DESC
-            `,
-            [ids]
-        );
+    const result = await pool.query(
+        `
+        SELECT *
+        FROM cars
+        WHERE id = ANY($1::int[])
+          AND sold = false
+        ORDER BY id DESC
+        `,
+        [ids]
+    );
 
-    const cars =
-        result.rows.map(
-            carOut
-        );
+    const cars = result.rows.map(carOut);
 
     if (!cars.length) {
 
         favorites.clear();
 
-        await telegramApi(
-            'sendMessage',
-            {
-                chat_id: chatId,
-
-                text:
-                    '⭐ Saqlangan uylar hozircha mavjud emas.',
-
-                reply_markup: {
-                    inline_keyboard: [
-                        [
-                            {
-                                text:
-                                    '🏠 Uylarni ko‘rish',
-
-                                callback_data:
-                                    'homes'
-                            }
-                        ]
-                    ]
-                }
-            }
+        await tgSend(
+            chatId,
+            '⭐ Saqlangan uylar hozircha mavjud emas.',
+            [[btn('🏠 Uylarni ko‘rish', 'homes')]]
         );
 
         return;
     }
 
-    let text =
-        '⭐ <b>SAQLANGAN UYLAR</b>\n\n';
+    let text = '⭐ <b>SAQLANGAN UYLAR</b>\n\n';
 
     const buttons = [];
 
-    cars.forEach(
-        (car, index) => {
+    cars.forEach((car, index) => {
 
-            text +=
-                `<b>${index + 1}.</b> ` +
-                `🏠 ${telegramEscape(
-                    car.name || 'Uy'
-                )}\n`;
+        text += `<b>${index + 1}.</b> 🏠 ${telegramEscape(car.name || 'Uy')}\n`;
+        text += `💰 ${telegramEscape(telegramPrice(car))}\n\n`;
 
-            text +=
-                `💰 ${telegramEscape(
-                    telegramPrice(car)
-                )}\n\n`;
+        buttons.push([btn(`🏠 ${index + 1}-uy`, `house_${car.id}`)]);
+    });
 
-            buttons.push([
-                {
-                    text:
-                        `🏠 ${index + 1}-uy`,
+    buttons.push([btn('🏠 Uylar', 'homes'), btn('🏠 Bosh menyu', 'menu')]);
 
-                    callback_data:
-                        `house_${car.id}`
-                }
-            ]);
-        }
-    );
-
-    buttons.push([
-        {
-            text:
-                '🏠 Uylar',
-
-            callback_data:
-                'homes'
-        },
-
-        {
-            text:
-                '🏠 Bosh menyu',
-
-            callback_data:
-                'menu'
-        }
-    ]);
-
-    await telegramApi(
-        'sendMessage',
-        {
-            chat_id: chatId,
-
-            text,
-
-            parse_mode: 'HTML',
-
-            reply_markup: {
-                inline_keyboard:
-                    buttons
-            }
-        }
-    );
+    await tgSend(chatId, text, buttons);
 }
 
-// =====================================================
-// CONTACT
-// =====================================================
+// -----------------------------------------------------
+// BOG'LANISH
+// -----------------------------------------------------
 
-async function telegramContact(
-    chatId
-) {
+async function telegramContact(chatId) {
 
     try {
 
-        const result =
-            await pool.query(`
-                SELECT
-                    phone,
-                    telegram,
-                    whatsapp,
-                    instagram,
-                    address
-                FROM site_settings
-                WHERE id = 1
-            `);
+        const result = await pool.query(`
+            SELECT phone, telegram, whatsapp, instagram, address
+            FROM site_settings
+            WHERE id = 1
+        `);
 
-        const settings =
-            result.rows[0];
+        const settings = result.rows[0];
 
         if (!settings) {
 
-            await telegramApi(
-                'sendMessage',
-                {
-                    chat_id: chatId,
-
-                    text:
-                        '📞 <b>Bog‘lanish ma’lumotlari mavjud emas.</b>',
-
-                    parse_mode: 'HTML'
-                }
+            await tgSend(
+                chatId,
+                '📞 <b>Bog‘lanish ma’lumotlari mavjud emas.</b>'
             );
 
             return;
         }
 
-        let text =
-            '📞 <b>BOG‘LANISH</b>\n\n';
+        let text = '📞 <b>BOG‘LANISH</b>\n\n';
 
-        // TELEFON
         if (settings.phone) {
-
-            text +=
-                `📱 Telefon: <b>${telegramEscape(
-                    settings.phone
-                )}</b>\n`;
+            text += `📱 Telefon: <b>${telegramEscape(settings.phone)}</b>\n`;
         }
 
-        // MANZIL
         if (settings.address) {
-
-            text +=
-                `📍 Manzil: ${telegramEscape(
-                    settings.address
-                )}\n`;
+            text += `📍 Manzil: ${telegramEscape(settings.address)}\n`;
         }
 
-        text +=
-            '\n👇 <b>Kerakli aloqa usulini tanlang:</b>';
+        text += '\n👇 <b>Kerakli aloqa usulini tanlang:</b>';
 
         const buttons = [];
 
-        // =================================================
-        // TELEGRAM
-        // =================================================
-
         if (settings.telegram) {
 
-            let link =
-                String(
-                    settings.telegram
-                ).trim();
+            let link = String(settings.telegram).trim();
 
             if (link.startsWith('@')) {
 
-                link =
-                    'https://t.me/' +
-                    link.slice(1);
+                link = 'https://t.me/' + link.slice(1);
 
             } else if (
                 !link.startsWith('http://') &&
                 !link.startsWith('https://')
             ) {
 
-                link =
-                    'https://t.me/' +
-                    link;
+                link = 'https://t.me/' + link;
             }
 
             buttons.push([
-                {
-                    text:
-                        '✈️ Telegram orqali yozish',
-
-                    url:
-                        link
-                }
+                { text: '✈️ Telegram orqali yozish', url: link }
             ]);
         }
 
-       
-        // =================================================
-        // SAYT
-        // =================================================
+        buttons.push([{ text: '🌐 Saytga kirish', url: SITE_URL }]);
+        buttons.push([btn('🏠 Bosh menyu', 'menu')]);
 
-        buttons.push([
-            {
-                text:
-                    '🌐 Saytga kirish',
-
-                url:
-                    SITE_URL
-            }
-        ]);
-
-        // =================================================
-        // MENYU
-        // =================================================
-
-        buttons.push([
-            {
-                text:
-                    '🏠 Bosh menyu',
-
-                callback_data:
-                    'menu'
-            }
-        ]);
-
-        await telegramApi(
-            'sendMessage',
-            {
-                chat_id: chatId,
-
-                text,
-
-                parse_mode: 'HTML',
-
-                reply_markup: {
-                    inline_keyboard:
-                        buttons
-                }
-            }
-        );
+        await tgSend(chatId, text, buttons);
 
     } catch (error) {
 
-        console.error(
-            'Telegram contact xatosi:',
-            error
-        );
+        console.error('Telegram contact xatosi:', error);
 
-        await telegramApi(
-            'sendMessage',
-            {
-                chat_id: chatId,
-
-                text:
-                    '❌ Bog‘lanish ma’lumotlarini olishda xatolik yuz berdi.\n\n' +
-                    'Iltimos, keyinroq qayta urinib ko‘ring.'
-            }
-        );
+        await telegramApi('sendMessage', {
+            chat_id: chatId,
+            text:
+                '❌ Bog‘lanish ma’lumotlarini olishda xatolik yuz berdi.\n\n' +
+                'Iltimos, keyinroq qayta urinib ko‘ring.'
+        });
     }
 }
 
-// =====================================================
-// HOUSE DETAILS
-// =====================================================
+// -----------------------------------------------------
+// UY HAQIDA BATAFSIL
+// -----------------------------------------------------
 
-async function telegramHouse(
-    chatId,
-    houseId
-) {
+async function telegramHouse(chatId, houseId) {
 
-    const car =
-        await telegramGetHouse(
-            houseId
-        );
+    const car = await telegramGetHouse(houseId);
 
     if (!car) {
 
-        await telegramApi(
-            'sendMessage',
-            {
-                chat_id: chatId,
-
-                text:
-                    '❌ Bu uy topilmadi.'
-            }
-        );
+        await telegramApi('sendMessage', {
+            chat_id: chatId,
+            text: '❌ Bu uy topilmadi.'
+        });
 
         return;
     }
 
-    let text =
-        `🏠 <b>${telegramEscape(
-            car.name || 'Uy'
-        )}</b>\n\n`;
+    let text = `🏠 <b>${telegramEscape(car.name || 'Uy')}</b>\n\n`;
 
-    text +=
-        `💰 <b>${telegramEscape(
-            telegramPrice(car)
-        )}</b>\n`;
+    text += `💰 <b>${telegramEscape(telegramPrice(car))}</b>\n`;
+    text += `🏷 Turi: ${telegramTypes(car)}\n`;
 
-    text +=
-        `🏷 Turi: ${telegramTypes(car)}\n`;
-
-    if (
-        car.rooms > 0
-    ) {
-
-        text +=
-            `🚪 Xonalar: <b>${car.rooms}</b> ta\n`;
+    if (car.rooms > 0) {
+        text += `🚪 Xonalar: <b>${car.rooms}</b> ta\n`;
     }
 
-    if (
-        car.area > 0
-    ) {
-
-        text +=
-            `📐 Maydon: <b>${car.area}</b> m²\n`;
+    if (car.area > 0) {
+        text += `📐 Maydon: <b>${car.area}</b> m²\n`;
     }
 
-    if (
-        car.address
-    ) {
-
-        text +=
-            `📍 Manzil: ${telegramEscape(
-                car.address
-            )}\n`;
+    if (car.address) {
+        text += `📍 Manzil: ${telegramEscape(car.address)}\n`;
     }
 
-    if (
-        car.phone
-    ) {
-
-        text +=
-            `📞 Telefon: ${telegramEscape(
-                car.phone
-            )}\n`;
+    if (car.phone) {
+        text += `📞 Telefon: ${telegramEscape(car.phone)}\n`;
     }
 
-    if (
-        car.description
-    ) {
+    if (car.description) {
 
-        let description =
-            String(
-                car.description
-            )
-                .replace(
-                    /\s+/g,
-                    ' '
-                )
-                .trim();
+        const description = String(car.description)
+            .replace(/\s+/g, ' ')
+            .trim();
 
-        if (
-            description
-        ) {
+        if (description) {
 
-            text +=
-                `\n📝 <b>Tavsif</b>\n`;
+            text += `\n📝 <b>Tavsif</b>\n`;
+            text += telegramEscape(description.slice(0, 700));
 
-            text +=
-                telegramEscape(
-                    description.slice(
-                        0,
-                        700
-                    )
-                );
-
-            if (
-                description.length > 700
-            ) {
-
-                text +=
-                    '...';
+            if (description.length > 700) {
+                text += '...';
             }
 
             text += '\n';
         }
     }
 
-    const favorite =
-        telegramIsFavorite(
-            chatId,
-            car.id
-        );
+    const favoriteText = telegramIsFavorite(chatId, car.id)
+        ? '💛 Saqlangan'
+        : '⭐ Saqlash';
 
-    const favoriteText =
-        favorite
-            ? '💛 Saqlangan'
-            : '⭐ Saqlash';
+    const buttons = [
+        [btn(favoriteText, `fav_${car.id}`)],
+        [{ text: '🌐 Saytda ko‘rish', url: `${SITE_URL}/?house=${car.id}` }],
+        [btn('📞 Bog‘lanish', 'contact')],
+        [btn('🏠 Uylar', 'homes'), btn('🏠 Bosh menyu', 'menu')]
+    ];
 
-    const buttons = [];
-
-    buttons.push([
-        {
-            text:
-                favoriteText,
-
-            callback_data:
-                `fav_${car.id}`
-        }
-    ]);
-
-    buttons.push([
-        {
-            text:
-                '🌐 Saytda ko‘rish',
-
-            url:
-                `${SITE_URL}/?house=${car.id}`
-        }
-    ]);
-
-    buttons.push([
-        {
-            text:
-                '📞 Bog‘lanish',
-
-            callback_data:
-                'contact'
-        }
-    ]);
-
-    buttons.push([
-        {
-            text:
-                '🏠 Uylar',
-
-            callback_data:
-                'homes'
-        },
-
-        {
-            text:
-                '🏠 Bosh menyu',
-
-            callback_data:
-                'menu'
-        }
-    ]);
-
-    const images = Array.isArray(car.images)
-        ? car.images.filter(Boolean)
-        : [];
-
-    const imageUrls = images
+    const imageUrls = parseImages(car)
+        .filter(Boolean)
         .map(image => {
+
             const value = String(image);
 
-            if (value.startsWith("http://") ||
-                value.startsWith("https://")) {
+            if (value.startsWith('http://') || value.startsWith('https://')) {
                 return value;
             }
 
-            if (value.startsWith("/")) {
+            if (value.startsWith('/')) {
                 return `${SITE_URL}${value}`;
             }
 
@@ -2441,72 +1398,79 @@ async function telegramHouse(
         })
         .slice(0, 10);
 
+    // Telegram rasm izohi 1024 belgidan oshmasligi kerak
+    const captionOk = text.length <= 1000;
+
     if (imageUrls.length === 0) {
-        await telegramApi("sendMessage", {
-            chat_id: chatId,
-            text,
-            parse_mode: "HTML",
-            reply_markup: {
-                inline_keyboard: buttons
-            }
-        });
+
+        await tgSend(chatId, text, buttons);
 
         return;
     }
 
     if (imageUrls.length === 1) {
-        await telegramApi("sendPhoto", {
-            chat_id: chatId,
-            photo: imageUrls[0],
-            caption: text,
-            parse_mode: "HTML",
-            reply_markup: {
-                inline_keyboard: buttons
+
+        const payload = captionOk
+            ? {
+                chat_id: chatId,
+                photo: imageUrls[0],
+                caption: text,
+                parse_mode: 'HTML',
+                reply_markup: { inline_keyboard: buttons }
             }
-        });
+            : {
+                chat_id: chatId,
+                photo: imageUrls[0]
+            };
+
+        const photo = await telegramApi('sendPhoto', payload);
+
+        if (!photo || !captionOk) {
+            await tgSend(chatId, text, buttons);
+        }
 
         return;
     }
 
     const media = imageUrls.map((url, index) => {
-        const item = {
-            type: "photo",
-            media: url
-        };
 
-        if (index === 0) {
+        const item = { type: 'photo', media: url };
+
+        if (index === 0 && captionOk) {
             item.caption = text;
-            item.parse_mode = "HTML";
+            item.parse_mode = 'HTML';
         }
 
         return item;
     });
 
-    await telegramApi("sendMediaGroup", {
+    const group = await telegramApi('sendMediaGroup', {
         chat_id: chatId,
         media
     });
 
-    await telegramApi("sendMessage", {
+    if (!group || !captionOk) {
+
+        await tgSend(chatId, text, buttons);
+
+        return;
+    }
+
+    await telegramApi('sendMessage', {
         chat_id: chatId,
-        text: "👇 Uy bo‘yicha amallar:",
-        reply_markup: {
-            inline_keyboard: buttons
-        }
+        text: '👇 Uy bo‘yicha amallar:',
+        reply_markup: { inline_keyboard: buttons }
     });
 }
-    
-// =====================================================
-// CALLBACK
-// =====================================================
 
-async function telegramCallback(
-    query
-) {
+// -----------------------------------------------------
+// CALLBACK
+// -----------------------------------------------------
+
+async function telegramCallback(query) {
 
     const chatId =
-        query.message &&
-        query.message.chat
+        query.message && query.message.chat
             ? query.message.chat.id
             : null;
 
@@ -2514,605 +1478,237 @@ async function telegramCallback(
         return;
     }
 
-    await telegramApi(
-        'answerCallbackQuery',
-        {
-            callback_query_id:
-                query.id
-        }
-    );
+    const data = String(query.data || '');
 
-    const data =
-        String(
-            query.data || ''
-        );
+    // "Saqlash" tugmasi o'zi javob (toast) beradi, shuning uchun
+    // uni umumiy javobdan oldin chaqirmaymiz
+    if (!data.startsWith('fav_')) {
 
-    // -----------------------------------------------
-    // ADMIN LOGIN — TASDIQLASH / RAD ETISH
-    // -----------------------------------------------
+        await telegramApi('answerCallbackQuery', {
+            callback_query_id: query.id
+        });
+    }
 
-    if (
-        data.startsWith('admin_approve_') ||
-        data.startsWith('admin_deny_')
-    ) {
-        // Faqat belgilangan admin tasdiqlashi mumkin
-        if (
-            !ADMIN_TELEGRAM_ID ||
-            String(query.from?.id || '') !== ADMIN_TELEGRAM_ID ||
-            String(chatId) !== ADMIN_TELEGRAM_ID ||
-            query.message?.chat?.type !== 'private'
-        ) {
-            await telegramApi('sendMessage', {
-                chat_id: chatId,
-                text: 'Bu amalni bajarishga ruxsatingiz yo‘q.'
+    // Eski tasdiqlash tugmalari endi ishlatilmaydi
+    if (data.startsWith('admin_')) {
+        return;
+    }
+
+    if (data === 'noop') {
+        return;
+    }
+
+    if (data === 'menu') {
+        await telegramMenu(chatId);
+        return;
+    }
+
+    if (data === 'homes') {
+        await telegramSendHomes(chatId, 0);
+        return;
+    }
+
+    if (data.startsWith('homes_')) {
+
+        const page = Number(data.replace('homes_', ''));
+
+        await telegramSendHomes(chatId, Number.isFinite(page) ? page : 0);
+
+        return;
+    }
+
+    if (data === 'search') {
+        await telegramSearchStart(chatId);
+        return;
+    }
+
+    if (data === 'favorites') {
+        await telegramFavoritesList(chatId);
+        return;
+    }
+
+    if (data === 'newest') {
+        await telegramNewest(chatId);
+        return;
+    }
+
+    if (data === 'contact') {
+        await telegramContact(chatId);
+        return;
+    }
+
+    if (data.startsWith('fav_')) {
+
+        const houseId = Number(data.replace('fav_', ''));
+
+        if (!Number.isInteger(houseId)) {
+
+            await telegramApi('answerCallbackQuery', {
+                callback_query_id: query.id
             });
+
             return;
         }
 
-        const approved = data.startsWith('admin_approve_');
+        const state = telegramToggleFavorite(chatId, houseId);
 
-        const requestId = data.slice(
-            approved
-                ? 'admin_approve_'.length
-                : 'admin_deny_'.length
-        );
-
-        const request = adminLoginRequests.get(requestId);
-
-        if (
-            !request ||
-            request.status !== 'pending' ||
-            Date.now() - request.createdAt > 5 * 60 * 1000
-        ) {
-            await telegramApi('sendMessage', {
-                chat_id: chatId,
-                text: 'Bu kirish so‘rovi muddati tugagan yoki allaqachon ko‘rib chiqilgan.'
-            });
-            return;
-        }
-
-        request.status = approved ? 'approved' : 'denied';
-
-        await telegramApi('sendMessage', {
-            chat_id: chatId,
-            text: approved
-                ? '✅ Admin paneliga kirish so‘rovi tasdiqlandi.'
-                : '❌ Admin paneliga kirish so‘rovi rad etildi.'
+        await telegramApi('answerCallbackQuery', {
+            callback_query_id: query.id,
+            text: state
+                ? '⭐ Uy saqlandi'
+                : '🗑 Saqlanganlardan olib tashlandi',
+            show_alert: false
         });
 
         return;
     }
 
-    // -----------------------------------------------
-    // NOOP
-    // -----------------------------------------------
+    if (data.startsWith('house_')) {
 
-    if (
-        data === 'noop'
-    ) {
-        return;
-    }
+        const houseId = Number(data.replace('house_', ''));
 
-    // -----------------------------------------------
-    // MENU
-    // -----------------------------------------------
-
-    if (
-        data === 'menu'
-    ) {
-
-        await telegramMenu(
-            chatId
-        );
-
-        return;
-    }
-
-    // -----------------------------------------------
-    // HOMES
-    // -----------------------------------------------
-
-    if (
-        data === 'homes'
-    ) {
-
-        await telegramSendHomes(
-            chatId,
-            0
-        );
-
-        return;
-    }
-
-    // -----------------------------------------------
-    // PAGINATION
-    // -----------------------------------------------
-
-    if (
-        data.startsWith('homes_')
-    ) {
-
-        const page =
-            Number(
-                data.replace(
-                    'homes_',
-                    ''
-                )
-            );
-
-        await telegramSendHomes(
-            chatId,
-            Number.isFinite(page)
-                ? page
-                : 0
-        );
-
-        return;
-    }
-
-    // -----------------------------------------------
-    // SEARCH
-    // -----------------------------------------------
-
-    if (
-        data === 'search'
-    ) {
-
-        await telegramSearchStart(
-            chatId
-        );
-
-        return;
-    }
-
-    // -----------------------------------------------
-    // FAVORITES
-    // -----------------------------------------------
-
-    if (
-        data === 'favorites'
-    ) {
-
-        await telegramFavoritesList(
-            chatId
-        );
-
-        return;
-    }
-
-    // -----------------------------------------------
-    // NEWEST
-    // -----------------------------------------------
-
-    if (
-        data === 'newest'
-    ) {
-
-        await telegramNewest(
-            chatId
-        );
-
-        return;
-    }
-
-    // -----------------------------------------------
-    // CONTACT
-    // -----------------------------------------------
-
-    if (
-        data === 'contact'
-    ) {
-
-        await telegramContact(
-            chatId
-        );
-
-        return;
-    }
-
-    // -----------------------------------------------
-    // FAVORITE TOGGLE
-    // -----------------------------------------------
-
-    if (
-        data.startsWith('fav_')
-    ) {
-
-        const houseId =
-            Number(
-                data.replace(
-                    'fav_',
-                    ''
-                )
-            );
-
-        if (
-            !Number.isInteger(
-                houseId
-            )
-        ) {
+        if (!Number.isInteger(houseId)) {
             return;
         }
 
-        const state =
-            telegramToggleFavorite(
-                chatId,
-                houseId
-            );
-
-        await telegramApi(
-            'answerCallbackQuery',
-            {
-                callback_query_id:
-                    query.id,
-
-                text:
-                    state
-                        ? '⭐ Uy saqlandi'
-                        : '🗑 Saqlanganlardan olib tashlandi',
-
-                show_alert: false
-            }
-        );
-
-        return;
-    }
-
-    // -----------------------------------------------
-    // HOUSE
-    // -----------------------------------------------
-
-    if (
-        data.startsWith('house_')
-    ) {
-
-        const houseId =
-            Number(
-                data.replace(
-                    'house_',
-                    ''
-                )
-            );
-
-        if (
-            !Number.isInteger(
-                houseId
-            )
-        ) {
-            return;
-        }
-
-        await telegramHouse(
-            chatId,
-            houseId
-        );
+        await telegramHouse(chatId, houseId);
 
         return;
     }
 }
 
-// =====================================================
-// UPDATE HANDLER
-// =====================================================
+// -----------------------------------------------------
+// XABARLAR
+// -----------------------------------------------------
 
-async function telegramHandleUpdate(
-    update
-) {
+async function telegramHandleUpdate(update) {
 
-    // -----------------------------------------------
-    // CALLBACK
-    // -----------------------------------------------
+    if (update.callback_query) {
 
-    if (
-        update.callback_query
-    ) {
-
-        await telegramCallback(
-            update.callback_query
-        );
+        await telegramCallback(update.callback_query);
 
         return;
     }
 
-    const message =
-        update.message;
+    const message = update.message;
 
-    if (!message) {
+    if (!message || !message.chat) {
         return;
     }
 
-    const chatId =
-        message.chat.id;
+    const chatId = message.chat.id;
 
     const firstName =
-        message.from &&
-        message.from.first_name
+        message.from && message.from.first_name
             ? message.from.first_name
             : '';
 
-    const originalText =
-        String(
-            message.text || ''
-        ).trim();
-    
+    const originalText = String(message.text || '').trim();
     const text = originalText.toLowerCase();
 
-    // MY TELEGRAM ID
+    // O'z Telegram ID'ngizni bilish (ADMIN_TELEGRAM_ID uchun)
     if (text === '/myid') {
+
         if (
             message.chat.type !== 'private' ||
             !message.from ||
             !message.from.id
         ) {
+
             await telegramApi('sendMessage', {
                 chat_id: chatId,
                 text: 'Bu buyruqni bot bilan shaxsiy chatda yuboring.'
             });
+
             return;
         }
 
         await telegramApi('sendMessage', {
             chat_id: chatId,
-            text: `Telegram ID: ${message.from.id}\n\nBu raqam admin tasdiqlashini sozlash uchun kerak.`
+            text:
+                `Telegram ID: ${message.from.id}\n\n` +
+                'Bu raqam admin kodlari yuboriladigan ADMIN_TELEGRAM_ID uchun kerak.'
         });
+
         return;
     }
-    
-    // -----------------------------------------------
-    // SEARCH MODE
-    // -----------------------------------------------
 
-    if (
-        telegramSearchMode.has(
-            String(chatId)
-        )
-    ) {
+    // Qidiruv rejimi: oddiy matn qidiruv so'zi hisoblanadi,
+    // "/" bilan boshlangan buyruq esa rejimni to'xtatadi
+    if (telegramSearchMode.has(String(chatId))) {
 
-        if (
-            text === '/menu' ||
-            text === '/start'
-        ) {
+        if (text.startsWith('/')) {
 
-            telegramSearchMode.delete(
-                String(chatId)
-            );
+            telegramSearchMode.delete(String(chatId));
 
-            await telegramStart(
-                chatId,
-                firstName
-            );
+        } else {
+
+            await telegramSearch(chatId, originalText);
 
             return;
         }
+    }
 
-        await telegramSearch(
-            chatId,
-            originalText
-        );
+    if (text === '/start' || text === '/menu') {
+
+        await telegramStart(chatId, firstName);
 
         return;
     }
 
-    // -----------------------------------------------
-    // START
-    // -----------------------------------------------
+    if (text === '/uylar' || text === 'uylar') {
 
-    if (
-        text === '/start' ||
-        text === '/menu'
-    ) {
-
-        await telegramStart(
-            chatId,
-            firstName
-        );
+        await telegramSendHomes(chatId, 0);
 
         return;
     }
 
-    // -----------------------------------------------
-    // UYLAR
-    // -----------------------------------------------
+    if (text === '/qidiruv' || text === '/qidirish' || text === 'qidiruv') {
 
-    if (
-        text === '/uylar' ||
-        text === 'uylar'
-    ) {
-
-        await telegramSendHomes(
-            chatId,
-            0
-        );
+        await telegramSearchStart(chatId);
 
         return;
     }
 
-    // -----------------------------------------------
-    // QIDIRUV
-    // -----------------------------------------------
+    if (text === '/saqlangan' || text === 'saqlangan') {
 
-    if (
-        text === '/qidiruv' ||
-        text === '/qidirish' ||
-        text === 'qidiruv'
-    ) {
-
-        await telegramSearchStart(
-            chatId
-        );
+        await telegramFavoritesList(chatId);
 
         return;
     }
 
-    // -----------------------------------------------
-    // SAQLANGAN
-    // -----------------------------------------------
+    if (text === '/aloqa' || text === 'aloqa') {
 
-    if (
-        text === '/saqlangan' ||
-        text === 'saqlangan'
-    ) {
-
-        await telegramFavoritesList(
-            chatId
-        );
+        await telegramContact(chatId);
 
         return;
     }
 
-    // -----------------------------------------------
-    // ALOQA
-    // -----------------------------------------------
-
-    if (
-        text === '/aloqa' ||
-        text === 'aloqa'
-    ) {
-
-        await telegramContact(
-            chatId
-        );
-
-        return;
-    }
-
-    // -----------------------------------------------
-    // FALLBACK
-    // -----------------------------------------------
-
-    await telegramApi(
-        'sendMessage',
-        {
-            chat_id: chatId,
-
-            text:
-                '🏠 <b>Uy-Joy</b>\n\n' +
-                'Kerakli bo‘limni tanlang 👇',
-
-            parse_mode: 'HTML',
-
-            reply_markup: {
-                inline_keyboard: [
-
-                    [
-                        {
-                            text:
-                                '🏠 Uylarni ko‘rish',
-
-                            callback_data:
-                                'homes'
-                        }
-                    ],
-
-                    [
-                        {
-                            text:
-                                '🔎 Uy qidirish',
-
-                            callback_data:
-                                'search'
-                        },
-
-                        {
-                            text:
-                                '⭐ Saqlangan',
-
-                            callback_data:
-                                'favorites'
-                        }
-                    ],
-
-                    [
-                        {
-                            text:
-                                '📞 Bog‘lanish',
-
-                            callback_data:
-                                'contact'
-                        }
-                    ],
-
-                    [
-                        {
-                            text:
-                                '🏠 Bosh menyu',
-
-                            callback_data:
-                                'menu'
-                        }
-                    ]
-
-                ]
-            }
-        }
+    await tgSend(
+        chatId,
+        '🏠 <b>Uy-Joy</b>\n\nKerakli bo‘limni tanlang 👇',
+        [
+            [btn('🏠 Uylarni ko‘rish', 'homes')],
+            [btn('🔎 Uy qidirish', 'search'), btn('⭐ Saqlangan', 'favorites')],
+            [btn('📞 Bog‘lanish', 'contact')],
+            [btn('🏠 Bosh menyu', 'menu')]
+        ]
     );
 }
-
-// =====================================================
-// BOT COMMANDS
-// =====================================================
 
 async function telegramSetCommands() {
 
-    await telegramApi(
-        'setMyCommands',
-        {
-            commands: [
-                {
-                    command:
-                        'start',
-
-                    description:
-                        '🏠 Bosh menyu'
-                },
-
-                {
-                    command:
-                        'uylar',
-
-                    description:
-                        '🏠 Uylarni ko‘rish'
-                },
-
-                {
-                    command:
-                        'qidiruv',
-
-                    description:
-                        '🔎 Uy qidirish'
-                },
-
-                {
-                    command:
-                        'saqlangan',
-
-                    description:
-                        '⭐ Saqlangan uylar'
-                },
-
-                {
-                    command:
-                        'aloqa',
-
-                    description:
-                        '📞 Bog‘lanish'
-                },
-
-                {
-                    command:
-                        'menu',
-
-                    description:
-                        '🏠 Menyu'
-                }
-            ]
-        }
-    );
+    await telegramApi('setMyCommands', {
+        commands: [
+            { command: 'start', description: '🏠 Bosh menyu' },
+            { command: 'uylar', description: '🏠 Uylarni ko‘rish' },
+            { command: 'qidiruv', description: '🔎 Uy qidirish' },
+            { command: 'saqlangan', description: '⭐ Saqlangan uylar' },
+            { command: 'aloqa', description: '📞 Bog‘lanish' },
+            { command: 'menu', description: '🏠 Menyu' }
+        ]
+    });
 }
-
-// =====================================================
-// POLLING
-// =====================================================
 
 async function telegramPolling() {
 
@@ -3122,10 +1718,7 @@ async function telegramPolling() {
         !TELEGRAM_BOT_TOKEN
     ) {
 
-        if (
-            !TELEGRAM_BOT_TOKEN
-        ) {
-
+        if (!TELEGRAM_BOT_TOKEN) {
             console.log(
                 'TELEGRAM_BOT_TOKEN mavjud emas. Telegram bot ishga tushirilmadi.'
             );
@@ -3136,145 +1729,66 @@ async function telegramPolling() {
 
     telegramRunning = true;
 
-    console.log(
-        'Telegram premium bot ishga tushmoqda...'
-    );
+    console.log('Telegram premium bot ishga tushmoqda...');
 
     try {
 
-        // Eski webhook bo'lsa olib tashlaymiz
-        await telegramApi(
-            'deleteWebhook',
-            {
-                drop_pending_updates:
-                    false
-            }
-        );
+        await telegramApi('deleteWebhook', {
+            drop_pending_updates: false
+        });
 
-        // Bot ma'lumotlari
-        const me =
-            await telegramApi(
-                'getMe'
-            );
+        const me = await telegramApi('getMe');
 
         if (me) {
-
-            console.log(
-                `Telegram bot: @${me.username}`
-            );
+            console.log(`Telegram bot: @${me.username}`);
         }
 
-        // Command menu
         await telegramSetCommands();
 
-        console.log(
-            'Telegram bot komandalar o‘rnatildi'
-        );
+        console.log('Telegram bot komandalar o‘rnatildi');
 
-        while (
-            !telegramStopped
-        ) {
+        while (!telegramStopped) {
 
             try {
 
-                const updates =
-                    await telegramApi(
-                        'getUpdates',
-                        {
-                            offset:
-                                telegramOffset,
+                const updates = await telegramApi('getUpdates', {
+                    offset: telegramOffset,
+                    timeout: 25,
+                    allowed_updates: ['message', 'callback_query']
+                });
 
-                            timeout:
-                                25,
+                if (!Array.isArray(updates)) {
 
-                            allowed_updates: [
-                                'message',
-                                'callback_query'
-                            ]
-                        }
-                    );
-
-                if (
-                    !Array.isArray(
-                        updates
-                    )
-                ) {
-
-                    await new Promise(
-                        resolve =>
-                            setTimeout(
-                                resolve,
-                                3000
-                            )
-                    );
+                    await new Promise(resolve => setTimeout(resolve, 3000));
 
                     continue;
                 }
 
-                for (
-                    const update
-                    of updates
-                ) {
+                for (const update of updates) {
 
-                    telegramOffset =
-                        Number(
-                            update.update_id
-                        ) + 1;
+                    telegramOffset = Number(update.update_id) + 1;
 
                     try {
 
-                        await telegramHandleUpdate(
-                            update
-                        );
+                        await telegramHandleUpdate(update);
 
                     } catch (error) {
 
-                        console.error(
-                            'Telegram update xatosi:',
-                            error
-                        );
+                        console.error('Telegram update xatosi:', error);
                     }
                 }
 
             } catch (error) {
 
-                console.error(
-                    'Telegram polling xatosi:',
-                    error.message
-                );
+                console.error('Telegram polling xatosi:', error.message);
 
-                if (
-                    error.message &&
-                    error.message.includes(
-                        'Conflict'
-                    )
-                ) {
-
-                    console.error(
-                        'Telegram Conflict: boshqa polling mavjud. Bot to‘xtatildi.'
-                    );
-
-                    telegramStopped = true;
-
-                    break;
-                }
-
-                await new Promise(
-                    resolve =>
-                        setTimeout(
-                            resolve,
-                            5000
-                        )
-                );
+                await new Promise(resolve => setTimeout(resolve, 5000));
             }
         }
 
     } catch (error) {
 
-        console.error(
-            'Telegram bot xatosi:',
-            error
-        );
+        console.error('Telegram bot xatosi:', error);
 
     } finally {
 
@@ -3286,1834 +1800,1014 @@ async function telegramPolling() {
 // SERVER
 // =====================================================
 
-const server =
-    http.createServer(
-        async (req, res) => {
+function applyCommonHeaders(req, res) {
+
+    // CORS: faqat ruxsat berilgan manzillar (sayt o'zi bir manzildan
+    // ishlagani uchun oddiy ishlashga ta'sir qilmaydi)
+    const origin = req.headers.origin;
+
+    if (origin && ALLOWED_ORIGINS.has(origin)) {
+
+        res.setHeader('Access-Control-Allow-Origin', origin);
+        res.setHeader('Vary', 'Origin');
+    }
+
+    res.setHeader('X-Content-Type-Options', 'nosniff');
+    res.setHeader('X-Frame-Options', 'SAMEORIGIN');
+    res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
+}
+
+const server = http.createServer(async (req, res) => {
+
+    try {
+
+        const url = req.url.split('?')[0];
+
+        applyCommonHeaders(req, res);
+
+        // =================================================
+        // OPTIONS (CORS)
+        // =================================================
+
+        if (req.method === 'OPTIONS') {
+
+            const origin = req.headers.origin;
+
+            if (origin && ALLOWED_ORIGINS.has(origin)) {
+
+                res.writeHead(204, {
+                    'Access-Control-Allow-Methods': 'GET,POST,PUT,DELETE,OPTIONS',
+                    'Access-Control-Allow-Headers': 'Content-Type,X-Admin-Session',
+                    'Access-Control-Max-Age': '600'
+                });
+
+            } else {
+
+                res.writeHead(204);
+            }
+
+            return res.end();
+        }
+
+        // =================================================
+        // ADMIN LOGIN — 1-BOSQICH: ISM + PAROL, KOD TELEGRAMGA
+        // =================================================
+
+        if (url === '/api/admin/login' && req.method === 'POST') {
+
+            const blocked = blockRemainingMs(req);
+
+            if (blocked > 0) {
+                return sendBlocked(res, blocked);
+            }
+
+            let body;
 
             try {
 
-                const url =
-                    req.url.split('?')[0];
-
-                // =================================================
-                // CORS / OPTIONS
-                // =================================================
-
-                if (
-                    req.method === 'OPTIONS'
-                ) {
-
-                    res.writeHead(
-                        204,
-                        {
-                            'Access-Control-Allow-Origin': '*',
-                            'Access-Control-Allow-Methods':
-                                'GET,POST,PUT,DELETE,OPTIONS',
-                           'Access-Control-Allow-Headers': 'Content-Type,X-Admin-Password,X-Admin-Session'
-                        }
-                    );
-
-                    return res.end();
-                }
-
-                // =================================================
-                // GET CARS
-                // =================================================
-
-                if (
-                    url === '/api/cars' &&
-                    req.method === 'GET'
-                ) {
-
-                    const result =
-                        await pool.query(`
-                            SELECT *
-                            FROM cars
-                            ORDER BY id DESC
-                        `);
-
-                    return sendJson(
-                        res,
-                        200,
-                        result.rows.map(
-                            carOut
-                        )
-                    );
-                }
-
-                // =================================================
-                // ADD CAR
-                // =================================================
-
-                if (
-                    url === '/api/cars' &&
-                    req.method === 'POST'
-                ) {
-
-                    let body;
-
-                    try {
-
-                        body =
-                            JSON.parse(
-                                await readBody(req)
-                            );
-
-                    } catch (e) {
-
-                        return sendJson(
-                            res,
-                            400,
-                            {
-                                error:
-                                    "Ma'lumot formati noto'g'ri"
-                            }
-                        );
-                    }
-
-                    if (
-                        !isAdmin(
-                            req,
-                            body
-                        )
-                    ) {
-
-                        return sendJson(
-                            res,
-                            401,
-                            {
-                                error:
-                                    "Parol noto'g'ri"
-                            }
-                        );
-                    }
-
-                    const client =
-                        await pool.connect();
-
-                    try {
-
-                        const name =
-                            String(
-                                body.name ??
-                                body.title ??
-                                ''
-                            )
-                                .trim()
-                                .slice(
-                                    0,
-                                    300
-                                );
-
-                        const price =
-                            toInteger(
-                                body.price,
-                                -1
-                            );
-
-                        const currency =
-                            normalizeCurrency(
-                                body.currency
-                            );
-
-                        const type =
-                            String(
-                                body.type ||
-                                ''
-                            )
-                                .trim()
-                                .slice(
-                                    0,
-                                    100
-                                );
-
-                        let types;
-
-                        if (
-                            Array.isArray(
-                                body.types
-                            )
-                        ) {
-
-                            types =
-                                body.types
-                                    .map(
-                                        x =>
-                                            String(x)
-                                                .trim()
-                                    )
-                                    .filter(
-                                        Boolean
-                                    )
-                                    .slice(
-                                        0,
-                                        3
-                                    );
-
-                        } else {
-
-                            types =
-                                type
-                                    ? [type]
-                                    : [];
-                        }
-
-                        const location =
-                            String(
-                                body.location ??
-                                body.address ??
-                                ''
-                            )
-                                .trim()
-                                .slice(
-                                    0,
-                                    500
-                                );
-
-                        const address =
-                            String(
-                                body.address ??
-                                body.location ??
-                                ''
-                            )
-                                .trim()
-                                .slice(
-                                    0,
-                                    500
-                                );
-
-                        const rooms =
-                            toInteger(
-                                body.rooms,
-                                0
-                            );
-
-                        const area =
-                            toInteger(
-                                body.area,
-                                0
-                            );
-
-                        const phone =
-                            String(
-                                body.phone ||
-                                ''
-                            )
-                                .trim()
-                                .slice(
-                                    0,
-                                    100
-                                );
-
-                        const description =
-                            String(
-                                body.description ||
-                                ''
-                            )
-                                .trim()
-                                .slice(
-                                    0,
-                                    2000
-                                );
-
-                        if (
-                            !name ||
-                            price <= 0
-                        ) {
-
-                            return sendJson(
-                                res,
-                                400,
-                                {
-                                    error:
-                                        "Nom va narxni to'g'ri kiriting"
-                                }
-                            );
-                        }
-
-                        if (
-                            rooms < 0 ||
-                            area < 0
-                        ) {
-
-                            return sendJson(
-                                res,
-                                400,
-                                {
-                                    error:
-                                        "Xona yoki maydon noto'g'ri"
-                                }
-                            );
-                        }
-
-                        const incomingImages =
-                            Array.isArray(
-                                body.images
-                            )
-                                ? body.images
-                                : [];
-
-                        if (
-                            incomingImages.length >
-                            8
-                        ) {
-
-                            return sendJson(
-                                res,
-                                400,
-                                {
-                                    error:
-                                        "Ko'pi bilan 8 ta rasm"
-                                }
-                            );
-                        }
-
-                        const preparedImages =
-                            incomingImages.map(
-                                prepareImage
-                            );
-
-                        await client.query(
-                            'BEGIN'
-                        );
-
-                        const savedNames = [];
-
-                        for (
-                            const image
-                            of preparedImages
-                            ) {
-
-                            await client.query(
-                                `
-                                INSERT INTO image_files (
-                                    name,
-                                    data
-                                )
-                                VALUES (
-                                    $1,
-                                    $2
-                                )
-                                `,
-                                [
-                                    image.name,
-                                    image.buffer
-                                ]
-                            );
-
-                            savedNames.push(
-                                image.name
-                            );
-                        }
-
-                        const inserted =
-                            await client.query(
-                                `
-                                INSERT INTO cars (
-                                    name,
-                                    price,
-                                    description,
-                                    images,
-                                    sold,
-                                    currency,
-                                    type,
-                                    types,
-                                    location,
-                                    address,
-                                    rooms,
-                                    area,
-                                    phone
-                                )
-                                VALUES (
-                                    $1,
-                                    $2,
-                                    $3,
-                                    $4,
-                                    false,
-                                    $5,
-                                    $6,
-                                    $7,
-                                    $8,
-                                    $9,
-                                    $10,
-                                    $11,
-                                    $12
-                                )
-                                RETURNING *
-                                `,
-                                [
-                                    name,
-                                    price,
-                                    description,
-                                    JSON.stringify(
-                                        savedNames
-                                    ),
-                                    currency,
-                                    types[0] || '',
-                                    JSON.stringify(
-                                        types
-                                    ),
-                                    location,
-                                    address,
-                                    rooms,
-                                    area,
-                                    phone
-                                ]
-                            );
-
-                        await client.query(
-                            'COMMIT'
-                        );
-
-                        return sendJson(
-                            res,
-                            201,
-                            {
-                                ok: true,
-
-                                car:
-                                    carOut(
-                                        inserted.rows[0]
-                                    )
-                            }
-                        );
-
-                    } catch (e) {
-
-                        try {
-                            await client.query(
-                                'ROLLBACK'
-                            );
-                        } catch (_) {}
-
-                        console.error(
-                            'ADD CAR ERROR:',
-                            e
-                        );
-
-                        return sendJson(
-                            res,
-                            400,
-                            {
-                                error:
-                                    e.message ||
-                                    "Mashina qo'shishda xatolik"
-                            }
-                        );
-
-                    } finally {
-
-                        client.release();
-                    }
-                }
-
-                // =================================================
-                // EDIT CAR
-                // =================================================
-
-                if (
-                    /^\/api\/cars\/\d+$/.test(url) &&
-                    req.method === 'PUT'
-                ) {
-
-                    let body;
-
-                    try {
-
-                        body =
-                            JSON.parse(
-                                await readBody(req)
-                            );
-
-                    } catch (e) {
-
-                        return sendJson(
-                            res,
-                            400,
-                            {
-                                error:
-                                    "Ma'lumot formati noto'g'ri"
-                            }
-                        );
-                    }
-
-                    if (
-                        !isAdmin(
-                            req,
-                            body
-                        )
-                    ) {
-
-                        return sendJson(
-                            res,
-                            401,
-                            {
-                                error:
-                                    "Parol noto'g'ri"
-                            }
-                        );
-                    }
-
-                    const id =
-                        Number(
-                            url.split('/')[3]
-                        );
-
-                    if (
-                        !Number.isInteger(id) ||
-                        id <= 0
-                    ) {
-
-                        return sendJson(
-                            res,
-                            400,
-                            {
-                                error:
-                                    "ID noto'g'ri"
-                            }
-                        );
-                    }
-
-                    const client =
-                        await pool.connect();
-
-                    try {
-
-                        const oldResult =
-                            await client.query(
-                                `
-                                SELECT *
-                                FROM cars
-                                WHERE id = $1
-                                `,
-                                [id]
-                            );
-
-                        if (
-                            oldResult.rows.length ===
-                            0
-                        ) {
-
-                            return sendJson(
-                                res,
-                                404,
-                                {
-                                    error:
-                                        "Mashina topilmadi"
-                                }
-                            );
-                        }
-
-                        const oldCar =
-                            oldResult.rows[0];
-
-                        // -----------------------------------------
-                        // NAME
-                        // -----------------------------------------
-
-                        const name =
-                            String(
-                                body.name !== undefined
-                                    ? body.name
-                                    : (
-                                        body.title !== undefined
-                                            ? body.title
-                                            : oldCar.name
-                                    )
-                            )
-                                .trim()
-                                .slice(
-                                    0,
-                                    300
-                                );
-
-                        // -----------------------------------------
-                        // PRICE
-                        // -----------------------------------------
-
-                        const price =
-                            body.price !== undefined
-                                ? toInteger(
-                                    body.price,
-                                    -1
-                                )
-                                : toInteger(
-                                    oldCar.price,
-                                    -1
-                                );
-
-                        // -----------------------------------------
-                        // CURRENCY
-                        // -----------------------------------------
-
-                        const currency =
-                            body.currency !== undefined
-                                ? normalizeCurrency(
-                                    body.currency
-                                )
-                                : normalizeCurrency(
-                                    oldCar.currency
-                                );
-
-                        // -----------------------------------------
-                        // OLD TYPES
-                        // -----------------------------------------
-
-                        const oldTypes =
-                            parseTypes(
-                                oldCar
-                            );
-
-                        // -----------------------------------------
-                        // TYPE
-                        // -----------------------------------------
-
-                        const type =
-                            String(
-                                body.type !== undefined
-                                    ? body.type
-                                    : (
-                                        oldCar.type ||
-                                        oldTypes[0] ||
-                                        ''
-                                    )
-                            )
-                                .trim()
-                                .slice(
-                                    0,
-                                    100
-                                );
-
-                        // -----------------------------------------
-                        // TYPES
-                        // -----------------------------------------
-
-                        let types;
-
-                        if (
-                            Array.isArray(
-                                body.types
-                            )
-                        ) {
-
-                            types =
-                                body.types
-                                    .map(
-                                        x =>
-                                            String(x)
-                                                .trim()
-                                    )
-                                    .filter(
-                                        Boolean
-                                    )
-                                    .slice(
-                                        0,
-                                        3
-                                    );
-
-                        } else {
-
-                            types =
-                                type
-                                    ? [type]
-                                    : oldTypes;
-                        }
-
-                        // -----------------------------------------
-                        // LOCATION
-                        // -----------------------------------------
-
-                        const location =
-                            String(
-                                body.location !== undefined
-                                    ? body.location
-                                    : (
-                                        body.address !== undefined
-                                            ? body.address
-                                            : oldCar.location || ''
-                                    )
-                            )
-                                .trim()
-                                .slice(
-                                    0,
-                                    500
-                                );
-
-                        // -----------------------------------------
-                        // ADDRESS
-                        // -----------------------------------------
-
-                        const address =
-                            String(
-                                body.address !== undefined
-                                    ? body.address
-                                    : (
-                                        body.location !== undefined
-                                            ? body.location
-                                            : oldCar.address || ''
-                                    )
-                            )
-                                .trim()
-                                .slice(
-                                    0,
-                                    500
-                                );
-
-                        // -----------------------------------------
-                        // ROOMS
-                        // -----------------------------------------
-
-                        const rooms =
-                            body.rooms !== undefined
-                                ? toInteger(
-                                    body.rooms,
-                                    0
-                                )
-                                : toInteger(
-                                    oldCar.rooms,
-                                    0
-                                );
-
-                        // -----------------------------------------
-                        // AREA
-                        // -----------------------------------------
-
-                        const area =
-                            body.area !== undefined
-                                ? toInteger(
-                                    body.area,
-                                    0
-                                )
-                                : toInteger(
-                                    oldCar.area,
-                                    0
-                                );
-
-                        // -----------------------------------------
-                        // PHONE
-                        // -----------------------------------------
-
-                        const phone =
-                            String(
-                                body.phone !== undefined
-                                    ? body.phone
-                                    : (
-                                        oldCar.phone ||
-                                        ''
-                                    )
-                            )
-                                .trim()
-                                .slice(
-                                    0,
-                                    100
-                                );
-
-                        // -----------------------------------------
-                        // DESCRIPTION
-                        // -----------------------------------------
-
-                        const description =
-                            String(
-                                body.description !== undefined
-                                    ? body.description
-                                    : (
-                                        oldCar.description ||
-                                        ''
-                                    )
-                            )
-                                .trim()
-                                .slice(
-                                    0,
-                                    2000
-                                );
-
-                        // -----------------------------------------
-                        // VALIDATION
-                        // -----------------------------------------
-
-                        if (
-                            !name ||
-                            price <= 0
-                        ) {
-
-                            return sendJson(
-                                res,
-                                400,
-                                {
-                                    error:
-                                        "Nom va narxni to'g'ri kiriting"
-                                }
-                            );
-                        }
-
-                        if (
-                            rooms < 0 ||
-                            area < 0
-                        ) {
-
-                            return sendJson(
-                                res,
-                                400,
-                                {
-                                    error:
-                                        "Xona yoki maydon noto'g'ri"
-                                }
-                            );
-                        }
-
-                       
-                        // -----------------------------------------
-                        // IMAGES
-                        // -----------------------------------------
-
-                        const incomingImages =
-                            Array.isArray(body.images)
-                                ? body.images
-                                : null;
-
-                        await client.query('BEGIN');
-
-                        let finalImages = parseImages(oldCar);
-
-                        if (incomingImages !== null) {
-                            if (incomingImages.length > 8) {
-                                throw new Error(
-                                    "Ko'pi bilan 8 ta rasm"
-                                );
-                            }
-
-                            const savedNames = [];
-                            const oldImageSet = new Set(finalImages);
-
-                            for (const item of incomingImages) {
-                                if (typeof item !== 'string' || !item.trim()) {
-                                    throw new Error("Rasm ma'lumoti noto'g'ri");
-                                }
-
-                                // Eski rasm nomi bo'lsa, uni saqlab qolamiz.
-                                if (!item.startsWith('data:image/')) {
-                                    if (!oldImageSet.has(item)) {
-                                        throw new Error(
-                                            "Noma'lum eski rasm: " + item
-                                        );
-                                    }
-
-                                    if (!savedNames.includes(item)) {
-                                        savedNames.push(item);
-                                    }
-
-                                    continue;
-                                }
-
-                                // Yangi rasm bo'lsa, JPEG formatini tekshiramiz.
-                                const image = prepareImage(item);
-
-                                await client.query(
-                                    `INSERT INTO image_files (name, data)
-                                     VALUES ($1, $2)`,
-                                    [image.name, image.buffer]
-                                );
-
-                                savedNames.push(image.name);
-                            }
-
-                            if (savedNames.length > 8) {
-                                throw new Error(
-                                    "Ko'pi bilan 8 ta rasm"
-                                );
-                            }
-
-                            finalImages = savedNames;
-                        }
-                    
-                        // -----------------------------------------
-                        // UPDATE
-                        // -----------------------------------------
-
-                        const updated =
-                            await client.query(
-                                `
-                                UPDATE cars
-                                SET
-                                    name = $1,
-                                    price = $2,
-                                    description = $3,
-                                    images = $4,
-                                    currency = $5,
-                                    type = $6,
-                                    types = $7,
-                                    location = $8,
-                                    address = $9,
-                                    rooms = $10,
-                                    area = $11,
-                                    phone = $12
-                                WHERE id = $13
-                                RETURNING *
-                                `,
-                                [
-                                    name,
-                                    price,
-                                    description,
-                                    JSON.stringify(
-                                        finalImages
-                                    ),
-                                    currency,
-                                    types[0] || '',
-                                    JSON.stringify(
-                                        types
-                                    ),
-                                    location,
-                                    address,
-                                    rooms,
-                                    area,
-                                    phone,
-                                    id
-                                ]
-                            );
-
-                        await client.query(
-                            'COMMIT'
-                        );
-
-                        return sendJson(
-                            res,
-                            200,
-                            {
-                                ok: true,
-
-                                car:
-                                    carOut(
-                                        updated.rows[0]
-                                    )
-                            }
-                        );
-
-                    } catch (e) {
-
-                        try {
-                            await client.query(
-                                'ROLLBACK'
-                            );
-                        } catch (_) {}
-
-                        console.error(
-                            'EDIT CAR ERROR:',
-                            e
-                        );
-
-                        return sendJson(
-                            res,
-                            400,
-                            {
-                                error:
-                                    e.message ||
-                                    "Tahrirlashda xatolik"
-                            }
-                        );
-
-                    } finally {
-
-                        client.release();
-                    }
-                }
-
-                // =================================================
-                // GET SETTINGS
-                // =================================================
-
-                if (
-                    url === '/api/settings' &&
-                    req.method === 'GET'
-                ) {
-
-                    const result =
-                        await pool.query(`
-                            SELECT
-                                phone,
-                                telegram,
-                                whatsapp,
-                                instagram,
-                                address
-                            FROM site_settings
-                            WHERE id = 1
-                        `);
-
-                    const row =
-                        result.rows[0];
-
-                    if (!row) {
-
-                        return sendJson(
-                            res,
-                            200,
-                            {
-                                settings: {
-                                    phone:
-                                        '+998 88 950 00 05',
-
-                                    telegram:
-                                        'https://t.me/',
-
-                                    whatsapp:
-                                        'https://wa.me/',
-
-                                    instagram:
-                                        'https://instagram.com/',
-
-                                    address:
-                                        "Toshkent, O'zbekiston"
-                                }
-                            }
-                        );
-                    }
-
-                    return sendJson(
-                        res,
-                        200,
-                        {
-                            settings:
-                                settingsOut(row)
-                        }
-                    );
-                }
-
-                // =================================================
-                // SAVE SETTINGS
-                // =================================================
-
-                if (
-                    url === '/api/settings' &&
-                    req.method === 'POST'
-                ) {
-
-                    let body;
-
-                    try {
-
-                        body =
-                            JSON.parse(
-                                await readBody(req)
-                            );
-
-                    } catch (e) {
-
-                        return sendJson(
-                            res,
-                            400,
-                            {
-                                error:
-                                    "Ma'lumot formati noto'g'ri"
-                            }
-                        );
-                    }
-
-                    if (
-                        !isAdmin(
-                            req,
-                            body
-                        )
-                    ) {
-
-                        return sendJson(
-                            res,
-                            401,
-                            {
-                                error:
-                                    "Parol noto'g'ri"
-                            }
-                        );
-                    }
-
-                    const phone =
-                        String(
-                            body.phone || ''
-                        )
-                            .trim()
-                            .slice(
-                                0,
-                                50
-                            );
-
-                    const telegram =
-                        String(
-                            body.telegram || ''
-                        )
-                            .trim()
-                            .slice(
-                                0,
-                                500
-                            );
-
-                    const whatsapp =
-                        String(
-                            body.whatsapp || ''
-                        )
-                            .trim()
-                            .slice(
-                                0,
-                                500
-                            );
-
-                    const instagram =
-                        String(
-                            body.instagram || ''
-                        )
-                            .trim()
-                            .slice(
-                                0,
-                                500
-                            );
-
-                    const address =
-                        String(
-                            body.address || ''
-                        )
-                            .trim()
-                            .slice(
-                                0,
-                                300
-                            );
-
-                    if (!phone) {
-
-                        return sendJson(
-                            res,
-                            400,
-                            {
-                                error:
-                                    "Telefon raqamini kiriting"
-                            }
-                        );
-                    }
-
-                    const result =
-                        await pool.query(
-                            `
-                            UPDATE site_settings
-                            SET
-                                phone = $1,
-                                telegram = $2,
-                                whatsapp = $3,
-                                instagram = $4,
-                                address = $5
-                            WHERE id = 1
-                            RETURNING
-                                phone,
-                                telegram,
-                                whatsapp,
-                                instagram,
-                                address
-                            `,
-                            [
-                                phone,
-                                telegram,
-                                whatsapp,
-                                instagram,
-                                address
-                            ]
-                        );
-
-                    return sendJson(
-                        res,
-                        200,
-                        {
-                            ok: true,
-
-                            settings:
-                                settingsOut(
-                                    result.rows[0]
-                                )
-                        }
-                    );
-                }
-
-                // =================================================
-                // TOGGLE SOLD
-                // =================================================
-
-                if (
-                    /^\/api\/cars\/\d+\/sold$/.test(url) &&
-                    req.method === 'POST'
-                ) {
-
-                    let body = {};
-
-                    try {
-
-                        const raw =
-                            await readBody(req);
-
-                        if (raw) {
-
-                            body =
-                                JSON.parse(raw);
-                        }
-
-                    } catch (e) {
-
-                        body = {};
-                    }
-
-                    if (
-                        !isAdmin(
-                            req,
-                            body
-                        )
-                    ) {
-
-                        return sendJson(
-                            res,
-                            401,
-                            {
-                                error:
-                                    "Parol noto'g'ri"
-                            }
-                        );
-                    }
-
-                    const id =
-                        Number(
-                            url.split('/')[3]
-                        );
-
-                    if (
-                        !Number.isInteger(id) ||
-                        id <= 0
-                    ) {
-
-                        return sendJson(
-                            res,
-                            400,
-                            {
-                                error:
-                                    "ID noto'g'ri"
-                            }
-                        );
-                    }
-
-                    const result =
-                        await pool.query(
-                            `
-                            UPDATE cars
-                            SET sold = NOT sold
-                            WHERE id = $1
-                            RETURNING *
-                            `,
-                            [id]
-                        );
-
-                    if (
-                        result.rows.length === 0
-                    ) {
-
-                        return sendJson(
-                            res,
-                            404,
-                            {
-                                error:
-                                    "Mashina topilmadi"
-                            }
-                        );
-                    }
-
-                    return sendJson(
-                        res,
-                        200,
-                        {
-                            ok: true,
-
-                            sold:
-                                Boolean(
-                                    result.rows[0].sold
-                                ),
-
-                            car:
-                                carOut(
-                                    result.rows[0]
-                                )
-                        }
-                    );
-                }
-
-                // =================================================
-                // DELETE CAR
-                // =================================================
-
-                if (
-                    /^\/api\/cars\/\d+$/.test(url) &&
-                    req.method === 'DELETE'
-                ) {
-
-                    let body = {};
-
-                    try {
-
-                        const raw =
-                            await readBody(req);
-
-                        if (raw) {
-
-                            body =
-                                JSON.parse(raw);
-                        }
-
-                    } catch (e) {
-
-                        body = {};
-                    }
-
-                    if (
-                        !isAdmin(
-                            req,
-                            body
-                        )
-                    ) {
-
-                        return sendJson(
-                            res,
-                            401,
-                            {
-                                error:
-                                    "Parol noto'g'ri"
-                            }
-                        );
-                    }
-
-                    const id =
-                        Number(
-                            url.split('/')[3]
-                        );
-
-                    if (
-                        !Number.isInteger(id) ||
-                        id <= 0
-                    ) {
-
-                        return sendJson(
-                            res,
-                            400,
-                            {
-                                error:
-                                    "ID noto'g'ri"
-                            }
-                        );
-                    }
-
-                    const client =
-                        await pool.connect();
-
-                    try {
-
-                        await client.query(
-                            'BEGIN'
-                        );
-
-                        const result =
-                            await client.query(
-                                `
-                                SELECT images
-                                FROM cars
-                                WHERE id = $1
-                                `,
-                                [id]
-                            );
-
-                        if (
-                            result.rows.length === 0
-                        ) {
-
-                            await client.query(
-                                'ROLLBACK'
-                            );
-
-                            return sendJson(
-                                res,
-                                404,
-                                {
-                                    error:
-                                        "Mashina topilmadi"
-                                }
-                            );
-                        }
-
-                        const images =
-                            parseImages(
-                                result.rows[0]
-                            );
-
-                        for (
-                            const name
-                            of images
-                            ) {
-
-                            await client.query(
-                                `
-                                DELETE FROM image_files
-                                WHERE name = $1
-                                `,
-                                [name]
-                            );
-                        }
-
-                        await client.query(
-                            `
-                            DELETE FROM cars
-                            WHERE id = $1
-                            `,
-                            [id]
-                        );
-
-                        await client.query(
-                            'COMMIT'
-                        );
-
-                        return sendJson(
-                            res,
-                            200,
-                            {
-                                ok: true
-                            }
-                        );
-
-                    } catch (e) {
-
-                        try {
-                            await client.query(
-                                'ROLLBACK'
-                            );
-                        } catch (_) {}
-
-                        console.error(
-                            'DELETE CAR ERROR:',
-                            e
-                        );
-
-                        return sendJson(
-                            res,
-                            500,
-                            {
-                                error:
-                                    "O'chirishda xatolik"
-                            }
-                        );
-
-                    } finally {
-
-                        client.release();
-                    }
-                }
-
-                // =================================================
-                // GET IMAGE
-                // =================================================
-
-                if (
-                    url.startsWith('/uploads/') &&
-                    req.method === 'GET'
-                ) {
-
-                    const name =
-                        url.slice(
-                            '/uploads/'.length
-                        );
-
-                    if (
-                        !/^[a-f0-9]{32}\.jpg$/.test(
-                            name
-                        )
-                    ) {
-
-                        res.writeHead(404);
-
-                        return res.end();
-                    }
-
-                    const result =
-                        await pool.query(
-                            `
-                            SELECT data
-                            FROM image_files
-                            WHERE name = $1
-                            `,
-                            [name]
-                        );
-
-                    if (
-                        result.rows.length === 0
-                    ) {
-
-                        res.writeHead(404);
-
-                        return res.end();
-                    }
-
-                    res.writeHead(
-                        200,
-                        {
-                            'Content-Type':
-                                'image/jpeg',
-
-                            'Cache-Control':
-                                'public, max-age=86400'
-                        }
-                    );
-
-                    return res.end(
-                        result.rows[0].data
-                    );
-                }
-
-                // =================================================
-                // STAT VIEW
-                // =================================================
-
-                if (
-                    url === '/api/stats/view' &&
-                    req.method === 'POST'
-                ) {
-
-                    await pool.query(`
-                        UPDATE stats
-                        SET views = views + 1
-                        WHERE id = 1
-                    `);
-
-                    await recordDailyStat(
-                        'views'
-                    );
-
-                    return sendJson(
-                        res,
-                        200,
-                        {
-                            ok: true
-                        }
-                    );
-                }
-
-                // =================================================
-                // STAT CALL
-                // =================================================
-
-                if (
-                    url === '/api/stats/call' &&
-                    req.method === 'POST'
-                ) {
-
-                    await pool.query(`
-                        UPDATE stats
-                        SET calls = calls + 1
-                        WHERE id = 1
-                    `);
-
-                    await recordDailyStat(
-                        'calls'
-                    );
-
-                    return sendJson(
-                        res,
-                        200,
-                        {
-                            ok: true
-                        }
-                    );
-                }
-
-                // =================================================
-                // TOTAL STATS
-                // =================================================
-
-                if (
-                    url === '/api/stats' &&
-                    req.method === 'GET'
-                ) {
-
-                    if (
-                        !isAdminHeader(req)
-                    ) {
-
-                        return sendJson(
-                            res,
-                            401,
-                            {
-                                error:
-                                    "Parol noto'g'ri"
-                            }
-                        );
-                    }
-
-                    const result =
-                        await pool.query(`
-                            SELECT
-                                views,
-                                calls
-                            FROM stats
-                            WHERE id = 1
-                        `);
-
-                    const row =
-                        result.rows[0] || {
-                            views: 0,
-                            calls: 0
-                        };
-
-                    const carsResult =
-                        await pool.query(`
-                            SELECT
-                                COUNT(*)::int AS total,
-
-                                COUNT(*)
-                                FILTER (
-                                    WHERE sold = true
-                                )::int AS sold
-                            FROM cars
-                        `);
-
-                    const cars =
-                        carsResult.rows[0] || {
-                            total: 0,
-                            sold: 0
-                        };
-
-                    return sendJson(
-                        res,
-                        200,
-                        {
-                            views:
-                                Number(
-                                    row.views
-                                ) || 0,
-
-                            calls:
-                                Number(
-                                    row.calls
-                                ) || 0,
-
-                            cars:
-                                Number(
-                                    cars.total
-                                ) || 0,
-
-                            sold:
-                                Number(
-                                    cars.sold
-                                ) || 0
-                        }
-                    );
-                }
-
-                // =================================================
-                // RESET TOTAL VIEWS
-                // =================================================
-
-                if (
-                    url === '/api/stats/reset-views' &&
-                    req.method === 'POST'
-                ) {
-
-                    let body = {};
-
-                    try {
-
-                        const raw =
-                            await readBody(req);
-
-                        if (raw) {
-
-                            body =
-                                JSON.parse(raw);
-                        }
-
-                    } catch (e) {
-
-                        body = {};
-                    }
-
-                    // ADMIN PASSWORD
-                    if (
-                        !isAdmin(
-                            req,
-                            body
-                        )
-                    ) {
-
-                        return sendJson(
-                            res,
-                            401,
-                            {
-                                error:
-                                    "Parol noto'g'ri"
-                            }
-                        );
-                    }
-
-                    // FAQAT UMUMIY KO'RISHLAR 0 QILINADI.
-                    //
-                    // daily_stats JADVALIGA TEGILMAYDI.
-                    //
-
-                    await pool.query(`
-                        UPDATE stats
-                        SET views = 0
-                        WHERE id = 1
-                    `);
-
-                    return sendJson(
-                        res,
-                        200,
-                        {
-                            ok: true,
-                            views: 0
-                        }
-                    );
-                }
-
-                // =================================================
-                // DAILY STATS
-                // =================================================
-
-                if (
-                    url === '/api/stats/daily' &&
-                    req.method === 'GET'
-                ) {
-
-                    if (
-                        !isAdminHeader(req)
-                    ) {
-
-                        return sendJson(
-                            res,
-                            401,
-                            {
-                                error:
-                                    "Parol noto'g'ri"
-                            }
-                        );
-                    }
-
-                    const result =
-                        await pool.query(`
-                            SELECT
-                                stat_date,
-                                views,
-                                calls
-                            FROM daily_stats
-                            WHERE stat_date >=
-                                CURRENT_DATE -
-                                INTERVAL '29 days'
-                            ORDER BY stat_date ASC
-                        `);
-
-                    return sendJson(
-                        res,
-                        200,
-                        {
-                            days:
-                                result.rows.map(
-                                    row => ({
-                                        date:
-                                        row.stat_date,
-
-                                        views:
-                                            Number(
-                                                row.views
-                                            ) || 0,
-
-                                        calls:
-                                            Number(
-                                                row.calls
-                                            ) || 0
-                                    })
-                                )
-                        }
-                    );
-                }
-
-                // =================================================
-                // ADMIN PAGE
-                // =================================================
-
-                if (
-                    url === '/admin' ||
-                    url === '/admin.html'
-                ) {
-
-                    return sendFile(
-                        res,
-                        'admin.html'
-                    );
-                }
-
-                // =================================================
-                // MAIN PAGE
-                // =================================================
-
-                if (
-                    url === '/' ||
-                    url === '/index.html'
-                ) {
-
-                    return sendFile(
-                        res,
-                        'index.html'
-                    );
-                }
-
-                // =================================================
-                // OTHER STATIC FILES
-                // =================================================
-
-                if (
-                    req.method === 'GET' &&
-                    (
-                        url.endsWith('.css') ||
-                        url.endsWith('.js')
-                    )
-                ) {
-
-                    const requested =
-                        url.replace(
-                            /^\/+/,
-                            ''
-                        );
-
-                    return sendFile(
-                        res,
-                        requested
-                    );
-                }
-
-                // =================================================
-                // 404
-                // =================================================
-
-                return sendJson(
-                    res,
-                    404,
-                    {
-                        error:
-                            'Sahifa topilmadi'
-                    }
-                );
+                body = parseJsonObject(await readBody(req, 10000));
 
             } catch (e) {
 
-                console.error(
-                    'SERVER ERROR:',
-                    e
+                return sendJson(res, 400, {
+                    error: 'So‘rov ma’lumotlari noto‘g‘ri.'
+                });
+            }
+
+            // Ism istalgan bo'lishi mumkin, faqat bo'sh bo'lmasin
+            const name = cleanAdminName(body.name);
+            const password = normalizePassword(body.password);
+
+            if (!name) {
+                return sendJson(res, 400, { error: 'Ismingizni kiriting.' });
+            }
+
+            if (!password) {
+                return sendJson(res, 400, { error: 'Parolni kiriting.' });
+            }
+
+            if (!passwordMatches(password)) {
+
+                registerFail(req);
+
+                const remaining = blockRemainingMs(req);
+
+                if (remaining > 0) {
+                    return sendBlocked(res, remaining);
+                }
+
+                return sendJson(res, 401, { error: 'Parol noto‘g‘ri.' });
+            }
+
+            if (!ADMIN_TG_OK) {
+
+                return sendJson(res, 503, {
+                    error: 'Telegram tasdiqlash sozlamalari to‘liq emas.'
+                });
+            }
+
+            const ip = getIp(req);
+            const now = Date.now();
+
+            // Telegramni ketma-ket spam qilishdan himoya
+            for (const request of adminLoginRequests.values()) {
+
+                if (
+                    request.ip === ip &&
+                    now - request.createdAt < CODE_RESEND_MS
+                ) {
+
+                    return sendJson(res, 429, {
+                        error: 'Kod yaqinda yuborilgan. 30 soniyadan keyin qayta urinib ko‘ring.'
+                    });
+                }
+            }
+
+            if (adminLoginRequests.size >= 50) {
+
+                return sendJson(res, 429, {
+                    error: 'Hozir so‘rovlar ko‘p. Birozdan keyin urinib ko‘ring.'
+                });
+            }
+
+            // Shu IP'ning eski kutilayotgan so'rovlari bekor qilinadi
+            for (const [id, request] of adminLoginRequests) {
+
+                if (request.ip === ip) {
+                    adminLoginRequests.delete(id);
+                }
+            }
+
+            const code = String(crypto.randomInt(0, 1000000)).padStart(6, '0');
+            const requestId = crypto.randomBytes(16).toString('hex');
+
+            adminLoginRequests.set(requestId, {
+                codeHash: sha256(code),
+                createdAt: now,
+                tries: 0,
+                ip,
+                name
+            });
+
+            const sent = await telegramApi('sendMessage', {
+                chat_id: ADMIN_TELEGRAM_ID,
+                text:
+                    '🔐 Uy-Joy admin paneliga kirish kodi\n\n' +
+                    'Kod: ' + code + '\n\n' +
+                    'Ism: ' + name + '\n' +
+                    'IP: ' + ip + '\n' +
+                    '⏳ Kod 5 daqiqa amal qiladi va bir marta ishlaydi.\n\n' +
+                    'Agar bu siz bo‘lmasangiz, kodni hech kimga bermang.'
+            });
+
+            if (!sent) {
+
+                adminLoginRequests.delete(requestId);
+
+                console.error('Admin Telegram kodi yuborilmadi');
+
+                return sendJson(res, 502, {
+                    error: 'Telegramga kod yuborilmadi. Botga /start yozganingizni tekshiring.'
+                });
+            }
+
+            return sendJson(res, 200, {
+                ok: true,
+                status: 'code_sent',
+                requestId,
+                expiresInSeconds: CODE_TTL_MS / 1000
+            });
+        }
+
+        // =================================================
+        // ADMIN LOGIN — 2-BOSQICH: 6 XONALI KODNI TEKSHIRISH
+        // =================================================
+
+        if (url === '/api/admin/verify' && req.method === 'POST') {
+
+            const blocked = blockRemainingMs(req);
+
+            if (blocked > 0) {
+                return sendBlocked(res, blocked);
+            }
+
+            let body;
+
+            try {
+
+                body = parseJsonObject(await readBody(req, 10000));
+
+            } catch (e) {
+
+                return sendJson(res, 400, {
+                    error: 'So‘rov ma’lumotlari noto‘g‘ri.'
+                });
+            }
+
+            const requestId = String(body.requestId || '');
+            const code = String(body.code || '').trim();
+
+            if (!/^[a-f0-9]{32}$/.test(requestId)) {
+
+                return sendJson(res, 400, {
+                    error: 'So‘rov identifikatori noto‘g‘ri.'
+                });
+            }
+
+            if (!/^\d{6}$/.test(code)) {
+
+                return sendJson(res, 400, {
+                    error: 'Kod 6 ta raqamdan iborat bo‘lishi kerak.'
+                });
+            }
+
+            const request = adminLoginRequests.get(requestId);
+
+            if (!request) {
+
+                return sendJson(res, 404, {
+                    status: 'not_found',
+                    error: 'Kirish so‘rovi topilmadi. Qaytadan kiring.'
+                });
+            }
+
+            if (Date.now() - request.createdAt > CODE_TTL_MS) {
+
+                adminLoginRequests.delete(requestId);
+
+                return sendJson(res, 401, {
+                    status: 'expired',
+                    error: 'Kod muddati tugadi. Qaytadan kiring.'
+                });
+            }
+
+            request.tries++;
+
+            const codeOk = crypto.timingSafeEqual(
+                request.codeHash,
+                sha256(code)
+            );
+
+            if (!codeOk) {
+
+                registerFail(req);
+
+                const remaining = blockRemainingMs(req);
+
+                if (remaining > 0) {
+
+                    adminLoginRequests.delete(requestId);
+
+                    return sendBlocked(res, remaining);
+                }
+
+                if (request.tries >= CODE_MAX_TRIES) {
+
+                    adminLoginRequests.delete(requestId);
+
+                    return sendJson(res, 401, {
+                        status: 'failed',
+                        error: 'Kod 3 marta noto‘g‘ri kiritildi. Qaytadan kiring.'
+                    });
+                }
+
+                return sendJson(res, 401, {
+                    status: 'wrong_code',
+                    error: 'Kod noto‘g‘ri.',
+                    attemptsLeft: CODE_MAX_TRIES - request.tries
+                });
+            }
+
+            // To'g'ri kod: so'rov o'chiriladi (bir martalik) va sessiya beriladi
+            adminLoginRequests.delete(requestId);
+            failedAttempts.delete(getIp(req));
+
+            const sessionToken = crypto.randomBytes(32).toString('hex');
+            const expiresAt = Date.now() + SESSION_TTL_MS;
+
+            adminSessions.set(sessionToken, { expiresAt });
+
+            return sendJson(res, 200, {
+                ok: true,
+                status: 'approved',
+                sessionToken,
+                expiresAt
+            });
+        }
+
+        // =================================================
+        // ADMIN LOGOUT
+        // =================================================
+
+        if (url === '/api/admin/logout' && req.method === 'POST') {
+
+            const token = String(
+                req.headers['x-admin-session'] || ''
+            ).trim();
+
+            if (token) {
+                adminSessions.delete(token);
+            }
+
+            return sendJson(res, 200, { ok: true });
+        }
+
+        // =================================================
+        // ADMIN SESSIYA TEKSHIRUVI
+        // =================================================
+
+        if (url === '/api/admin/session' && req.method === 'GET') {
+
+            if (!isAdminHeader(req)) {
+                return sendJson(res, 401, UNAUTHORIZED);
+            }
+
+            const token = String(req.headers['x-admin-session']).trim();
+
+            return sendJson(res, 200, {
+                ok: true,
+                expiresAt: adminSessions.get(token).expiresAt
+            });
+        }
+
+        // =================================================
+        // GET CARS
+        // =================================================
+
+        if (url === '/api/cars' && req.method === 'GET') {
+
+            const result = await pool.query(`
+                SELECT *
+                FROM cars
+                ORDER BY id DESC
+            `);
+
+            return sendJson(res, 200, result.rows.map(carOut));
+        }
+
+        // =================================================
+        // ADD CAR
+        // =================================================
+
+        if (url === '/api/cars' && req.method === 'POST') {
+
+            // Avval sessiya tekshiriladi, keyin katta body o'qiladi
+            if (!isAdmin(req)) {
+                return sendJson(res, 401, UNAUTHORIZED);
+            }
+
+            let body;
+
+            try {
+
+                body = parseJsonObject(await readBody(req), false);
+
+            } catch (e) {
+
+                return sendJson(res, 400, {
+                    error: "Ma'lumot formati noto'g'ri"
+                });
+            }
+
+            const client = await pool.connect();
+
+            try {
+
+                const fields = buildCarFields(body, null);
+
+                const incomingImages = Array.isArray(body.images)
+                    ? body.images
+                    : [];
+
+                if (incomingImages.length > 8) {
+                    throw new UserError("Ko'pi bilan 8 ta rasm");
+                }
+
+                const preparedImages = incomingImages.map(
+                    item => prepareImage(item)
                 );
 
-                return sendJson(
-                    res,
-                    500,
-                    {
-                        error:
-                            'Server xatosi'
-                    }
+                await client.query('BEGIN');
+
+                const savedNames = [];
+
+                for (const image of preparedImages) {
+
+                    await client.query(
+                        `INSERT INTO image_files (name, data) VALUES ($1, $2)`,
+                        [image.name, image.buffer]
+                    );
+
+                    savedNames.push(image.name);
+                }
+
+                const inserted = await client.query(
+                    `
+                    INSERT INTO cars (
+                        name, price, description, images, sold, currency,
+                        type, types, location, address, rooms, area, phone
+                    )
+                    VALUES ($1, $2, $3, $4, false, $5, $6, $7, $8, $9, $10, $11, $12)
+                    RETURNING *
+                    `,
+                    [
+                        fields.name,
+                        fields.price,
+                        fields.description,
+                        JSON.stringify(savedNames),
+                        fields.currency,
+                        fields.type,
+                        JSON.stringify(fields.types),
+                        fields.location,
+                        fields.address,
+                        fields.rooms,
+                        fields.area,
+                        fields.phone
+                    ]
                 );
+
+                await client.query('COMMIT');
+
+                return sendJson(res, 201, {
+                    ok: true,
+                    car: carOut(inserted.rows[0])
+                });
+
+            } catch (e) {
+
+                try {
+                    await client.query('ROLLBACK');
+                } catch (_) {}
+
+                console.error('ADD CAR ERROR:', e);
+
+                if (e instanceof UserError) {
+                    return sendJson(res, 400, { error: e.message });
+                }
+
+                return sendJson(res, 500, {
+                    error: "Uy qo'shishda xatolik"
+                });
+
+            } finally {
+
+                client.release();
             }
         }
-    );
+
+        // =================================================
+        // EDIT CAR
+        // =================================================
+
+        if (/^\/api\/cars\/\d+$/.test(url) && req.method === 'PUT') {
+
+            if (!isAdmin(req)) {
+                return sendJson(res, 401, UNAUTHORIZED);
+            }
+
+            let body;
+
+            try {
+
+                body = parseJsonObject(await readBody(req), false);
+
+            } catch (e) {
+
+                return sendJson(res, 400, {
+                    error: "Ma'lumot formati noto'g'ri"
+                });
+            }
+
+            const id = Number(url.split('/')[3]);
+
+            if (!Number.isInteger(id) || id <= 0) {
+                return sendJson(res, 400, { error: "ID noto'g'ri" });
+            }
+
+            const client = await pool.connect();
+
+            try {
+
+                const oldResult = await client.query(
+                    `SELECT * FROM cars WHERE id = $1`,
+                    [id]
+                );
+
+                if (oldResult.rows.length === 0) {
+                    return sendJson(res, 404, { error: 'Uy topilmadi' });
+                }
+
+                const oldCar = oldResult.rows[0];
+
+                const fields = buildCarFields(body, oldCar);
+
+                // images ko'rsatilmasa — eski rasmlar o'zgarmaydi
+                const incomingImages = Array.isArray(body.images)
+                    ? body.images
+                    : null;
+
+                await client.query('BEGIN');
+
+                let finalImages = parseImages(oldCar);
+                let removedImages = [];
+
+                if (incomingImages !== null) {
+
+                    if (incomingImages.length > 8) {
+                        throw new UserError("Ko'pi bilan 8 ta rasm");
+                    }
+
+                    const savedNames = [];
+                    const oldImageSet = new Set(finalImages);
+
+                    for (const item of incomingImages) {
+
+                        if (typeof item !== 'string' || !item.trim()) {
+                            throw new UserError("Rasm ma'lumoti noto'g'ri");
+                        }
+
+                        // Eski rasm nomi bo'lsa — saqlab qolamiz (tartib ham saqlanadi)
+                        if (!item.startsWith('data:image/')) {
+
+                            if (!oldImageSet.has(item)) {
+                                throw new UserError("Noma'lum eski rasm");
+                            }
+
+                            if (!savedNames.includes(item)) {
+                                savedNames.push(item);
+                            }
+
+                            continue;
+                        }
+
+                        // Yangi rasm: JPEG ekanligi tekshiriladi
+                        const image = prepareImage(item);
+
+                        await client.query(
+                            `INSERT INTO image_files (name, data) VALUES ($1, $2)`,
+                            [image.name, image.buffer]
+                        );
+
+                        savedNames.push(image.name);
+                    }
+
+                    removedImages = finalImages.filter(
+                        name => !savedNames.includes(name)
+                    );
+
+                    finalImages = savedNames;
+                }
+
+                const updated = await client.query(
+                    `
+                    UPDATE cars
+                    SET
+                        name = $1,
+                        price = $2,
+                        description = $3,
+                        images = $4,
+                        currency = $5,
+                        type = $6,
+                        types = $7,
+                        location = $8,
+                        address = $9,
+                        rooms = $10,
+                        area = $11,
+                        phone = $12
+                    WHERE id = $13
+                    RETURNING *
+                    `,
+                    [
+                        fields.name,
+                        fields.price,
+                        fields.description,
+                        JSON.stringify(finalImages),
+                        fields.currency,
+                        fields.type,
+                        JSON.stringify(fields.types),
+                        fields.location,
+                        fields.address,
+                        fields.rooms,
+                        fields.area,
+                        fields.phone,
+                        id
+                    ]
+                );
+
+                // Olib tashlangan rasmlar bazada qolib ketmasin
+                if (removedImages.length) {
+
+                    await client.query(
+                        `DELETE FROM image_files WHERE name = ANY($1::text[])`,
+                        [removedImages]
+                    );
+                }
+
+                await client.query('COMMIT');
+
+                return sendJson(res, 200, {
+                    ok: true,
+                    car: carOut(updated.rows[0])
+                });
+
+            } catch (e) {
+
+                try {
+                    await client.query('ROLLBACK');
+                } catch (_) {}
+
+                console.error('EDIT CAR ERROR:', e);
+
+                if (e instanceof UserError) {
+                    return sendJson(res, 400, { error: e.message });
+                }
+
+                return sendJson(res, 500, {
+                    error: 'Tahrirlashda xatolik'
+                });
+
+            } finally {
+
+                client.release();
+            }
+        }
+
+        // =================================================
+        // GET SETTINGS
+        // =================================================
+
+        if (url === '/api/settings' && req.method === 'GET') {
+
+            const result = await pool.query(`
+                SELECT phone, telegram, whatsapp, instagram, address
+                FROM site_settings
+                WHERE id = 1
+            `);
+
+            const row = result.rows[0];
+
+            if (!row) {
+
+                return sendJson(res, 200, {
+                    settings: {
+                        phone: '+998 88 950 00 05',
+                        telegram: 'https://t.me/',
+                        whatsapp: 'https://wa.me/',
+                        instagram: 'https://instagram.com/',
+                        address: "Toshkent, O'zbekiston"
+                    }
+                });
+            }
+
+            return sendJson(res, 200, { settings: settingsOut(row) });
+        }
+
+        // =================================================
+        // SAVE SETTINGS
+        // =================================================
+
+        if (url === '/api/settings' && req.method === 'POST') {
+
+            if (!isAdmin(req)) {
+                return sendJson(res, 401, UNAUTHORIZED);
+            }
+
+            let body;
+
+            try {
+
+                body = parseJsonObject(await readBody(req, 100000), false);
+
+            } catch (e) {
+
+                return sendJson(res, 400, {
+                    error: "Ma'lumot formati noto'g'ri"
+                });
+            }
+
+            const phone = String(body.phone || '').trim().slice(0, 50);
+            const telegram = String(body.telegram || '').trim().slice(0, 500);
+            const whatsapp = String(body.whatsapp || '').trim().slice(0, 500);
+            const instagram = String(body.instagram || '').trim().slice(0, 500);
+            const address = String(body.address || '').trim().slice(0, 300);
+
+            if (!phone) {
+                return sendJson(res, 400, {
+                    error: 'Telefon raqamini kiriting'
+                });
+            }
+
+            // Havolalarda xavfli sxemalar (javascript: va h.k.) bo'lmasligi kerak
+            const unsafeLink = /^\s*(javascript|data|vbscript):/i;
+
+            if (
+                unsafeLink.test(telegram) ||
+                unsafeLink.test(whatsapp) ||
+                unsafeLink.test(instagram)
+            ) {
+                return sendJson(res, 400, {
+                    error: "Havola noto'g'ri"
+                });
+            }
+
+            const result = await pool.query(
+                `
+                UPDATE site_settings
+                SET
+                    phone = $1,
+                    telegram = $2,
+                    whatsapp = $3,
+                    instagram = $4,
+                    address = $5
+                WHERE id = 1
+                RETURNING phone, telegram, whatsapp, instagram, address
+                `,
+                [phone, telegram, whatsapp, instagram, address]
+            );
+
+            return sendJson(res, 200, {
+                ok: true,
+                settings: settingsOut(result.rows[0])
+            });
+        }
+
+        // =================================================
+        // TOGGLE SOLD
+        // =================================================
+
+        if (/^\/api\/cars\/\d+\/sold$/.test(url) && req.method === 'POST') {
+
+            if (!isAdmin(req)) {
+                return sendJson(res, 401, UNAUTHORIZED);
+            }
+
+            const id = Number(url.split('/')[3]);
+
+            if (!Number.isInteger(id) || id <= 0) {
+                return sendJson(res, 400, { error: "ID noto'g'ri" });
+            }
+
+            const result = await pool.query(
+                `
+                UPDATE cars
+                SET sold = NOT sold
+                WHERE id = $1
+                RETURNING *
+                `,
+                [id]
+            );
+
+            if (result.rows.length === 0) {
+                return sendJson(res, 404, { error: 'Uy topilmadi' });
+            }
+
+            return sendJson(res, 200, {
+                ok: true,
+                sold: Boolean(result.rows[0].sold),
+                car: carOut(result.rows[0])
+            });
+        }
+
+        // =================================================
+        // DELETE CAR
+        // =================================================
+
+        if (/^\/api\/cars\/\d+$/.test(url) && req.method === 'DELETE') {
+
+            if (!isAdmin(req)) {
+                return sendJson(res, 401, UNAUTHORIZED);
+            }
+
+            const id = Number(url.split('/')[3]);
+
+            if (!Number.isInteger(id) || id <= 0) {
+                return sendJson(res, 400, { error: "ID noto'g'ri" });
+            }
+
+            const client = await pool.connect();
+
+            try {
+
+                await client.query('BEGIN');
+
+                const result = await client.query(
+                    `SELECT images FROM cars WHERE id = $1`,
+                    [id]
+                );
+
+                if (result.rows.length === 0) {
+
+                    await client.query('ROLLBACK');
+
+                    return sendJson(res, 404, { error: 'Uy topilmadi' });
+                }
+
+                const images = parseImages(result.rows[0]);
+
+                for (const name of images) {
+
+                    await client.query(
+                        `DELETE FROM image_files WHERE name = $1`,
+                        [name]
+                    );
+                }
+
+                await client.query(
+                    `DELETE FROM cars WHERE id = $1`,
+                    [id]
+                );
+
+                await client.query('COMMIT');
+
+                return sendJson(res, 200, { ok: true });
+
+            } catch (e) {
+
+                try {
+                    await client.query('ROLLBACK');
+                } catch (_) {}
+
+                console.error('DELETE CAR ERROR:', e);
+
+                return sendJson(res, 500, {
+                    error: "O'chirishda xatolik"
+                });
+
+            } finally {
+
+                client.release();
+            }
+        }
+
+        // =================================================
+        // GET IMAGE
+        // =================================================
+
+        if (url.startsWith('/uploads/') && req.method === 'GET') {
+
+            const name = url.slice('/uploads/'.length);
+
+            if (!/^[a-f0-9]{32}\.jpg$/.test(name)) {
+
+                res.writeHead(404);
+
+                return res.end();
+            }
+
+            const result = await pool.query(
+                `SELECT data FROM image_files WHERE name = $1`,
+                [name]
+            );
+
+            if (result.rows.length === 0) {
+
+                res.writeHead(404);
+
+                return res.end();
+            }
+
+            res.writeHead(200, {
+                'Content-Type': 'image/jpeg',
+                'Cache-Control': 'public, max-age=86400'
+            });
+
+            return res.end(result.rows[0].data);
+        }
+
+        // =================================================
+        // STAT VIEW / CALL
+        // =================================================
+
+        if (url === '/api/stats/view' && req.method === 'POST') {
+
+            await pool.query(`
+                UPDATE stats SET views = views + 1 WHERE id = 1
+            `);
+
+            await recordDailyStat('views');
+
+            return sendJson(res, 200, { ok: true });
+        }
+
+        if (url === '/api/stats/call' && req.method === 'POST') {
+
+            await pool.query(`
+                UPDATE stats SET calls = calls + 1 WHERE id = 1
+            `);
+
+            await recordDailyStat('calls');
+
+            return sendJson(res, 200, { ok: true });
+        }
+
+        // =================================================
+        // TOTAL STATS
+        // =================================================
+
+        if (url === '/api/stats' && req.method === 'GET') {
+
+            if (!isAdminHeader(req)) {
+                return sendJson(res, 401, UNAUTHORIZED);
+            }
+
+            const result = await pool.query(`
+                SELECT views, calls FROM stats WHERE id = 1
+            `);
+
+            const row = result.rows[0] || { views: 0, calls: 0 };
+
+            const carsResult = await pool.query(`
+                SELECT
+                    COUNT(*)::int AS total,
+                    COUNT(*) FILTER (WHERE sold = true)::int AS sold
+                FROM cars
+            `);
+
+            const cars = carsResult.rows[0] || { total: 0, sold: 0 };
+
+            return sendJson(res, 200, {
+                views: Number(row.views) || 0,
+                calls: Number(row.calls) || 0,
+                cars: Number(cars.total) || 0,
+                sold: Number(cars.sold) || 0
+            });
+        }
+
+        // =================================================
+        // RESET TOTAL VIEWS (daily_stats ga tegilmaydi)
+        // =================================================
+
+        if (url === '/api/stats/reset-views' && req.method === 'POST') {
+
+            if (!isAdmin(req)) {
+                return sendJson(res, 401, UNAUTHORIZED);
+            }
+
+            await pool.query(`
+                UPDATE stats SET views = 0 WHERE id = 1
+            `);
+
+            return sendJson(res, 200, { ok: true, views: 0 });
+        }
+
+        // =================================================
+        // DAILY STATS
+        // =================================================
+
+        if (url === '/api/stats/daily' && req.method === 'GET') {
+
+            if (!isAdminHeader(req)) {
+                return sendJson(res, 401, UNAUTHORIZED);
+            }
+
+            const result = await pool.query(`
+                SELECT stat_date, views, calls
+                FROM daily_stats
+                WHERE stat_date >= CURRENT_DATE - INTERVAL '29 days'
+                ORDER BY stat_date ASC
+            `);
+
+            return sendJson(res, 200, {
+                days: result.rows.map(row => ({
+                    date: row.stat_date,
+                    views: Number(row.views) || 0,
+                    calls: Number(row.calls) || 0
+                }))
+            });
+        }
+
+        // =================================================
+        // SAHIFALAR
+        // =================================================
+
+        if (url === '/admin' || url === '/admin.html') {
+            return sendFile(res, 'admin.html');
+        }
+
+        if (url === '/' || url === '/index.html') {
+            return sendFile(res, 'index.html');
+        }
+
+        if (
+            req.method === 'GET' &&
+            (url.endsWith('.css') || url.endsWith('.js'))
+        ) {
+            return sendFile(res, url.replace(/^\/+/, ''));
+        }
+
+        return sendJson(res, 404, { error: 'Sahifa topilmadi' });
+
+    } catch (e) {
+
+        console.error('SERVER ERROR:', e);
+
+        if (res.headersSent) {
+            return res.end();
+        }
+
+        return sendJson(res, 500, { error: 'Server xatosi' });
+    }
+});
 
 // =====================================================
 // START SERVER
@@ -5125,33 +2819,19 @@ async function start() {
 
         await initDatabase();
 
-        const PORT =
-            Number(
-                process.env.PORT
-            ) || 3000;
+        const PORT = Number(process.env.PORT) || 3000;
 
-      server.listen(
-    PORT,
-    () => {
+        server.listen(PORT, () => {
 
-        console.log(
-            `Server ${PORT}-portda ishlayapti`
-        );
+            console.log(`Server ${PORT}-portda ishlayapti`);
+            console.log('Admin: parol + Telegram kodi tekshiruvi faol');
 
-        console.log(
-            'Admin password tekshiruvi faol'
-        );
-
-       telegramPolling();  
-    }
-);
+            telegramPolling();
+        });
 
     } catch (error) {
 
-        console.error(
-            'Database ulanishida xatolik:',
-            error
-        );
+        console.error('Database ulanishida xatolik:', error);
 
         process.exit(1);
     }
@@ -5165,11 +2845,11 @@ start();
 
 async function shutdown(signal) {
 
-    console.log(
-        `${signal}: Server to'xtatilmoqda...`
-    );
+    console.log(`${signal}: Server to'xtatilmoqda...`);
 
     try {
+
+        telegramStopped = true;
 
         server.close();
 
@@ -5179,21 +2859,15 @@ async function shutdown(signal) {
 
     } catch (e) {
 
-        console.error(
-            'Shutdown xatosi:',
-            e
-        );
+        console.error('Shutdown xatosi:', e);
 
         process.exit(1);
     }
 }
 
-process.on(
-    'SIGTERM',
-    () => shutdown('SIGTERM')
-);
+process.on('SIGTERM', () => shutdown('SIGTERM'));
+process.on('SIGINT', () => shutdown('SIGINT'));
 
-process.on(
-    'SIGINT',
-    () => shutdown('SIGINT')
-);
+process.on('unhandledRejection', reason => {
+    console.error('UNHANDLED REJECTION:', reason);
+});
