@@ -308,6 +308,7 @@ return sendJson(res, 200, {
                         status: 'approved',
                         sessionToken
                     });
+                }
 
     // -------------------------------------------------
     // TOTAL STATS
