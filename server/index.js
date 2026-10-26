@@ -1,3 +1,13 @@
+const ADMIN_PASSWORD = String(
+    process.env.ADMIN_PASSWORD || ''
+).trim();
+
+if (!ADMIN_PASSWORD) {
+    throw new Error(
+        'ADMIN_PASSWORD Render Environment sozlamalarida topilmadi.'
+    );
+}
+
 const UNAUTHORIZED = {
     error: 'Ruxsat yo‘q yoki sessiya muddati tugagan. Qaytadan kiring.'
 };
