@@ -169,49 +169,48 @@ async function initDatabase() {
                         sessionDelivered: false
                     };
 
-                    adminLoginRequests.set(requestId, request);
+                   
+adminLoginRequests.set(requestId, request);
 
-                    try {
-                        await telegramApi('sendMessage', {
-                            chat_id: ADMIN_TELEGRAM_ID,
-                            text:
-                                '🔐 Uy-Joy admin paneliga kirish so‘rovi\n\n' +
-                                'Admin paneliga kirishga ruxsat berasizmi?\n' +
-                                '⏳ So‘rov 5 daqiqa amal qiladi.',
-                            reply_markup: {
-                                inline_keyboard: [
-                                    [
-                                        {
-                                            text: '✅ Tasdiqlash',
-                                            callback_data: 'admin_approve_' + requestId
-                                        },
-                                        {
-                                            text: '❌ Rad etish',
-                                            callback_data: 'admin_deny_' + requestId
-                                        }
-                                    ]
-                                ]
-                            }
-                        });
-                    } catch (error) {
-                        adminLoginRequests.delete(requestId);
-
-                        console.error(
-                            'Admin Telegram xabari yuborilmadi:',
-                            error.message
-                        );
-
-                        return sendJson(res, 502, {
-                            error: 'Telegramga xabar yuborilmadi. Bot bilan shaxsiy chatni tekshiring.'
-                        });
-                    }
-
-                    return sendJson(res, 200, {
-                        ok: true,
-                        requestId,
-                        status: 'pending'
-                    });
+const telegramMessage = await telegramApi('sendMessage', {
+    chat_id: ADMIN_TELEGRAM_ID,
+    text:
+        '🔐 Uy-Joy admin paneliga kirish so‘rovi\n\n' +
+        'Admin paneliga kirishga ruxsat berasizmi?\n' +
+        '⏳ So‘rov 5 daqiqa amal qiladi.',
+    reply_markup: {
+        inline_keyboard: [
+            [
+                {
+                    text: '✅ Tasdiqlash',
+                    callback_data: 'admin_approve_' + requestId
+                },
+                {
+                    text: '❌ Rad etish',
+                    callback_data: 'admin_deny_' + requestId
                 }
+            ]
+        ]
+    }
+});
+
+if (!telegramMessage) {
+    adminLoginRequests.delete(requestId);
+
+    console.error('Admin Telegram xabari yuborilmadi');
+
+    return sendJson(res, 502, {
+        error: 'Telegramga xabar yuborilmadi. Bot bilan shaxsiy chatni tekshiring.'
+    });
+}
+
+return sendJson(res, 200, {
+    ok: true,
+    requestId,
+    status: 'pending'
+});
+}
+
 
                 // =================================================
                 // ADMIN LOGIN — TASDIQLASH HOLATINI TEKSHIRISH
