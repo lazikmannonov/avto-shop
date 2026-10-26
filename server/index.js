@@ -2140,8 +2140,46 @@ const server = http.createServer(async (req, res) => {
                 expiresAt
             });
         }
-
         
+if (
+    req.method === 'POST' &&
+    url === '/api/admin/password/change/check-current'
+) {
+    if (!isAdminHeader(req)) {
+        return sendJson(res, 401, {
+            ok: false,
+            error: 'Admin sessiyasi tugagan. Qaytadan kiring.'
+        });
+    }
+
+    try {
+        const body = parseJsonObject(await readBody(req));
+        const currentPassword = String(body.currentPassword || '');
+
+        if (
+            !currentPassword ||
+            !(await passwordMatches(currentPassword))
+        ) {
+            return sendJson(res, 400, {
+                ok: false,
+                error: 'Joriy parol noto‘g‘ri.'
+            });
+        }
+
+        return sendJson(res, 200, { ok: true });
+    } catch (error) {
+        console.error(
+            'Joriy admin parolini tekshirish xatosi:',
+            error
+        );
+
+        return sendJson(res, 500, {
+            ok: false,
+            error: 'Parolni tekshirishda server xatosi yuz berdi.'
+        });
+    }
+}
+    
 if (req.method === 'POST' && url === '/api/admin/password/change/request') {
     if (!isAdminHeader(req)) {
         return sendJson(res, 401, {
