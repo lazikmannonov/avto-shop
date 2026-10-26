@@ -125,32 +125,71 @@
 
         <div class="login-title">Uylar Admin</div>
 
-        <div class="login-sub">
-            Admin panelga kirish uchun administrator parolini kiriting.
+        <div class="login-sub" id="loginSub">
+            Ismingiz va admin parolini kiriting. Telegram orqali 6 xonali kod yuboriladi.
         </div>
 
-        <form class="login-form" onsubmit="loginAdmin(event)">
+        <form class="login-form" id="loginForm" onsubmit="loginAdmin(event)">
 
-            <div class="login-input-wrap">
+            <!-- 1-bosqich: ism + parol -->
+            <div id="loginStep1" style="display:flex;flex-direction:column;gap:12px">
 
-                <input
-                    class="login-input"
-                    id="loginPassword"
-                    type="password"
-                    placeholder="Admin paroli"
-                    autocomplete="current-password"
-                    autofocus
-                >
+                <div class="login-input-wrap">
 
-                <button
-                    class="login-eye"
-                    id="loginEye"
-                    type="button"
-                    onclick="toggleLoginPassword()"
-                    title="Parolni ko‘rsatish"
-                >
-                    <svg class="icon" id="loginPasswordIcon"><use href="#i-eye"></use></svg>
-                </button>
+                    <input
+                        class="login-input"
+                        id="loginName"
+                        type="text"
+                        placeholder="Ismingiz"
+                        maxlength="40"
+                        autocomplete="username"
+                        autofocus
+                    >
+
+                </div>
+
+                <div class="login-input-wrap">
+
+                    <input
+                        class="login-input"
+                        id="loginPassword"
+                        type="password"
+                        placeholder="Admin paroli"
+                        autocomplete="current-password"
+                    >
+
+                    <button
+                        class="login-eye"
+                        id="loginEye"
+                        type="button"
+                        onclick="toggleLoginPassword()"
+                        title="Parolni ko‘rsatish"
+                    >
+                        <svg class="icon" id="loginPasswordIcon"><use href="#i-eye"></use></svg>
+                    </button>
+
+                </div>
+
+            </div>
+
+            <!-- 2-bosqich: Telegram kodi -->
+            <div id="loginStep2" style="display:none;flex-direction:column;gap:12px">
+
+                <div class="login-input-wrap">
+
+                    <input
+                        class="login-input"
+                        id="loginCode"
+                        type="text"
+                        inputmode="numeric"
+                        pattern="[0-9]*"
+                        maxlength="6"
+                        placeholder="6 xonali kod"
+                        autocomplete="one-time-code"
+                        oninput="this.value=this.value.replace(/\D/g,'')"
+                    >
+
+                </div>
 
             </div>
 
@@ -158,7 +197,18 @@
 
             <button class="login-button" type="submit" id="loginButton">
                 <svg class="icon icon-sm"><use href="#i-check"></use></svg>
-                Admin panelga kirish
+                Kod yuborish
+            </button>
+
+            <button
+                class="secondary-btn"
+                type="button"
+                id="loginBackBtn"
+                onclick="backToLoginStep1()"
+                style="display:none;margin-top:10px;width:100%;justify-content:center"
+            >
+                <svg class="icon icon-sm"><use href="#i-chevron-left"></use></svg>
+                Orqaga
             </button>
 
         </form>
@@ -623,7 +673,7 @@
         <div class="settings-icon"><svg class="icon"><use href="#i-settings"></use></svg></div>
         <div>
             <div class="settings-title">Joriy admin sessiyasi</div>
-            <div class="settings-sub">Panelga kirishda ishlatilgan parol faqat shu brauzer oynasi ochiq turganda saqlanadi.</div>
+            <div class="settings-sub">Kirish Telegram kodi bilan tasdiqlangan. Sessiya 8 soat amal qiladi. “Chiqish” tugmasi sessiyani serverda ham tugatadi.</div>
         </div>
     </div>
 
@@ -807,7 +857,10 @@ let pendingImages = 0;
 
 const MAX_IMAGES = 8;
 
-let adminPassword = "";
+/* Kirish: 1-bosqich (ism+parol), 2-bosqich (Telegram kodi) */
+let loginStep = 1;
+let loginRequestId = "";
+
 let adminSessionToken = ssGet("admin_panel_session", "");
 
 /* =========================================================
@@ -912,16 +965,15 @@ function parsePrice(value){
 
 /* =========================================================
    LOGIN GUARD
-   3 ta urinish → 3-xatoda 10 daqiqaga blok →
-   blokdan keyin yana 3 ta urinish.
-   To‘g‘ri parol → hisob tozalanadi va darhol kiradi.
+   3 ta noto‘g‘ri urinish (parol yoki kod) → 15 daqiqa blok.
+   Blokdan keyin yana 3 ta urinish. To‘g‘ri kirishda hisob tozalanadi.
 
-   DIQQAT: bu himoya faqat brauzerda. Haqiqiy himoya
-   serverda (IP bo‘yicha limit) bo‘lishi kerak.
+   DIQQAT: haqiqiy himoya serverda (IP bo‘yicha limit).
+   Bu yerdagi hisob faqat foydalanuvchiga qulaylik uchun.
 ========================================================= */
 
 const LOGIN_MAX_ATTEMPTS = 3;
-const LOGIN_BLOCK_MS = 10 * 60 * 1000;
+const LOGIN_BLOCK_MS = 15 * 60 * 1000;
 const LOGIN_GUARD_KEY = "admin_login_guard";
 
 let loginLockTimer = null;
@@ -1014,21 +1066,83 @@ function setLoginMessage(text,kind){
 
 function setLoginDisabled(disabled){
 
-    const input = $("loginPassword");
+    ["loginName","loginPassword","loginCode","loginButton","loginEye","loginBackBtn"]
+        .forEach(id=>{
+            const el = $(id);
+            if(el){
+                el.disabled = disabled;
+            }
+        });
+}
+
+function loginButtonLabel(){
+    return loginStep === 1
+        ? "Kod yuborish"
+        : "Tasdiqlash va kirish";
+}
+
+function setLoginBusy(busy,label){
+
     const button = $("loginButton");
-    const eye = $("loginEye");
 
-    if(input){
-        input.disabled = disabled;
+    if(!button){
+        return;
     }
 
-    if(button){
-        button.disabled = disabled;
+    button.disabled = busy || isLoginLocked();
+
+    button.innerHTML = `
+        <svg class="icon icon-sm"><use href="${busy ? "#i-refresh" : "#i-check"}"></use></svg>
+        ${escapeHtml(label || loginButtonLabel())}
+    `;
+}
+
+/* 1- yoki 2-bosqichni ko‘rsatadi */
+function showLoginStep(step){
+
+    loginStep = step === 2 ? 2 : 1;
+
+    if(loginStep === 1){
+        loginRequestId = "";
+        if($("loginCode")){
+            $("loginCode").value = "";
+        }
     }
 
-    if(eye){
-        eye.disabled = disabled;
+    $("loginStep1").style.display =
+        loginStep === 1 ? "flex" : "none";
+
+    $("loginStep2").style.display =
+        loginStep === 2 ? "flex" : "none";
+
+    $("loginBackBtn").style.display =
+        loginStep === 2 ? "inline-flex" : "none";
+
+    $("loginSub").textContent =
+        loginStep === 1
+            ? "Ismingiz va admin parolini kiriting. Telegram orqali 6 xonali kod yuboriladi."
+            : "Telegram’ga kelgan 6 xonali kodni kiriting. Kod 5 daqiqa amal qiladi.";
+
+    setLoginBusy(false);
+
+    if(!isLoginLocked()){
+        setTimeout(()=>{
+            if(loginStep === 2){
+                $("loginCode")?.focus();
+            }else if($("loginName")?.value){
+                $("loginPassword")?.focus();
+            }else{
+                $("loginName")?.focus();
+            }
+        },50);
     }
+}
+
+function backToLoginStep1(){
+
+    showLoginStep(1);
+
+    setLoginMessage("");
 }
 
 /* Blok bo‘lsa — countdown ishga tushadi va true qaytaradi */
@@ -1053,6 +1167,10 @@ function applyLoginLock(){
         $("loginPassword").value = "";
     }
 
+    if($("loginCode")){
+        $("loginCode").value = "";
+    }
+
     const tick = ()=>{
 
         const left =
@@ -1074,13 +1192,13 @@ function applyLoginLock(){
                 "warn"
             );
 
-            $("loginPassword")?.focus();
+            $("loginName")?.focus();
 
             return;
         }
 
         setLoginMessage(
-            "3 marta xato kiritildi. Bloklandi — " +
+            "Ko‘p marta xato kiritildi. Bloklandi — " +
             formatLeft(left) +
             " dan keyin qayta urinib ko‘ring."
         );
@@ -1094,8 +1212,10 @@ function applyLoginLock(){
     return true;
 }
 
-/* Noto‘g‘ri parol: hisobni oshiradi */
-function registerWrongAttempt(){
+/* Noto‘g‘ri parol yoki kod: hisobni oshiradi */
+function registerWrongAttempt(label){
+
+    const what = label || "Parol";
 
     const guard = getGuard();
 
@@ -1108,6 +1228,8 @@ function registerWrongAttempt(){
 
         writeGuard(guard);
 
+        showLoginStep(1);
+
         applyLoginLock();
 
         return;
@@ -1119,12 +1241,16 @@ function registerWrongAttempt(){
         LOGIN_MAX_ATTEMPTS - guard.count;
 
     setLoginMessage(
-        "Parol noto‘g‘ri. " +
+        what +
+        " noto‘g‘ri. " +
         left +
         " ta imkoniyat qoldi."
     );
 
-    const input = $("loginPassword");
+    const input =
+        loginStep === 2
+            ? $("loginCode")
+            : $("loginPassword");
 
     if(input){
         input.focus();
@@ -1132,37 +1258,20 @@ function registerWrongAttempt(){
     }
 }
 
-/* Server 429 qaytarsa (server tomonida limit qo‘shilsa) */
-async function handleServerBlock(response){
+/* Server 429 "blocked" qaytarsa — serverdagi muddat qo‘llanadi */
+function applyServerBlock(seconds){
 
-    let seconds = 600;
-
-    const header =
-        Number(response.headers.get("Retry-After"));
-
-    if(header > 0){
-
-        seconds = header;
-
-    }else{
-
-        try{
-
-            const data =
-                await response.json();
-
-            if(Number(data.retryAfter) > 0){
-                seconds = Number(data.retryAfter);
-            }
-
-        }catch(error){}
-
-    }
+    const secs =
+        Number(seconds) > 0
+            ? Number(seconds)
+            : LOGIN_BLOCK_MS / 1000;
 
     writeGuard({
         count:LOGIN_MAX_ATTEMPTS,
-        blockedUntil:Date.now() + seconds * 1000
+        blockedUntil:Date.now() + secs * 1000
     });
+
+    showLoginStep(1);
 
     applyLoginLock();
 }
@@ -1170,6 +1279,8 @@ async function handleServerBlock(response){
 
 /* =========================================================
    ADMIN LOGIN
+   1) ism + parol → server Telegram’ga 6 xonali kod yuboradi
+   2) kod → server sessiya tokenini beradi
 ========================================================= */
 
 function toggleLoginPassword(){
@@ -1190,6 +1301,7 @@ function toggleLoginPassword(){
 }
 
 async function loginAdmin(event) {
+
     event.preventDefault();
 
     if (isLoginLocked()) {
@@ -1197,48 +1309,65 @@ async function loginAdmin(event) {
         return;
     }
 
-    const input = $("loginPassword");
-    const button = $("loginButton");
-    const password = input ? input.value.trim() : "";
-
-    if (!password) {
-        setLoginMessage("Admin parolini kiriting.");
+    if (loginStep === 2) {
+        await verifyLoginCode();
         return;
     }
 
-    if (button) {
-        button.disabled = true;
-        button.innerHTML = `
-            <svg class="icon icon-sm"><use href="#i-refresh"></use></svg>
-            Tekshirilmoqda...
-        `;
+    await requestLoginCode();
+}
+
+/* 1-bosqich */
+async function requestLoginCode() {
+
+    const name = $("loginName") ? $("loginName").value.trim() : "";
+    const password = $("loginPassword") ? $("loginPassword").value.trim() : "";
+
+    if (!name) {
+        setLoginMessage("Ismingizni kiriting.");
+        $("loginName")?.focus();
+        return;
     }
 
+    if (!password) {
+        setLoginMessage("Admin parolini kiriting.");
+        $("loginPassword")?.focus();
+        return;
+    }
+
+    setLoginBusy(true, "Tekshirilmoqda...");
     setLoginMessage("");
 
     try {
-        // 1. Parolni tekshirish va Telegram tasdig‘ini so‘rash
+
         const response = await fetch("/api/admin/login", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
             },
-            body: JSON.stringify({ password }),
+            body: JSON.stringify({ name, password }),
             cache: "no-store"
         });
 
+        const result = await response.json().catch(() => ({}));
+
         if (response.status === 429) {
-            await handleServerBlock(response);
+
+            if (result.status === "blocked") {
+                applyServerBlock(result.retryAfterSeconds);
+            } else {
+                setLoginMessage(
+                    result.error || "Biroz kuting va qayta urinib ko‘ring."
+                );
+            }
+
             return;
         }
 
         if (response.status === 401 || response.status === 403) {
-            registerWrongAttempt();
-            setLoginMessage("Admin paroli noto‘g‘ri.");
+            registerWrongAttempt("Parol");
             return;
         }
-
-        const result = await response.json();
 
         if (!response.ok) {
             throw new Error(
@@ -1246,90 +1375,25 @@ async function loginAdmin(event) {
             );
         }
 
-        const requestId = result.requestId;
-
-        if (!requestId) {
+        if (!result.requestId) {
             throw new Error("Kirish so‘rovi identifikatori topilmadi.");
         }
 
-        if (input) {
-            input.value = "";
+        loginRequestId = result.requestId;
+
+        if ($("loginPassword")) {
+            $("loginPassword").value = "";
         }
+
+        showLoginStep(2);
 
         setLoginMessage(
-            "Telegram orqali tasdiqlang. Tasdiqlash 5 daqiqa amal qiladi."
+            "Kod Telegram’ga yuborildi. U 5 daqiqa amal qiladi.",
+            "warn"
         );
 
-        // 2. Telegram tasdig‘ini kutish
-        const deadline = Date.now() + 5 * 60 * 1000;
-        let sessionToken = "";
-
-        while (Date.now() < deadline) {
-            await new Promise(resolve => setTimeout(resolve, 2000));
-
-            const statusResponse = await fetch(
-                "/api/admin/login-status",
-                {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify({ requestId }),
-                    cache: "no-store"
-                }
-            );
-
-            const statusResult = await statusResponse.json();
-
-            if (!statusResponse.ok) {
-                throw new Error(
-                    statusResult.error ||
-                    "Tasdiqlash holatini tekshirib bo‘lmadi."
-                );
-            }
-
-            if (statusResult.status === "approved") {
-                sessionToken = statusResult.sessionToken || "";
-                break;
-            }
-
-            if (statusResult.status === "denied") {
-                throw new Error("Telegram orqali kirish rad etildi.");
-            }
-
-            if (
-                statusResult.status === "expired" ||
-                statusResult.status === "not_found" ||
-                statusResult.status === "already_delivered"
-            ) {
-                throw new Error(
-                    statusResult.error || "Tasdiqlash muddati tugadi."
-                );
-            }
-        }
-
-        if (!sessionToken) {
-            throw new Error(
-                "Tasdiqlash vaqti tugadi. Qaytadan urinib ko‘ring."
-            );
-        }
-
-        // 3. Sessiya tokenini saqlash
-        adminSessionToken = sessionToken;
-        ssSet("admin_panel_session", adminSessionToken);
-
-        clearGuard();
-        adminPassword = "";
-
-        // 4. Admin panelini ochish
-        $("loginScreen").classList.add("hidden");
-        $("app").style.display = "flex";
-
-        setLoginMessage("");
-
-        await loadAll();
-
     } catch (err) {
+
         console.error(err);
 
         if (err.message === "Failed to fetch") {
@@ -1341,18 +1405,155 @@ async function loginAdmin(event) {
         }
 
     } finally {
-        if (button) {
-            button.disabled = isLoginLocked();
-            button.innerHTML = `
-                <svg class="icon icon-sm"><use href="#i-check"></use></svg>
-                Admin panelga kirish
-            `;
+
+        setLoginBusy(false);
+
+    }
+}
+
+/* 2-bosqich */
+async function verifyLoginCode() {
+
+    const code = $("loginCode") ? $("loginCode").value.trim() : "";
+
+    if (!/^\d{6}$/.test(code)) {
+        setLoginMessage("6 xonali kodni kiriting.");
+        $("loginCode")?.focus();
+        return;
+    }
+
+    if (!loginRequestId) {
+        showLoginStep(1);
+        setLoginMessage("Kirish so‘rovi topilmadi. Qaytadan kiring.");
+        return;
+    }
+
+    setLoginBusy(true, "Tekshirilmoqda...");
+    setLoginMessage("");
+
+    try {
+
+        const response = await fetch("/api/admin/verify", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                requestId: loginRequestId,
+                code
+            }),
+            cache: "no-store"
+        });
+
+        const result = await response.json().catch(() => ({}));
+
+        if (response.status === 429) {
+
+            if (result.status === "blocked") {
+                applyServerBlock(result.retryAfterSeconds);
+            } else {
+                setLoginMessage(
+                    result.error || "Biroz kuting va qayta urinib ko‘ring."
+                );
+            }
+
+            return;
         }
+
+        if (
+            response.status === 401 &&
+            (result.status === "wrong_code" || result.status === "failed")
+        ) {
+
+            registerWrongAttempt("Kod");
+
+            if (isLoginLocked()) {
+                return;
+            }
+
+            if (result.status === "failed") {
+                showLoginStep(1);
+                setLoginMessage(
+                    result.error || "Kod bir necha marta noto‘g‘ri kiritildi. Qaytadan kiring."
+                );
+            }
+
+            return;
+        }
+
+        if (response.status === 401 || response.status === 404) {
+
+            /* Kod muddati tugagan yoki so‘rov topilmadi */
+            showLoginStep(1);
+
+            setLoginMessage(
+                result.error || "Kod muddati tugadi. Qaytadan kiring."
+            );
+
+            return;
+        }
+
+        if (!response.ok) {
+            throw new Error(
+                result.error || "Kodni tekshirishda xatolik."
+            );
+        }
+
+        if (!result.sessionToken) {
+            throw new Error("Sessiya tokeni olinmadi.");
+        }
+
+        /* Sessiya tokenini saqlash */
+        adminSessionToken = result.sessionToken;
+        ssSet("admin_panel_session", adminSessionToken);
+
+        clearGuard();
+
+        if ($("loginPassword")) {
+            $("loginPassword").value = "";
+        }
+
+        showLoginStep(1);
+
+        $("loginScreen").classList.add("hidden");
+        $("app").style.display = "flex";
+
+        setLoginMessage("");
+
+        await loadAll();
+
+    } catch (err) {
+
+        console.error(err);
+
+        if (err.message === "Failed to fetch") {
+            setLoginMessage("Server bilan ulanishda xatolik.");
+        } else {
+            setLoginMessage(
+                err.message || "Admin panelga kirishda xatolik."
+            );
+        }
+
+    } finally {
+
+        setLoginBusy(false);
+
     }
 }
 
 function logoutAdmin(message) {
-    adminPassword = "";
+
+    /* Sessiyani serverda ham tugatamiz */
+    const oldToken = adminSessionToken;
+
+    if (oldToken) {
+        fetch("/api/admin/logout", {
+            method: "POST",
+            headers: { "X-Admin-Session": oldToken },
+            keepalive: true
+        }).catch(() => {});
+    }
+
     adminSessionToken = "";
 
     ssDel("admin_panel_password");
@@ -1365,19 +1566,15 @@ function logoutAdmin(message) {
         $("loginPassword").value = "";
     }
 
+    showLoginStep(1);
+
     setLoginMessage(
         typeof message === "string"
             ? message
             : ""
     );
 
-    const locked = applyLoginLock();
-
-    if (!locked) {
-        setTimeout(() => {
-            $("loginPassword")?.focus();
-        }, 100);
-    }
+    applyLoginLock();
 }
 
 /* =========================================================
@@ -2287,7 +2484,7 @@ async function addHome(event){
                 response.status === 403
             ){
                 logoutAdmin("Sessiya tugadi. Qayta kiring.");
-                throw new Error("Admin paroli noto‘g‘ri yoki sessiya tugagan.");
+                throw new Error("Sessiya tugagan. Qaytadan kiring.");
             }
 
             if(!response.ok){
@@ -2349,7 +2546,7 @@ async function addHome(event){
             response.status === 403
         ){
             logoutAdmin("Sessiya tugadi. Qayta kiring.");
-            throw new Error("Admin paroli noto‘g‘ri yoki sessiya tugagan.");
+            throw new Error("Sessiya tugagan. Qaytadan kiring.");
         }
 
         if(!response.ok){
@@ -2714,8 +2911,7 @@ async function toggleSold(id,sold){
                     headers:adminHeaders({"Content-Type":"application/json"}),
                     body:JSON.stringify({
                         sold:!sold,
-                        status:sold ? "available" : "sold",
-                        password:adminPassword
+                        status:sold ? "available" : "sold"
                     })
                 }
             );
@@ -2728,7 +2924,7 @@ async function toggleSold(id,sold){
             response.status === 403
         ){
             logoutAdmin("Sessiya tugadi. Qayta kiring.");
-            throw new Error("Admin paroli noto‘g‘ri.");
+            throw new Error("Sessiya tugagan. Qaytadan kiring.");
         }
 
         if(!response.ok){
@@ -2805,7 +3001,7 @@ async function deleteHome(id){
             response.status === 403
         ){
             logoutAdmin("Sessiya tugadi. Qayta kiring.");
-            throw new Error("Admin paroli noto‘g‘ri.");
+            throw new Error("Sessiya tugagan. Qaytadan kiring.");
         }
 
         if(!response.ok){
@@ -2965,7 +3161,7 @@ async function saveSettings(event){
             response.status === 403
         ){
             logoutAdmin("Sessiya tugadi. Qayta kiring.");
-            throw new Error("Admin paroli noto‘g‘ri.");
+            throw new Error("Sessiya tugagan. Qaytadan kiring.");
         }
 
         if(!response.ok){
@@ -3330,11 +3526,12 @@ async function init() {
     updateThemeIcons();
     updateTypeSummary();
     renderImagePreview();
+    showLoginStep(1);
 
     // Saqlangan sessiyani server orqali tekshirish
     if (adminSessionToken) {
         try {
-            const response = await fetch("/api/stats", {
+            const response = await fetch("/api/admin/session", {
                 method: "GET",
                 headers: adminHeaders(),
                 cache: "no-store"
@@ -3356,19 +3553,12 @@ async function init() {
         ssDel("admin_panel_session");
     }
 
-    adminPassword = "";
     ssDel("admin_panel_password");
 
     $("loginScreen").classList.remove("hidden");
     $("app").style.display = "none";
 
-    const locked = applyLoginLock();
-
-    if (!locked) {
-        setTimeout(() => {
-            $("loginPassword")?.focus();
-        }, 100);
-    }
+    applyLoginLock();
 }
 
 /* =========================================================
