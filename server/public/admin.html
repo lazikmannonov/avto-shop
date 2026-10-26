@@ -1829,6 +1829,15 @@ function showPage(page){
     if(window.innerWidth <= 800){
         $("sidebar").classList.remove("open");
     }
+       if (page === 'active-users' && adminSessionToken) {
+        loadAdminSessionHistory().catch(error => {
+            console.error(
+                'Foydalanuvchilarni yangilash xatosi:',
+                error
+            );
+        });
+    }
+    
 }
 
 function toggleSidebar(){
@@ -3794,16 +3803,18 @@ async function loadAdminSessionHistory() {
 
                 const title = document.createElement('div');
                 title.style.fontWeight = '600';
-                title.textContent =
-                    'Faol admin sessiyasi #' + session.id;
+               title.textContent =
+              (session.admin_name || 'Ism kiritilmagan') +
+              ' · ' +
+              (session.phone || 'Telefon kiritilmagan');
 
                 const details = document.createElement('div');
                 details.style.cssText =
                     'font-size:13px;opacity:.75;margin-top:5px';
 
                 details.textContent =
-                    'Kirish vaqti: ' +
-                    formatSessionDate(session.login_at);
+                  'Sessiya #' + session.id +
+                 ' · Kirish vaqti: ' + formatSessionDate(session.login_at);
 
                 item.append(title, details);
                 activeList.appendChild(item);
@@ -3836,8 +3847,9 @@ async function loadAdminSessionHistory() {
                 const title = document.createElement('div');
                 title.style.fontWeight = '600';
                 title.textContent =
-                    'Admin sessiyasi #' + session.id;
-
+                 (session.admin_name || 'Ism kiritilmagan') +
+                       ' · ' +
+                 (session.phone || 'Telefon kiritilmagan');
                 const details = document.createElement('div');
                 details.style.cssText =
                     'font-size:13px;opacity:.75;margin-top:4px';
