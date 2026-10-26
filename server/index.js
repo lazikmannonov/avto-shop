@@ -2141,6 +2141,214 @@ const server = http.createServer(async (req, res) => {
             });
         }
 
+        
+if (req.method === 'POST' && url === '/api/admin/password/change/request') {
+    if (!isAdminHeader(req)) {
+        return sendJson(res, 401, {
+            ok: false,
+            error: 'Admin sessiyasi tugagan. Qaytadan kiring.'
+        });
+    }
+
+    try {
+        const body = parseJsonObject(await readBody(req));
+        const newPassword = String(body.newPassword || '');
+        const confirmPassword = String(body.confirmPassword || '');
+
+        if (newPassword.length < 12 || newPassword.length > 200) {
+            return sendJson(res, 400, {
+                ok: false,
+                error: 'Parol 12–200 ta belgidan iborat bo‘lishi kerak.'
+            });
+        }
+
+        if (newPassword !== confirmPassword) {
+            return sendJson(res, 400, {
+                ok: false,
+                error: 'Yangi parollar bir xil emas.'
+            });
+        }
+
+        if (!ADMIN_TG_OK) {
+            return sendJson(res, 503, {
+                ok: false,
+                error: 'Telegram tasdig‘i sozlanmagan.'
+            });
+        }
+
+        if (await passwordMatches(newPassword)) {
+            return sendJson(res, 400, {
+                ok: false,
+                error: 'Yangi parol joriy paroldan farq qilishi kerak.'
+            });
+        }
+
+        const sessionToken = String(
+            req.headers['x-admin-session'] || ''
+        );
+
+        // Shu sessiya uchun oldingi tasdiqlash so‘rovini bekor qilish.
+        for (const [id, item] of adminPasswordChangeRequests) {
+            if (item.sessionToken === sessionToken) {
+                adminPasswordChangeRequests.delete(id);
+            }
+        }
+
+        // Eskirgan so‘rovlarni tozalash.
+        for (const [id, item] of adminPasswordChangeRequests) {
+            if (Date.now() >= item.expiresAt) {
+                adminPasswordChangeRequests.delete(id);
+            }
+        }
+
+        if (adminPasswordChangeRequests.size >= 50) {
+            return sendJson(res, 429, {
+                ok: false,
+                error: 'Tasdiqlash so‘rovlari ko‘p. Keyinroq urinib ko‘ring.'
+            });
+        }
+
+        const code = String(
+            crypto.randomInt(100000, 1000000)
+        );
+
+        const requestId = crypto.randomBytes(16).toString('hex');
+        const passwordHash = await hashAdminPassword(newPassword);
+
+        adminPasswordChangeRequests.set(requestId, {
+            codeHash: sha256(code),
+            passwordHash,
+            sessionToken,
+            expiresAt: Date.now() + ADMIN_PASSWORD_CHANGE_TTL_MS,
+            tries: 0
+        });
+
+        const telegramResult = await telegramApi('sendMessage', {
+            chat_id: ADMIN_TELEGRAM_ID,
+            text:
+                'Uy-Joy admin parolini o‘zgartirish kodi: ' + code +
+                '\nKod 60 soniya amal qiladi. Agar bu so‘rov sizdan bo‘lmasa, uni tasdiqlamang.'
+        });
+
+        if (!telegramResult) {
+            adminPasswordChangeRequests.delete(requestId);
+
+            return sendJson(res, 502, {
+                ok: false,
+                error: 'Telegramga kod yuborilmadi. Qayta urinib ko‘ring.'
+            });
+        }
+
+        return sendJson(res, 200, {
+            ok: true,
+            requestId,
+            expiresInSeconds: 60
+        });
+    } catch (error) {
+        console.error('Admin parol almashtirish kodi xatosi:', error);
+
+        return sendJson(res, 500, {
+            ok: false,
+            error: 'Kod yuborishda server xatosi yuz berdi.'
+        });
+    }
+}
+
+if (req.method === 'POST' && url === '/api/admin/password/change/verify') {
+    if (!isAdminHeader(req)) {
+        return sendJson(res, 401, {
+            ok: false,
+            error: 'Admin sessiyasi tugagan. Qaytadan kiring.'
+        });
+    }
+
+    try {
+        const body = parseJsonObject(await readBody(req));
+        const requestId = String(body.requestId || '');
+        const code = String(body.code || '');
+
+        if (!/^[a-f0-9]{32}$/i.test(requestId) ||
+            !/^\d{6}$/.test(code)) {
+            return sendJson(res, 400, {
+                ok: false,
+                error: 'So‘rov ID yoki tasdiqlash kodi noto‘g‘ri.'
+            });
+        }
+
+        const request = adminPasswordChangeRequests.get(requestId);
+        const sessionToken = String(
+            req.headers['x-admin-session'] || ''
+        );
+
+        if (!request || request.sessionToken !== sessionToken) {
+            return sendJson(res, 400, {
+                ok: false,
+                error: 'So‘rov topilmadi. Yangi kod so‘rang.'
+            });
+        }
+
+        if (Date.now() >= request.expiresAt) {
+            adminPasswordChangeRequests.delete(requestId);
+
+            return sendJson(res, 400, {
+                ok: false,
+                error: 'Kod muddati tugadi. Yangi kod so‘rang.'
+            });
+        }
+
+        request.tries += 1;
+
+        const suppliedHash = sha256(code);
+        const codeMatches = crypto.timingSafeEqual(
+            suppliedHash,
+            request.codeHash
+        );
+
+        if (!codeMatches) {
+            if (request.tries >= ADMIN_PASSWORD_CHANGE_MAX_TRIES) {
+                adminPasswordChangeRequests.delete(requestId);
+
+                return sendJson(res, 400, {
+                    ok: false,
+                    error: 'Uchta xato urinish. Yangi kod so‘rang.'
+                });
+            }
+
+            return sendJson(res, 400, {
+                ok: false,
+                error: 'Kod noto‘g‘ri. Qayta tekshiring.'
+            });
+        }
+
+        await pool.query(`
+            INSERT INTO admin_credentials (id, password_hash, updated_at)
+            VALUES (1, $1, NOW())
+            ON CONFLICT (id)
+            DO UPDATE SET
+                password_hash = EXCLUDED.password_hash,
+                updated_at = NOW()
+        `, [request.passwordHash]);
+
+        adminPasswordChangeRequests.delete(requestId);
+
+        // Parol almashtirilgach, barcha avvalgi sessiyalar bekor qilinadi.
+        adminSessions.clear();
+        adminPasswordChangeRequests.clear();
+
+        return sendJson(res, 200, {
+            ok: true,
+            message: 'Parol muvaffaqiyatli o‘zgartirildi.'
+        });
+    } catch (error) {
+        console.error('Admin parolini saqlash xatosi:', error);
+
+        return sendJson(res, 500, {
+            ok: false,
+            error: 'Yangi parolni saqlashda server xatosi yuz berdi.'
+        });
+    }
+}
+
         // =================================================
         // ADMIN LOGOUT
         // =================================================
