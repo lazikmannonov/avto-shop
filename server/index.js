@@ -217,6 +217,17 @@ async function initDatabase() {
         ON admin_session_history (login_at DESC)
     `);
 
+    
+    await pool.query(`
+        ALTER TABLE admin_session_history
+        ADD COLUMN IF NOT EXISTS admin_name TEXT
+    `);
+
+    await pool.query(`
+        ALTER TABLE admin_session_history
+        ADD COLUMN IF NOT EXISTS phone TEXT
+    `);
+
     console.log('PostgreSQL database tayyor');
 }
 
@@ -638,20 +649,20 @@ async function recordDailyStat(type) {
 // ADMIN: PAROL + TELEGRAM KOD + SESSIYA
 // =====================================================
 
-const MAX_FAILS = 3;                       // IP uchun xato urinishlar
-const BLOCK_MS = 15 * 60 * 1000;           // blok muddati: 15 daqiqa
-const GLOBAL_MAX_FAILS = 12;               // barcha IP'lar bo'yicha umumiy chegara
-const CODE_TTL_MS = 5 * 60 * 1000;         // Telegram kodi: 5 daqiqa
-const CODE_MAX_TRIES = 3;                  // bitta kodga urinishlar
-const CODE_RESEND_MS = 30 * 1000;          // kodni qayta so'rash oralig'i
-const SESSION_TTL_MS = 8 * 60 * 60 * 1000; // sessiya: 8 soat
+const MAX_FAILS = 3;                       
+const BLOCK_MS = 15 * 60 * 1000;           
+const GLOBAL_MAX_FAILS = 12;               
+const CODE_TTL_MS = 60 * 1000;       
+const CODE_MAX_TRIES = 3;                  
+const CODE_RESEND_MS = 30 * 1000;          
+const SESSION_TTL_MS = 8 * 60 * 60 * 1000; 
 
-const failedAttempts = new Map();          // ip -> { count, first, blockedUntil }
+const failedAttempts = new Map();        
 let globalFails = [];
 let globalBlockedUntil = 0;
 
-const adminLoginRequests = new Map();      // requestId -> { codeHash, createdAt, tries, ip, name }
-const adminSessions = new Map();           // token -> { expiresAt }
+const adminLoginRequests = new Map();     
+const adminSessions = new Map();           
 
 const UNAUTHORIZED = {
     error: 'Ruxsat yo‘q yoki sessiya muddati tugagan. Qaytadan kiring.'
@@ -1963,17 +1974,30 @@ const server = http.createServer(async (req, res) => {
                 });
             }
 
-            // Ism istalgan bo'lishi mumkin, faqat bo'sh bo'lmasin
-            const name = cleanAdminName(body.name);
-            const password = normalizePassword(body.password);
+           const name = cleanAdminName(body.name);
 
-            if (!name) {
-                return sendJson(res, 400, { error: 'Ismingizni kiriting.' });
-            }
+          const phoneInput = String(body.phone || '').trim();
+          const phone = phoneInput.replace(/[\s()-]/g, '');
 
-            if (!password) {
-                return sendJson(res, 400, { error: 'Parolni kiriting.' });
-            }
+        const password = normalizePassword(body.password);
+
+        if (!name) {
+      return sendJson(res, 400, {
+        error: 'Ismingizni kiriting.'
+    });
+}
+
+if (!/^\+?[0-9]{9,15}$/.test(phone)) {
+    return sendJson(res, 400, {
+        error: 'Telefon raqamini to‘g‘ri kiriting.'
+    });
+}
+
+if (!password) {
+    return sendJson(res, 400, {
+        error: 'Parolni kiriting.'
+    });
+}
 
            if (!(await passwordMatches(password))) {
                
@@ -2030,24 +2054,25 @@ const server = http.createServer(async (req, res) => {
             const code = String(crypto.randomInt(0, 1000000)).padStart(6, '0');
             const requestId = crypto.randomBytes(16).toString('hex');
 
-            adminLoginRequests.set(requestId, {
-                codeHash: sha256(code),
-                createdAt: now,
-                tries: 0,
-                ip,
-                name
-            });
-
-            const sent = await telegramApi('sendMessage', {
+           adminLoginRequests.set(requestId, {
+                     codeHash: sha256(code),
+                     createdAt: now,
+                     tries: 0,
+                     ip,
+                     name,
+                     phone
+               });
+            
+            ait telegramApi('sendMessage', {
                 chat_id: ADMIN_TELEGRAM_ID,
-                text:
-                    '🔐 Uy-Joy admin paneliga kirish kodi\n\n' +
-                    'Kod: ' + code + '\n\n' +
-                    'Ism: ' + name + '\n' +
-                    'IP: ' + ip + '\n' +
-                    '⏳ Kod 5 daqiqa amal qiladi va bir marta ishlaydi.\n\n' +
-                    'Agar bu siz bo‘lmasangiz, kodni hech kimga bermang.'
-            });
+               text:
+                     '🔐 Uy-Joy admin paneliga kirish kodi\n\n' +
+                     'Kod: ' + code + '\n\n' +
+                     'Ism: ' + name + '\n' +
+                     'Telefon: ' + phone + '\n' +
+                     'IP: ' + ip + '\n' +
+                     '⏳ Kod 60 sekund amal qiladi va bir marta ishlaydi.\n\n' +
+                     'Agar bu siz bo‘lmasangiz, kodni hech kimga bermang.'
 
             if (!sent) {
 
@@ -2178,17 +2203,25 @@ const expiresAt = Date.now() + SESSION_TTL_MS;
 const sessionId = crypto.randomBytes(16).toString('hex');
 
 try {
-    await pool.query(
-        `INSERT INTO admin_session_history
-            (session_id, login_at, expires_at, status)
-         VALUES ($1, NOW(), $2, 'active')`,
-        [sessionId, new Date(expiresAt)]
-    );
+   await pool.query(
+    `INSERT INTO admin_session_history
+        (session_id, admin_name, phone, login_at, expires_at, status)
+     VALUES ($1, $2, $3, NOW(), $4, 'active')`,
+    [
+        sessionId,
+        request.name,
+        request.phone,
+        new Date(expiresAt)
+    ]
+);
 
-    adminSessions.set(sessionToken, {
-        expiresAt,
-        sessionId
-    });
+adminSessions.set(sessionToken, {
+    expiresAt,
+    sessionId,
+    adminName: request.name,
+    phone: request.phone
+});
+    
 } catch (error) {
     console.error('Admin sessiyasini tarixga yozish xatosi:', error);
 
@@ -2567,12 +2600,13 @@ if (url === '/api/admin/logout' && req.method === 'POST') {
                 `);
 
                 const recent = await pool.query(`
-                    SELECT
-                        id,
-                        login_at,
-                        logout_at,
-                        expires_at,
-                        status
+                   SELECT
+                         id,
+                         admin_name,
+                         phone,
+                         login_at,
+                         expires_at,
+                         status
                     FROM admin_session_history
                     ORDER BY login_at DESC
                     LIMIT 50
@@ -2589,11 +2623,14 @@ if (url === '/api/admin/logout' && req.method === 'POST') {
 
                 if (activeIds.length > 0) {
                     const activeResult = await pool.query(`
-                        SELECT
-                            id,
-                            login_at,
-                            expires_at,
-                            status
+                       SELECT
+                           id,
+                           admin_name,
+                           phone,
+                           login_at,
+                           logout_at,
+                           expires_at,
+                           status
                         FROM admin_session_history
                         WHERE session_id = ANY($1::text[])
                           AND status = 'active'
