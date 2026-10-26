@@ -2,6 +2,38 @@ const http = require('http');
 const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
+const { promisify } = require('node:util');
+const scryptAsync = promisify(crypto.scrypt);
+
+const adminPasswordChangeRequests = new Map();
+
+const ADMIN_PASSWORD_CHANGE_TTL_MS = 60 * 1000;
+const ADMIN_PASSWORD_CHANGE_MAX_TRIES = 3;
+
+async function hashAdminPassword(password) {
+    const salt = crypto.randomBytes(16).toString('hex');
+    const derivedKey = await scryptAsync(password, salt, 64);
+
+    return `${salt}:${derivedKey.toString('hex')}`;
+}
+
+async function verifyAdminPasswordHash(password, storedHash) {
+    try {
+        const [salt, hashHex] = String(storedHash).split(':');
+
+        if (!salt || !/^[a-f0-9]{128}$/i.test(hashHex || '')) {
+            return false;
+        }
+
+        const expected = Buffer.from(hashHex, 'hex');
+        const actual = await scryptAsync(password, salt, 64);
+
+        return expected.length === actual.length &&
+            crypto.timingSafeEqual(expected, actual);
+    } catch {
+        return false;
+    }
+}
 const { Pool } = require('pg');
 
 // =====================================================
@@ -147,6 +179,13 @@ async function initDatabase() {
             address TEXT DEFAULT 'Toshkent, O''zbekiston'
         )
     `);
+    await pool.query(`
+    CREATE TABLE IF NOT EXISTS admin_credentials (
+        id INTEGER PRIMARY KEY CHECK (id = 1),
+        password_hash TEXT NOT NULL,
+        updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    )
+`);
 
     await pool.query(`
         INSERT INTO site_settings (id, phone, telegram, whatsapp, instagram, address)
@@ -618,17 +657,24 @@ function normalizePassword(value) {
     return String(value).trim();
 }
 
-// Uzunlikdan qat'i nazar bir xil vaqtda solishtiriladi
-function passwordMatches(value) {
+async function passwordMatches(value) {
+    const password = normalizePassword(value);
 
-    const input = normalizePassword(value);
+    if (!password) return false;
 
-    if (!input) {
-        return false;
+    const result = await pool.query(
+        'SELECT password_hash FROM admin_credentials WHERE id = 1'
+    );
+
+    if (result.rows.length > 0) {
+        return verifyAdminPasswordHash(
+            password,
+            result.rows[0].password_hash
+        );
     }
 
     return crypto.timingSafeEqual(
-        sha256(input),
+        sha256(password),
         sha256(ADMIN_PASSWORD)
     );
 }
@@ -1886,8 +1932,8 @@ const server = http.createServer(async (req, res) => {
                 return sendJson(res, 400, { error: 'Parolni kiriting.' });
             }
 
-            if (!passwordMatches(password)) {
-
+           if (!(await passwordMatches(password))) {
+               
                 registerFail(req);
 
                 const remaining = blockRemainingMs(req);
