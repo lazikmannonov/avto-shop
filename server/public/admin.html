@@ -677,6 +677,95 @@
         </div>
     </div>
 
+<div class="settings-item">
+  <div class="settings-head">
+    <div class="settings-icon">
+      <svg class="icon">
+        <use href="#i-settings"></use>
+      </svg>
+    </div>
+    <div>
+      <div class="settings-title">Parolni o‘zgartirish</div>
+      <div class="settings-sub">
+        Yangi parol Telegram kodi bilan tasdiqlanadi.
+        Kod 60 soniya amal qiladi.
+      </div>
+    </div>
+  </div>
+
+  <input
+    class="input"
+    id="adminNewPassword"
+    type="password"
+    minlength="12"
+    maxlength="200"
+    autocomplete="new-password"
+    placeholder="Yangi parol (kamida 12 belgi)"
+  >
+
+  <input
+    class="input"
+    id="adminConfirmPassword"
+    type="password"
+    minlength="12"
+    maxlength="200"
+    autocomplete="new-password"
+    placeholder="Yangi parolni qayta kiriting"
+    style="margin-top:10px"
+  >
+
+  <div class="form-actions">
+    <button
+      class="main-btn"
+      type="button"
+      id="adminPasswordRequestBtn"
+      onclick="requestAdminPasswordChangeCode()"
+    >
+      Telegramga kod yuborish
+    </button>
+  </div>
+
+  <div id="adminPasswordCodeArea" hidden style="margin-top:12px">
+    <input
+      class="input"
+      id="adminPasswordChangeCode"
+      type="text"
+      inputmode="numeric"
+      pattern="[0-9]{6}"
+      maxlength="6"
+      autocomplete="one-time-code"
+      placeholder="Telegramdagi 6 xonali kod"
+    >
+
+    <div
+      class="settings-sub"
+      id="adminPasswordCodeTimer"
+      style="margin-top:8px"
+    >
+      Kod 60 soniya amal qiladi.
+    </div>
+
+    <div class="form-actions">
+      <button
+        class="main-btn"
+        type="button"
+        id="adminPasswordVerifyBtn"
+        onclick="verifyAdminPasswordChangeCode()"
+      >
+        Kodni tasdiqlash va parolni saqlash
+      </button>
+    </div>
+  </div>
+
+  <div
+    class="settings-sub"
+    id="adminPasswordChangeMessage"
+    role="status"
+    aria-live="polite"
+    style="margin-top:10px"
+  ></div>
+</div>
+
     <div class="form-actions">
         <button class="secondary-btn" type="button" onclick="logoutAdmin()">
             <svg class="icon icon-sm"><use href="#i-x"></use></svg>
@@ -3585,6 +3674,144 @@ document.addEventListener("click",event=>{
     }
 
 });
+    
+let adminPasswordChangeRequestId = '';
+let adminPasswordChangeExpiresAt = 0;
+let adminPasswordChangeTimer = null;
+
+async function requestAdminPasswordChangeCode() {
+  const newPassword = document.getElementById('adminNewPassword').value;
+  const confirmPassword = document.getElementById('adminConfirmPassword').value;
+  const message = document.getElementById('adminPasswordChangeMessage');
+  const btn = document.getElementById('adminPasswordRequestBtn');
+
+  if (newPassword.length < 12) {
+    message.textContent = 'Yangi parol kamida 12 ta belgidan iborat bo‘lsin.';
+    return;
+  }
+
+  if (newPassword !== confirmPassword) {
+    message.textContent = 'Yangi parollar bir xil emas.';
+    return;
+  }
+
+  btn.disabled = true;
+  message.textContent = 'Telegramga kod yuborilmoqda...';
+
+  try {
+    const response = await fetch('/api/admin/password/change/request', {
+      method: 'POST',
+      headers: adminHeaders(),
+      body: JSON.stringify({
+        newPassword,
+        confirmPassword
+      })
+    });
+
+    const data = await response.json().catch(() => ({}));
+
+    if (!response.ok || !data.ok) {
+      throw new Error(data.error || 'Kod yuborilmadi.');
+    }
+
+    adminPasswordChangeRequestId = data.requestId;
+    adminPasswordChangeExpiresAt = Date.now() + 60000;
+
+    document.getElementById('adminPasswordCodeArea').hidden = false;
+    document.getElementById('adminPasswordChangeCode').value = '';
+
+    message.textContent =
+      'Kod Telegramga yuborildi. 60 soniya ichida kiriting.';
+
+    if (adminPasswordChangeTimer) {
+      clearInterval(adminPasswordChangeTimer);
+    }
+
+    const timer = document.getElementById('adminPasswordCodeTimer');
+
+    adminPasswordChangeTimer = setInterval(() => {
+      const seconds = Math.max(
+        0,
+        Math.ceil((adminPasswordChangeExpiresAt - Date.now()) / 1000)
+      );
+
+      timer.textContent = seconds > 0
+        ? `Kod muddati: ${seconds} soniya`
+        : 'Kod muddati tugadi. Yangi kod so‘rang.';
+
+      if (seconds <= 0) {
+        clearInterval(adminPasswordChangeTimer);
+        adminPasswordChangeTimer = null;
+        adminPasswordChangeRequestId = '';
+      }
+    }, 250);
+
+  } catch (error) {
+    message.textContent = error.message || 'Xatolik yuz berdi.';
+  } finally {
+    btn.disabled = false;
+  }
+}
+
+
+async function verifyAdminPasswordChangeCode() {
+  const message = document.getElementById('adminPasswordChangeMessage');
+  const code = document.getElementById('adminPasswordChangeCode').value.trim();
+  const btn = document.getElementById('adminPasswordVerifyBtn');
+
+  if (
+    !adminPasswordChangeRequestId ||
+    Date.now() >= adminPasswordChangeExpiresAt
+  ) {
+    message.textContent = 'Kod muddati tugadi. Yangi kod so‘rang.';
+    return;
+  }
+
+  if (!/^\d{6}$/.test(code)) {
+    message.textContent = 'Telegramdagi 6 xonali kodni kiriting.';
+    return;
+  }
+
+  btn.disabled = true;
+  message.textContent = 'Kod tekshirilmoqda...';
+
+  try {
+    const response = await fetch('/api/admin/password/change/verify', {
+      method: 'POST',
+      headers: adminHeaders(),
+      body: JSON.stringify({
+        requestId: adminPasswordChangeRequestId,
+        code
+      })
+    });
+
+    const data = await response.json().catch(() => ({}));
+
+    if (!response.ok || !data.ok) {
+      throw new Error(data.error || 'Kod tasdiqlanmadi.');
+    }
+
+    adminPasswordChangeRequestId = '';
+
+    if (adminPasswordChangeTimer) {
+      clearInterval(adminPasswordChangeTimer);
+    }
+    adminPasswordChangeTimer = null;
+
+    document.getElementById('adminNewPassword').value = '';
+    document.getElementById('adminConfirmPassword').value = '';
+    document.getElementById('adminPasswordChangeCode').value = '';
+    document.getElementById('adminPasswordCodeArea').hidden = true;
+
+    message.textContent =
+      'Parol muvaffaqiyatli o‘zgartirildi. Keyingi kirishda yangi paroldan foydalaning.';
+
+  } catch (error) {
+    message.textContent = error.message || 'Xatolik yuz berdi.';
+  } finally {
+    btn.disabled = false;
+  }
+}
 
 /* =========================================================
    START
