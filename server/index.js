@@ -199,6 +199,23 @@ async function initDatabase() {
         )
         ON CONFLICT (id) DO NOTHING
     `);
+    
+    await pool.query(`
+        CREATE TABLE IF NOT EXISTS admin_session_history (
+            id BIGSERIAL PRIMARY KEY,
+            session_id TEXT UNIQUE NOT NULL,
+            login_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+            logout_at TIMESTAMPTZ,
+            expires_at TIMESTAMPTZ NOT NULL,
+            status TEXT NOT NULL DEFAULT 'active'
+                CHECK (status IN ('active', 'logged_out', 'expired'))
+        )
+    `);
+
+    await pool.query(`
+        CREATE INDEX IF NOT EXISTS idx_admin_session_history_login_at
+        ON admin_session_history (login_at DESC)
+    `);
 
     console.log('PostgreSQL database tayyor');
 }
@@ -789,12 +806,25 @@ function isAdminHeader(req) {
         return false;
     }
 
-    if (Date.now() >= session.expiresAt) {
+  
+if (Date.now() >= session.expiresAt) {
+    adminSessions.delete(token);
 
-        adminSessions.delete(token);
+    pool.query(
+        `UPDATE admin_session_history
+         SET status = 'expired'
+         WHERE session_id = $1
+           AND status = 'active'`,
+        [session.sessionId]
+    ).catch(error => {
+        console.error(
+            'Admin sessiyasi tugaganini saqlash xatosi:',
+            error
+        );
+    });
 
-        return false;
-    }
+    return false;
+}
 
     return true;
 }
@@ -826,12 +856,25 @@ setInterval(() => {
         }
     }
 
-    for (const [token, session] of adminSessions) {
+   
+for (const [token, session] of adminSessions) {
+    if (now >= session.expiresAt) {
+        adminSessions.delete(token);
 
-        if (now >= session.expiresAt) {
-            adminSessions.delete(token);
-        }
+        pool.query(
+            `UPDATE admin_session_history
+             SET status = 'expired'
+             WHERE session_id = $1
+               AND status = 'active'`,
+            [session.sessionId]
+        ).catch(error => {
+            console.error(
+                'Muddati tugagan admin sessiyasini saqlash xatosi:',
+                error
+            );
+        });
     }
+}
 
 }, 60 * 1000).unref();
 
@@ -2128,10 +2171,32 @@ const server = http.createServer(async (req, res) => {
             adminLoginRequests.delete(requestId);
             failedAttempts.delete(getIp(req));
 
-            const sessionToken = crypto.randomBytes(32).toString('hex');
-            const expiresAt = Date.now() + SESSION_TTL_MS;
+            
+const sessionToken = crypto.randomBytes(32).toString('hex');
+const expiresAt = Date.now() + SESSION_TTL_MS;
 
-            adminSessions.set(sessionToken, { expiresAt });
+const sessionId = crypto.randomBytes(16).toString('hex');
+
+try {
+    await pool.query(
+        `INSERT INTO admin_session_history
+            (session_id, login_at, expires_at, status)
+         VALUES ($1, NOW(), $2, 'active')`,
+        [sessionId, new Date(expiresAt)]
+    );
+
+    adminSessions.set(sessionToken, {
+        expiresAt,
+        sessionId
+    });
+} catch (error) {
+    console.error('Admin sessiyasini tarixga yozish xatosi:', error);
+
+    return sendJson(res, 500, {
+        ok: false,
+        error: 'Admin sessiyasini yaratishda xatolik yuz berdi.'
+    });
+}
 
             return sendJson(res, 200, {
                 ok: true,
@@ -2403,7 +2468,42 @@ if (req.method === 'POST' && url === '/api/admin/password/change/verify') {
         // ADMIN LOGOUT
         // =================================================
 
-        if (url === '/api/admin/logout' && req.method === 'POST') {
+      
+if (url === '/api/admin/logout' && req.method === 'POST') {
+    const token = String(
+        req.headers['x-admin-session'] || ''
+    ).trim();
+
+    if (token) {
+        const session = adminSessions.get(token);
+
+        if (session) {
+            try {
+                await pool.query(
+                    `UPDATE admin_session_history
+                     SET logout_at = NOW(), status = 'logged_out'
+                     WHERE session_id = $1
+                       AND status = 'active'`,
+                    [session.sessionId]
+                );
+            } catch (error) {
+                console.error(
+                    'Admin chiqish tarixini saqlash xatosi:',
+                    error
+                );
+
+                return sendJson(res, 500, {
+                    ok: false,
+                    error: 'Chiqish tarixini saqlashda xatolik.'
+                });
+            }
+
+            adminSessions.delete(token);
+        }
+    }
+
+    return sendJson(res, 200, { ok: true });
+}
 
             const token = String(
                 req.headers['x-admin-session'] || ''
@@ -2432,6 +2532,96 @@ if (req.method === 'POST' && url === '/api/admin/password/change/verify') {
                 ok: true,
                 expiresAt: adminSessions.get(token).expiresAt
             });
+        }
+    
+        // =================================================
+        // ADMIN: SESSIYALAR TARIXI VA STATISTIKASI
+        // =================================================
+
+        if (
+            url === '/api/admin/session-history' &&
+            req.method === 'GET'
+        ) {
+            if (!isAdminHeader(req)) {
+                return sendJson(res, 401, UNAUTHORIZED);
+            }
+
+            try {
+                // Muddati o'tgan yozuvlarni yangilash.
+                await pool.query(`
+                    UPDATE admin_session_history
+                    SET status = 'expired'
+                    WHERE status = 'active'
+                      AND expires_at <= NOW()
+                `);
+
+                const counts = await pool.query(`
+                    SELECT
+                        COUNT(*)::int AS total_logins,
+                        COUNT(*) FILTER (
+                            WHERE
+                                (login_at AT TIME ZONE 'Asia/Tashkent')::date =
+                                (NOW() AT TIME ZONE 'Asia/Tashkent')::date
+                        )::int AS today_logins
+                    FROM admin_session_history
+                `);
+
+                const recent = await pool.query(`
+                    SELECT
+                        id,
+                        login_at,
+                        logout_at,
+                        expires_at,
+                        status
+                    FROM admin_session_history
+                    ORDER BY login_at DESC
+                    LIMIT 50
+                `);
+
+                // Haqiqatan ham shu server xotirasida mavjud
+                // bo'lgan sessiyalarni faol deb ko'rsatamiz.
+                const activeIds = [...adminSessions.values()]
+                    .filter(session => session.expiresAt > Date.now())
+                    .map(session => session.sessionId)
+                    .filter(Boolean);
+
+                let activeSessions = [];
+
+                if (activeIds.length > 0) {
+                    const activeResult = await pool.query(`
+                        SELECT
+                            id,
+                            login_at,
+                            expires_at,
+                            status
+                        FROM admin_session_history
+                        WHERE session_id = ANY($1::text[])
+                          AND status = 'active'
+                          AND expires_at > NOW()
+                        ORDER BY login_at DESC
+                    `, [activeIds]);
+
+                    activeSessions = activeResult.rows;
+                }
+
+                return sendJson(res, 200, {
+                    ok: true,
+                    totalLogins: counts.rows[0].total_logins,
+                    todayLogins: counts.rows[0].today_logins,
+                    activeSessions,
+                    recentSessions: recent.rows
+                });
+            } catch (error) {
+                console.error(
+                    'Admin sessiyalari tarixini olish xatosi:',
+                    error
+                );
+
+                return sendJson(res, 500, {
+                    ok: false,
+                    error: 'Sessiyalar tarixini yuklab bo‘lmadi.'
+                });
+            }
         }
 
         // =================================================
