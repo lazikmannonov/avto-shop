@@ -677,7 +677,7 @@
         </div>
     </div>
 
-<div class="settings-item">
+<div class="settings-item" id="adminPasswordChangeSection">
   <div class="settings-head">
     <div class="settings-icon">
       <svg class="icon">
@@ -687,42 +687,71 @@
     <div>
       <div class="settings-title">Parolni o‘zgartirish</div>
       <div class="settings-sub">
-        Yangi parol Telegram kodi bilan tasdiqlanadi.
-        Kod 60 soniya amal qiladi.
+        Avval joriy parolni tasdiqlang, so‘ng yangi parolni o‘rnating.
       </div>
     </div>
   </div>
 
-  <input
-    class="input"
-    id="adminNewPassword"
-    type="password"
-    minlength="12"
-    maxlength="200"
-    autocomplete="new-password"
-    placeholder="Yangi parol (kamida 12 belgi)"
+  <button
+    class="main-btn"
+    type="button"
+    id="adminPasswordStartBtn"
+    onclick="showAdminPasswordChange()"
   >
+    Parolni o‘zgartirish
+  </button>
 
-  <input
-    class="input"
-    id="adminConfirmPassword"
-    type="password"
-    minlength="12"
-    maxlength="200"
-    autocomplete="new-password"
-    placeholder="Yangi parolni qayta kiriting"
-    style="margin-top:10px"
-  >
-
-  <div class="form-actions">
-    <button
-      class="main-btn"
-      type="button"
-      id="adminPasswordRequestBtn"
-      onclick="requestAdminPasswordChangeCode()"
+  <div id="adminCurrentPasswordArea" hidden style="margin-top:12px">
+    <input
+      class="input"
+      id="adminCurrentPassword"
+      type="password"
+      autocomplete="current-password"
+      placeholder="Joriy (eski) parol"
     >
-      Telegramga kod yuborish
-    </button>
+
+    <div class="form-actions">
+      <button
+        class="main-btn"
+        type="button"
+        id="adminCurrentPasswordBtn"
+        onclick="verifyCurrentAdminPassword()"
+      >
+        Eski parolni tasdiqlash
+      </button>
+    </div>
+  </div>
+
+  <div id="adminNewPasswordArea" hidden style="margin-top:12px">
+    <input
+      class="input"
+      id="adminNewPassword"
+      type="password"
+      maxlength="200"
+      autocomplete="new-password"
+      placeholder="Yangi parol"
+    >
+
+    <input
+      class="input"
+      id="adminConfirmPassword"
+      type="password"
+      maxlength="200"
+      autocomplete="new-password"
+      placeholder="Yangi parolni qayta kiriting"
+      style="margin-top:10px"
+    >
+
+    <div class="form-actions">
+      <button
+        class="main-btn"
+        type="button"
+        id="adminPasswordRequestBtn"
+        onclick="requestAdminPasswordChangeCode()"
+      >
+        Telegramga kod yuborish
+      </button>
+    </div>
   </div>
 
   <div id="adminPasswordCodeArea" hidden style="margin-top:12px">
@@ -765,21 +794,7 @@
     style="margin-top:10px"
   ></div>
 </div>
-
-    <div class="form-actions">
-        <button class="secondary-btn" type="button" onclick="logoutAdmin()">
-            <svg class="icon icon-sm"><use href="#i-x"></use></svg>
-            Chiqish
-        </button>
-    </div>
-
-</div>
-
-</div>
-
-</div>
-
-</section>
+    </section>
 
 <!-- ========================= SETTINGS ========================= -->
 
@@ -3679,17 +3694,68 @@ let adminPasswordChangeRequestId = '';
 let adminPasswordChangeExpiresAt = 0;
 let adminPasswordChangeTimer = null;
 
+    
+function showAdminPasswordChange() {
+  document.getElementById('adminCurrentPasswordArea').hidden = false;
+  document.getElementById('adminPasswordStartBtn').hidden = true;
+  document.getElementById('adminCurrentPassword').focus();
+}
+
+async function verifyCurrentAdminPassword() {
+  const currentPassword =
+    document.getElementById('adminCurrentPassword').value;
+    if (!currentPassword) {
+  message.textContent = 'Avval joriy parolni tasdiqlang.';
+  return;
+}
+  const message =
+    document.getElementById('adminPasswordChangeMessage');
+  const btn =
+    document.getElementById('adminCurrentPasswordBtn');
+
+  if (!currentPassword) {
+    message.textContent = 'Joriy parolni kiriting.';
+    return;
+  }
+
+  btn.disabled = true;
+  message.textContent = 'Joriy parol tekshirilmoqda...';
+
+  try {
+    const response = await fetch('/api/admin/password/change/check-current', {
+      method: 'POST',
+      headers: adminHeaders(),
+      body: JSON.stringify({ currentPassword })
+    });
+
+    const data = await response.json().catch(() => ({}));
+
+    if (!response.ok || !data.ok) {
+      throw new Error(data.error || 'Joriy parol noto‘g‘ri.');
+    }
+
+    document.getElementById('adminNewPasswordArea').hidden = false;
+    document.getElementById('adminCurrentPassword').readOnly = true;
+    btn.disabled = true;
+
+    message.textContent = 'Joriy parol tasdiqlandi. Yangi parolni kiriting.';
+  } catch (error) {
+    message.textContent = error.message || 'Xatolik yuz berdi.';
+  } finally {
+    if (document.getElementById('adminNewPasswordArea').hidden) {
+      btn.disabled = false;
+    }
+  }
+}
+
 async function requestAdminPasswordChangeCode() {
   const newPassword = document.getElementById('adminNewPassword').value;
   const confirmPassword = document.getElementById('adminConfirmPassword').value;
   const message = document.getElementById('adminPasswordChangeMessage');
   const btn = document.getElementById('adminPasswordRequestBtn');
-
-  if (newPassword.length < 12) {
-    message.textContent = 'Yangi parol kamida 12 ta belgidan iborat bo‘lsin.';
-    return;
-  }
-
+    const currentPassword =
+  document.getElementById('adminCurrentPassword').value;
+    
   if (newPassword !== confirmPassword) {
     message.textContent = 'Yangi parollar bir xil emas.';
     return;
@@ -3702,10 +3768,11 @@ async function requestAdminPasswordChangeCode() {
     const response = await fetch('/api/admin/password/change/request', {
       method: 'POST',
       headers: adminHeaders(),
-      body: JSON.stringify({
-        newPassword,
-        confirmPassword
-      })
+     body: JSON.stringify({
+  currentPassword,
+  newPassword,
+  confirmPassword
+})
     });
 
     const data = await response.json().catch(() => ({}));
