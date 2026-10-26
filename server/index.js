@@ -7,6 +7,7 @@ if (!ADMIN_PASSWORD) {
         'ADMIN_PASSWORD Render Environment sozlamalarida topilmadi.'
     );
 }
+const crypto = require('node:crypto');
 
 const UNAUTHORIZED = {
     error: 'Ruxsat yo‘q yoki sessiya muddati tugagan. Qaytadan kiring.'
@@ -33,20 +34,19 @@ function normalizePassword(value) {
 }
 
 // Uzunlikdan qat'i nazar bir xil vaqtda solishtiriladi
+ 
 function passwordMatches(value) {
-
     const input = normalizePassword(value);
+    if (!input) return false;
 
-    if (!input) {
+    const expected = activeAdminPasswordHash || sha256(ADMIN_PASSWORD);
+    const actual = sha256(input);
+
+    if (!Buffer.isBuffer(expected) || expected.length !== actual.length) {
         return false;
     }
 
-    const expected = activeAdminPasswordHash || sha256(ADMIN_PASSWORD);
-
-    return crypto.timingSafeEqual(
-        sha256(input),
-        expected
-    );
+    return crypto.timingSafeEqual(actual, expected);
 }
 
 function cleanAdminName(value) {
@@ -195,6 +195,12 @@ setInterval(() => {
             adminLoginRequests.delete(id);
         }
     }
+
+    for (const [id, request] of adminPasswordChangeRequests) {
+    if (now - request.createdAt >= ADMIN_PASSWORD_CHANGE_TTL_MS) {
+        adminPasswordChangeRequests.delete(id);
+    }
+}
 
     for (const [token, session] of adminSessions) {
 
