@@ -1498,7 +1498,27 @@ async function loginAdmin(event) {
     await requestLoginCode();
 }
 
-/* 1-bosqich */
+    
+function formatLoginPhone(input) {
+    let digits = input.value.replace(/\D/g, "");
+
+    // +998 prefiksini ajratish
+    if (digits.startsWith("998")) {
+        digits = digits.slice(3);
+    }
+
+    // Faqat 9 ta raqamga ruxsat berish
+    digits = digits.slice(0, 9);
+
+    input.value = "+998 " + digits;
+
+    // Kursorni oxiriga olib borish
+    input.setSelectionRange(
+        input.value.length,
+        input.value.length
+    );
+}
+
 async function requestLoginCode() {
 
    const name = $("loginName")
@@ -1518,17 +1538,28 @@ const password = $("loginPassword")
         $("loginName")?.focus();
         return;
     }
-    if (!phone) {
-    setLoginMessage("Telefon raqamingizni kiriting.");
-    $("loginPhone")?.focus();
-    return;
-}
+   
+const phoneInput = $("loginPhone");
 
-const normalizedPhone = phone.replace(/[\s()-]/g, "");
+const enteredDigits = phoneInput
+    ? phoneInput.value.replace(/\D/g, "")
+    : "";
 
-if (!/^\+?[0-9]{9,15}$/.test(normalizedPhone)) {
-    setLoginMessage("Telefon raqamini to‘g‘ri kiriting.");
-    $("loginPhone")?.focus();
+const normalizedPhone = "+998" + (
+    enteredDigits.startsWith("998")
+        ? enteredDigits.slice(3)
+        : enteredDigits
+);
+
+const localNumber = normalizedPhone.slice(4);
+
+if (!/^998[0-9]{9}$/.test(
+    normalizedPhone.replace(/^\+/, "")
+)) {
+    setLoginMessage(
+        "Telefon raqamini to‘liq kiriting: +998 dan keyin 9 ta raqam kerak."
+    );
+    phoneInput?.focus();
     return;
 }
 
