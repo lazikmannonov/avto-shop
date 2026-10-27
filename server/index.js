@@ -133,10 +133,22 @@ async function initDatabase() {
         "phone TEXT DEFAULT ''"
     ];
 
-    for (const column of carColumns) {
+       for (const column of carColumns) {
         await pool.query(
             `ALTER TABLE cars ADD COLUMN IF NOT EXISTS ${column}`
         );
+    }
+
+    const priceType = await pool.query(`
+        SELECT data_type
+        FROM information_schema.columns
+        WHERE table_name = 'cars'
+          AND column_name = 'price'
+    `);
+
+    if (priceType.rows[0] && priceType.rows[0].data_type === 'integer') {
+        await pool.query(`ALTER TABLE cars ALTER COLUMN price TYPE BIGINT`);
+        console.log('cars.price ustuni BIGINT ga o‘zgartirildi');
     }
 
     await pool.query(`
@@ -148,24 +160,13 @@ async function initDatabase() {
     `);
 
     await pool.query(`
-        const priceType = await pool.query(`
-        SELECT data_type
-        FROM information_schema.columns
-        WHERE table_name = 'cars'
-          AND column_name = 'price'
-    `);
-
-      if (priceType.rows[0] && priceType.rows[0].data_type === 'integer') {
-        await pool.query(`ALTER TABLE cars ALTER COLUMN price TYPE BIGINT`);
-        console.log('cars.price ustuni BIGINT ga o‘zgartirildi');
-      }
         CREATE TABLE IF NOT EXISTS stats (
             id INTEGER PRIMARY KEY DEFAULT 1,
             views INTEGER DEFAULT 0,
             calls INTEGER DEFAULT 0
         )
     `);
-
+    
     await pool.query(`
         INSERT INTO stats (id, views, calls)
         VALUES (1, 0, 0)
@@ -297,7 +298,8 @@ function sendFile(res, name) {
 
 // Bo'lak-bo'lak kelgan baytlar yig'ilib, oxirida bir marta UTF-8 ga o'giriladi
 // (aks holda o'zbek/rus harflari bo'lak chegarasida buzilishi mumkin edi)
-function readBody(req, limit = 30000000) {
+
+function readBody(req, limit = 36000000) {
 
     return new Promise((resolve, reject) => {
 
@@ -318,8 +320,6 @@ function readBody(req, limit = 30000000) {
                 finished = true;
 
                 reject(new UserError("Ma'lumot juda katta"));
-
-                req.destroy();
 
                 return;
             }
@@ -740,7 +740,8 @@ function getIp(req) {
     const fwd = req.headers['x-forwarded-for'];
 
     if (fwd) {
-        return String(fwd).split(',')[0].trim();
+       const parts = String(fwd).split(',').map(s => s.trim()).filter(Boolean);
+        return parts[parts.length - 1];
     }
 
     return req.socket.remoteAddress || 'unknown';
@@ -2317,10 +2318,10 @@ if (!currentPassword ||
 }
 
         
-if (newPassword.length < 1 || newPassword.length > 200) {
+if (newPassword.length < 8 || newPassword.length > 200) {
     return sendJson(res, 400, {
         ok: false,
-        error: 'Yangi parol 1–200 ta belgidan iborat bo‘lishi kerak.'
+        error: 'Yangi parol 8–200 ta belgidan iborat bo‘lishi kerak.'
     });
 }
 
