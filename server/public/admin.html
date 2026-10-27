@@ -388,33 +388,41 @@
 
 <div class="dashboard-grid">
 
-<div class="panel">
+    <!-- 1. Kirgan foydalanuvchilar -->
+    <div class="panel">
 
-    <div class="panel-header">
-        <div class="panel-title">Kirgan foydalanuvchilar</div>
-    </div>
+        <div class="panel-header">
+            <div class="panel-title">Kirgan foydalanuvchilar</div>
+        </div>
 
-    <div class="panel-body">
+        <div class="panel-body">
 
-        <div class="stats-grid" style="grid-template-columns:repeat(2,minmax(0,1fr));margin-bottom:18px">
+            <div class="stats-grid" style="grid-template-columns:repeat(2,minmax(0,1fr));margin-bottom:18px">
 
-            <div class="stat-card">
-                <div class="stat-value" id="dashboardTotalUsers">0</div>
-                <div class="stat-label">Jami foydalanuvchilar</div>
+                <div class="stat-card">
+                    <div class="stat-value" id="dashboardTotalUsers">0</div>
+                    <div class="stat-label">Jami kirishlar</div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-value" id="dashboardTodayLogins">0</div>
+                    <div class="stat-label">Bugungi kirishlar</div>
+                </div>
+
             </div>
 
-            <div class="stat-card">
-                <div class="stat-value" id="dashboardTodayLogins">0</div>
-                <div class="stat-label">Bugungi kirishlar</div>
-            </div>
+            <div id="dashboardRecentUsers"></div>
 
         </div>
 
-        <div id="dashboardRecentUsers"></div>
-
     </div>
 
-</div>
+    <!-- 2. Faollik -->
+    <div class="panel">
+
+        <div class="panel-header">
+            <div class="panel-title">Faollik</div>
+        </div>
 
         <div class="panel-body">
             <div class="activity-list">
@@ -448,19 +456,23 @@
 
     </div>
 
+    <!-- 3. 7 kunlik statistika -->
     <div class="panel">
+
         <div class="panel-header">
             <div class="panel-title">7 kunlik statistika</div>
         </div>
+
         <div class="panel-body">
             <div class="chart" id="dailyChart"></div>
         </div>
+
     </div>
 
 </div>
 
 </section>
-
+    
 <!-- ========================= ADD / EDIT ========================= -->
 
 <section class="page" id="page-add">
@@ -833,6 +845,9 @@
     aria-live="polite"
     style="margin-top:10px"
   ></div>
+</div>
+    </div>
+</div>
 </div>
     </section>
 
@@ -1232,7 +1247,7 @@ function setLoginMessage(text,kind){
 
 function setLoginDisabled(disabled){
 
-    ["loginName","loginPassword","loginCode","loginButton","loginEye","loginBackBtn"]
+    ["loginName","loginPhone","loginPassword","loginCode","loginButton","loginEye","loginBackBtn"]
         .forEach(id=>{
             const el = $(id);
             if(el){
@@ -1287,7 +1302,7 @@ function showLoginStep(step){
     $("loginSub").textContent =
         loginStep === 1
             ? "Ismingiz va admin parolini kiriting. Telegram orqali 6 xonali kod yuboriladi."
-            : "Telegram’ga kelgan 6 xonali kodni kiriting. Kod 5 daqiqa amal qiladi.";
+            : "Telegram’ga kelgan 6 xonali kodni kiriting. Kod 60 soniya amal qiladi.";
 
     setLoginBusy(false);
 
@@ -1580,7 +1595,7 @@ if (!/^\+?[0-9]{9,15}$/.test(normalizedPhone)) {
         showLoginStep(2);
 
         setLoginMessage(
-            "Kod Telegram’ga yuborildi. U 5 daqiqa amal qiladi.",
+            "Kod Telegram’ga yuborildi. U 60 soniya amal qiladi.",
             "warn"
         );
 
@@ -3762,7 +3777,8 @@ async function loadAdminSessionHistory() {
     }
 
     // Sana-vaqtni ko‘rsatish
-    function formatSessionDate(value) {
+    
+       function formatSessionDate(value) {
         if (!value) return '—';
 
         const date = new Date(value);
@@ -3775,7 +3791,8 @@ async function loadAdminSessionHistory() {
             month: '2-digit',
             year: 'numeric',
             hour: '2-digit',
-            minute: '2-digit'
+            minute: '2-digit',
+            second: '2-digit'
         });
     }
 
@@ -3860,10 +3877,17 @@ async function loadAdminSessionHistory() {
                     expired: 'Muddati tugagan'
                 };
 
-                details.textContent =
-                    formatSessionDate(session.login_at) +
-                    ' · ' +
-                    (statusLabels[session.status] || 'Noma’lum');
+                let line = 'Kirdi: ' + formatSessionDate(session.login_at);
+
+                if (session.logout_at) {
+                    line += ' · Chiqdi: ' + formatSessionDate(session.logout_at);
+                } else if (session.status === 'expired') {
+                    line += ' · Muddati tugadi: ' + formatSessionDate(session.expires_at);
+                }
+
+                line += ' · ' + (statusLabels[session.status] || 'Noma’lum');
+
+                details.textContent = line;
 
                 item.append(title, details);
                 recentList.appendChild(item);
@@ -3959,10 +3983,6 @@ function showAdminPasswordChange() {
 async function verifyCurrentAdminPassword() {
   const currentPassword =
     document.getElementById('adminCurrentPassword').value;
-    if (!currentPassword) {
-  message.textContent = 'Avval joriy parolni tasdiqlang.';
-  return;
-}
   const message =
     document.getElementById('adminPasswordChangeMessage');
   const btn =
@@ -3975,7 +3995,7 @@ async function verifyCurrentAdminPassword() {
 
   btn.disabled = true;
   message.textContent = 'Joriy parol tekshirilmoqda...';
-
+    
   try {
     const response = await fetch('/api/admin/password/change/check-current', {
       method: 'POST',
@@ -4125,9 +4145,17 @@ async function verifyAdminPasswordChangeCode() {
     document.getElementById('adminPasswordChangeCode').value = '';
     document.getElementById('adminPasswordCodeArea').hidden = true;
 
-    message.textContent =
-      'Parol muvaffaqiyatli o‘zgartirildi. Keyingi kirishda yangi paroldan foydalaning.';
+       document.getElementById('adminCurrentPassword').value = '';
+    document.getElementById('adminCurrentPassword').readOnly = false;
+    document.getElementById('adminCurrentPasswordBtn').disabled = false;
+    document.getElementById('adminCurrentPasswordArea').hidden = true;
+    document.getElementById('adminNewPasswordArea').hidden = true;
+    document.getElementById('adminPasswordStartBtn').hidden = false;
+    message.textContent = '';
 
+    logoutAdmin('Parol o‘zgartirildi. Yangi parol bilan qayta kiring.');
+    return;
+      
   } catch (error) {
     message.textContent = error.message || 'Xatolik yuz berdi.';
   } finally {
