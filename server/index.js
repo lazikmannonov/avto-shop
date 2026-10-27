@@ -106,7 +106,7 @@ async function initDatabase() {
         CREATE TABLE IF NOT EXISTS cars (
             id SERIAL PRIMARY KEY,
             name TEXT NOT NULL,
-            price INTEGER NOT NULL DEFAULT 0,
+            price BIGINT NOT NULL DEFAULT 0,
             description TEXT DEFAULT '',
             images TEXT DEFAULT '[]',
             sold BOOLEAN DEFAULT false,
@@ -148,6 +148,17 @@ async function initDatabase() {
     `);
 
     await pool.query(`
+        const priceType = await pool.query(`
+        SELECT data_type
+        FROM information_schema.columns
+        WHERE table_name = 'cars'
+          AND column_name = 'price'
+    `);
+
+      if (priceType.rows[0] && priceType.rows[0].data_type === 'integer') {
+        await pool.query(`ALTER TABLE cars ALTER COLUMN price TYPE BIGINT`);
+        console.log('cars.price ustuni BIGINT ga o‘zgartirildi');
+      }
         CREATE TABLE IF NOT EXISTS stats (
             id INTEGER PRIMARY KEY DEFAULT 1,
             views INTEGER DEFAULT 0,
@@ -526,6 +537,7 @@ function settingsOut(row) {
 
 // Qo'shish va tahrirlash uchun umumiy maydonlarni yig'ish va tekshirish.
 // old === null bo'lsa yangi uy, aks holda mavjud uy tahriri.
+
 function buildCarFields(body, old) {
 
     const has = key =>
@@ -597,7 +609,8 @@ function buildCarFields(body, old) {
     ).trim().slice(0, 2000);
 
     // PostgreSQL INTEGER chegarasidan oshib ketmasligi uchun yuqori chegaralar
-    if (!name || price <= 0 || price > 2000000000) {
+    
+    if (!name || price <= 0 || price > 1000000000000) {
         throw new UserError("Nom va narxni to'g'ri kiriting");
     }
 
@@ -2063,16 +2076,17 @@ if (!password) {
                      phone
                });
             
-            ait telegramApi('sendMessage', {
+            const sent = await telegramApi('sendMessage', {
                 chat_id: ADMIN_TELEGRAM_ID,
-               text:
-                     '🔐 Uy-Joy admin paneliga kirish kodi\n\n' +
-                     'Kod: ' + code + '\n\n' +
-                     'Ism: ' + name + '\n' +
-                     'Telefon: ' + phone + '\n' +
-                     'IP: ' + ip + '\n' +
-                     '⏳ Kod 60 sekund amal qiladi va bir marta ishlaydi.\n\n' +
-                     'Agar bu siz bo‘lmasangiz, kodni hech kimga bermang.'
+                text:
+                    '🔐 Uy-Joy admin paneliga kirish kodi\n\n' +
+                    'Kod: ' + code + '\n\n' +
+                    'Ism: ' + name + '\n' +
+                    'Telefon: ' + phone + '\n' +
+                    'IP: ' + ip + '\n' +
+                    '⏳ Kod 60 sekund amal qiladi va bir marta ishlaydi.\n\n' +
+                    'Agar bu siz bo‘lmasangiz, kodni hech kimga bermang.'
+            });
 
             if (!sent) {
 
@@ -2479,7 +2493,11 @@ if (req.method === 'POST' && url === '/api/admin/password/change/verify') {
 
         adminPasswordChangeRequests.delete(requestId);
 
-        // Parol almashtirilgach, barcha avvalgi sessiyalar bekor qilinadi.
+          await pool.query(`
+             UPDATE admin_session_history
+             SET status = 'logged_out', logout_at = NOW()
+             WHERE status = 'active'
+             `);
         adminSessions.clear();
         adminPasswordChangeRequests.clear();
 
@@ -2502,48 +2520,32 @@ if (req.method === 'POST' && url === '/api/admin/password/change/verify') {
         // =================================================
 
       
-if (url === '/api/admin/logout' && req.method === 'POST') {
-    const token = String(
-        req.headers['x-admin-session'] || ''
-    ).trim();
-
-    if (token) {
-        const session = adminSessions.get(token);
-
-        if (session) {
-            try {
-                await pool.query(
-                    `UPDATE admin_session_history
-                     SET logout_at = NOW(), status = 'logged_out'
-                     WHERE session_id = $1
-                       AND status = 'active'`,
-                    [session.sessionId]
-                );
-            } catch (error) {
-                console.error(
-                    'Admin chiqish tarixini saqlash xatosi:',
-                    error
-                );
-
-                return sendJson(res, 500, {
-                    ok: false,
-                    error: 'Chiqish tarixini saqlashda xatolik.'
-                });
-            }
-
-            adminSessions.delete(token);
-        }
-    }
-
-    return sendJson(res, 200, { ok: true });
-}
+        if (url === '/api/admin/logout' && req.method === 'POST') {
 
             const token = String(
                 req.headers['x-admin-session'] || ''
             ).trim();
 
             if (token) {
+
+                const session = adminSessions.get(token);
+
+                // Sessiya avval o'chiriladi, baza xatosi chiqishga to'sqinlik qilmasin
                 adminSessions.delete(token);
+
+                if (session) {
+                    try {
+                        await pool.query(
+                            `UPDATE admin_session_history
+                             SET logout_at = NOW(), status = 'logged_out'
+                             WHERE session_id = $1
+                               AND status = 'active'`,
+                            [session.sessionId]
+                        );
+                    } catch (error) {
+                        console.error('Admin chiqish tarixini saqlash xatosi:', error);
+                    }
+                }
             }
 
             return sendJson(res, 200, { ok: true });
@@ -2606,6 +2608,7 @@ if (url === '/api/admin/logout' && req.method === 'POST') {
                          phone,
                          login_at,
                          expires_at,
+                         logout_at,
                          status
                     FROM admin_session_history
                     ORDER BY login_at DESC
