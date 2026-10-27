@@ -1990,8 +1990,13 @@ const server = http.createServer(async (req, res) => {
 
            const name = cleanAdminName(body.name);
 
+         
           const phoneInput = String(body.phone || '').trim();
-          const phone = phoneInput.replace(/[\s()-]/g, '');
+          const phoneDigits = phoneInput.replace(/\D/g, '');
+
+          const phone = phoneDigits.startsWith('998')
+               ? '+' + phoneDigits
+               : '+998' + phoneDigits;
 
         const password = normalizePassword(body.password);
 
@@ -2001,9 +2006,23 @@ const server = http.createServer(async (req, res) => {
     });
 }
 
-if (!/^\+?[0-9]{9,15}$/.test(phone)) {
+
+if (!/^\+998[0-9]{9}$/.test(phone)) {
     return sendJson(res, 400, {
-        error: 'Telefon raqamini to‘g‘ri kiriting.'
+        error: 'Telefon raqamini to‘liq kiriting: +998 dan keyin 9 ta raqam kerak.'
+    });
+}
+
+const mobileCode = phone.slice(4, 6);
+
+const validMobileCodes = new Set([
+    '90', '91', '93', '94', '95', '97', '98', '99',
+    '88', '77', '33', '50', '55', '71', '20'
+]);
+
+if (!validMobileCodes.has(mobileCode)) {
+    return sendJson(res, 400, {
+        error: 'Telefon raqami kodi noto‘g‘ri yoki qo‘llab-quvvatlanmaydi.'
     });
 }
 
