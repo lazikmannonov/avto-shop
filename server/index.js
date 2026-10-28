@@ -2502,23 +2502,57 @@ if (req.method === 'POST' && url === '/api/admin/password/change/verify') {
             });
         }
 
-        await pool.query(`
-            INSERT INTO admin_credentials (id, password_hash, updated_at)
-            VALUES (1, $1, NOW())
-            ON CONFLICT (id)
-            DO UPDATE SET
-                password_hash = EXCLUDED.password_hash,
-                updated_at = NOW()
-        `, [request.passwordHash]);
+       
+        // Parolni saqlash va barcha faol sessiyalarni
+        // tarixni o'chirmasdan tugatish.
+        const client = await pool.connect();
 
-        adminPasswordChangeRequests.delete(requestId);
+        try {
+            await client.query('BEGIN');
 
-          await pool.query(`
-             UPDATE admin_session_history
-             SET status = 'logged_out', logout_at = NOW()
-             WHERE status = 'active'
-             `);
+            // Yangi parol xeshini PostgreSQL ga saqlash.
+            await client.query(`
+                INSERT INTO admin_credentials (
+                    id,
+                    password_hash,
+                    updated_at
+                )
+                VALUES (1, $1, NOW())
+                ON CONFLICT (id)
+                DO UPDATE SET
+                    password_hash = EXCLUDED.password_hash,
+                    updated_at = NOW()
+            `, [request.passwordHash]);
+
+        
+            await client.query(`
+                UPDATE admin_session_history
+                SET
+                    status = 'logged_out',
+                    logout_at = NOW()
+                WHERE status = 'active'
+            `);
+
+            await client.query('COMMIT');
+
+        } catch (dbError) {
+            try {
+                await client.query('ROLLBACK');
+            } catch (rollbackError) {
+                console.error(
+                    'Parol almashtirish tranzaksiyasini bekor qilish xatosi:',
+                    rollbackError
+                );
+            }
+
+            throw dbError;
+
+        } finally {
+            client.release();
+        }
+
         adminSessions.clear();
+        adminLoginRequests.clear();
         adminPasswordChangeRequests.clear();
 
         return sendJson(res, 200, {
