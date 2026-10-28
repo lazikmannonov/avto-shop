@@ -726,3 +726,58 @@ body.admin-page{font-family:Inter,Arial,Helvetica,sans-serif;background:var(--bg
         transform: translateX(0);
     }
 }
+
+/* Sessiyadan keyingi foydalanuvchilar bo‘limi */
+.sidebar-users-divider {
+    height: 1px;
+    flex-shrink: 0;
+    background: var(--border-color, #303030);
+    margin: 12px 0;
+}
+
+.sidebar-users-section {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    padding: 0 8px;
+}
+
+.sidebar-users-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 42px;
+    height: 42px;
+    flex-shrink: 0;
+    margin-bottom: 8px;
+    color: inherit;
+}
+
+.sidebar-users-icon .icon {
+    width: 21px;
+    height: 21px;
+}
+
+.sidebar-users-list {
+    max-height: min(38vh, 320px);
+    overflow-y: auto;
+    overflow-x: hidden;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+    touch-action: pan-y;
+    scrollbar-width: thin;
+    scrollbar-color: #777 transparent;
+}
+
+.sidebar-users-list::-webkit-scrollbar {
+    width: 5px;
+}
+
+.sidebar-users-list::-webkit-scrollbar-thumb {
+    background: #777;
+    border-radius: 8px;
+}
+
+.sidebar-users-list::-webkit-scrollbar-track {
+    background: transparent;
+}
