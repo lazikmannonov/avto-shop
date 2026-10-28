@@ -962,4 +962,145 @@ body.dark .sidebar-user-time {
 body.dark .sidebar-users-list {
     scrollbar-color: #766252 transparent;
 }
+/* Dashboard — kirishlar statistikasi */
 
+.dashboard-users-panel {
+    min-width: 0;
+    overflow: hidden;
+    border-radius: 16px;
+}
+
+.dashboard-users-header {
+    padding-bottom: 14px;
+}
+
+.dashboard-users-body {
+    min-width: 0;
+}
+
+.dashboard-login-stats {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+    margin-bottom: 22px;
+}
+
+.dashboard-login-stat {
+    min-width: 0;
+    padding: 14px;
+    background: #F8F5EF;
+    border: 1px solid #EAE1D6;
+    border-radius: 12px;
+}
+
+.dashboard-login-stat-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    margin-bottom: 10px;
+}
+
+.dashboard-login-stat-label {
+    color: #786B5E;
+    font-size: 12px;
+    line-height: 1.4;
+}
+
+.dashboard-login-stat-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    flex-shrink: 0;
+    color: #624832;
+    background: #EAE0D3;
+    border-radius: 9px;
+}
+
+.dashboard-login-stat-icon .icon {
+    width: 16px;
+    height: 16px;
+}
+
+.dashboard-login-stat .stat-value {
+    color: #35271E;
+    font-size: 26px;
+    font-weight: 750;
+    line-height: 1.2;
+}
+
+.dashboard-login-history-header {
+    margin-bottom: 12px;
+}
+
+.dashboard-login-history-title {
+    color: var(--text, #35271E);
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.dashboard-login-history {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+    min-width: 0;
+}
+
+.dashboard-login-history > * {
+    min-width: 0;
+    margin: 0;
+    padding: 12px;
+    background: var(--card, #FFFFFF);
+    border: 1px solid var(--border, #EAE1D6);
+    border-radius: 11px;
+    overflow-wrap: anywhere;
+    transition: border-color .2s ease, background .2s ease;
+}
+
+.dashboard-login-history > *:hover {
+    border-color: #BBA58F;
+}
+
+body.dark .dashboard-login-stat {
+    background: #29251F;
+    border-color: #40382F;
+}
+
+body.dark .dashboard-login-stat-label {
+    color: #BDB0A2;
+}
+
+body.dark .dashboard-login-stat-icon {
+    color: #E6D5C2;
+    background: #40352B;
+}
+
+body.dark .dashboard-login-stat .stat-value {
+    color: #F4EDE4;
+}
+
+body.dark .dashboard-login-history > * {
+    background: #211E1A;
+    border-color: #40382F;
+}
+
+@media (max-width: 520px) {
+    .dashboard-login-stats {
+        gap: 8px;
+    }
+
+    .dashboard-login-stat {
+        padding: 11px;
+    }
+
+    .dashboard-login-history {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 8px;
+    }
+
+    .dashboard-login-history > * {
+        padding: 9px;
+    }
+}
