@@ -405,34 +405,60 @@
 
 <div class="dashboard-grid">
 
-    <!-- 1. Kirgan foydalanuvchilar -->
-    <div class="panel">
+   <!-- 1. Adminlar va kirishlar tarixi -->
+<div class="panel dashboard-users-panel">
 
-        <div class="panel-header">
-            <div class="panel-title">Adminlar</div>
-        </div>
+    <div class="panel-header dashboard-users-header">
+        <div class="panel-title">Adminlar</div>
+    </div>
 
-        <div class="panel-body">
+    <div class="panel-body dashboard-users-body">
 
-            <div class="stats-grid" style="grid-template-columns:repeat(2,minmax(0,1fr));margin-bottom:18px">
+        <div class="dashboard-login-stats">
 
-                <div class="stat-card">
-                    <div class="stat-value" id="dashboardTotalUsers">0</div>
-                    <div class="stat-label">Jami kirishlar</div>
+            <div class="dashboard-login-stat">
+                <div class="dashboard-login-stat-top">
+                    <div class="dashboard-login-stat-label">
+                        Jami kirishlar
+                    </div>
+                    <div class="dashboard-login-stat-icon">
+                        <svg class="icon">
+                            <use href="#i-log-in"></use>
+                        </svg>
+                    </div>
                 </div>
-
-                <div class="stat-card">
-                    <div class="stat-value" id="dashboardTodayLogins">0</div>
-                    <div class="stat-label">Bugungi kirishlar</div>
-                </div>
-
+                <div class="stat-value" id="dashboardTotalUsers">0</div>
             </div>
 
-            <div id="dashboardRecentUsers"></div>
+            <div class="dashboard-login-stat">
+                <div class="dashboard-login-stat-top">
+                    <div class="dashboard-login-stat-label">
+                        Bugungi kirishlar
+                    </div>
+                    <div class="dashboard-login-stat-icon">
+                        <svg class="icon">
+                            <use href="#i-calendar"></use>
+                        </svg>
+                    </div>
+                </div>
+                <div class="stat-value" id="dashboardTodayLogins">0</div>
+            </div>
 
+        </div>
+
+        <div class="dashboard-login-history-header">
+            <div class="dashboard-login-history-title">
+                So‘nggi kirishlar
+            </div>
+        </div>
+
+        <div id="dashboardRecentUsers"
+             class="dashboard-login-history">
         </div>
 
     </div>
+
+</div>
 
     <!-- 2. Faollik -->
     <div class="panel">
