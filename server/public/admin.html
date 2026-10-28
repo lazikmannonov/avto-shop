@@ -270,10 +270,19 @@
         </button>
 
         
-        <button data-page="active-users" onclick="showPage('active-users')">
-            <svg class="icon"><use href="#i-dashboard"></use></svg>
-            <span>ADMIN</span>
-        </button>
+       <div class="sidebar-users-divider"></div>
+
+<div class="sidebar-users-section">
+    <div class="sidebar-users-icon" title="Foydalanuvchilar">
+        <svg class="icon">
+            <use href="#i-dashboard"></use>
+        </svg>
+    </div>
+
+    <div class="sidebar-users-list" id="activeUsersList">
+        <!-- Foydalanuvchilar JavaScript orqali chiqariladi -->
+    </div>
+</div>
 
     </nav>
 
@@ -850,28 +859,6 @@
 </div>
 </div>
     </section>
-
-    
-   <!-- FAOL FOYDALANUVCHILAR -->
-<section class="page" id="page-active-users">
-
-  <div class="panel">
-
-    <div class="panel-header">
-      <div class="panel-title">Faol foydalanuvchilar</div>
-    </div>
-
-    <div class="panel-body">
-
-      <div id="activeUsersList">
-        <!-- Faol foydalanuvchilar serverdan yuklanadi -->
-      </div>
-
-    </div>
-
-  </div>
-
-</section>
 
 <!-- ========================= SETTINGS ========================= -->
 
