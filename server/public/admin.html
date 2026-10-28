@@ -270,20 +270,34 @@
         </button>
 
         
-       <div class="sidebar-users-divider"></div>
+      </nav>
+
+<div class="sidebar-users-divider"></div>
 
 <div class="sidebar-users-section">
-    <div class="sidebar-users-icon" title="Foydalanuvchilar">
-        <svg class="icon">
-            <use href="#i-dashboard"></use>
-        </svg>
+    <div class="sidebar-users-heading">
+        <div class="sidebar-users-icon" title="Foydalanuvchilar">
+            <svg viewBox="0 0 24 24" fill="none"
+                 stroke="currentColor" stroke-width="1.7"
+                 stroke-linecap="round" stroke-linejoin="round"
+                 aria-hidden="true">
+                <path d="M16 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                <circle cx="10" cy="7" r="4"/>
+                <path d="M20 21v-2a4 4 0 0 0-3-3.87"/>
+                <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+            </svg>
+        </div>
+
+        <div class="sidebar-users-heading-text">
+            <div class="sidebar-users-title">Foydalanuvchilar</div>
+            <div class="sidebar-users-subtitle">So‘nggi kirishlar</div>
+        </div>
     </div>
 
     <div class="sidebar-users-list" id="activeUsersList">
         <!-- Foydalanuvchilar JavaScript orqali chiqariladi -->
     </div>
 </div>
-
     </nav>
 
     <div class="sidebar-bottom">
@@ -3814,50 +3828,46 @@ async function loadAdminSessionHistory() {
         });
     }
 
-    // Faol sessiyalar ro‘yxati
-    const activeList = document.getElementById(
-        'activeUsersList'
-    );
+  
+const activeList = document.getElementById('activeUsersList');
 
-    if (activeList) {
-        const sessions = Array.isArray(data.activeSessions)
-            ? data.activeSessions
-            : [];
+if (activeList) {
+    const sessions = Array.isArray(data.activeSessions)
+        ? data.activeSessions
+        : [];
 
-        if (sessions.length === 0) {
-            activeList.textContent =
-                'Hozir faol admin sessiyalari yo‘q.';
-        } else {
-            activeList.replaceChildren();
+    activeList.replaceChildren();
 
-            sessions.forEach(session => {
-                const item = document.createElement('div');
+    if (sessions.length === 0) {
+        const empty = document.createElement('div');
+        empty.textContent = 'Hozir faol foydalanuvchilar yo‘q.';
+        empty.style.cssText =
+            'font-size:12px;opacity:.7;padding:8px 0;';
 
-                item.style.cssText =
-                    'padding:12px 0;border-bottom:1px solid var(--border,#ddd)';
+        activeList.appendChild(empty);
+    } else {
+        sessions.forEach(session => {
+            const item = document.createElement('div');
+            item.className = 'sidebar-user-item';
 
-                const title = document.createElement('div');
-                title.style.fontWeight = '600';
-               title.textContent =
-              (session.admin_name || 'Ism kiritilmagan') +
-              ' · ' +
-              (session.phone || 'Telefon kiritilmagan');
+            const name = document.createElement('div');
+            name.className = 'sidebar-user-name';
+            name.textContent = session.admin_name || 'Ism kiritilmagan';
 
-                const details = document.createElement('div');
-                details.style.cssText =
-                    'font-size:13px;opacity:.75;margin-top:5px';
+            const phone = document.createElement('div');
+            phone.className = 'sidebar-user-phone';
+            phone.textContent = session.phone || 'Telefon kiritilmagan';
 
-                details.textContent =
-                  'Sessiya #' + session.id +
-                 ' · Kirish vaqti: ' + formatSessionDate(session.login_at);
+            const loginTime = document.createElement('div');
+            loginTime.className = 'sidebar-user-time';
+            loginTime.textContent = formatSessionDate(session.login_at);
 
-                item.append(title, details);
-                activeList.appendChild(item);
-            });
-        }
+            item.append(name, phone, loginTime);
+            activeList.appendChild(item);
+        });
     }
-
-    // Dashboard: oxirgi kirishlar
+}
+    
     const recentList = document.getElementById(
         'dashboardRecentUsers'
     );
