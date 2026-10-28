@@ -3790,6 +3790,7 @@ async function loadAll() {
     }
 }
     
+
 async function loadAdminSessionHistory() {
     if (!adminSessionToken) return;
 
@@ -3828,9 +3829,8 @@ async function loadAdminSessionHistory() {
         todayElement.textContent = data.todayLogins ?? 0;
     }
 
-    // Sana-vaqtni ko‘rsatish
-    
-       function formatSessionDate(value) {
+    // Sana-vaqt
+    function formatSessionDate(value) {
         if (!value) return '—';
 
         const date = new Date(value);
@@ -3843,51 +3843,53 @@ async function loadAdminSessionHistory() {
             month: '2-digit',
             year: 'numeric',
             hour: '2-digit',
-            minute: '2-digit',
-            second: '2-digit'
+            minute: '2-digit'
         });
     }
 
-  
-const activeList = document.getElementById('activeUsersList');
+    // Yon menyudagi faol foydalanuvchilar
+    const activeList = document.getElementById('activeUsersList');
 
-if (activeList) {
-    const sessions = Array.isArray(data.activeSessions)
-        ? data.activeSessions
-        : [];
+    if (activeList) {
+        const sessions = Array.isArray(data.activeSessions)
+            ? data.activeSessions
+            : [];
 
-    activeList.replaceChildren();
+        activeList.replaceChildren();
 
-    if (sessions.length === 0) {
-        const empty = document.createElement('div');
-        empty.textContent = 'Hozir faol foydalanuvchilar yo‘q.';
-        empty.style.cssText =
-            'font-size:12px;opacity:.7;padding:8px 0;';
+        if (sessions.length === 0) {
+            const empty = document.createElement('div');
+            empty.className = 'sidebar-users-empty';
+            empty.textContent = 'Hozir faol foydalanuvchilar yo‘q.';
 
-        activeList.appendChild(empty);
-    } else {
-        sessions.forEach(session => {
-            const item = document.createElement('div');
-            item.className = 'sidebar-user-item';
+            activeList.appendChild(empty);
+        } else {
+            sessions.forEach(session => {
+                const item = document.createElement('div');
+                item.className = 'sidebar-user-item';
 
-            const name = document.createElement('div');
-            name.className = 'sidebar-user-name';
-            name.textContent = session.admin_name || 'Ism kiritilmagan';
+                const name = document.createElement('div');
+                name.className = 'sidebar-user-name';
+                name.textContent =
+                    session.admin_name || 'Ism kiritilmagan';
 
-            const phone = document.createElement('div');
-            phone.className = 'sidebar-user-phone';
-            phone.textContent = session.phone || 'Telefon kiritilmagan';
+                const phone = document.createElement('div');
+                phone.className = 'sidebar-user-phone';
+                phone.textContent =
+                    session.phone || 'Telefon kiritilmagan';
 
-            const loginTime = document.createElement('div');
-            loginTime.className = 'sidebar-user-time';
-            loginTime.textContent = formatSessionDate(session.login_at);
+                const loginTime = document.createElement('div');
+                loginTime.className = 'sidebar-user-time';
+                loginTime.textContent =
+                    formatSessionDate(session.login_at);
 
-            item.append(name, phone, loginTime);
-            activeList.appendChild(item);
-        });
+                item.append(name, phone, loginTime);
+                activeList.appendChild(item);
+            });
+        }
     }
-}
-    
+
+    // Dashboard: so‘nggi kirishlar tarixi
     const recentList = document.getElementById(
         'dashboardRecentUsers'
     );
@@ -3897,27 +3899,55 @@ if (activeList) {
             ? data.recentSessions.slice(0, 5)
             : [];
 
-        if (recent.length === 0) {
-            recentList.textContent =
-                'Hozircha kirishlar tarixi yo‘q.';
-        } else {
-            recentList.replaceChildren();
+        recentList.replaceChildren();
 
+        if (recent.length === 0) {
+            const empty = document.createElement('div');
+            empty.className = 'dashboard-login-empty';
+            empty.textContent = 'Hozircha kirishlar tarixi yo‘q.';
+
+            recentList.appendChild(empty);
+        } else {
             recent.forEach(session => {
                 const item = document.createElement('div');
+                item.className = 'dashboard-login-card';
 
-                item.style.cssText =
-                    'padding:10px 0;border-bottom:1px solid var(--border,#ddd)';
+                const top = document.createElement('div');
+                top.className = 'dashboard-login-card-top';
+
+                const avatar = document.createElement('div');
+                avatar.className = 'dashboard-login-avatar';
+                avatar.innerHTML =
+                    '<svg viewBox="0 0 24 24" fill="none" ' +
+                    'stroke="currentColor" stroke-width="1.8" ' +
+                    'stroke-linecap="round" stroke-linejoin="round">' +
+                    '<circle cx="12" cy="8" r="4"/>' +
+                    '<path d="M4 21v-2a8 8 0 0 1 16 0v2"/>' +
+                    '</svg>';
+
+                const identity = document.createElement('div');
+                identity.className = 'dashboard-login-identity';
 
                 const title = document.createElement('div');
-                title.style.fontWeight = '600';
+                title.className = 'dashboard-login-name';
                 title.textContent =
-                 (session.admin_name || 'Ism kiritilmagan') +
-                       ' · ' +
-                 (session.phone || 'Telefon kiritilmagan');
-                const details = document.createElement('div');
-                details.style.cssText =
-                    'font-size:13px;opacity:.75;margin-top:4px';
+                    session.admin_name || 'Ism kiritilmagan';
+
+                const phone = document.createElement('div');
+                phone.className = 'dashboard-login-phone';
+                phone.textContent =
+                    session.phone || 'Telefon kiritilmagan';
+
+                identity.append(title, phone);
+                top.append(avatar, identity);
+
+                const bottom = document.createElement('div');
+                bottom.className = 'dashboard-login-card-bottom';
+
+                const time = document.createElement('div');
+                time.className = 'dashboard-login-time';
+                time.textContent =
+                    formatSessionDate(session.login_at);
 
                 const statusLabels = {
                     active: 'Faol',
@@ -3925,19 +3955,17 @@ if (activeList) {
                     expired: 'Muddati tugagan'
                 };
 
-                let line = 'Kirdi: ' + formatSessionDate(session.login_at);
+                const status = document.createElement('span');
+                status.className = 'dashboard-login-status';
+                status.textContent =
+                    statusLabels[session.status] || 'Noma’lum';
 
-                if (session.logout_at) {
-                    line += ' · Chiqdi: ' + formatSessionDate(session.logout_at);
-                } else if (session.status === 'expired') {
-                    line += ' · Muddati tugadi: ' + formatSessionDate(session.expires_at);
+                if (session.status === 'active') {
+                    status.classList.add('is-active');
                 }
 
-                line += ' · ' + (statusLabels[session.status] || 'Noma’lum');
-
-                details.textContent = line;
-
-                item.append(title, details);
+                bottom.append(time, status);
+                item.append(top, bottom);
                 recentList.appendChild(item);
             });
         }
