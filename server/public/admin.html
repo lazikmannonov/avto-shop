@@ -3984,7 +3984,7 @@ async function loadAdminSessionHistory() {
 
 
 async function init() {
-   applyTheme(lsGet("admin_dark_mode", "") === "1");
+    applyTheme(lsGet("admin_dark_mode", "1") !== "0");
     updateTypeSummary();
     renderImagePreview();
     showLoginStep(1);
