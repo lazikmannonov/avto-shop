@@ -835,67 +835,49 @@ body.admin-page{font-family:Inter,Arial,Helvetica,sans-serif;background:var(--bg
 /* Foydalanuvchilar bo‘limi — premium dizayn */
 
 .sidebar-users-divider {
+    display: block;
+    width: auto;
     height: 1px;
     flex-shrink: 0;
-    margin: 14px 12px 12px;
-    background: linear-gradient(
-        90deg,
-        transparent,
-        rgba(119, 91, 69, 0.35),
-        transparent
-    );
+    margin: 12px 10px;
+    background: rgba(119, 91, 69, 0.35);
 }
 
 .sidebar-users-section {
     display: flex;
     flex-direction: column;
+    align-items: stretch;
+    flex: 0 1 auto;
     min-height: 0;
-    padding: 0 12px;
+    padding: 0 8px;
 }
 
 .sidebar-users-heading {
     display: flex;
     align-items: center;
-    justify-content: center;
-    padding: 2px 0 10px;
+    justify-content: flex-start;
+    padding: 0 4px 8px;
 }
 
 .sidebar-users-icon {
+    width: 28px;
+    height: 28px;
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 30px;
-    height: 30px;
     flex-shrink: 0;
     color: #f8f3eb;
     background: #49372b;
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    border-radius: 9px;
+    border-radius: 8px;
 }
 
 .sidebar-users-icon svg {
-    width: 16px;
-    height: 16px;
-}
-
-.sidebar-users-heading-text {
-    min-width: 0;
-}
-
-.sidebar-users-title {
-    color: var(--text, #302820);
-    font-size: 13px;
-    font-weight: 700;
-    letter-spacing: -0.2px;
-}
-
-.sidebar-users-subtitle {
-    margin-top: 3px;
-    color: var(--muted, #8b8176);
-    font-size: 11px;
+    width: 15px;
+    height: 15px;
 }
 
 .sidebar-users-list {
+    width: 100%;
     max-height: min(38vh, 320px);
     min-height: 0;
     overflow-y: auto;
@@ -903,11 +885,7 @@ body.admin-page{font-family:Inter,Arial,Helvetica,sans-serif;background:var(--bg
     overscroll-behavior: contain;
     -webkit-overflow-scrolling: touch;
     touch-action: pan-y;
-    scrollbar-width: thin;
-    scrollbar-color: #b9a898 transparent;
-    padding-right: 3px;
 }
-
 .sidebar-user-item {
     position: relative;
     margin-bottom: 7px;
