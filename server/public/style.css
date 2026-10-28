@@ -1104,3 +1104,149 @@ body.dark .dashboard-login-history > * {
         padding: 9px;
     }
 }
+
+.dashboard-login-history {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+    min-width: 0;
+}
+
+.dashboard-login-card {
+    min-width: 0;
+    padding: 12px;
+    background: #fff;
+    border: 1px solid #e9e1d7;
+    border-radius: 12px;
+    transition: border-color .2s ease, box-shadow .2s ease;
+}
+
+.dashboard-login-card:hover {
+    border-color: #c5b19c;
+    box-shadow: 0 4px 14px rgba(55, 39, 27, .06);
+}
+
+.dashboard-login-card-top {
+    display: flex;
+    align-items: flex-start;
+    gap: 9px;
+    min-width: 0;
+}
+
+.dashboard-login-avatar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    flex-shrink: 0;
+    color: #634832;
+    background: #eee5d9;
+    border-radius: 9px;
+}
+
+.dashboard-login-avatar svg {
+    width: 17px;
+    height: 17px;
+}
+
+.dashboard-login-identity {
+    flex: 1;
+    min-width: 0;
+}
+
+.dashboard-login-name {
+    color: var(--text, #35271e);
+    font-size: 12px;
+    font-weight: 700;
+    overflow-wrap: anywhere;
+}
+
+.dashboard-login-phone {
+    margin-top: 4px;
+    color: var(--muted, #82766b);
+    font-size: 11px;
+    line-height: 1.45;
+    overflow-wrap: anywhere;
+}
+
+.dashboard-login-card-bottom {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 7px;
+    margin-top: 12px;
+    padding-top: 9px;
+    border-top: 1px solid #eee7df;
+}
+
+.dashboard-login-time {
+    color: var(--muted, #82766b);
+    font-size: 10px;
+    line-height: 1.5;
+}
+
+.dashboard-login-status {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 7px;
+    color: #74675a;
+    background: #f0ece6;
+    border-radius: 6px;
+    font-size: 10px;
+    font-weight: 600;
+}
+
+.dashboard-login-status.is-active {
+    color: #49372b;
+    background: #eee3d5;
+}
+
+.dashboard-login-empty,
+.sidebar-users-empty {
+    padding: 10px 0;
+    color: var(--muted, #82766b);
+    font-size: 12px;
+}
+
+body.dark .dashboard-login-card {
+    background: #211e1a;
+    border-color: #40382f;
+}
+
+body.dark .dashboard-login-name {
+    color: #f4ede4;
+}
+
+body.dark .dashboard-login-phone,
+body.dark .dashboard-login-time {
+    color: #bdb0a2;
+}
+
+body.dark .dashboard-login-card-bottom {
+    border-top-color: #40382f;
+}
+
+body.dark .dashboard-login-avatar,
+body.dark .dashboard-login-status {
+    color: #e6d5c2;
+    background: #40352b;
+}
+
+@media (max-width: 520px) {
+    .dashboard-login-history {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 7px;
+    }
+
+    .dashboard-login-card {
+        padding: 9px;
+    }
+
+    .dashboard-login-card-bottom {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+}
+
