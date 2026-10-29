@@ -572,6 +572,26 @@
         <!-- 1-BOSQICH: PAROL -->
         <div id="statsResetPasswordStep">
             <label for="statsResetPassword">Joriy admin paroli</label>
+            <div class="stats-reset-options">
+    <label>
+        <input
+            type="radio"
+            name="statsResetType"
+            value="history"
+        >
+        Faqat kirishlar tarixini tozalash
+    </label>
+
+    <label>
+        <input
+            type="radio"
+            name="statsResetType"
+            value="all"
+            checked
+        >
+        Barcha statistikani 0 qilish
+    </label>
+</div>
 
             <input
                 id="statsResetPassword"
@@ -4453,6 +4473,7 @@ async function verifyAdminPasswordChangeCode() {
 ========================================================= */
 
 let statsResetRequestId = '';
+let statsResetType = 'all';
 
 function openStatsResetModal() {
     statsResetRequestId = '';
@@ -4509,15 +4530,23 @@ async function requestStatsResetCode() {
     button.textContent = 'Tekshirilmoqda...';
 
     try {
-        const response = await fetch('/api/admin/stats/reset/request', {
-            method: 'POST',
-            headers: adminHeaders({
-                'Content-Type': 'application/json'
-            }),
-            body: JSON.stringify({ password })
-        });
+    statsResetType =
+        document.querySelector(
+            'input[name="statsResetType"]:checked'
+        )?.value || 'all';
 
-        const data = await response.json().catch(() => ({}));
+    const response = await fetch('/api/admin/stats/reset/request', {
+        method: 'POST',
+        headers: adminHeaders({
+            'Content-Type': 'application/json'
+        }),
+        body: JSON.stringify({
+            password,
+            resetType: statsResetType
+        })
+    });
+
+    const data = await response.json().catch(() => ({}));
 
         if (response.status === 401 && !data.requestId) {
             if (!adminSessionToken) {
@@ -4615,7 +4644,11 @@ async function confirmStatsReset() {
             );
         }
 
-        showToast('Statistika va kirishlar tarixi tozalandi.');
+       showToast(
+    data.resetType === 'history'
+        ? 'Kirishlar tarixi tozalandi.'
+        : 'Barcha statistika va kirishlar tarixi tozalandi.'
+);
 
     } catch (error) {
         console.error('Statistikani tozalash:', error);
