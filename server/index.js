@@ -2502,33 +2502,63 @@ if (newPassword.length < 8 || newPassword.length > 200) {
 
         const client = await pool.connect();
 
-        try {
-            await client.query('BEGIN');
+try {
+    await client.query('BEGIN');
 
-            await client.query(`
-                UPDATE stats
-                SET views = 0, calls = 0
-                WHERE id = 1
-            `);
+    if (request.resetType === 'history') {
+        // Faqat kirishlar tarixini tozalash.
+        await client.query(`
+            DELETE FROM admin_session_history
+        `);
 
-            await client.query('DELETE FROM daily_stats');
+    } else if (request.resetType === 'all') {
+        // Ko‘rishlar va qo‘ng‘iroqlarni nolga tushirish.
+        await client.query(`
+            UPDATE stats
+            SET views = 0, calls = 0
+            WHERE id = 1
+        `);
 
-            // Kirishlar tarixi tozalanadi.
-            // adminSessions Map o‘zgartirilmaydi — sessiyalar faol qoladi.
-            await client.query('DELETE FROM admin_session_history');
+        // Kunlik statistikani tozalash.
+        await client.query(`
+            DELETE FROM daily_stats
+        `);
 
-            await client.query('COMMIT');
-        } catch (error) {
-            await client.query('ROLLBACK');
-            throw error;
-        } finally {
-            client.release();
-        }
+        // Kirishlar tarixini ham tozalash.
+        await client.query(`
+            DELETE FROM admin_session_history
+        `);
 
-        return sendJson(res, 200, {
-            ok: true,
-            message: 'Statistika va kirishlar tarixi tozalandi.'
-        });
+    } else {
+        throw new Error('Noto‘g‘ri statistikani tozalash turi.');
+    }
+
+    await client.query('COMMIT');
+
+} catch (error) {
+    try {
+        await client.query('ROLLBACK');
+    } catch (rollbackError) {
+        console.error(
+            'Statistikani tozalashni bekor qilish xatosi:',
+            rollbackError
+        );
+    }
+
+    throw error;
+
+} finally {
+    client.release();
+}
+
+return sendJson(res, 200, {
+    ok: true,
+    resetType: request.resetType,
+    message: request.resetType === 'history'
+        ? 'Kirishlar tarixi tozalandi.'
+        : 'Barcha statistika va kirishlar tarixi tozalandi.'
+});
+     
     } catch (error) {
         console.error('Statistikani tozalash xatosi:', error);
 
@@ -2548,6 +2578,13 @@ if (req.method === 'POST' && url === '/api/admin/stats/reset/request') {
     try {
         const body = parseJsonObject(await readBody(req));
         const password = String(body.password || '');
+        const resetType = String(body.resetType || '');
+
+         if (!['history', 'all'].includes(resetType)) {
+         return sendJson(res, 400, {
+        error: 'Tozalash turini tanlang.'
+    });
+}
         const sessionToken = String(req.headers['x-admin-session'] || '');
 
         if (!password) {
@@ -2589,20 +2626,24 @@ if (req.method === 'POST' && url === '/api/admin/stats/reset/request') {
         const now = Date.now();
 
         adminStatsResetRequests.set(requestId, {
-            codeHash: sha256(code),
-            sessionToken,
-            expiresAt: now + 60 * 1000,
-            tries: 0
-        });
-
+          codeHash: sha256(code),
+          sessionToken,
+          resetType,
+          expiresAt: now + 60 * 1000,
+          tries: 0
+       });
         const sent = await telegramApi('sendMessage', {
             chat_id: ADMIN_TELEGRAM_ID,
-            text:
-                '🔐 Uy-Joy — statistikani tozalash tasdig‘i\n\n' +
-                'Tasdiqlash kodi: ' + code + '\n\n' +
-                '⏳ Kod 60 soniya amal qiladi va faqat bir marta ishlaydi.\n\n' +
-                'Agar bu amalni siz boshlamagan bo‘lsangiz, kodni kiritmang.'
-        });
+           text:
+                '🔐 Uy-Joy — tasdiqlash\n\n' +
+                 'Amal: ' +
+                 (resetType === 'history'
+                 ? 'Faqat kirishlar tarixini tozalash'
+                 : 'Barcha statistikani 0 qilish') +
+                 '\n\nTasdiqlash kodi: ' + code +
+                 '\n\n⏳ Kod 60 soniya amal qiladi va faqat bir marta ishlaydi.\n\n' +
+                 'Agar bu amalni siz boshlamagan bo‘lsangiz, kodni kiritmang.'
+             });
 
         if (!sent) {
             adminStatsResetRequests.delete(requestId);
