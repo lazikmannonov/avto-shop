@@ -925,3 +925,49 @@ body.admin-page{font-family:Inter,Arial,Helvetica,sans-serif;background:var(--bg
 @media(max-width:380px){
   .stats-reset-options{grid-template-columns:1fr}
 }
+/* ================= PREMIUM YANGILASH KARTASI ================= */
+.dashboard-reset-area{
+  position:relative;overflow:hidden;
+  display:flex;align-items:center;justify-content:space-between;gap:16px;
+  margin-top:20px;padding:18px 20px;border-radius:20px;
+  background:linear-gradient(180deg, color-mix(in srgb,var(--sr-surface) 92%,#fff 8%), var(--sr-surface));
+  border:1px solid var(--sr-border);
+  box-shadow:0 1px 0 rgba(255,255,255,.04) inset, 0 12px 30px -16px rgba(0,0,0,.5);
+}
+/* chap tomondagi yumshoq nur */
+.dashboard-reset-area::before{
+  content:"";position:absolute;left:-40px;top:50%;width:140px;height:140px;
+  transform:translateY(-50%);border-radius:50%;
+  background:var(--sr-accent);opacity:.12;filter:blur(40px);pointer-events:none;
+}
+.dashboard-reset-info{position:relative}
+.dashboard-reset-title{font-weight:800;font-size:15px;letter-spacing:-.01em;color:var(--sr-text)}
+.dashboard-reset-description{margin-top:3px;font-size:12.5px;color:var(--sr-muted)}
+
+.dashboard-reset-button{
+  position:relative;overflow:hidden;flex-shrink:0;
+  display:inline-flex;align-items:center;justify-content:center;gap:9px;
+  padding:12px 20px;border:0;border-radius:14px;
+  color:#fff;font:inherit;font-weight:700;font-size:14px;cursor:pointer;
+  background:linear-gradient(135deg,var(--sr-accent),color-mix(in srgb,var(--sr-accent) 55%,#a855f7));
+  box-shadow:0 10px 24px -8px var(--sr-accent), 0 1px 0 rgba(255,255,255,.3) inset;
+  transition:transform .15s, box-shadow .2s, filter .2s;
+}
+.dashboard-reset-button::after{
+  content:"";position:absolute;top:0;left:-60%;width:40%;height:100%;
+  background:linear-gradient(100deg,transparent,rgba(255,255,255,.35),transparent);
+  transform:skewX(-20deg);transition:left .6s;
+}
+.dashboard-reset-button .icon{width:18px;height:18px;transition:transform .5s cubic-bezier(.2,.9,.3,1.2)}
+.dashboard-reset-button:hover{transform:translateY(-2px);filter:brightness(1.08)}
+.dashboard-reset-button:hover::after{left:130%}
+.dashboard-reset-button:hover .icon{transform:rotate(180deg)}
+.dashboard-reset-button:active{transform:translateY(0) scale(.98)}
+
+@media(max-width:560px){
+  .dashboard-reset-area{flex-direction:column;align-items:stretch;text-align:center}
+  .dashboard-reset-button{width:100%}
+}
+@media(prefers-reduced-motion:reduce){
+  .dashboard-reset-button,.dashboard-reset-button .icon{transition:none}
+}
