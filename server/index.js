@@ -2871,10 +2871,19 @@ const staleSessionIds = [...adminSessions.values()]
 for (const sessionId of staleSessionIds) {
     await pool.query(`
         UPDATE admin_session_history
-        SET status = 'expired'
+        SET status = 'logged_out',
+            logout_at = NOW()
         WHERE session_id = $1
           AND status = 'active'
     `, [sessionId]);
+
+    // Sessiyani server xotirasidan ham chiqarish.
+    for (const [token, session] of adminSessions.entries()) {
+        if (session.sessionId === sessionId) {
+            adminSessions.delete(token);
+            break;
+        }
+    }
 }
 
         // Jami va bugungi kirishlar.
