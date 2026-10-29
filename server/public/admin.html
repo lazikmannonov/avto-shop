@@ -569,97 +569,115 @@
             shaxsingizni tasdiqlang.
         </p>
 
-        <!-- 1-BOSQICH: PAROL -->
-        <div id="statsResetPasswordStep">
-            <label for="statsResetPassword">Joriy admin paroli</label>
-            <div class="stats-reset-options">
-    <label>
-        <input
-            type="radio"
-            name="statsResetType"
-            value="history"
-        >
-        Faqat kirishlar tarixini tozalash
+      
+<!-- 1-BOSQICH: PAROL -->
+<div id="statsResetPasswordStep" class="stats-reset-password-step">
+
+    <div class="stats-reset-intro">
+        <div class="stats-reset-icon">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M12 3.5 19 6v5.2c0 4.4-2.9 7.5-7 9.3-4.1-1.8-7-4.9-7-9.3V6l7-2.5Z"
+                    stroke="currentColor" stroke-width="1.6"
+                    stroke-linejoin="round"/>
+                <path d="m9 12 2 2 4-4"
+                    stroke="currentColor" stroke-width="1.6"
+                    stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+        </div>
+
+        <div>
+            <h3>Statistikani boshqarish</h3>
+            <p>Davom etish uchun shaxsingizni tasdiqlang.</p>
+        </div>
+    </div>
+
+    <label class="stats-reset-field-label" for="statsResetPassword">
+        Joriy admin paroli
     </label>
 
-    <label>
-        <input
-            type="radio"
-            name="statsResetType"
-            value="all"
-            checked
-        >
-        Barcha statistikani 0 qilish
-    </label>
-</div>
+    <input
+        id="statsResetPassword"
+        class="stats-reset-password-input"
+        type="password"
+        autocomplete="current-password"
+        placeholder="Admin parolini kiriting"
+    />
 
+    <div class="stats-reset-choice-heading">Qaysi amalni bajaramiz?</div>
+
+    <div class="stats-reset-options">
+
+        <label class="stats-reset-option">
             <input
-                id="statsResetPassword"
-                type="password"
-                autocomplete="current-password"
-                placeholder="Admin parolini kiriting"
+                type="radio"
+                name="statsResetType"
+                value="history"
             />
 
-            <button
-                id="statsResetRequestButton"
-                type="button"
-                class="stats-reset-primary"
-                onclick="requestStatsResetCode()"
-            >
-                Telegram kodini yuborish
-            </button>
-        </div>
+            <span class="stats-reset-radio"></span>
 
-        <!-- 2-BOSQICH: TELEGRAM KODI -->
-        <div id="statsResetCodeStep" style="display:none">
-            <div class="stats-reset-code-notice">
-                Telegramga 6 xonali tasdiqlash kodi yuborildi.
-                Kod 60 soniya amal qiladi.
-            </div>
+            <span class="stats-reset-option-content">
+                <span class="stats-reset-option-title">
+                    Kirishlar tarixini tozalash
+                </span>
+                <span class="stats-reset-option-description">
+                    Faqat foydalanuvchilarning kirish qaydlari o‘chiriladi.
+                </span>
+            </span>
 
-            <label for="statsResetCode">Tasdiqlash kodi</label>
+            <span class="stats-reset-option-check">✓</span>
+        </label>
 
+        <label class="stats-reset-option">
             <input
-                id="statsResetCode"
-                type="text"
-                inputmode="numeric"
-                autocomplete="one-time-code"
-                maxlength="6"
-                placeholder="000000"
+                type="radio"
+                name="statsResetType"
+                value="all"
+                checked
             />
 
-            <button
-                id="statsResetVerifyButton"
-                type="button"
-                class="stats-reset-primary"
-                onclick="confirmStatsReset()"
-            >
-                Tasdiqlash va tozalash
-            </button>
+            <span class="stats-reset-radio"></span>
 
-            <button
-                type="button"
-                class="stats-reset-secondary"
-                onclick="backToStatsResetPassword()"
-            >
-                Orqaga
-            </button>
-        </div>
+            <span class="stats-reset-option-content">
+                <span class="stats-reset-option-title">
+                    Barcha statistikani 0 qilish
+                </span>
+                <span class="stats-reset-option-description">
+                    Ko‘rishlar, qo‘ng‘iroqlar va kunlik statistika tozalanadi.
+                </span>
+            </span>
 
-        <div class="stats-reset-warning">
-            Uylar, rasmlar, narxlar, sozlamalar va admin paroli
-            o‘zgarmaydi. Bu amal statistika va kirishlar tarixini tozalaydi.
-        </div>
-
-        <button
-            type="button"
-            class="stats-reset-cancel"
-            onclick="closeStatsResetModal()"
-        >
-            Bekor qilish
-        </button>
+            <span class="stats-reset-option-check">✓</span>
+        </label>
 
     </div>
+
+    <div class="stats-reset-notice">
+        <span class="stats-reset-notice-icon">i</span>
+        <p>
+            Uylar, rasmlar, narxlar, sozlamalar va admin paroli
+            o‘zgarmaydi. Faol admin sessiyangiz saqlanadi.
+        </p>
+    </div>
+
+    <button
+        id="statsResetRequestButton"
+        type="button"
+        class="stats-reset-primary"
+        onclick="requestStatsResetCode()"
+    >
+        <span>Telegram kodini yuborish</span>
+        <span aria-hidden="true">→</span>
+    </button>
+
+    <button
+        type="button"
+        class="stats-reset-cancel"
+        onclick="closeStatsResetModal()"
+    >
+        Bekor qilish
+    </button>
+
 </div>
     
 <!-- ========================= ADD / EDIT ========================= -->
