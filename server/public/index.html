@@ -415,9 +415,9 @@
            <path d="M12 5.5v13"></path>
       </svg>
 
-              <span class="drawer-currency-title" data-i18n="changePrice">
-                   Narxni o‘zgartirish
-            </span>
+             <span class="drawer-currency-title" id="drawerCurrencyTitle">
+                 Narxni o‘zgartirish
+           </span>
   
                <button
                type="button"
@@ -595,17 +595,39 @@
                 <svg class="icon icon-lg" style="color:var(--gold-text)"><use href="#i-home"></use></svg>
             </div>
 
-            <div class="menu-item social-menu-item" role="link" tabindex="0"
-                 onclick="window.open('https://t.me/pulzarill_uylar_bot','_blank','noopener')"
-                 onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();window.open('https://t.me/Uy_Joy_bot','_blank','noopener')}">
-                <div class="menu-item-left">
-                    <span class="menu-item-title">
-                        <svg class="icon"><use href="#i-telegram"></use></svg>
-                       <span data-i18n="botContactTitle">Telegram Bot</span>
-                      <span class="menu-item-sub" data-i18n="botContactSub">
-                                 Uy-Joy bot orqali bog‘lanish
-                     </span>
-                 </div>
+            
+<div class="menu-item social-menu-item" role="link" tabindex="0"
+     onclick="window.open('https://t.me/Uy_Joy_bot','_blank','noopener')"
+     onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();window.open('https://t.me/Uy_Joy_bot','_blank','noopener')}">
+
+    <div class="menu-item-left">
+        <span class="menu-item-title">
+            <svg class="icon"><use href="#i-telegram"></use></svg>
+           <span id="drawerBotTitle" data-i18n="botContactTitle">Telegram Bot</span>
+        </span>
+
+      <span class="menu-item-sub" id="drawerBotSubtitle" data-i18n="botContactSub">
+             Uy-Joy bot orqali bog‘lanish
+</span>
+    </div>
+
+    <a href="https://t.me/Uy_Joy_bot"
+       target="_blank"
+       rel="noopener noreferrer"
+       onclick="event.stopPropagation()"
+       aria-label="Telegram botni ochish">
+        <svg class="premium-external-icon"
+             viewBox="0 0 24 24"
+             fill="none"
+             aria-hidden="true">
+            <path d="M7 17L17 7M8 7H17V16"
+                  stroke="currentColor"
+                  stroke-width="1.6"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"/>
+        </svg>
+    </a>
+</div>
 
                  <a href="https://t.me/pulzarill_uylar_bot"
                        target="_blank"
@@ -1558,6 +1580,9 @@ function applyLang(){
 
     setText("menuInstagramTitle",t.instagram);
     setText("menuInstagramSub",t.instagramSub);
+    setText("drawerBotTitle", t.botContactTitle);
+    setText("drawerBotSubtitle", t.botContactSub);
+    setText("drawerCurrencyTitle", t.changePrice);
 
     setText("menuAddressTitle",t.address);
 
@@ -1687,8 +1712,10 @@ function updateDrawerTranslations() {
     const botTitle = drawer.querySelector(".social-menu-item .menu-item-title span");
     if (botTitle) botTitle.textContent = d.telegramBotTitle;
 
-    const botSub = drawer.querySelector(".social-menu-item .menu-item-sub");
-    if (botSub) botSub.textContent = d.telegramBotSub;
+   const botSub = document.getElementById("drawerBotSubtitle");
+    if (botSub) {
+    botSub.textContent = d.telegramBotSub;
+}
 
     const telegram = document.querySelector("#drawerTelegram span");
     if (telegram) telegram.textContent = d.telegram;
