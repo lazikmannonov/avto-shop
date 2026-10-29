@@ -564,115 +564,56 @@
 
         <h3 id="statsResetTitle">Statistikani yangilash</h3>
 
-        <p class="stats-reset-description">
-            Statistika va kirishlar tarixini tozalash uchun
-            shaxsingizni tasdiqlang.
-        </p>
+        <h3 id="statsResetTitle">Statistikani yangilash</h3>
 
-      
-<!-- 1-BOSQICH: PAROL -->
 <div id="statsResetPasswordStep" class="stats-reset-password-step">
-
-    <label class="stats-reset-field-label" for="statsResetPassword">
-        Joriy admin paroli
-    </label>
 
     <input
         id="statsResetPassword"
         class="stats-reset-password-input"
         type="password"
         autocomplete="current-password"
-        placeholder="Admin parolini kiriting"
+        placeholder="Admin paroli"
     />
-
-    <div class="stats-reset-choice-heading">Qaysi amalni bajaramiz?</div>
 
     <div class="stats-reset-options">
 
         <label class="stats-reset-option">
-            <input
-                type="radio"
-                name="statsResetType"
-                value="history"
-            />
-
+            <input type="radio" name="statsResetType" value="history" />
             <span class="stats-reset-radio"></span>
-
             <span class="stats-reset-option-content">
-                <span class="stats-reset-option-title">
-                    Kirishlar tarixini tozalash
-                </span>
-                <span class="stats-reset-option-description">
-                    Faqat foydalanuvchilarning kirish qaydlari o‘chiriladi.
-                </span>
+                <span class="stats-reset-option-title">Kirishlar tarixi</span>
             </span>
-
             <span class="stats-reset-option-check">✓</span>
         </label>
 
         <label class="stats-reset-option">
-            <input
-                type="radio"
-                name="statsResetType"
-                value="all"
-                checked
-            />
-
+            <input type="radio" name="statsResetType" value="all" checked />
             <span class="stats-reset-radio"></span>
-
             <span class="stats-reset-option-content">
-                <span class="stats-reset-option-title">
-                    Barcha statistikani 0 qilish
-                </span>
-                <span class="stats-reset-option-description">
-                    Ko‘rishlar, qo‘ng‘iroqlar va kunlik statistika tozalanadi.
-                </span>
+                <span class="stats-reset-option-title">Barcha statistika</span>
             </span>
-
             <span class="stats-reset-option-check">✓</span>
         </label>
 
     </div>
 
-    <div class="stats-reset-notice">
-        <span class="stats-reset-notice-icon">i</span>
-        <p>
-            Uylar, rasmlar, narxlar, sozlamalar va admin paroli
-            o‘zgarmaydi. Faol admin sessiyangiz saqlanadi.
-        </p>
-    </div>
-
-    <button
-        id="statsResetRequestButton"
-        type="button"
-        class="stats-reset-primary"
-        onclick="requestStatsResetCode()"
-    >
-        <span>Telegram kodini yuborish</span>
+    <button id="statsResetRequestButton" type="button" class="stats-reset-primary" onclick="requestStatsResetCode()">
+        <span>Kod yuborish</span>
         <span aria-hidden="true">→</span>
     </button>
 
-    <button
-        type="button"
-        class="stats-reset-cancel"
-        onclick="closeStatsResetModal()"
-    >
+    <button type="button" class="stats-reset-cancel" onclick="closeStatsResetModal()">
         Bekor qilish
     </button>
 
 </div>
-        <div id="statsResetCodeStep" class="stats-reset-code-step" style="display:none">
+
+       <div id="statsResetCodeStep" class="stats-reset-code-step" style="display:none">
 
     <div class="stats-reset-intro">
-        <div>
-            <h3>Telegram orqali tasdiqlash</h3>
-            <p>Telegram botga yuborilgan 6 xonali kodni kiriting.</p>
-        </div>
+        <h3>Telegram kodi</h3>
     </div>
-
-    <label class="stats-reset-field-label" for="statsResetCode">
-        Tasdiqlash kodi
-    </label>
 
     <input
         id="statsResetCode"
@@ -689,7 +630,7 @@
         class="stats-reset-primary"
         onclick="confirmStatsReset()"
     >
-        Tasdiqlash va davom etish
+        Tasdiqlash
     </button>
 
     <button
