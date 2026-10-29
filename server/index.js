@@ -2851,13 +2851,31 @@ if (
     }
 
     try {
-        // Muddati o'tgan sessiyalarni yangilash.
-        await pool.query(`
-            UPDATE admin_session_history
-            SET status = 'expired'
-            WHERE status = 'active'
-              AND expires_at <= NOW()
-        `);
+       // Sessiya muddati tugaganlarini yangilash.
+await pool.query(`
+    UPDATE admin_session_history
+    SET status = 'expired'
+    WHERE status = 'active'
+      AND expires_at <= NOW()
+`);
+
+// 60 soniyadan ortiq yurak urishi kelmagan
+// sessiyalarni tarixda ham faol emas deb belgilash.
+const staleSessionIds = [...adminSessions.values()]
+    .filter(session =>
+        session.expiresAt > Date.now() &&
+        Date.now() - (session.lastSeen || 0) >= 60_000
+    )
+    .map(session => session.sessionId);
+
+for (const sessionId of staleSessionIds) {
+    await pool.query(`
+        UPDATE admin_session_history
+        SET status = 'expired'
+        WHERE session_id = $1
+          AND status = 'active'
+    `, [sessionId]);
+}
 
         // Jami va bugungi kirishlar.
         const counts = await pool.query(`
