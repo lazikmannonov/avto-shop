@@ -2869,8 +2869,6 @@ if (req.method === 'POST' && url === '/api/admin/password/change/verify') {
         status: 'active'
     }));
 
-                let activeSessions = [];
-
                 if (activeIds.length > 0) {
                     const activeResult = await pool.query(`
                        SELECT
