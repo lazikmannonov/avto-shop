@@ -541,21 +541,19 @@
     <div class="stats-reset-modal">
 
         <div class="stats-reset-modal-header">
-            <div class="stats-reset-icon">
-                <svg class="icon">
-                    <use href="#i-refresh"></use>
-                </svg>
-            </div>
+    <div class="stats-reset-icon">
+        <svg class="icon"><use href="#i-refresh"></use></svg>
+    </div>
 
-            <button
-                type="button"
-                class="stats-reset-close"
-                onclick="closeStatsResetModal()"
-                aria-label="Yopish"
-            >&times;</button>
-        </div>
+    <button type="button" class="stats-reset-close" onclick="closeStatsResetModal()" aria-label="Yopish">&times;</button>
+</div>
 
-        <h3 id="statsResetTitle">Statistikani yangilash</h3>
+<div class="stats-reset-steps">
+    <span class="active"></span>
+    <span></span>
+</div>
+
+<h3 id="statsResetTitle">Statistikani yangilash</h3>
 
 <div id="statsResetPasswordStep" class="stats-reset-password-step">
 
@@ -601,11 +599,7 @@
 </div>
 
        <div id="statsResetCodeStep" class="stats-reset-code-step" style="display:none">
-
-    <div class="stats-reset-intro">
-        <h3>Telegram kodi</h3>
-    </div>
-
+           
     <input
         id="statsResetCode"
         type="text"
@@ -4449,6 +4443,21 @@ async function verifyAdminPasswordChangeCode() {
 let statsResetRequestId = '';
 let statsResetType = 'all';
 
+    function setStatsResetStep(step) {
+    const second = step === 2;
+
+    document.getElementById('statsResetPasswordStep').style.display =
+        second ? 'none' : 'flex';
+    document.getElementById('statsResetCodeStep').style.display =
+        second ? 'flex' : 'none';
+
+    document.getElementById('statsResetTitle').textContent =
+        second ? 'Telegram kodi' : 'Statistikani yangilash';
+
+    document
+        .querySelectorAll('.stats-reset-steps span')
+        .forEach((dot, index) => dot.classList.toggle('active', index < step));
+}
 
 function openStatsResetModal() {
     const modal = document.getElementById('statsResetModal');
@@ -4467,9 +4476,8 @@ function openStatsResetModal() {
 
     statsResetRequestId = '';
 
-    passwordStep.style.display = 'flex';
-    codeStep.style.display = 'none';
-
+   setStatsResetStep(1);
+    
     passwordInput.value = '';
     codeInput.value = '';
 
@@ -4493,8 +4501,8 @@ function backToStatsResetPassword() {
     statsResetRequestId = '';
 
     document.getElementById('statsResetCode').value = '';
-    document.getElementById('statsResetCodeStep').style.display = 'none';
-    document.getElementById('statsResetPasswordStep').style.display = 'flex';
+   
+    setStatsResetStep(1);
 
     document.getElementById('statsResetPassword').focus();
 }
@@ -4552,8 +4560,7 @@ async function requestStatsResetCode() {
 
         statsResetRequestId = data.requestId;
 
-        document.getElementById('statsResetPasswordStep').style.display = 'none';
-        document.getElementById('statsResetCodeStep').style.display = 'flex';
+        setStatsResetStep(2);
 
         const codeInput = document.getElementById('statsResetCode');
         codeInput.value = '';
