@@ -971,3 +971,55 @@ body.admin-page{font-family:Inter,Arial,Helvetica,sans-serif;background:var(--bg
 @media(prefers-reduced-motion:reduce){
   .dashboard-reset-button,.dashboard-reset-button .icon{transition:none}
 }
+/* ===== Markazlashtirilgan modal dizayni ===== */
+.stats-reset-modal{text-align:center;padding-top:30px}
+
+.stats-reset-modal-header{justify-content:center;margin-bottom:18px}
+
+.stats-reset-icon{
+  position:relative;width:64px;height:64px;border-radius:22px;
+}
+.stats-reset-icon::after{
+  content:"";position:absolute;inset:-7px;border-radius:27px;
+  border:1px solid var(--sr-accent);opacity:.35;
+}
+.stats-reset-icon .icon{width:28px;height:28px}
+
+.stats-reset-close{position:absolute;top:14px;right:14px}
+
+/* Bosqich chiziqchalari */
+.stats-reset-steps{display:flex;justify-content:center;gap:6px;margin-bottom:16px}
+.stats-reset-steps span{
+  width:22px;height:4px;border-radius:4px;
+  background:var(--sr-border);transition:width .3s, background .3s;
+}
+.stats-reset-steps span.active{width:36px;background:var(--sr-accent)}
+
+.stats-reset-modal h3{margin:0 0 22px;font-size:22px;text-align:center}
+
+/* Maydonlar */
+.stats-reset-password-input{text-align:center;font-weight:600}
+.stats-reset-password-input::placeholder{font-weight:400}
+
+#statsResetCode{
+  padding-top:18px;padding-bottom:18px;font-size:28px;
+  border-radius:16px;
+}
+
+/* Tanlovlar biroz kattaroq va aniqroq */
+.stats-reset-options{margin:4px 0}
+.stats-reset-option{min-height:84px;border-radius:18px}
+.stats-reset-option-title{font-size:14px;line-height:1.3}
+
+/* Tugmalar */
+.stats-reset-primary{margin-top:8px;padding:16px;border-radius:16px;font-size:15px}
+.stats-reset-cancel{padding:10px;font-size:13.5px}
+
+/* Ikkinchi bosqich silliq paydo bo'ladi */
+.stats-reset-password-step,
+.stats-reset-code-step{animation:srStep .3s ease}
+@keyframes srStep{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+@media(prefers-reduced-motion:reduce){
+  .stats-reset-password-step,.stats-reset-code-step{animation:none}
+}
