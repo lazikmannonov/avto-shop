@@ -4462,10 +4462,12 @@ function openStatsResetModal() {
         showToast('Oynani ochib bo‘lmadi. Sahifa kodini tekshirish kerak.', true);
         return;
     }
+      const defaultRadio = document.querySelector('input[name="statsResetType"][value="all"]');
+     if (defaultRadio) defaultRadio.checked = true;
 
     statsResetRequestId = '';
 
-    passwordStep.style.display = 'block';
+    passwordStep.style.display = 'flex';
     codeStep.style.display = 'none';
 
     passwordInput.value = '';
@@ -4492,7 +4494,7 @@ function backToStatsResetPassword() {
 
     document.getElementById('statsResetCode').value = '';
     document.getElementById('statsResetCodeStep').style.display = 'none';
-    document.getElementById('statsResetPasswordStep').style.display = 'block';
+    document.getElementById('statsResetPasswordStep').style.display = 'flex';
 
     document.getElementById('statsResetPassword').focus();
 }
@@ -4551,7 +4553,7 @@ async function requestStatsResetCode() {
         statsResetRequestId = data.requestId;
 
         document.getElementById('statsResetPasswordStep').style.display = 'none';
-        document.getElementById('statsResetCodeStep').style.display = 'block';
+        document.getElementById('statsResetCodeStep').style.display = 'flex';
 
         const codeInput = document.getElementById('statsResetCode');
         codeInput.value = '';
@@ -4562,10 +4564,11 @@ async function requestStatsResetCode() {
     } catch (error) {
         console.error('Statistikani tozalash kodi:', error);
         showToast(error.message || 'Xatolik yuz berdi.', true);
-    } finally {
-        button.disabled = false;
-        button.textContent = 'Telegram kodini yuborish';
-    }
+   } finally {
+    button.disabled = false;
+    button.innerHTML =
+        '<span>Kod yuborish</span><span aria-hidden="true">→</span>';
+}
 }
 
 async function confirmStatsReset() {
@@ -4641,15 +4644,23 @@ async function confirmStatsReset() {
         console.error('Statistikani tozalash:', error);
         showToast(error.message || 'Statistikani tozalashda xatolik.', true);
     } finally {
-        button.disabled = false;
-        button.textContent = 'Tasdiqlash va tozalash';
-    }
+    button.disabled = false;
+    button.textContent = 'Tasdiqlash';
+   }
 }
 
 // Faqat 6 ta raqam kiritishga ruxsat berish.
 document.getElementById('statsResetCode')?.addEventListener('input', function () {
     this.value = this.value.replace(/\D/g, '').slice(0, 6);
 });
+      document.addEventListener('keydown', e => {
+      if (e.key === 'Escape' && $('statsResetModal').style.display === 'flex') {
+          closeStatsResetModal();
+      }
+  });
+  $('statsResetModal').addEventListener('click', e => {
+      if (e.target === e.currentTarget) closeStatsResetModal();
+  });
 
 /* =========================================================
    START
