@@ -1014,3 +1014,80 @@ body.admin-page{font-family:Inter,Arial,Helvetica,sans-serif;background:var(--bg
         font-size: 11px;
     }
 }
+
+/* Tanlov kartalarini ixchamlashtirish */
+.stats-reset-options {
+    display: grid;
+    gap: 6px;
+    margin-top: 0;
+}
+
+.stats-reset-option {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 10px;
+    background: #fff;
+    border: 1px solid #e8e0d7;
+    border-radius: 9px;
+    cursor: pointer;
+    transition: border-color .18s, background .18s;
+}
+
+.stats-reset-option:hover {
+    border-color: #b9a28c;
+    background: #fdfbf8;
+}
+
+.stats-reset-option:has(input:checked) {
+    background: #f7f1ea;
+    border-color: #96775d;
+}
+
+.stats-reset-radio {
+    width: 15px;
+    height: 15px;
+    flex: 0 0 15px;
+    margin-top: 0;
+    border: 1.5px solid #c8bbae;
+    border-radius: 50%;
+    background: #fff;
+}
+
+.stats-reset-option input:checked + .stats-reset-radio {
+    border: 4px solid #75563f;
+}
+
+.stats-reset-option-content {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+}
+
+.stats-reset-option-title {
+    color: #332a22;
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 1.4;
+}
+
+.stats-reset-option-description {
+    color: #82776c;
+    font-size: 10.5px;
+    line-height: 1.4;
+}
+
+.stats-reset-option-check {
+    display: none;
+    color: #75563f;
+    font-size: 13px;
+    font-weight: 800;
+}
+
+.stats-reset-option:has(input:checked) .stats-reset-option-check {
+    display: inline-block;
+}
+
