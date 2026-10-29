@@ -2255,7 +2255,8 @@ adminSessions.set(sessionToken, {
     sessionId,
     adminName: request.name,
     phone: request.phone,
-    loginAt: new Date().toISOString()
+    loginAt: new Date().toISOString(),
+    lastSeen: Date.now()
 });
     
 } catch (error) {
@@ -2811,6 +2812,31 @@ if (req.method === 'POST' && url === '/api/admin/password/change/verify') {
                 expiresAt: adminSessions.get(token).expiresAt
             });
         }
+      
+if (
+    url === '/api/admin/heartbeat' &&
+    req.method === 'POST'
+) {
+    if (!isAdminHeader(req)) {
+        return sendJson(res, 401, UNAUTHORIZED);
+    }
+
+    const token = String(
+        req.headers['x-admin-session'] || ''
+    ).trim();
+
+    const session = adminSessions.get(token);
+
+    if (!session) {
+        return sendJson(res, 401, UNAUTHORIZED);
+    }
+
+    session.lastSeen = Date.now();
+
+    return sendJson(res, 200, {
+        ok: true
+    });
+}
     
         // =================================================
         // ADMIN: SESSIYALAR TARIXI VA STATISTIKASI
@@ -2862,7 +2888,10 @@ if (req.method === 'POST' && url === '/api/admin/password/change/verify') {
 
         // Hozir server xotirasida mavjud faol sessiyalar.
         const activeSessions = [...adminSessions.values()]
-            .filter(session => session.expiresAt > Date.now())
+           .filter(session =>
+          session.expiresAt > Date.now() &&
+          Date.now() - (session.lastSeen || Date.now()) < 60_000
+    )
             .map(session => ({
                 session_id: session.sessionId,
                 admin_name: session.adminName || 'Admin',
