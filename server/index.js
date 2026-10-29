@@ -2816,98 +2816,82 @@ if (req.method === 'POST' && url === '/api/admin/password/change/verify') {
         // ADMIN: SESSIYALAR TARIXI VA STATISTIKASI
         // =================================================
 
-        if (
-            url === '/api/admin/session-history' &&
-            req.method === 'GET'
-        ) {
-            if (!isAdminHeader(req)) {
-                return sendJson(res, 401, UNAUTHORIZED);
-            }
+      if (
+    url === '/api/admin/session-history' &&
+    req.method === 'GET'
+) {
+    if (!isAdminHeader(req)) {
+        return sendJson(res, 401, UNAUTHORIZED);
+    }
 
-            try {
-                // Muddati o'tgan yozuvlarni yangilash.
-                await pool.query(`
-                    UPDATE admin_session_history
-                    SET status = 'expired'
-                    WHERE status = 'active'
-                      AND expires_at <= NOW()
-                `);
+    try {
+        // Muddati o'tgan sessiyalarni yangilash.
+        await pool.query(`
+            UPDATE admin_session_history
+            SET status = 'expired'
+            WHERE status = 'active'
+              AND expires_at <= NOW()
+        `);
 
-                const counts = await pool.query(`
-                    SELECT
-                        COUNT(*)::int AS total_logins,
-                        COUNT(*) FILTER (
-                            WHERE
-                                (login_at AT TIME ZONE 'Asia/Tashkent')::date =
-                                (NOW() AT TIME ZONE 'Asia/Tashkent')::date
-                        )::int AS today_logins
-                    FROM admin_session_history
-                `);
+        // Jami va bugungi kirishlar.
+        const counts = await pool.query(`
+            SELECT
+                COUNT(*)::int AS total_logins,
+                COUNT(*) FILTER (
+                    WHERE
+                        (login_at AT TIME ZONE 'Asia/Tashkent')::date =
+                        (NOW() AT TIME ZONE 'Asia/Tashkent')::date
+                )::int AS today_logins
+            FROM admin_session_history
+        `);
 
-                const recent = await pool.query(`
-                   SELECT
-                         id,
-                         admin_name,
-                         phone,
-                         login_at,
-                         expires_at,
-                         logout_at,
-                         status
-                    FROM admin_session_history
-                    ORDER BY login_at DESC
-                    LIMIT 50
-                `);
+        // So'nggi kirishlar tarixi.
+        const recent = await pool.query(`
+            SELECT
+                id,
+                admin_name,
+                phone,
+                login_at,
+                expires_at,
+                logout_at,
+                status
+            FROM admin_session_history
+            ORDER BY login_at DESC
+            LIMIT 50
+        `);
 
-               const activeSessions = [...adminSessions.values()]
-    .filter(session => session.expiresAt > Date.now())
-    .map(session => ({
-        session_id: session.sessionId,
-        admin_name: session.adminName || 'Admin',
-        phone: session.phone || '',
-        login_at: session.loginAt || null,
-        expires_at: new Date(session.expiresAt).toISOString(),
-        status: 'active'
-    }));
+        // Hozir server xotirasida mavjud faol sessiyalar.
+        const activeSessions = [...adminSessions.values()]
+            .filter(session => session.expiresAt > Date.now())
+            .map(session => ({
+                session_id: session.sessionId,
+                admin_name: session.adminName || 'Admin',
+                phone: session.phone || '',
+                login_at: session.loginAt || null,
+                expires_at: new Date(session.expiresAt).toISOString(),
+                status: 'active'
+            }));
 
-                if (activeIds.length > 0) {
-                    const activeResult = await pool.query(`
-                       SELECT
-                           id,
-                           admin_name,
-                           phone,
-                           login_at,
-                           logout_at,
-                           expires_at,
-                           status
-                        FROM admin_session_history
-                        WHERE session_id = ANY($1::text[])
-                          AND status = 'active'
-                          AND expires_at > NOW()
-                        ORDER BY login_at DESC
-                    `, [activeIds]);
+        return sendJson(res, 200, {
+            ok: true,
+            totalLogins: counts.rows[0].total_logins,
+            todayLogins: counts.rows[0].today_logins,
+            activeSessions,
+            recentSessions: recent.rows
+        });
 
-                    activeSessions = activeResult.rows;
-                }
+    } catch (error) {
+        console.error(
+            'Admin sessiyalari tarixini olish xatosi:',
+            error
+        );
 
-                return sendJson(res, 200, {
-                    ok: true,
-                    totalLogins: counts.rows[0].total_logins,
-                    todayLogins: counts.rows[0].today_logins,
-                    activeSessions,
-                    recentSessions: recent.rows
-                });
-            } catch (error) {
-                console.error(
-                    'Admin sessiyalari tarixini olish xatosi:',
-                    error
-                );
-
-                return sendJson(res, 500, {
-                    ok: false,
-                    error: 'Sessiyalar tarixini yuklab bo‘lmadi.'
-                });
-            }
-        }
+        return sendJson(res, 500, {
+            ok: false,
+            error: 'Sessiyalar tarixini yuklab bo‘lmadi.'
+        });
+    }
+}
 
         // =================================================
         // GET CARS
