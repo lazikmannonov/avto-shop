@@ -4493,20 +4493,33 @@ async function verifyAdminPasswordChangeCode() {
 let statsResetRequestId = '';
 let statsResetType = 'all';
 
+
 function openStatsResetModal() {
+    const modal = document.getElementById('statsResetModal');
+    const passwordStep = document.getElementById('statsResetPasswordStep');
+    const codeStep = document.getElementById('statsResetCodeStep');
+    const passwordInput = document.getElementById('statsResetPassword');
+    const codeInput = document.getElementById('statsResetCode');
+
+    if (!modal || !passwordStep || !codeStep || !passwordInput || !codeInput) {
+        console.error('Statistikani yangilash oynasi uchun kerakli HTML element topilmadi.');
+        showToast('Oynani ochib bo‘lmadi. Sahifa kodini tekshirish kerak.', true);
+        return;
+    }
+
     statsResetRequestId = '';
 
-    document.getElementById('statsResetPasswordStep').style.display = 'block';
-    document.getElementById('statsResetCodeStep').style.display = 'none';
+    passwordStep.style.display = 'block';
+    codeStep.style.display = 'none';
 
-    document.getElementById('statsResetPassword').value = '';
-    document.getElementById('statsResetCode').value = '';
+    passwordInput.value = '';
+    codeInput.value = '';
 
-    document.getElementById('statsResetModal').style.display = 'flex';
+    modal.style.display = 'flex';
 
-    setTimeout(() => {
-        document.getElementById('statsResetPassword').focus();
-    }, 50);
+    requestAnimationFrame(() => {
+        passwordInput.focus();
+    });
 }
 
 function closeStatsResetModal() {
