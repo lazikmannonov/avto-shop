@@ -904,3 +904,24 @@ body.admin-page{font-family:Inter,Arial,Helvetica,sans-serif;background:var(--bg
 @media(prefers-reduced-motion:reduce){
   .stats-reset-overlay,.stats-reset-modal{animation:none}
 }
+/* ===== Ixchamroq va chiroyliroq ko'rinish ===== */
+.stats-reset-modal{max-width:400px;padding:24px 22px 20px}
+.stats-reset-modal h3{margin:0 0 20px;font-size:22px}
+.stats-reset-intro h3{font-size:20px;margin:0 0 6px}
+
+/* Tanlovlar: yonma-yon ikkita karta */
+.stats-reset-options{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.stats-reset-option{
+  flex-direction:column;justify-content:center;text-align:center;
+  min-height:76px;padding:16px 10px;
+}
+.stats-reset-radio{display:none}
+.stats-reset-option-content{align-items:center;flex:none}
+.stats-reset-option-title{font-size:14px}
+.stats-reset-option-check{
+  position:absolute;top:8px;right:8px;flex:none;width:20px;height:20px;font-size:11px;
+}
+
+@media(max-width:380px){
+  .stats-reset-options{grid-template-columns:1fr}
+}
