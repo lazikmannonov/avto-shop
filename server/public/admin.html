@@ -1898,15 +1898,18 @@ async function verifyLoginCode() {
             $("loginPassword").value = "";
         }
 
-        showLoginStep(1);
+      showLoginStep(1);
 
-        $("loginScreen").classList.add("hidden");
-        $("app").style.display = "flex";
+$("loginScreen").classList.add("hidden");
+$("app").style.display = "flex";
 
-        setLoginMessage("");
+setLoginMessage("");
 
-        await loadAll();
+// Faol sessiyani kuzatishni boshlash
+startAdminHeartbeat();
 
+await loadAll();
+        
     } catch (err) {
 
         console.error(err);
@@ -1927,6 +1930,8 @@ async function verifyLoginCode() {
 }
 
 function logoutAdmin(message) {
+    
+    stopAdminHeartbeat();
 
     /* Sessiyani serverda ham tugatamiz */
     const oldToken = adminSessionToken;
@@ -4121,13 +4126,15 @@ async function init() {
                 cache: "no-store"
             });
 
-            if (response.ok) {
-                $("loginScreen").classList.add("hidden");
-                $("app").style.display = "flex";
+          if (response.ok) {
+    $("loginScreen").classList.add("hidden");
+    $("app").style.display = "flex";
 
-                await loadAll();
-                return;
-            }
+    startAdminHeartbeat();
+
+    await loadAll();
+    return;
+}
         } catch (error) {
             console.error("Admin sessiyasini tekshirishda xatolik:", error);
         }
@@ -4144,6 +4151,79 @@ async function init() {
 
     applyLoginLock();
 }
+
+    // =============================================
+// ADMIN — FAOL SESSIYANI KUZATISH
+// =============================================
+
+let adminHeartbeatTimer = null;
+let adminHeartbeatBusy = false;
+
+async function sendAdminHeartbeat() {
+    if (!adminSessionToken || adminHeartbeatBusy) {
+        return;
+    }
+
+    // Yashirin yoki yopilgan sahifa uchun xabar yubormaymiz.
+    if (document.visibilityState !== 'visible') {
+        return;
+    }
+
+    adminHeartbeatBusy = true;
+
+    try {
+        const response = await fetch('/api/admin/heartbeat', {
+            method: 'POST',
+            headers: adminHeaders({
+                'Content-Type': 'application/json'
+            }),
+            cache: 'no-store'
+        });
+
+        if (response.status === 401) {
+            stopAdminHeartbeat();
+            logoutAdmin('Admin sessiyasi tugagan. Qaytadan kiring.');
+        }
+    } catch (error) {
+        // Vaqtinchalik internet uzilishi sessiyani darhol tugatmaydi.
+        console.warn('Admin faolligini yangilash imkoni bo‘lmadi.');
+    } finally {
+        adminHeartbeatBusy = false;
+    }
+}
+
+function startAdminHeartbeat() {
+    stopAdminHeartbeat();
+
+    if (!adminSessionToken) {
+        return;
+    }
+
+    // Dastlab darhol yuboriladi.
+    sendAdminHeartbeat();
+
+    // Keyin har 20 soniyada yangilanadi.
+    adminHeartbeatTimer = setInterval(() => {
+        sendAdminHeartbeat();
+    }, 20_000);
+}
+
+function stopAdminHeartbeat() {
+    if (adminHeartbeatTimer !== null) {
+        clearInterval(adminHeartbeatTimer);
+        adminHeartbeatTimer = null;
+    }
+}
+
+document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible') {
+        sendAdminHeartbeat();
+    }
+});
+
+window.addEventListener('pagehide', () => {
+    stopAdminHeartbeat();
+});
 
 /* =========================================================
    MOBILE SIDEBAR
