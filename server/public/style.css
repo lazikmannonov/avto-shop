@@ -746,77 +746,331 @@ body.admin-page{font-family:Inter,Arial,Helvetica,sans-serif;background:var(--bg
 @keyframes lightboxSlidePrev{from{opacity:.65;transform:translateX(-55px)}to{opacity:1;transform:translateX(0)}}
 
 
-/* FIX — Statistikani tozalash oynasi */
-#statsResetModal .stats-reset-modal {
+/* UY-JOY — STATISTIKANI YANGILASH MODALI: TO‘LIQ TUZATISH */
+
+#statsResetModal,
+#statsResetModal * {
     box-sizing: border-box;
-    width: min(100% - 28px, 440px);
-    max-height: calc(100vh - 32px);
+}
+
+#statsResetModal.stats-reset-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
     overflow-y: auto;
+    background: rgba(0, 0, 0, .62);
+    -webkit-backdrop-filter: blur(4px);
+    backdrop-filter: blur(4px);
+}
+
+#statsResetModal .stats-reset-modal {
+    position: relative;
+    width: 100%;
+    max-width: 440px;
+    max-height: calc(100dvh - 32px);
+    margin: auto;
+    padding: 22px;
+    overflow-y: auto;
+    border: 1px solid var(--a-l1, #DED5CA);
+    border-radius: 18px;
+    background: var(--card, #FFFFFF);
+    color: var(--text, #30271F);
+    box-shadow: 0 24px 80px rgba(0, 0, 0, .24);
+    font-family: inherit;
+}
+
+#statsResetModal .stats-reset-modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 14px;
 }
 
 #statsResetModal .stats-reset-modal-header > .stats-reset-icon {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 40px;
-    height: 40px;
-    flex: 0 0 40px;
+    flex: 0 0 42px;
+    width: 42px;
+    height: 42px;
+    padding: 0;
+    border: 1px solid var(--a-l1, #DED5CA);
+    border-radius: 12px;
+    background: var(--a-soft, #F7F2EC);
+    color: var(--a-icon-c, #79583F);
 }
 
-#statsResetModal .stats-reset-modal-header > .stats-reset-icon svg {
-    width: 20px;
-    height: 20px;
+#statsResetModal .stats-reset-modal-header > .stats-reset-icon svg,
+#statsResetModal .stats-reset-modal-header > .stats-reset-icon .icon {
+    display: block;
+    width: 20px !important;
+    height: 20px !important;
+    min-width: 20px;
     max-width: 20px;
+    min-height: 20px;
     max-height: 20px;
 }
 
-#statsResetModal #statsResetPasswordStep > .stats-reset-intro {
-    display: none;
+#statsResetModal .stats-reset-close {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 34px;
+    width: 34px;
+    height: 34px;
+    padding: 0;
+    border: 1px solid var(--a-l1, #DED5CA);
+    border-radius: 9px;
+    background: var(--a-soft, #F7F2EC);
+    color: var(--text, #30271F);
+    font-size: 22px;
+    line-height: 1;
+    cursor: pointer;
+}
+
+#statsResetModal #statsResetTitle {
+    margin: 0 0 7px;
+    color: var(--text, #30271F);
+    font-size: 19px;
+    font-weight: 750;
+    line-height: 1.3;
+}
+
+#statsResetModal > .stats-reset-modal > .stats-reset-description {
+    margin: 0 0 18px;
+    color: var(--muted, #766B60);
+    font-size: 12px;
+    line-height: 1.6;
 }
 
 #statsResetModal #statsResetPasswordStep {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
     width: 100%;
-    box-sizing: border-box;
+    min-width: 0;
+    margin: 0;
 }
 
-#statsResetModal #statsResetPasswordStep *,
-#statsResetModal #statsResetCodeStep * {
-    box-sizing: border-box;
+#statsResetModal #statsResetPasswordStep > .stats-reset-intro {
+    display: none !important;
 }
 
-#statsResetModal #statsResetPasswordStep #statsResetPassword {
+#statsResetModal .stats-reset-field-label,
+#statsResetModal .stats-reset-choice-heading {
+    display: block;
+    margin: 0;
+    color: var(--text, #30271F);
+    font-size: 12px;
+    font-weight: 650;
+    line-height: 1.45;
+}
+
+#statsResetModal #statsResetPassword {
+    display: block;
     width: 100%;
-    max-width: 100%;
+    height: 42px;
+    margin: 0;
+    padding: 0 12px;
+    border: 1px solid var(--a-l1, #DED5CA);
+    border-radius: 9px;
+    background: var(--card, #FFFFFF);
+    color: var(--text, #30271F);
+    font-family: inherit;
+    font-size: 13px;
+    outline: none;
 }
 
-#statsResetModal #statsResetPasswordStep .stats-reset-option {
+#statsResetModal #statsResetPassword:focus,
+#statsResetModal #statsResetCode:focus {
+    border-color: #8B6A4F;
+    box-shadow: 0 0 0 3px rgba(139, 106, 79, .12);
+}
+
+#statsResetModal .stats-reset-options {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 7px;
+    margin: 0;
+}
+
+#statsResetModal .stats-reset-option {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 10px;
     width: 100%;
+    min-width: 0;
+    min-height: 58px;
+    margin: 0;
+    padding: 10px 11px;
+    border: 1px solid var(--a-l1, #DED5CA);
+    border-radius: 10px;
+    background: var(--card, #FFFFFF);
+    cursor: pointer;
 }
 
-#statsResetModal #statsResetPasswordStep .stats-reset-option input[type="radio"] {
+#statsResetModal .stats-reset-option:has(input:checked) {
+    border-color: #A68B72;
+    background: var(--a-soft, #F7F2EC);
+}
+
+#statsResetModal .stats-reset-option input[type="radio"] {
+    flex: 0 0 15px;
+    width: 15px;
+    height: 15px;
+    margin: 0;
+    accent-color: #79583F;
+}
+
+#statsResetModal .stats-reset-radio {
+    display: none;
+}
+
+#statsResetModal .stats-reset-option-content {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: 3px;
+    min-width: 0;
+}
+
+#statsResetModal .stats-reset-option-title {
+    color: var(--text, #30271F);
+    font-size: 12px;
+    font-weight: 650;
+    line-height: 1.4;
+}
+
+#statsResetModal .stats-reset-option-description {
+    color: var(--muted, #766B60);
+    font-size: 10.5px;
+    line-height: 1.5;
+}
+
+#statsResetModal .stats-reset-option-check {
     flex: 0 0 auto;
+    color: #79583F;
+    font-size: 12px;
 }
 
-#statsResetModal #statsResetPasswordStep .stats-reset-option-content {
-    overflow-wrap: anywhere;
+#statsResetModal .stats-reset-notice {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    margin: 0;
+    padding: 10px;
+    border: 1px solid var(--a-l1, #DED5CA);
+    border-radius: 9px;
+    background: var(--a-soft, #F7F2EC);
 }
 
-#statsResetModal #statsResetPasswordStep .stats-reset-primary {
+#statsResetModal .stats-reset-notice-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 17px;
+    width: 17px;
+    height: 17px;
+    border: 1px solid #A68B72;
+    border-radius: 50%;
+    color: #79583F;
+    font-size: 10px;
+    font-weight: 700;
+}
+
+#statsResetModal .stats-reset-notice p {
+    margin: 0;
+    color: var(--muted, #766B60);
+    font-size: 10.5px;
+    line-height: 1.5;
+}
+
+#statsResetModal .stats-reset-primary {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+    width: 100%;
     min-height: 42px;
+    margin: 0;
+    padding: 10px 13px;
+    border: 1px solid #624630;
+    border-radius: 9px;
+    background: #624630;
+    color: #FFFFFF;
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 650;
+    cursor: pointer;
+}
+
+#statsResetModal .stats-reset-primary:hover {
+    background: #4F3828;
+}
+
+#statsResetModal .stats-reset-primary:disabled {
+    opacity: .6;
+    cursor: not-allowed;
+}
+
+#statsResetModal .stats-reset-cancel {
+    display: block;
+    align-self: center;
+    margin: 0 auto;
+    padding: 5px 12px;
+    border: 0;
+    background: transparent;
+    color: var(--muted, #766B60);
+    font-family: inherit;
+    font-size: 11px;
+    cursor: pointer;
 }
 
 #statsResetModal #statsResetCodeStep {
+    display: none;
+    flex-direction: column;
+    gap: 12px;
     width: 100%;
-    box-sizing: border-box;
+    min-width: 0;
 }
 
-#statsResetModal #statsResetCodeStep #statsResetCode {
+#statsResetModal #statsResetCodeStep[style*="block"] {
+    display: flex;
+}
+
+#statsResetModal #statsResetCode {
     display: block;
     width: 100%;
-    min-height: 42px;
-    box-sizing: border-box;
+    min-height: 44px;
     padding: 0 12px;
-    border: 1px solid var(--border, #E5DCD1);
+    border: 1px solid var(--a-l1, #DED5CA);
     border-radius: 9px;
-    font-size: 14px;
+    background: var(--card, #FFFFFF);
+    color: var(--text, #30271F);
+    font-family: inherit;
+    font-size: 16px;
+    letter-spacing: 4px;
+    outline: none;
+}
+
+@media (max-width: 480px) {
+    #statsResetModal.stats-reset-overlay {
+        padding: 10px;
+    }
+
+    #statsResetModal .stats-reset-modal {
+        padding: 17px;
+        max-height: calc(100dvh - 20px);
+        border-radius: 15px;
+    }
+
+    #statsResetModal #statsResetTitle {
+        font-size: 17px;
+    }
 }
