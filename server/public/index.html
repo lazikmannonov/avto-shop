@@ -415,8 +415,10 @@
            <path d="M12 5.5v13"></path>
       </svg>
 
-                <span class="drawer-currency-title">Narxni o‘zgartirish</span>
-
+              <span class="drawer-currency-title" data-i18n="changePrice">
+                   Narxni o‘zgartirish
+            </span>
+  
                <button
                type="button"
                   class="drawer-currency-value"
@@ -599,10 +601,11 @@
                 <div class="menu-item-left">
                     <span class="menu-item-title">
                         <svg class="icon"><use href="#i-telegram"></use></svg>
-                        <span>Telegram Bot</span>
-                    </span>
-                    <span class="menu-item-sub">Uy-Joy bot orqali bog‘lanish</span>
-                </div>
+                       <span data-i18n="botContactTitle">Telegram Bot</span>
+                      <span class="menu-item-sub" data-i18n="botContactSub">
+                                 Uy-Joy bot orqali bog‘lanish
+                     </span>
+                 </div>
 
                  <a href="https://t.me/pulzarill_uylar_bot"
                        target="_blank"
@@ -991,6 +994,9 @@ const translations={
         noAddress:"Manzil ko‘rsatilmagan",
         house:"Uy",
         defaultAddress:"Toshkent, O‘zbekiston",
+        botContactTitle: "Telegram Bot",
+        botContactSub: "Uy-Joy bot orqali bog‘lanish",
+        changePrice: "Narxni o‘zgartirish",
         pageTitle:"Uy-Joy — Uylar"
     },
 
@@ -1044,6 +1050,9 @@ const translations={
         noAddress:"Адрес не указан",
         house:"Жильё",
         defaultAddress:"Ташкент, Узбекистан",
+        botContactTitle: "Telegram-бот",
+        botContactSub: "Связаться через бот Uy-Joy",
+        changePrice: "Изменить валюту",
         pageTitle:"Uy-Joy — Недвижимость"
     },
 
@@ -1097,6 +1106,9 @@ const translations={
         noAddress:"Address not specified",
         house:"Property",
         defaultAddress:"Tashkent, Uzbekistan",
+        botContactTitle: "Telegram Bot",
+        botContactSub: "Contact via Uy-Joy bot",
+        changePrice: "Change currency",
         pageTitle:"Uy-Joy — Properties"
     }
 
@@ -1579,7 +1591,10 @@ const drawerTranslations = {
         logout: "Chiqish",
         language: "Til",
         appearance: "Ko‘rinish"
-    },
+        telegramBotTitle: "Telegram Bot",
+        telegramBotSub: "Uy-Joy bot orqali bog‘lanish",
+        changePrice: "Narxni o‘zgartirish",
+     },
     ru: {
         home: "Главная",
         favorites: "Избранное",
@@ -1594,6 +1609,9 @@ const drawerTranslations = {
         logout: "Выход",
         language: "Язык",
         appearance: "Тема"
+        telegramBotTitle: "Telegram-бот",
+        telegramBotSub: "Связаться через бот Uy-Joy",
+        changePrice: "Изменить валюту",
     },
     en: {
         home: "Home",
@@ -1609,6 +1627,9 @@ const drawerTranslations = {
         logout: "Log out",
         language: "Language",
         appearance: "Appearance"
+        telegramBotTitle: "Telegram Bot",
+        telegramBotSub: "Contact via Uy-Joy bot",
+        changePrice: "Change currency",
     }
 };
 
@@ -1625,7 +1646,9 @@ function updateDrawerTranslations() {
     if (labels[0]) labels[0].textContent = d.language;
     if (labels[1]) labels[1].textContent = d.appearance;
 
-    const items = drawer.querySelectorAll(".site-menu-links > .menu-item");
+    const items = drawer.querySelectorAll(
+        ".site-menu-links > .menu-item"
+    );
 
     items.forEach(function(item) {
         const span = item.querySelector(":scope > span");
@@ -1643,10 +1666,15 @@ function updateDrawerTranslations() {
 
         const text = span.textContent.trim();
 
-        if (["Bosh sahifa", "Главная", "Home"].includes(text)) span.textContent = d.home;
-        else if (["Sevimlilar", "Избранное", "Favorites"].includes(text)) span.textContent = d.favorites;
-        else if (["Uy va yer qidirish", "Поиск домов и участков", "Search homes and land"].includes(text)) span.textContent = d.search;
-        else if (["Sozlamalar", "Настройки", "Settings"].includes(text)) span.textContent = d.settings;
+        if (["Bosh sahifa", "Главная", "Home"].includes(text)) {
+            span.textContent = d.home;
+        } else if (["Sevimlilar", "Избранное", "Favorites"].includes(text)) {
+            span.textContent = d.favorites;
+        } else if (["Uy va yer qidirish", "Поиск домов и участков", "Search homes and land"].includes(text)) {
+            span.textContent = d.search;
+        } else if (["Sozlamalar", "Настройки", "Settings"].includes(text)) {
+            span.textContent = d.settings;
+        }
     });
 
     const contact = document.querySelector("#contactAccordionToggle span");
@@ -1655,14 +1683,22 @@ function updateDrawerTranslations() {
     const phone = document.getElementById("drawerPhoneText");
     if (phone) phone.textContent = d.phone;
 
-    const bot = drawer.querySelector('a[href*="pulzarill_uylar_bot"] span');
-    if (bot) bot.textContent = d.telegramBot;
+    // Telegram Bot sarlavhasi va izohi
+    const botTitle = drawer.querySelector(".social-menu-item .menu-item-title span");
+    if (botTitle) botTitle.textContent = d.telegramBotTitle;
+
+    const botSub = drawer.querySelector(".social-menu-item .menu-item-sub");
+    if (botSub) botSub.textContent = d.telegramBotSub;
 
     const telegram = document.querySelector("#drawerTelegram span");
     if (telegram) telegram.textContent = d.telegram;
 
     const instagram = document.querySelector("#drawerInstagram span");
     if (instagram) instagram.textContent = d.instagram;
+
+    // Narx valyutasini almashtirish matni
+    const currencyTitle = document.querySelector(".drawer-currency-title");
+    if (currencyTitle) currencyTitle.textContent = d.changePrice;
 }
 
 function updateSiteMenuPhone() {
