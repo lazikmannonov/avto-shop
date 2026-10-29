@@ -679,6 +679,46 @@
     </button>
 
 </div>
+        <div id="statsResetCodeStep" class="stats-reset-code-step" style="display:none">
+
+    <div class="stats-reset-intro">
+        <div>
+            <h3>Telegram orqali tasdiqlash</h3>
+            <p>Telegram botga yuborilgan 6 xonali kodni kiriting.</p>
+        </div>
+    </div>
+
+    <label class="stats-reset-field-label" for="statsResetCode">
+        Tasdiqlash kodi
+    </label>
+
+    <input
+        id="statsResetCode"
+        type="text"
+        inputmode="numeric"
+        autocomplete="one-time-code"
+        maxlength="6"
+        placeholder="000000"
+    />
+
+    <button
+        id="statsResetVerifyButton"
+        type="button"
+        class="stats-reset-primary"
+        onclick="confirmStatsReset()"
+    >
+        Tasdiqlash va davom etish
+    </button>
+
+    <button
+        type="button"
+        class="stats-reset-cancel"
+        onclick="closeStatsResetModal()"
+    >
+        Bekor qilish
+    </button>
+
+</div>
     
 <!-- ========================= ADD / EDIT ========================= -->
 
