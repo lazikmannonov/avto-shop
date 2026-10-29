@@ -6,6 +6,7 @@ const { promisify } = require('node:util');
 const scryptAsync = promisify(crypto.scrypt);
 
 const adminPasswordChangeRequests = new Map();
+const adminStatsResetRequests = new Map();
 
 const ADMIN_PASSWORD_CHANGE_TTL_MS = 60 * 1000;
 const ADMIN_PASSWORD_CHANGE_MAX_TRIES = 3;
@@ -2253,7 +2254,8 @@ adminSessions.set(sessionToken, {
     expiresAt,
     sessionId,
     adminName: request.name,
-    phone: request.phone
+    phone: request.phone,
+    loginAt: new Date().toISOString()
 });
     
 } catch (error) {
@@ -2432,6 +2434,193 @@ if (newPassword.length < 8 || newPassword.length > 200) {
         return sendJson(res, 500, {
             ok: false,
             error: 'Kod yuborishda server xatosi yuz berdi.'
+        });
+    }
+}
+        if (req.method === 'POST' && url === '/api/admin/stats/reset/verify') {
+    if (!isAdminHeader(req)) {
+        return sendJson(res, 401, {
+            error: 'Admin sessiyasi tugagan. Qaytadan kiring.'
+        });
+    }
+
+    try {
+        const body = parseJsonObject(await readBody(req));
+        const requestId = String(body.requestId || '').trim();
+        const code = String(body.code || '').trim();
+        const sessionToken = String(req.headers['x-admin-session'] || '');
+
+        if (!/^[a-f0-9]{32}$/.test(requestId) || !/^\d{6}$/.test(code)) {
+            return sendJson(res, 400, {
+                error: 'Tasdiqlash kodini to‘g‘ri kiriting.'
+            });
+        }
+
+        const request = adminStatsResetRequests.get(requestId);
+
+        if (!request || request.sessionToken !== sessionToken) {
+            return sendJson(res, 400, {
+                error: 'Tasdiqlash so‘rovi topilmadi. Yangi kod oling.'
+            });
+        }
+
+        if (Date.now() > request.expiresAt) {
+            adminStatsResetRequests.delete(requestId);
+
+            return sendJson(res, 400, {
+                error: 'Kodning amal qilish muddati tugagan. Yangi kod oling.'
+            });
+        }
+
+        request.tries += 1;
+
+        const expectedHash = Buffer.from(request.codeHash, 'hex');
+        const actualHash = Buffer.from(sha256(code), 'hex');
+
+        const codeMatches =
+            expectedHash.length === actualHash.length &&
+            crypto.timingSafeEqual(expectedHash, actualHash);
+
+        if (!codeMatches) {
+            if (request.tries >= 3) {
+                adminStatsResetRequests.delete(requestId);
+
+                return sendJson(res, 429, {
+                    error: 'Kod 3 marta noto‘g‘ri kiritildi. Yangi kod oling.'
+                });
+            }
+
+            return sendJson(res, 400, {
+                error: 'Tasdiqlash kodi noto‘g‘ri.',
+                attemptsLeft: 3 - request.tries
+            });
+        }
+
+        // Kod bir marta ishlatiladi.
+        adminStatsResetRequests.delete(requestId);
+
+        const client = await pool.connect();
+
+        try {
+            await client.query('BEGIN');
+
+            await client.query(`
+                UPDATE stats
+                SET views = 0, calls = 0
+                WHERE id = 1
+            `);
+
+            await client.query('DELETE FROM daily_stats');
+
+            // Kirishlar tarixi tozalanadi.
+            // adminSessions Map o‘zgartirilmaydi — sessiyalar faol qoladi.
+            await client.query('DELETE FROM admin_session_history');
+
+            await client.query('COMMIT');
+        } catch (error) {
+            await client.query('ROLLBACK');
+            throw error;
+        } finally {
+            client.release();
+        }
+
+        return sendJson(res, 200, {
+            ok: true,
+            message: 'Statistika va kirishlar tarixi tozalandi.'
+        });
+    } catch (error) {
+        console.error('Statistikani tozalash xatosi:', error);
+
+        return sendJson(res, 500, {
+            error: 'Statistikani tozalashda xatolik yuz berdi.'
+        });
+    }
+}
+        
+if (req.method === 'POST' && url === '/api/admin/stats/reset/request') {
+    if (!isAdminHeader(req)) {
+        return sendJson(res, 401, {
+            error: 'Admin sessiyasi tugagan. Qaytadan kiring.'
+        });
+    }
+
+    try {
+        const body = parseJsonObject(await readBody(req));
+        const password = String(body.password || '');
+        const sessionToken = String(req.headers['x-admin-session'] || '');
+
+        if (!password) {
+            return sendJson(res, 400, {
+                error: 'Joriy admin parolini kiriting.'
+            });
+        }
+
+        if (!(await passwordMatches(password))) {
+            return sendJson(res, 401, {
+                error: 'Admin paroli noto‘g‘ri.'
+            });
+        }
+
+        if (!ADMIN_TG_OK) {
+            return sendJson(res, 503, {
+                error: 'Telegram tasdiqlash sozlamalari to‘liq emas.'
+            });
+        }
+
+        // Shu sessiyaning oldingi statistika tozalash so‘rovlarini bekor qilish.
+        for (const [id, request] of adminStatsResetRequests) {
+            if (request.sessionToken === sessionToken) {
+                adminStatsResetRequests.delete(id);
+            }
+        }
+
+        if (adminStatsResetRequests.size >= 50) {
+            return sendJson(res, 429, {
+                error: 'So‘rovlar soni ko‘p. Birozdan keyin urinib ko‘ring.'
+            });
+        }
+
+        const code = String(
+            crypto.randomInt(0, 1000000)
+        ).padStart(6, '0');
+
+        const requestId = crypto.randomBytes(16).toString('hex');
+        const now = Date.now();
+
+        adminStatsResetRequests.set(requestId, {
+            codeHash: sha256(code),
+            sessionToken,
+            expiresAt: now + 60 * 1000,
+            tries: 0
+        });
+
+        const sent = await telegramApi('sendMessage', {
+            chat_id: ADMIN_TELEGRAM_ID,
+            text:
+                '🔐 Uy-Joy — statistikani tozalash tasdig‘i\n\n' +
+                'Tasdiqlash kodi: ' + code + '\n\n' +
+                '⏳ Kod 60 soniya amal qiladi va faqat bir marta ishlaydi.\n\n' +
+                'Agar bu amalni siz boshlamagan bo‘lsangiz, kodni kiritmang.'
+        });
+
+        if (!sent) {
+            adminStatsResetRequests.delete(requestId);
+
+            return sendJson(res, 502, {
+                error: 'Telegramga kod yuborilmadi. Botni tekshiring.'
+            });
+        }
+
+        return sendJson(res, 200, {
+            ok: true,
+            requestId,
+            expiresInSeconds: 60
+        });
+    } catch (error) {
+        console.error('Statistikani tozalash kodi xatosi:', error);
+
+        return sendJson(res, 500, {
+            error: 'Tasdiqlash kodini yuborishda xatolik yuz berdi.'
         });
     }
 }
@@ -2669,12 +2858,16 @@ if (req.method === 'POST' && url === '/api/admin/password/change/verify') {
                     LIMIT 50
                 `);
 
-                // Haqiqatan ham shu server xotirasida mavjud
-                // bo'lgan sessiyalarni faol deb ko'rsatamiz.
-                const activeIds = [...adminSessions.values()]
-                    .filter(session => session.expiresAt > Date.now())
-                    .map(session => session.sessionId)
-                    .filter(Boolean);
+               const activeSessions = [...adminSessions.values()]
+    .filter(session => session.expiresAt > Date.now())
+    .map(session => ({
+        session_id: session.sessionId,
+        admin_name: session.adminName || 'Admin',
+        phone: session.phone || '',
+        login_at: session.loginAt || null,
+        expires_at: new Date(session.expiresAt).toISOString(),
+        status: 'active'
+    }));
 
                 let activeSessions = [];
 
