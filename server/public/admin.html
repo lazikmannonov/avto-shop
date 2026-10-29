@@ -517,7 +517,130 @@
 
 </div>
 
+    <div class="dashboard-reset-area">
+    <div class="dashboard-reset-info">
+        <div class="dashboard-reset-title">Statistikani boshqarish</div>
+        <div class="dashboard-reset-description">
+            Statistika va kirishlar tarixini tasdiqlash orqali tozalash.
+        </div>
+    </div>
+
+    <button
+        type="button"
+        class="dashboard-reset-button"
+        onclick="openStatsResetModal()"
+    >
+        <svg class="icon"><use href="#i-refresh"></use></svg>
+        <span>Yangilash</span>
+    </button>
+</div>
+
 </section>
+    <!-- STATISTIKANI TOZALASH OYNASI -->
+<div
+    id="statsResetModal"
+    class="stats-reset-overlay"
+    style="display:none"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="statsResetTitle"
+>
+    <div class="stats-reset-modal">
+
+        <div class="stats-reset-modal-header">
+            <div class="stats-reset-icon">
+                <svg class="icon">
+                    <use href="#i-refresh"></use>
+                </svg>
+            </div>
+
+            <button
+                type="button"
+                class="stats-reset-close"
+                onclick="closeStatsResetModal()"
+                aria-label="Yopish"
+            >&times;</button>
+        </div>
+
+        <h3 id="statsResetTitle">Statistikani yangilash</h3>
+
+        <p class="stats-reset-description">
+            Statistika va kirishlar tarixini tozalash uchun
+            shaxsingizni tasdiqlang.
+        </p>
+
+        <!-- 1-BOSQICH: PAROL -->
+        <div id="statsResetPasswordStep">
+            <label for="statsResetPassword">Joriy admin paroli</label>
+
+            <input
+                id="statsResetPassword"
+                type="password"
+                autocomplete="current-password"
+                placeholder="Admin parolini kiriting"
+            />
+
+            <button
+                id="statsResetRequestButton"
+                type="button"
+                class="stats-reset-primary"
+                onclick="requestStatsResetCode()"
+            >
+                Telegram kodini yuborish
+            </button>
+        </div>
+
+        <!-- 2-BOSQICH: TELEGRAM KODI -->
+        <div id="statsResetCodeStep" style="display:none">
+            <div class="stats-reset-code-notice">
+                Telegramga 6 xonali tasdiqlash kodi yuborildi.
+                Kod 60 soniya amal qiladi.
+            </div>
+
+            <label for="statsResetCode">Tasdiqlash kodi</label>
+
+            <input
+                id="statsResetCode"
+                type="text"
+                inputmode="numeric"
+                autocomplete="one-time-code"
+                maxlength="6"
+                placeholder="000000"
+            />
+
+            <button
+                id="statsResetVerifyButton"
+                type="button"
+                class="stats-reset-primary"
+                onclick="confirmStatsReset()"
+            >
+                Tasdiqlash va tozalash
+            </button>
+
+            <button
+                type="button"
+                class="stats-reset-secondary"
+                onclick="backToStatsResetPassword()"
+            >
+                Orqaga
+            </button>
+        </div>
+
+        <div class="stats-reset-warning">
+            Uylar, rasmlar, narxlar, sozlamalar va admin paroli
+            o‘zgarmaydi. Bu amal statistika va kirishlar tarixini tozalaydi.
+        </div>
+
+        <button
+            type="button"
+            class="stats-reset-cancel"
+            onclick="closeStatsResetModal()"
+        >
+            Bekor qilish
+        </button>
+
+    </div>
+</div>
     
 <!-- ========================= ADD / EDIT ========================= -->
 
@@ -4245,6 +4368,188 @@ async function verifyAdminPasswordChangeCode() {
     btn.disabled = false;
   }
 }
+    /* =========================================================
+   DASHBOARD — STATISTIKANI TASDIQLAB TOZALASH
+========================================================= */
+
+let statsResetRequestId = '';
+
+function openStatsResetModal() {
+    statsResetRequestId = '';
+
+    document.getElementById('statsResetPasswordStep').style.display = 'block';
+    document.getElementById('statsResetCodeStep').style.display = 'none';
+
+    document.getElementById('statsResetPassword').value = '';
+    document.getElementById('statsResetCode').value = '';
+
+    document.getElementById('statsResetModal').style.display = 'flex';
+
+    setTimeout(() => {
+        document.getElementById('statsResetPassword').focus();
+    }, 50);
+}
+
+function closeStatsResetModal() {
+    document.getElementById('statsResetModal').style.display = 'none';
+
+    document.getElementById('statsResetPassword').value = '';
+    document.getElementById('statsResetCode').value = '';
+
+    statsResetRequestId = '';
+}
+
+function backToStatsResetPassword() {
+    statsResetRequestId = '';
+
+    document.getElementById('statsResetCode').value = '';
+    document.getElementById('statsResetCodeStep').style.display = 'none';
+    document.getElementById('statsResetPasswordStep').style.display = 'block';
+
+    document.getElementById('statsResetPassword').focus();
+}
+
+async function requestStatsResetCode() {
+    const passwordInput = document.getElementById('statsResetPassword');
+    const button = document.getElementById('statsResetRequestButton');
+    const password = passwordInput.value;
+
+    if (!password) {
+        showToast('Joriy admin parolini kiriting.', true);
+        passwordInput.focus();
+        return;
+    }
+
+    if (!adminSessionToken) {
+        showToast('Admin sessiyasi tugagan. Qaytadan kiring.', true);
+        return;
+    }
+
+    button.disabled = true;
+    button.textContent = 'Tekshirilmoqda...';
+
+    try {
+        const response = await fetch('/api/admin/stats/reset/request', {
+            method: 'POST',
+            headers: adminHeaders({
+                'Content-Type': 'application/json'
+            }),
+            body: JSON.stringify({ password })
+        });
+
+        const data = await response.json().catch(() => ({}));
+
+        if (response.status === 401 && !data.requestId) {
+            if (!adminSessionToken) {
+                logoutAdmin('Sessiya tugadi. Qayta kiring.');
+                return;
+            }
+        }
+
+        if (!response.ok || !data.ok) {
+            throw new Error(
+                data.error || 'Telegram kodini yuborib bo‘lmadi.'
+            );
+        }
+
+        statsResetRequestId = data.requestId;
+
+        document.getElementById('statsResetPasswordStep').style.display = 'none';
+        document.getElementById('statsResetCodeStep').style.display = 'block';
+
+        const codeInput = document.getElementById('statsResetCode');
+        codeInput.value = '';
+        codeInput.focus();
+
+        showToast('Tasdiqlash kodi Telegramga yuborildi.');
+
+    } catch (error) {
+        console.error('Statistikani tozalash kodi:', error);
+        showToast(error.message || 'Xatolik yuz berdi.', true);
+    } finally {
+        button.disabled = false;
+        button.textContent = 'Telegram kodini yuborish';
+    }
+}
+
+async function confirmStatsReset() {
+    const codeInput = document.getElementById('statsResetCode');
+    const button = document.getElementById('statsResetVerifyButton');
+    const code = codeInput.value.trim();
+
+    if (!statsResetRequestId) {
+        showToast('Tasdiqlash so‘rovi topilmadi. Yangi kod oling.', true);
+        return;
+    }
+
+    if (!/^\d{6}$/.test(code)) {
+        showToast('6 xonali tasdiqlash kodini kiriting.', true);
+        codeInput.focus();
+        return;
+    }
+
+    if (!adminSessionToken) {
+        showToast('Admin sessiyasi tugagan. Qaytadan kiring.', true);
+        return;
+    }
+
+    button.disabled = true;
+    button.textContent = 'Tasdiqlanmoqda...';
+
+    try {
+        const response = await fetch('/api/admin/stats/reset/verify', {
+            method: 'POST',
+            headers: adminHeaders({
+                'Content-Type': 'application/json'
+            }),
+            body: JSON.stringify({
+                requestId: statsResetRequestId,
+                code
+            })
+        });
+
+        const data = await response.json().catch(() => ({}));
+
+        if (!response.ok || !data.ok) {
+            throw new Error(
+                data.error || 'Tasdiqlash amalga oshmadi.'
+            );
+        }
+
+        closeStatsResetModal();
+
+        // Faqat statistik ma’lumotlar va kirishlar yangilanadi.
+        // Uylar, rasmlar, narxlar, sozlamalar va sessiya saqlanadi.
+        try {
+            await Promise.all([
+                loadStats(),
+                loadDailyStats(),
+                loadAdminSessionHistory()
+            ]);
+
+            updateDashboard();
+        } catch (refreshError) {
+            console.error(
+                'Tozalashdan keyingi ma’lumotlarni yuklash xatosi:',
+                refreshError
+            );
+        }
+
+        showToast('Statistika va kirishlar tarixi tozalandi.');
+
+    } catch (error) {
+        console.error('Statistikani tozalash:', error);
+        showToast(error.message || 'Statistikani tozalashda xatolik.', true);
+    } finally {
+        button.disabled = false;
+        button.textContent = 'Tasdiqlash va tozalash';
+    }
+}
+
+// Faqat 6 ta raqam kiritishga ruxsat berish.
+document.getElementById('statsResetCode')?.addEventListener('input', function () {
+    this.value = this.value.replace(/\D/g, '').slice(0, 6);
+});
 
 /* =========================================================
    START
