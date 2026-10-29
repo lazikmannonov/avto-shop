@@ -746,82 +746,221 @@ body.admin-page{font-family:Inter,Arial,Helvetica,sans-serif;background:var(--bg
 @keyframes lightboxSlidePrev{from{opacity:.65;transform:translateX(-55px)}to{opacity:1;transform:translateX(0)}}
 
 
-/* Faqat statistikani tozalash oynasidagi elementlarni ixchamlashtirish */
+/* UY-JOY — Statistikani boshqarish oynasi: Compact Premium */
+
 #statsResetPasswordStep {
-    gap: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    min-width: 0;
 }
 
+/* Maydon sarlavhalari */
 #statsResetPasswordStep .stats-reset-field-label,
 #statsResetPasswordStep .stats-reset-choice-heading {
-    margin: 2px 0 0;
+    display: block;
+    margin: 0;
+    color: var(--text, #30271F);
     font-size: 12px;
+    font-weight: 600;
+    line-height: 1.4;
 }
 
-#statsResetPasswordStep .stats-reset-password-input,
+/* Admin paroli */
 #statsResetPasswordStep #statsResetPassword {
-    min-height: 38px;
-    height: 38px;
-    padding: 0 11px;
-    font-size: 12px;
-    border-radius: 8px;
+    display: block;
+    width: 100%;
+    min-width: 0;
+    height: 40px;
+    padding: 0 12px;
+    border: 1px solid var(--border, #E5DCD1);
+    border-radius: 9px;
+    background: var(--card, #FFFFFF);
+    color: var(--text, #30271F);
+    font: inherit;
+    font-size: 13px;
+    outline: none;
+    transition: border-color .18s ease, box-shadow .18s ease;
 }
 
+#statsResetPasswordStep #statsResetPassword:focus {
+    border-color: #8B6A4F;
+    box-shadow: 0 0 0 3px rgba(139, 106, 79, .12);
+}
+
+/* Statistikani tanlash */
 #statsResetPasswordStep .stats-reset-options {
     display: grid;
-    gap: 5px;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 7px;
     margin: 0;
 }
 
+/* Tanlov kartasi */
 #statsResetPasswordStep .stats-reset-option {
-    min-height: 0;
-    padding: 8px 9px;
-    gap: 8px;
-    border-radius: 8px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 0;
+    min-height: 56px;
+    padding: 10px 12px;
+    border: 1px solid var(--border, #E5DCD1);
+    border-radius: 10px;
+    background: var(--card, #FFFFFF);
+    cursor: pointer;
+    transition: border-color .18s ease, background .18s ease;
 }
 
+#statsResetPasswordStep .stats-reset-option:hover {
+    border-color: #B9A18C;
+    background: var(--card2, #FAF7F2);
+}
+
+/* Radio tugmasi */
 #statsResetPasswordStep .stats-reset-radio {
-    width: 14px;
-    height: 14px;
-    flex: 0 0 14px;
+    flex: 0 0 15px;
+    width: 15px;
+    height: 15px;
+    border: 1.5px solid #B7A99B;
+    border-radius: 50%;
+    background: transparent;
 }
 
-#statsResetPasswordStep .stats-reset-option input:checked + .stats-reset-radio {
-    border-width: 4px;
+#statsResetPasswordStep .stats-reset-option input:checked
++ .stats-reset-radio {
+    border: 4px solid #79583F;
+}
+
+/* Radio tanlanganda karta */
+#statsResetPasswordStep .stats-reset-option:has(input:checked) {
+    border-color: #A68B72;
+    background: var(--card2, #FAF7F2);
+}
+
+/* Matnlar */
+#statsResetPasswordStep .stats-reset-option-content {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: 3px;
+    min-width: 0;
 }
 
 #statsResetPasswordStep .stats-reset-option-title {
-    font-size: 11.5px;
-    line-height: 1.35;
+    color: var(--text, #30271F);
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 1.4;
 }
 
 #statsResetPasswordStep .stats-reset-option-description {
-    font-size: 10px;
-    line-height: 1.35;
-}
-
-#statsResetPasswordStep .stats-reset-option-check {
-    font-size: 12px;
-}
-
-#statsResetPasswordStep .stats-reset-notice {
-    padding: 8px 9px;
-    gap: 7px;
-}
-
-#statsResetPasswordStep .stats-reset-notice p {
+    color: var(--muted, #766B60);
     font-size: 10.5px;
     line-height: 1.45;
 }
 
-#statsResetPasswordStep .stats-reset-primary {
-    min-height: 39px;
-    padding: 0 12px;
-    margin-top: 0;
-    font-size: 12px;
-    border-radius: 8px;
+#statsResetPasswordStep .stats-reset-option-check {
+    flex: 0 0 auto;
+    color: #79583F;
+    font-size: 13px;
+    font-weight: 700;
 }
 
+/* Xavfsizlik eslatmasi */
+#statsResetPasswordStep .stats-reset-notice {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    margin: 0;
+    padding: 9px 11px;
+    border: 1px solid var(--border, #E5DCD1);
+    border-radius: 9px;
+    background: var(--card2, #FAF7F2);
+}
+
+#statsResetPasswordStep .stats-reset-notice-icon {
+    display: flex;
+    flex: 0 0 16px;
+    align-items: center;
+    justify-content: center;
+    width: 16px;
+    height: 16px;
+    border: 1px solid #A68B72;
+    border-radius: 50%;
+    color: #79583F;
+    font-size: 10px;
+    font-weight: 700;
+}
+
+#statsResetPasswordStep .stats-reset-notice p {
+    margin: 0;
+    color: var(--muted, #766B60);
+    font-size: 10.5px;
+    line-height: 1.5;
+}
+
+/* Asosiy tugma */
+#statsResetPasswordStep .stats-reset-primary {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+    width: 100%;
+    min-height: 41px;
+    margin: 0;
+    padding: 9px 13px;
+    border: 1px solid #624630;
+    border-radius: 9px;
+    background: #624630;
+    color: #FFFFFF;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background .18s ease, transform .18s ease;
+}
+
+#statsResetPasswordStep .stats-reset-primary:hover {
+    background: #4F3828;
+}
+
+#statsResetPasswordStep .stats-reset-primary:active {
+    transform: scale(.99);
+}
+
+#statsResetPasswordStep .stats-reset-primary:disabled {
+    opacity: .6;
+    cursor: not-allowed;
+}
+
+/* Bekor qilish */
 #statsResetPasswordStep .stats-reset-cancel {
-    padding: 5px 10px;
+    align-self: center;
+    margin: 0;
+    padding: 5px 12px;
+    border: 0;
+    background: transparent;
+    color: var(--muted, #766B60);
     font-size: 11px;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+#statsResetPasswordStep .stats-reset-cancel:hover {
+    color: var(--text, #30271F);
+}
+
+/* Kichik ekranlar */
+@media (max-width: 480px) {
+    #statsResetPasswordStep {
+        gap: 9px;
+    }
+
+    #statsResetPasswordStep .stats-reset-option {
+        padding: 9px 10px;
+    }
+
+    #statsResetPasswordStep .stats-reset-option-description {
+        font-size: 10px;
+    }
 }
