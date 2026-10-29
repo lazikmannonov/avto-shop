@@ -1015,79 +1015,82 @@ body.admin-page{font-family:Inter,Arial,Helvetica,sans-serif;background:var(--bg
     }
 }
 
-/* Tanlov kartalarini ixchamlashtirish */
-.stats-reset-options {
-    display: grid;
-    gap: 6px;
-    margin-top: 0;
-}
-
-.stats-reset-option {
-    position: relative;
-    display: flex;
-    align-items: center;
+/* Faqat statistikani tozalash oynasidagi elementlarni ixchamlashtirish */
+#statsResetPasswordStep {
     gap: 8px;
-    padding: 9px 10px;
-    background: #fff;
-    border: 1px solid #e8e0d7;
-    border-radius: 9px;
-    cursor: pointer;
-    transition: border-color .18s, background .18s;
 }
 
-.stats-reset-option:hover {
-    border-color: #b9a28c;
-    background: #fdfbf8;
-}
-
-.stats-reset-option:has(input:checked) {
-    background: #f7f1ea;
-    border-color: #96775d;
-}
-
-.stats-reset-radio {
-    width: 15px;
-    height: 15px;
-    flex: 0 0 15px;
-    margin-top: 0;
-    border: 1.5px solid #c8bbae;
-    border-radius: 50%;
-    background: #fff;
-}
-
-.stats-reset-option input:checked + .stats-reset-radio {
-    border: 4px solid #75563f;
-}
-
-.stats-reset-option-content {
-    display: flex;
-    flex: 1;
-    flex-direction: column;
-    gap: 2px;
-    min-width: 0;
-}
-
-.stats-reset-option-title {
-    color: #332a22;
+#statsResetPasswordStep .stats-reset-field-label,
+#statsResetPasswordStep .stats-reset-choice-heading {
+    margin: 2px 0 0;
     font-size: 12px;
-    font-weight: 700;
-    line-height: 1.4;
 }
 
-.stats-reset-option-description {
-    color: #82776c;
+#statsResetPasswordStep .stats-reset-password-input,
+#statsResetPasswordStep #statsResetPassword {
+    min-height: 38px;
+    height: 38px;
+    padding: 0 11px;
+    font-size: 12px;
+    border-radius: 8px;
+}
+
+#statsResetPasswordStep .stats-reset-options {
+    display: grid;
+    gap: 5px;
+    margin: 0;
+}
+
+#statsResetPasswordStep .stats-reset-option {
+    min-height: 0;
+    padding: 8px 9px;
+    gap: 8px;
+    border-radius: 8px;
+}
+
+#statsResetPasswordStep .stats-reset-radio {
+    width: 14px;
+    height: 14px;
+    flex: 0 0 14px;
+}
+
+#statsResetPasswordStep .stats-reset-option input:checked + .stats-reset-radio {
+    border-width: 4px;
+}
+
+#statsResetPasswordStep .stats-reset-option-title {
+    font-size: 11.5px;
+    line-height: 1.35;
+}
+
+#statsResetPasswordStep .stats-reset-option-description {
+    font-size: 10px;
+    line-height: 1.35;
+}
+
+#statsResetPasswordStep .stats-reset-option-check {
+    font-size: 12px;
+}
+
+#statsResetPasswordStep .stats-reset-notice {
+    padding: 8px 9px;
+    gap: 7px;
+}
+
+#statsResetPasswordStep .stats-reset-notice p {
     font-size: 10.5px;
-    line-height: 1.4;
+    line-height: 1.45;
 }
 
-.stats-reset-option-check {
-    display: none;
-    color: #75563f;
-    font-size: 13px;
-    font-weight: 800;
+#statsResetPasswordStep .stats-reset-primary {
+    min-height: 39px;
+    padding: 0 12px;
+    margin-top: 0;
+    font-size: 12px;
+    border-radius: 8px;
 }
 
-.stats-reset-option:has(input:checked) .stats-reset-option-check {
-    display: inline-block;
+#statsResetPasswordStep .stats-reset-cancel {
+    padding: 5px 10px;
+    font-size: 11px;
 }
-
