@@ -2883,7 +2883,7 @@ if (
         // ADMIN: SESSIYALAR TARIXI VA STATISTIKASI
         // =================================================
 
-      if (
+     if (
     url === '/api/admin/session-history' &&
     req.method === 'GET'
 ) {
@@ -2892,40 +2892,13 @@ if (
     }
 
     try {
-       // Sessiya muddati tugaganlarini yangilash.
-await pool.query(`
-    UPDATE admin_session_history
-    SET status = 'expired'
-    WHERE status = 'active'
-      AND expires_at <= NOW()
-`);
-
-// 60 soniyadan ortiq yurak urishi kelmagan
-// sessiyalarni tarixda ham faol emas deb belgilash.
-const staleSessionIds = [...adminSessions.values()]
-    .filter(session =>
-        session.expiresAt > Date.now() &&
-        Date.now() - (session.lastSeen || 0) >= 60_000
-    )
-    .map(session => session.sessionId);
-
-for (const sessionId of staleSessionIds) {
-    await pool.query(`
-        UPDATE admin_session_history
-        SET status = 'logged_out',
-            logout_at = NOW()
-        WHERE session_id = $1
-          AND status = 'active'
-    `, [sessionId]);
-
-    // Sessiyani server xotirasidan ham chiqarish.
-    for (const [token, session] of adminSessions.entries()) {
-        if (session.sessionId === sessionId) {
-            adminSessions.delete(token);
-            break;
-        }
-    }
-}
+        // Sessiya muddati tugaganlarini yangilash.
+        await pool.query(`
+            UPDATE admin_session_history
+            SET status = 'expired'
+            WHERE status = 'active'
+              AND expires_at <= NOW()
+        `);
 
         // Jami va bugungi kirishlar.
         const counts = await pool.query(`
@@ -2954,12 +2927,12 @@ for (const sessionId of staleSessionIds) {
             LIMIT 50
         `);
 
-        // Hozir server xotirasida mavjud faol sessiyalar.
+        // Faol sessiyalar (sessiyani o'chirmaydi, faqat ko'rsatadi).
         const activeSessions = [...adminSessions.values()]
-           .filter(session =>
-          session.expiresAt > Date.now() &&
-          Date.now() - (session.lastSeen || Date.now()) < 60_000
-    )
+            .filter(session =>
+                session.expiresAt > Date.now() &&
+                Date.now() - (session.lastSeen || Date.now()) < 5 * 60_000
+            )
             .map(session => ({
                 session_id: session.sessionId,
                 admin_name: session.adminName || 'Admin',
@@ -2978,10 +2951,7 @@ for (const sessionId of staleSessionIds) {
         });
 
     } catch (error) {
-        console.error(
-            'Admin sessiyalari tarixini olish xatosi:',
-            error
-        );
+        console.error('Admin sessiyalari tarixini olish xatosi:', error);
 
         return sendJson(res, 500, {
             ok: false,
