@@ -125,13 +125,6 @@
         <path d="M20.5 14.5v-2.5a2.5 2.5 0 0 0-2.5-2.5h-7v5"/>
         <circle cx="7.2" cy="11.6" r="1.7"/>
     </symbol>
-    <symbol id="i-area" viewBox="0 0 24 24">
-        <rect x="4" y="4" width="16" height="16" rx="1.5"/>
-        <path d="M4 9h3"/>
-        <path d="M4 14h3"/>
-        <path d="M9 4v3"/>
-        <path d="M14 4v3"/>
-    </symbol>
     <symbol id="i-languages" viewBox="0 0 24 24">
         <path d="M4 5h12M10 3v2c0 5-3 8-6 10"/>
         <path d="M6 9c2 3 4 5 7 6"/>
@@ -309,7 +302,7 @@
                       </a>
                 
                 <a class="menu-item" id="drawerTelegram"
-                   href="https://t.me/"
+                    href="https://t.me/lazikmannonov"
                    target="_blank" rel="noopener noreferrer">
                     <svg class="icon" aria-hidden="true">
                         <use href="#i-telegram"></use>
@@ -317,8 +310,8 @@
                     <span>Telegram</span>
                 </a>
     
-                <a class="menu-item" id="drawerInstagram"
-                   href="https://instagram.com/"
+               <a class="menu-item" id="drawerInstagram"
+                   href="https://instagram.com/lazikmannonov1"
                    target="_blank" rel="noopener noreferrer">
                     <svg class="icon" aria-hidden="true">
                         <use href="#i-instagram"></use>
@@ -326,8 +319,8 @@
                     <span>Instagram</span>
                 </a>
                 
-                <a class="menu-item" id="drawerWhatsapp"
-                 href="https://wa.me/"
+              <a class="menu-item" id="drawerWhatsapp"
+                 href="https://wa.me/998889500005"
                  target="_blank"
                  rel="noopener noreferrer">
                <svg class="icon" aria-hidden="true">
@@ -403,9 +396,8 @@
 
         
                               <!-- NARX VALYUTASI -->
-                    <div class="menu-item drawer-currency-row"
-               id="drawerCurrencyButton">
-
+                    <div class="menu-item drawer-currency-row">
+                        
         <svg class="icon" viewBox="0 0 24 24" fill="none"
               stroke="currentColor" stroke-width="1.8"
               stroke-linecap="round" stroke-linejoin="round"
@@ -430,21 +422,6 @@
 
                  </div>
 
-         <div class="drawer-menu-divider"></div>
-                   
-                     <!-- CHIQISH:  -->
-       
-                <div class="menu-item drawer-exit-row"
-                       role="button"
-                       tabindex="0"
-                       aria-label="Chiqish"
-                       onclick="window.location.href='https://www.google.com/'"
-                       onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();window.location.href='https://www.google.com/'}">
-               <svg class="icon" aria-hidden="true">
-           <use href="#i-log-out"></use>
-         </svg>
-      <span>Chiqish</span>
-    </div>
 
                  <!-- MANZIL -->
         <div class="menu-item drawer-address-row">
@@ -597,9 +574,8 @@
 
             
 <div class="menu-item social-menu-item" role="link" tabindex="0"
-     onclick="window.open('https://t.me/Uy_Joy_bot','_blank','noopener')"
-     onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();window.open('https://t.me/Uy_Joy_bot','_blank','noopener')}">
-
+     onclick="window.open('https://t.me/pulzarill_uylar_bot','_blank','noopener')"
+     onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();window.open('https://t.me/pulzarill_uylar_bot','_blank','noopener')}">
     <div class="menu-item-left">
         <span class="menu-item-title">
             <svg class="icon"><use href="#i-telegram"></use></svg>
@@ -687,69 +663,53 @@
      data-social="whatsapp"
      role="link"
      tabindex="0"
-     onclick="window.open('https://wa.me/998889500005','_blank','noopener,noreferrer')"
-     onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();window.open('https://wa.me/998889500005','_blank','noopener,noreferrer')}">
+     onclick="openSocialMenu('whatsapp', event)"
+     onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openSocialMenu('whatsapp',event)}">
 
     <div class="menu-item-left">
         <span class="menu-item-title">
             <svg class="icon"><use href="#i-whatsapp"></use></svg>
             <span id="menuWhatsappTitle">WhatsApp</span>
         </span>
-        <span class="menu-item-sub" id="menuWhatsappSub">
-            WhatsApp orqali bog‘lanish
-        </span>
+        <span class="menu-item-sub" id="menuWhatsappSub">WhatsApp orqali bog‘lanish</span>
     </div>
 
-    <a href="https://wa.me/998889500005"
+    <a id="menuWhatsapp"
+       href="https://wa.me/998889500005"
        target="_blank"
        rel="noopener noreferrer"
        aria-label="WhatsAppni ochish"
        onclick="event.stopPropagation()">
-        <svg class="premium-external-icon"
-             viewBox="0 0 24 24"
-             fill="none"
-             aria-hidden="true">
-            <path d="M7 17L17 7M8 7H17V16"
-                  stroke="currentColor"
-                  stroke-width="1.6"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"/>
+        <svg class="premium-external-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M7 17L17 7M8 7H17V16" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
     </a>
 </div>
-
+            
 <!-- Instagram -->
 <div class="menu-item social-menu-item"
      data-social="instagram"
      role="link"
      tabindex="0"
-     onclick="window.open('https://instagram.com/lazikmannonov1','_blank','noopener,noreferrer')"
-     onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();window.open('https://instagram.com/lazikmannonov1','_blank','noopener,noreferrer')}">
+     onclick="openSocialMenu('instagram', event)"
+     onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openSocialMenu('instagram',event)}">
 
     <div class="menu-item-left">
         <span class="menu-item-title">
             <svg class="icon"><use href="#i-instagram"></use></svg>
             <span id="menuInstagramTitle">Instagram</span>
         </span>
-        <span class="menu-item-sub" id="menuInstagramSub">
-            Instagram sahifamiz
-        </span>
+        <span class="menu-item-sub" id="menuInstagramSub">Instagram sahifamiz</span>
     </div>
 
-    <a href="https://instagram.com/lazikmannonov1"
+    <a id="menuInstagram"
+       href="https://instagram.com/lazikmannonov1"
        target="_blank"
        rel="noopener noreferrer"
        aria-label="Instagramni ochish"
        onclick="event.stopPropagation()">
-        <svg class="premium-external-icon"
-             viewBox="0 0 24 24"
-             fill="none"
-             aria-hidden="true">
-            <path d="M7 17L17 7M8 7H17V16"
-                  stroke="currentColor"
-                  stroke-width="1.6"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"/>
+        <svg class="premium-external-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M7 17L17 7M8 7H17V16" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
     </a>
 </div>
@@ -940,9 +900,9 @@ let currentCurrency=lsGet("displayCurrency","UZS")==="USD"?"USD":"UZS";
 
 let siteSettings={
     phone:"+998 88 950 00 05",
-    telegram:"https://t.me/",
-    whatsapp:"https://wa.me/",
-    instagram:"https://instagram.com/",
+    telegram:"",
+    whatsapp:"",
+    instagram:"",
     address:"Toshkent, O‘zbekiston"
 };
 
@@ -1162,6 +1122,19 @@ function typeKey(value){
     const key=normalizeType(value);
     return TYPE_MAP[key]||key;
 }
+    function priceMatches(car, input){
+    const raw = String(car.price || "").toLowerCase();
+
+    if(raw.includes(input)) return true;
+
+    // Faqat raqam yozilgan bo‘lsa, bo‘sh joy/nuqtalarni e’tiborsiz qoldiramiz
+    if(/^[\d\s.,]+$/.test(input)){
+        const d = input.replace(/\D/g, "");
+        return d && String(car.price || "").replace(/\D/g, "").includes(d);
+    }
+
+    return false;
+}
 
 function translateType(value){
     const found=TYPE_MAP[normalizeType(value)];
@@ -1228,6 +1201,8 @@ function setCallLink(element, phone){
 function socialHref(value,type){
 
     let link=String(value||"").trim();
+    if(/^https?:\/\/(t\.me|wa\.me|instagram\.com)\/?$/i.test(link))
+        return "#";
 
     if(!link)
         return "#";
@@ -1261,6 +1236,18 @@ function socialHref(value,type){
     }
 
     return link;
+}
+    function setSocialLink(el, value, type){
+    if(!el) return;
+
+    const href=socialHref(value,type);
+
+    // Sozlama yo‘q bo‘lsa, HTMLdagi standart havola qoladi
+    if(href==="#") return;
+
+    el.href=href;
+    el.target="_blank";
+    el.rel="noopener noreferrer";
 }
 
 async function loadSettings(){
@@ -1339,27 +1326,15 @@ function applySettings(){
         setCallLink(menuPhone, phone);
     }
 
-    // Eski menyudagi ijtimoiy havolalar
-    const telegram = document.getElementById("menuTelegram");
-    const whatsapp = document.getElementById("menuWhatsapp");
-    const instagram = document.getElementById("menuInstagram");
+        // Ijtimoiy havolalar (Sozlamalar sahifasi)
+    setSocialLink(document.getElementById("menuTelegram"),  siteSettings.telegram,  "telegram");
+    setSocialLink(document.getElementById("menuWhatsapp"),  siteSettings.whatsapp,  "whatsapp");
+    setSocialLink(document.getElementById("menuInstagram"), siteSettings.instagram, "instagram");
 
-    if(telegram){
-        telegram.href = socialHref(siteSettings.telegram, "telegram");
-    }
-
-    if(whatsapp){
-        whatsapp.href = socialHref(siteSettings.whatsapp, "whatsapp");
-    }
-
-    if(instagram){
-        instagram.href = socialHref(siteSettings.instagram, "instagram");
-    }
-
-    [telegram, whatsapp, instagram].filter(Boolean).forEach(link => {
-        link.target = "_blank";
-        link.rel = "noopener noreferrer";
-    });
+    // Ijtimoiy havolalar (yon menyu)
+    setSocialLink(document.getElementById("drawerTelegram"),  siteSettings.telegram,  "telegram");
+    setSocialLink(document.getElementById("drawerWhatsapp"),  siteSettings.whatsapp,  "whatsapp");
+    setSocialLink(document.getElementById("drawerInstagram"), siteSettings.instagram, "instagram");
 
     // Eski menyudagi manzil
     const address = document.getElementById("menuAddress");
@@ -1386,42 +1361,6 @@ function applySettings(){
 
     if(drawerPhoneLink){
         setCallLink(drawerPhoneLink, phone);
-    }
-
-    const drawerTelegram = document.getElementById("drawerTelegram");
-
-    if(drawerTelegram){
-        drawerTelegram.href = socialHref(
-            siteSettings.telegram,
-            "telegram"
-        );
-
-        drawerTelegram.target = "_blank";
-        drawerTelegram.rel = "noopener noreferrer";
-    }
-
-    const drawerWhatsapp = document.getElementById("drawerWhatsapp");
-
-    if(drawerWhatsapp){
-        drawerWhatsapp.href = socialHref(
-            siteSettings.whatsapp,
-            "whatsapp"
-        );
-
-        drawerWhatsapp.target = "_blank";
-        drawerWhatsapp.rel = "noopener noreferrer";
-    }
-
-    const drawerInstagram = document.getElementById("drawerInstagram");
-
-    if(drawerInstagram){
-        drawerInstagram.href = socialHref(
-            siteSettings.instagram,
-            "instagram"
-        );
-
-        drawerInstagram.target = "_blank";
-        drawerInstagram.rel = "noopener noreferrer";
     }
 
     const drawerAddress = document.getElementById("drawerAddressText");
@@ -1595,7 +1534,6 @@ const drawerTranslations = {
         telegramBot: "Telegram bot",
         telegram: "Telegram",
         instagram: "Instagram",
-        logout: "Chiqish",
         language: "Til",
         appearance: "Ko‘rinish",
         telegramBotTitle: "Telegram Bot",
@@ -1613,7 +1551,6 @@ const drawerTranslations = {
         telegramBot: "Бот Telegram",
         telegram: "Telegram",
         instagram: "Instagram",
-        logout: "Выход",
         language: "Язык",
         appearance: "Тема",
         telegramBotTitle: "Telegram-бот",
@@ -1631,7 +1568,6 @@ const drawerTranslations = {
         telegramBot: "Telegram bot",
         telegram: "Telegram",
         instagram: "Instagram",
-        logout: "Log out",
         language: "Language",
         appearance: "Appearance",
         telegramBotTitle: "Telegram Bot",
@@ -1661,13 +1597,8 @@ function updateDrawerTranslations() {
         const span = item.querySelector(":scope > span");
         if (!span) return;
 
-        if (item.classList.contains("drawer-address-row")) {
+              if (item.classList.contains("drawer-address-row")) {
             span.textContent = d.address;
-            return;
-        }
-
-        if (item.classList.contains("drawer-exit-row")) {
-            span.textContent = d.logout;
             return;
         }
 
@@ -1757,7 +1688,7 @@ function updateThemeIcon() {
     const isDark = document.body.classList.contains("dark");
     const id = isDark ? "i-sun" : "i-moon";
 
-    ["themeBtn", "themeBtnMenu"].forEach(function(elId) {
+   ["themeBtnMenu"].forEach(function(elId) {
         const element = document.getElementById(elId);
 
         if (element) {
@@ -1826,8 +1757,9 @@ function detectCurrency(number,currency){
 /* Narx saqlangan valyutadan (car.currency) tanlangan valyutaga o‘tkaziladi.
    Bazadagi qiymat o‘zgarmaydi — faqat ko‘rsatish. */
 
-function formatPrice(value, currency){
+function formatPrice(value, currency, target){
 
+    const to = target || currentCurrency;
     const number = parsePrice(value);
 
     if(!number || !Number.isFinite(number))
@@ -1837,7 +1769,7 @@ function formatPrice(value, currency){
 
     let amount = number;
 
-    if(from !== currentCurrency){
+    if(from !== to){
         amount = from === "USD"
             ? number * USD_RATE
             : number / USD_RATE;
@@ -1845,7 +1777,7 @@ function formatPrice(value, currency){
 
     amount = Math.round(amount);
 
-    if(currentCurrency === "USD"){
+    if(to === "USD"){
         return "$ " + amount.toLocaleString("en-US");
     }
 
@@ -1882,48 +1814,25 @@ function updatePrices(){
     });
 }
 
-
-function updateCurrencyButtons(){
-
-    document.querySelectorAll(".currency-btn").forEach(btn=>{
-
-        // Har bir tugma o‘z valyutasini saqlaydi.
-        const cur=btn.dataset.cur || currentCurrency;
-
-        btn.textContent=cur;
-        btn.classList.toggle("active",true);
-
-    });
-
-}
-
 function setCurrency(cur, button){
 
     if(!button) return;
 
     const nextCurrency = cur === "USD" ? "USD" : "UZS";
     const control = button.closest(".price-currency-control");
-
-    if(!control) return;
-
-    const price = control.querySelector("[data-price]");
+    const price = control && control.querySelector("[data-price]");
 
     if(!price) return;
 
     button.dataset.cur = nextCurrency;
     button.textContent = nextCurrency;
 
-    const originalPrice = price.dataset.price;
-    const originalCurrency = price.dataset.cur || "UZS";
-
-    const previousCurrency = currentCurrency;
-
-    currentCurrency = nextCurrency;
-    price.textContent = formatPrice(originalPrice, originalCurrency);
-    currentCurrency = previousCurrency;
-
+    price.textContent = formatPrice(
+        price.dataset.price,
+        price.dataset.cur || "UZS",
+        nextCurrency
+    );
 }
-
 function searchCars(){
 
     const input=document.getElementById("searchInput").value.toLowerCase().trim();
@@ -1933,7 +1842,6 @@ function searchCars(){
         const name=String(car.name||"").toLowerCase();
         const description=String(car.description||"").toLowerCase();
         const address=String(car.address||"").toLowerCase();
-        const price=String(car.price||"").toLowerCase();
         const type=String(car.type||"").toLowerCase();
 
         const matchesText=
@@ -1941,7 +1849,7 @@ function searchCars(){
             name.includes(input)||
             description.includes(input)||
             address.includes(input)||
-            price.includes(input)||
+            priceMatches(car,input)||
             type.includes(input);
 
         const matchesType=
@@ -2053,14 +1961,13 @@ function searchFromSearchPage(){
         const name=String(car.name||"").toLowerCase();
         const description=String(car.description||"").toLowerCase();
         const address=(String(car.address||"")+" "+String(field(car,"address")||"")).toLowerCase();
-        const price=String(car.price||"").toLowerCase();
         const typeText=types.join(" ").toLowerCase()+" "+mainType.toLowerCase();
 
         const matchesText=
             !input||
             (addressOnly
                 ? address.includes(input)
-                : (name.includes(input)||description.includes(input)||address.includes(input)||price.includes(input)||typeText.includes(input)));
+                : (name.includes(input)||description.includes(input)||address.includes(input)||priceMatches(car,input)||typeText.includes(input)));
 
         const matchesType=
             searchPageType==="all"||
@@ -2083,7 +1990,6 @@ function searchFromSearchPage(){
 
     renderSearchPage(result);
 }
-
 function resetSearchPage(){
 
     const input=document.getElementById("searchPageInput");
@@ -2134,10 +2040,10 @@ function renderSearchPage(cars){
 
     grid.innerHTML="";
 
-    cars.forEach((car,index)=>{
-        grid.appendChild(createCarCard(car,index));
-    });
-
+   cars.forEach(car=>{
+    grid.appendChild(createCarCard(car));
+});
+    
     applySettings();
 }
 
@@ -2252,9 +2158,9 @@ function renderFiltered(){
 
     grid.innerHTML="";
 
-    filteredCars.forEach((car,index)=>{
-        grid.appendChild(createCarCard(car,index));
-    });
+   filteredCars.forEach(car=>{
+    grid.appendChild(createCarCard(car));
+});
 
     applySettings();
 }
@@ -2283,7 +2189,7 @@ function renderEmpty(title,text){
         count.textContent=countText(0);
 }
 
-function createCarCard(car, index) {
+function createCarCard(car) {
     const article = document.createElement("article");
     article.className = "car-card";
 
@@ -2458,9 +2364,9 @@ function showFavorites(){
 
         grid.innerHTML="";
 
-        favoriteCars.forEach((car,index)=>{
-            grid.appendChild(createCarCard(car,index));
-        });
+         favoriteCars.forEach(car=>{
+      grid.appendChild(createCarCard(car));
+    });
 
         document.getElementById("resultsCount").textContent=countText(favoriteCars.length);
 
@@ -3006,21 +2912,18 @@ function trackCall(event) {
         }
     }
 
-    fetch("/api/stats/call", {
-        method: "POST",
-        keepalive: true,
-        cache: "no-store"
-    }).catch(() => {});
+   fetch("/api/stats/call", {
+    method: "POST",
+    keepalive: true
+}).catch(() => {});
 }
 
 function trackView() {
     fetch("/api/stats/view", {
         method: "POST",
-        keepalive: true,
-        cache: "no-store"
+        keepalive: true
     }).catch(() => {});
 }
-
 
 document.addEventListener("keydown",function(event){
 
@@ -3057,7 +2960,6 @@ document.documentElement.lang = currentLang;
 
 applyLang();
 updateThemeIcon();
-updateCurrencyButtons();
 
 trackView();
 loadSettings();
@@ -3171,22 +3073,9 @@ function selectDrawerLanguage(lang) {
 
 function updateDrawerControls() {
     const language = document.getElementById("drawerCurrentLanguage");
-    const themeButton = document.getElementById("drawerThemeButton");
 
     if (language) {
-        language.textContent =
-            (typeof currentLang !== "undefined" ? currentLang : "uz").toUpperCase();
-    }
-
-    if (themeButton) {
-        const isDark = document.body.classList.contains("dark");
-
-        themeButton.textContent = isDark ? "☀" : "☾";
-
-        themeButton.setAttribute(
-            "aria-label",
-            isDark ? "Yorug‘ ko‘rinishga o‘tish" : "Qorong‘i ko‘rinishga o‘tish"
-        );
+        language.textContent = currentLang.toUpperCase();
     }
 }
 
