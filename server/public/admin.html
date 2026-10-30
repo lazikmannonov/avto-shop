@@ -4105,38 +4105,46 @@ async function init() {
     renderImagePreview();
     showLoginStep(1);
 
-    // Saqlangan sessiyani server orqali tekshirish
     if (adminSessionToken) {
-        try {
-            const response = await fetch("/api/admin/session", {
-                method: "GET",
-                headers: adminHeaders({ "Content-Type": "application/json" }),
-                cache: "no-store"
-            });
+        for (let attempt = 0; attempt < 4; attempt++) {
+            try {
+                const response = await fetch("/api/admin/session", {
+                    method: "GET",
+                    headers: adminHeaders({ "Content-Type": "application/json" }),
+                    cache: "no-store"
+                });
 
-          if (response.ok) {
-    $("loginScreen").classList.add("hidden");
-    $("app").style.display = "flex";
+                if (response.ok) {
+                    $("loginScreen").classList.add("hidden");
+                    $("app").style.display = "flex";
+                    startAdminHeartbeat();
+                    await loadAll();
+                    return;
+                }
 
-    startAdminHeartbeat();
+                // Faqat shu holatda sessiya haqiqatan yaroqsiz
+                if (response.status === 401 || response.status === 403) {
+                    adminSessionToken = "";
+                    ssDel("admin_panel_session");
+                    break;
+                }
+            } catch (error) {
+                console.error("Sessiyani tekshirish:", error);
+            }
 
-    await loadAll();
-    return;
-}
-        } catch (error) {
-            console.error("Admin sessiyasini tekshirishda xatolik:", error);
+            // Server uyg'onayotgan bo'lishi mumkin — kutib qayta urinamiz
+            await new Promise(r => setTimeout(r, 3000));
         }
 
-        // Sessiya yaroqsiz yoki server bilan aloqa yo‘q
-        adminSessionToken = "";
-        ssDel("admin_panel_session");
+        // 4 urinishdan keyin ham server javob bermasa, tokenni saqlab qo'yamiz
+        if (adminSessionToken) {
+            setLoginMessage("Server javob bermayapti. Sahifani birozdan keyin yangilang.");
+        }
     }
 
     ssDel("admin_panel_password");
-
     $("loginScreen").classList.remove("hidden");
     $("app").style.display = "none";
-
     applyLoginLock();
 }
 
